@@ -18,6 +18,10 @@ import { RetryMultipleTasksButton } from '@/components/RetryMultipleTasksButton.
 import styles from './TaskTable.module.css'
 
 const isRetryable = (status: TaskStatus) => {
+    // Tillatt rekjøring av alle tasks i dev
+    if (window.location.host.includes("dev") || window.location.host.includes("localhost")) {
+        return true
+    }
     switch (status) {
         case 'IN_PROGRESS':
         case 'FAIL':
