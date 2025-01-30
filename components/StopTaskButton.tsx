@@ -5,13 +5,13 @@ import { Button } from '@navikt/ds-react'
 import { logger } from '@navikt/next-logger'
 import { Routes } from '@/lib/api/routes.ts'
 
-const retryTask = async (task: Task) => {
-    const response = await fetch(Routes.internal.retry(task.id), {
+const stopTask = async (task: Task) => {
+    const response = await fetch(Routes.internal.stop(task.id), {
         method: 'PUT',
     })
 
     if (!response.ok) {
-        logger.error(`Klarte ikke rekjøre task:`, response)
+        logger.error(`Klarte ikke stoppe task:`, response)
     }
 }
 
@@ -19,17 +19,17 @@ type Props = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
     task: Task
 }
 
-export const RetryTaskButton: React.FC<Props> = ({ task, ...rest }) => {
+export const StopTaskButton: React.FC<Props> = ({ task, ...rest }) => {
     const router = useRouter()
 
     const onClick = async () => {
-        await retryTask(task)
+        await stopTask(task)
         router.refresh()
     }
 
     return (
-        <Button variant="primary" size="small" onClick={onClick} {...rest}>
-            Rekjør
+        <Button variant="danger" size="small" onClick={onClick} {...rest}>
+            Stop
         </Button>
     )
 }

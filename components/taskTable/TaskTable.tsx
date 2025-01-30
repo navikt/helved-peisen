@@ -12,6 +12,7 @@ import { useStatusFilter } from '@/lib/hooks/useStatusFilter.ts'
 import { StatusBadge } from '@/components/StatusBadge'
 import { TaskTableRow } from '@/components/taskTable/TaskTableRow'
 import { RetryTaskButton } from '@/components/RetryTaskButton'
+import { StopTaskButton } from '@/components/StopTaskButton'
 import { ErrorTableRow } from '@/components/taskTable/ErrorTableRow'
 import { RetryMultipleTasksButton } from '@/components/RetryMultipleTasksButton.tsx'
 
@@ -28,6 +29,12 @@ const isRetryable = (status: TaskStatus) => {
             return true
         default:
             return false
+    }
+}
+
+const isStoppable = (status: TaskStatus) => {
+    if (window.location.host.includes("dev") || window.location.host.includes("localhost")) {
+        return true
     }
 }
 
@@ -99,10 +106,13 @@ export const TaskTable: React.FC<Props> = ({
                                 <TableDataCell>{data.attempt}</TableDataCell>
                                 <TableDataCell>{data.message}</TableDataCell>
                                 <TableDataCell>
-                                    <HStack>
+                                    <HStack gap="2">
                                         <Spacer />
                                         {isRetryable(data.status) && (
                                             <RetryTaskButton task={data} />
+                                        )}
+                                        {isStoppable(data.status) && (
+                                            <StopTaskButton task={data} />
                                         )}
                                     </HStack>
                                 </TableDataCell>

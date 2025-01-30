@@ -12,6 +12,9 @@ export const Routes = {
         retry(id: string): string {
             return `/api/tasks/${id}/rerun`
         },
+        stop(id: string): string {
+            return `/api/tasks/${id}/stop`
+        },
         retryAll(): string {
             return '/api/tasks/rerun'
         },
