@@ -9,10 +9,11 @@ import { formatDate } from '@/lib/date'
 import styles from './TaskTableRowContents.module.css'
 
 type TaskHistoryViewProps = {
+    task: Task
     history: ApiResponse<TaskHistory[]>
 }
 
-const TaskHistoryView: React.FC<TaskHistoryViewProps> = ({ history }) => {
+const TaskHistoryView: React.FC<TaskHistoryViewProps> = ({ task, history }) => {
     if (history.error) {
         return (
             <Alert variant="error">
@@ -28,6 +29,9 @@ const TaskHistoryView: React.FC<TaskHistoryViewProps> = ({ history }) => {
 
     return (
         <div className={styles.grid}>
+            <StatusBadge status={task.status} />
+            <span>Utført: {formatDate(task.updatedAt)}</span>
+            <span>{task.message}</span>
             {history.data
                 ?.slice(0)
                 .sort(
@@ -54,6 +58,6 @@ type Props = {
 export const TaskTableRowContents: React.FC<Props> = ({ task, history }) => (
     <div className={styles.content}>
         <Metadata metadata={task.metadata} />
-        <TaskHistoryView history={history} />
+        <TaskHistoryView task={task} history={history} />
     </div>
 )

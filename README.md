@@ -4,6 +4,7 @@
 
 Lag deg en `.env.local`-fil med følgende innhold:
 ```
+NEXT_PUBLIC_API_FAKING=enabled
 NEXT_PUBLIC_HOSTNAME=http://localhost:3000
 TASK_API_BASE_URL=http://localhost:8080
 ```
@@ -18,3 +19,10 @@ Enhetstester kan kjøres med `npm run test`. Appen bruker [vitest](https://vites
 
 ## Henvendelser
 Spørsmål knyttet til koden eller prosjektet kan stilles ved å opprette et issue her på Github.
+
+## Auth to NPM
+lag en ~/.npmrc med følgende content:
+
+>//npm.pkg.github.com/:_authToken=<GITHUB PAT med scope read:packages>
+>@navikt:registry=https://npm.pkg.github.com/
+

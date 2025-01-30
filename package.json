@@ -50,7 +50,7 @@
     "vitest": "^2.1.2"
   },
   "engines": {
-    "node": "^22"
+    "node": "^23"
   },
   "nextBundleAnalysis": {
     "budget": null,
