@@ -15,12 +15,13 @@ import { RetryTaskButton } from '@/components/RetryTaskButton'
 import { StopTaskButton } from '@/components/StopTaskButton'
 import { ErrorTableRow } from '@/components/taskTable/ErrorTableRow'
 import { RetryMultipleTasksButton } from '@/components/RetryMultipleTasksButton.tsx'
+import { compareAsc } from 'date-fns'
 
 import styles from './TaskTable.module.css'
 
 const isRetryable = (status: TaskStatus) => {
     // Tillatt rekjøring av alle tasks i dev
-    if (window.location.host.includes("dev") || window.location.host.includes("localhost")) {
+    if (window.location.host.includes('dev') || window.location.host.includes('localhost')) {
         return true
     }
     switch (status) {
@@ -32,10 +33,12 @@ const isRetryable = (status: TaskStatus) => {
     }
 }
 
-const isStoppable = (status: TaskStatus) => {
-    if (window.location.host.includes("dev") || window.location.host.includes("localhost")) {
-        return true
+const isStoppable = (task: Task) => {
+    if (!window.location.host.includes('dev') && !window.location.host.includes('localhost')) {
+        // Tillater ikke manuell stopping av tasks i prod
+        return false
     }
+    return compareAsc(task.scheduledFor, task.updatedAt) > 0
 }
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
@@ -106,13 +109,13 @@ export const TaskTable: React.FC<Props> = ({
                                 <TableDataCell>{data.attempt}</TableDataCell>
                                 <TableDataCell>{data.message}</TableDataCell>
                                 <TableDataCell>
-                                    <HStack gap="2">
+                                    <HStack wrap={false} gap="2">
                                         <Spacer />
+                                        {isStoppable(data) && (
+                                            <StopTaskButton task={data} />
+                                        )}
                                         {isRetryable(data.status) && (
                                             <RetryTaskButton task={data} />
-                                        )}
-                                        {isStoppable(data.status) && (
-                                            <StopTaskButton task={data} />
                                         )}
                                     </HStack>
                                 </TableDataCell>

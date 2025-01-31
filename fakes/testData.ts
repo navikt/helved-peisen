@@ -1,4 +1,14 @@
 import { randomUUID } from 'node:crypto'
+import { addDays, subDays } from 'date-fns'
+
+function randomDate(dayRange: number) {
+    const today = new Date();
+    const startDate = subDays(today, dayRange);
+    const endDate = addDays(today, dayRange);
+
+    const randomTime = startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime());
+    return new Date(randomTime);
+}
 
 export const TestData = {
     taskStatus(): TaskStatus {
@@ -36,7 +46,7 @@ export const TestData = {
             attempt: 1,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            scheduledFor: new Date().toISOString(),
+            scheduledFor: randomDate(10).toISOString(),
             kind: kind,
             metadata: {
                 sakId: randomUUID(),
