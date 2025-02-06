@@ -13,10 +13,10 @@
     "fake": "node --watch --experimental-strip-types fakes/server.ts"
   },
   "dependencies": {
-    "@navikt/aksel-icons": "^7.0.1",
-    "@navikt/ds-css": "^7.0.1",
-    "@navikt/ds-react": "^7.0.1",
-    "@navikt/ds-tokens": "^7.0.1",
+    "@navikt/aksel-icons": "^7.12.2",
+    "@navikt/ds-css": "^7.12.2",
+    "@navikt/ds-react": "^7.12.2",
+    "@navikt/ds-tokens": "^7.12.2",
     "@navikt/next-logger": "^1.32.0",
     "@navikt/oasis": "^3.4.0",
     "clsx": "^2.1.1",
