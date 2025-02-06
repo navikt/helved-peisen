@@ -9,11 +9,15 @@
 }
 
 .table thead tr {
-  background: var(--a-bg-default);
+  background: var(--ax-bg-default);
   position: sticky;
   top: 0;
 }
 
 .table td {
   white-space: nowrap;
+}
+
+.buttons {
+  gap: var(--ax-space-8)
 }

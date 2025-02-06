@@ -9,7 +9,7 @@
 .refetch > * {
   display: flex;
   align-items: center;
-  gap: var(--a-spacing-3);
+  gap: var(--ax-space-12);
 }
 
 .tasks {

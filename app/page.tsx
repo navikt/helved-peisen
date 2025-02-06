@@ -5,17 +5,19 @@ import { MinesweeperProgram } from '@/components/minesweeper'
 import styles from './page.module.css'
 
 type Props = {
-    searchParams: SearchParams
+    searchParams: Promise<SearchParams>
 }
 
 export default async function TaskOverview({ searchParams }: Props) {
     await checkToken()
     await checkApiToken()
 
+    const params = await searchParams
+
     return (
         <section className={styles.page}>
-            <Tasks searchParams={searchParams} />
-            {searchParams['minesweeper'] && <MinesweeperProgram />}
+            <Tasks searchParams={params} />
+            {params['minesweeper'] && <MinesweeperProgram />}
         </section>
     )
 }

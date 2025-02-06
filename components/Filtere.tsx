@@ -1,11 +1,12 @@
 'use client'
 
 import clsx from 'clsx'
+import React from 'react'
+import { UrlSearchParamInput } from '@/components/UrlSearchParamInput.tsx'
 import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox'
 import { deslugify, slugifyUpperCase } from '@/lib/string.ts'
 
 import styles from './Filtere.module.css'
-import { UrlSearchParamInput } from '@/components/UrlSearchParamInput.tsx'
 
 type Props = React.HTMLAttributes<HTMLDivElement>
 

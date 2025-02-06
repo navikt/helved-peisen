@@ -1,25 +1,24 @@
 .StatusBadge {
-  --background: var(--a-bg-subtle);
-  --color: var(--a-text-default);
-  --border-color: var(--a-border-default);
+  --background: var(--ax-neutral-100A);
+  --border-color: var(--ax-neutral-500);
   background: var(--background);
   width: max-content;
-  padding: var(--a-spacing-1) var(--a-spacing-2);
+  padding: var(--ax-space-4) var(--ax-space-8);
   border-radius: var(--a-border-radius-medium);
   border: 1px solid var(--border-color);
 }
 
 .StatusBadge.FAIL {
-  --background: var(--a-surface-danger-subtle);
-  --border-color: var(--a-border-danger);
+  --background: var(--ax-danger-100A);
+  --border-color: var(--ax-danger-500);
 }
 
 .StatusBadge.COMPLETE {
-  --background: var(--a-surface-success-subtle);
-  --border-color: var(--a-border-success);
+  --background: var(--ax-success-100A);
+  --border-color: var(--ax-success-500);
 }
 
 .StatusBadge.MANUAL {
-  --background: var(--a-surface-info-subtle);
-  --border-color: var(--a-border-info);
+  --background: var(--ax-info-100A);
+  --border-color: var(--ax-info-500);
 }

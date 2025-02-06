@@ -109,7 +109,7 @@ export const TaskTable: React.FC<Props> = ({
                                 <TableDataCell>{data.attempt}</TableDataCell>
                                 <TableDataCell>{data.message}</TableDataCell>
                                 <TableDataCell>
-                                    <HStack wrap={false} gap="2">
+                                    <HStack wrap={false} className={styles.buttons}>
                                         <Spacer />
                                         {isStoppable(data) && (
                                             <StopTaskButton task={data} />

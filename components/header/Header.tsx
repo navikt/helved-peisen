@@ -14,11 +14,11 @@ import styles from './Header.module.css'
 
 import logo from '@/public/logo.png'
 
-function getUser(): {
+async function getUser(): Promise<{
     name: string
     email: string
     ident: string
-} {
+}> {
     if (process.env.NODE_ENV === 'development') {
         return {
             name: `${faker.person.firstName()} ${faker.person.lastName()}`,
@@ -27,7 +27,8 @@ function getUser(): {
         }
     }
 
-    const authHeader = headers().get('Authorization')
+    const readonlyHeaders = await headers()
+    const authHeader = readonlyHeaders.get('Authorization')
     if (!authHeader) {
         redirect('/oauth2/login')
     }
@@ -48,10 +49,10 @@ function getUser(): {
 }
 
 export async function Header() {
-    const user = getUser()
+    const user = await getUser()
 
     return (
-        <InternalHeader>
+        <InternalHeader className={styles.header}>
             <InternalHeaderTitle as="h1">
                 <span className={styles.title}>
                     <Image src={logo.src} alt="" width={24} height={24} />

@@ -5,12 +5,13 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React, { ChangeEvent } from 'react'
 
 import styles from './UrlSearchParamInput.module.css'
+import clsx from 'clsx'
 
 type Props = Omit<TextFieldProps, 'onSearchClick'> & {
     searchParamName: string
 }
 
-export function UrlSearchParamInput({ searchParamName, ...rest }: Props) {
+export function UrlSearchParamInput({ searchParamName, className, ...rest }: Props) {
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
@@ -46,7 +47,7 @@ export function UrlSearchParamInput({ searchParamName, ...rest }: Props) {
 
     return (
         <TextField
-            className={styles.input}
+            className={clsx(className, styles.input)}
             defaultValue={defaultValue}
             onBlur={onBlur}
             onKeyDown={onKeyDown}

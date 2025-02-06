@@ -4,13 +4,13 @@ import { Routes } from '@/lib/api/routes'
 
 export async function GET(
     _: NextRequest,
-    { params }: { params: { id: Task['id'] } }
+    { params }: { params: Promise<{ id: Task['id'] }> }
 ) {
     await checkToken()
 
     const apiToken = await fetchApiToken()
 
-    return fetch(Routes.external.history(params.id), {
+    return fetch(Routes.external.history((await params).id), {
         headers: {
             Authorization: `Bearer ${apiToken}`,
         },
