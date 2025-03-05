@@ -1,7 +1,3 @@
-.row {
-    --a-bg-subtle: var(--ax-neutral-100A);
-}
-
 .row + tr :global(.navds-table__expanded-row-collapse) {
     background: var(--ax-neutral-100A);
     margin-top: -1px; /*Fikser visuell bug hvor rader får dobbel border før de ekspanderes*/

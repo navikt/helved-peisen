@@ -1,7 +1,4 @@
 .input {
-  --a-text-default: var(--ax-text-neutral);
-  --a-border-default: var(--ax-border-neutral-subtleA);
-  --a-surface-default: var(--ax-bg-raised);
   max-width: max-content;
   gap: 0;
 }

@@ -2,7 +2,6 @@ import React from 'react'
 import { ComboboxProps, UNSAFE_Combobox } from '@navikt/ds-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
-import styles from './UrlSearchParamComboBox.module.css'
 import clsx from 'clsx'
 
 type Props<T extends string> = Omit<ComboboxProps, 'options'> & {
@@ -66,7 +65,7 @@ export const UrlSearchParamComboBox = <T extends string>({
 
     return (
         <UNSAFE_Combobox
-            className={clsx(className, styles.combobox)}
+            className={clsx(className)}
             isMultiSelect={isMultiSelect}
             options={initialOptions.map(renderForCombobox)}
             onToggleSelected={onToggleSelected}
