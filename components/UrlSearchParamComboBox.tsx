@@ -1,8 +1,9 @@
 import React from 'react'
-import { ComboboxProps, UNSAFE_Combobox } from '@navikt/ds-react'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-
 import clsx from 'clsx'
+import { ComboboxProps, UNSAFE_Combobox } from '@navikt/ds-react'
+import { useSearchParams } from 'next/navigation'
+
+import { useUpdateSearchParams } from '@/hooks/useUpdateSearchParams.tsx'
 
 type Props<T extends string> = Omit<ComboboxProps, 'options'> & {
     searchParamName: string
@@ -20,25 +21,10 @@ export const UrlSearchParamComboBox = <T extends string>({
     isMultiSelect,
     ...rest
 }: Props<T>) => {
-    const router = useRouter()
-    const pathname = usePathname()
     const searchParams = useSearchParams()
     const selectedOptions = searchParams.get(searchParamName)?.split(',') ?? []
 
-    const updateSearchParams = (query: string) => {
-        const params = new URLSearchParams(searchParams.toString())
-        if (query.length === 0) {
-            params.delete(searchParamName)
-        } else {
-            params.set(searchParamName, query)
-        }
-
-        if (params.size === 0) {
-            router.push(pathname)
-        } else {
-            router.push(pathname + '?' + decodeURIComponent(params.toString()))
-        }
-    }
+    const updateSearchParams = useUpdateSearchParams(searchParamName)
 
     const onToggleSelected = (option: string, isSelected: boolean) => {
         if (isMultiSelect) {
