@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { InternalHeaderUserButton } from '@navikt/ds-react/InternalHeader'
 import { BodyShort, Detail, Dropdown, Link, Spacer } from '@navikt/ds-react'
 import {
@@ -10,6 +11,7 @@ import {
     DropdownToggle,
 } from '@navikt/ds-react/Dropdown'
 import { LeaveIcon } from '@navikt/aksel-icons'
+
 import { MinesweeperIcon } from '@/components/minesweeper'
 import { useToggleProgram } from '@/components/minesweeper/desktop/useToggleProgram.ts'
 

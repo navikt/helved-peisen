@@ -26,7 +26,7 @@ export async function middleware(
         })
     }
 
-    if (!headers().has('Authorization')) {
+    if (!(await headers()).has('Authorization')) {
         return NextResponse.redirect(
             new URL(
                 `${process.env.NEXT_PUBLIC_HOSTNAME}/oauth2/login?redirect=${url.pathname}`,

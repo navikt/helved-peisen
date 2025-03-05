@@ -19,7 +19,7 @@ export const checkToken = async () => {
     )
         return
 
-    const token = getToken(headers())
+    const token = getToken(await headers())
     if (!token) {
         redirect('/oauth2/login')
     }
@@ -35,14 +35,15 @@ export const checkApiToken = async () => {
     if (process.env.NEXT_PUBLIC_API_FAKING === 'enabled') {
         return
     }
-    const existingApiToken = cookies().get(UTSJEKK_TOKEN_NAME)
+    const cookieStore = await cookies()
+    const existingApiToken = cookieStore.get(UTSJEKK_TOKEN_NAME)
     if (!existingApiToken) {
         redirect('/api/auth/token')
     }
 }
 
 const getTokenFromCookie = async () => {
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     const existing = cookieStore.get(UTSJEKK_TOKEN_NAME)
 
     if (existing) {
@@ -56,7 +57,8 @@ const getTokenFromCookie = async () => {
 }
 
 export const updateCookieToken = async (token: string) => {
-    cookies().set({
+    const cookieStore = await cookies()
+    cookieStore.set({
         name: UTSJEKK_TOKEN_NAME,
         value: token,
         httpOnly: true,
@@ -64,7 +66,8 @@ export const updateCookieToken = async (token: string) => {
 }
 
 const getLocalToken = async (): Promise<string> => {
-    const existing = cookies().get(UTSJEKK_TOKEN_NAME)
+    const cookieStore = await cookies()
+    const existing = cookieStore.get(UTSJEKK_TOKEN_NAME)
     if (existing) {
         return existing.value
     }
@@ -92,7 +95,7 @@ export const fetchApiToken = async (): Promise<string> => {
 
     logger.info("Henter nytt token")
 
-    const token = getToken(headers())
+    const token = getToken(await headers())
     if (!token) {
         throw new Error('Mangler access token')
     }
