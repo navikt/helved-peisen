@@ -5,12 +5,12 @@ import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { InternalHeader, Spacer, Tabs } from '@navikt/ds-react'
 import { InternalHeaderTitle } from '@navikt/ds-react/InternalHeader'
+import { TabsList, TabsTab } from '@navikt/ds-react/Tabs'
+import { UserMenu } from '@/components/header/UserMenu.tsx'
 
 import styles from './Header.module.css'
 
 import logo from '@/public/logo.png'
-import { TabsList, TabsTab } from '@navikt/ds-react/Tabs'
-import { UserMenu } from '@/components/header/UserMenu.tsx'
 
 export function Header() {
     const pathname = usePathname()
@@ -51,6 +51,7 @@ export function Header() {
                 </TabsList>
             </Tabs>
             <Spacer />
+            <UserMenu />
         </InternalHeader>
     )
 }

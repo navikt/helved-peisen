@@ -1,6 +1,4 @@
-'use server'
-
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { InternalHeaderUserButton } from '@navikt/ds-react/InternalHeader'
 import { BodyShort, Detail, Dropdown, Link, Spacer } from '@navikt/ds-react'
 import {
@@ -11,45 +9,18 @@ import {
     DropdownToggle,
 } from '@navikt/ds-react/Dropdown'
 import { LeaveIcon } from '@navikt/aksel-icons'
-import { faker } from '@faker-js/faker'
-import { headers } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { getUser, User } from '@/components/header/getUser.ts'
 
-async function getUser(): Promise<{
-    name: string
-    email: string
-    ident: string
-}> {
-    if (process.env.NODE_ENV === 'development') {
-        return {
-            name: `${faker.person.firstName()} ${faker.person.lastName()}`,
-            email: 'dev@localhost',
-            ident: 'A12345',
-        }
+export const UserMenu: React.FC = () => {
+    const [user, setUser] = useState<User | null>()
+
+    useEffect(() => {
+        getUser().then(setUser)
+    }, [])
+
+    if (!user) {
+        return null
     }
-
-    const readonlyHeaders = await headers()
-    const authHeader = readonlyHeaders.get('Authorization')
-    if (!authHeader) {
-        redirect('/oauth2/login')
-    }
-
-    const token = authHeader.replace('Bearer ', '')
-    const jwtPayload = token.split('.')[1]
-    const payload = JSON.parse(Buffer.from(jwtPayload, 'base64').toString())
-
-    const name = payload.name
-    const email = payload.preferred_username.toLowerCase()
-    const ident = payload.NAVident
-
-    return {
-        name,
-        email,
-        ident,
-    }
-}
-export const UserMenu: React.FC = async () => {
-    const user = await getUser()
 
     return (
         <Dropdown>
