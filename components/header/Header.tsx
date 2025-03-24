@@ -1,55 +1,36 @@
-'use server'
+'use client'
 
 import React from 'react'
 import Image from 'next/image'
-import { headers } from 'next/headers'
-import { redirect } from 'next/navigation'
-import { InternalHeader, Spacer } from '@navikt/ds-react'
+import { usePathname, useRouter } from 'next/navigation'
+import { InternalHeader, Spacer, Tabs } from '@navikt/ds-react'
 import { InternalHeaderTitle } from '@navikt/ds-react/InternalHeader'
-import { faker } from '@faker-js/faker'
-
-import { UserMenu } from '@/components/header/UserMenu.tsx'
 
 import styles from './Header.module.css'
 
 import logo from '@/public/logo.png'
+import { TabsList, TabsTab } from '@navikt/ds-react/Tabs'
+import { UserMenu } from '@/components/header/UserMenu.tsx'
 
-async function getUser(): Promise<{
-    name: string
-    email: string
-    ident: string
-}> {
-    if (process.env.NODE_ENV === 'development') {
-        return {
-            name: `${faker.person.firstName()} ${faker.person.lastName()}`,
-            email: 'dev@localhost',
-            ident: 'A12345',
+export function Header() {
+    const pathname = usePathname()
+    const router = useRouter()
+
+    const onChangeTab = (value: string) => {
+        switch (value) {
+            case "scheduler": {
+                router.push(`/scheduler`)
+                break
+            }
+            case "kafka": {
+                router.push(`/kafka`)
+                break
+            }
         }
     }
 
-    const readonlyHeaders = await headers()
-    const authHeader = readonlyHeaders.get('Authorization')
-    if (!authHeader) {
-        redirect('/oauth2/login')
-    }
-
-    const token = authHeader.replace('Bearer ', '')
-    const jwtPayload = token.split('.')[1]
-    const payload = JSON.parse(Buffer.from(jwtPayload, 'base64').toString())
-
-    const name = payload.name
-    const email = payload.preferred_username.toLowerCase()
-    const ident = payload.NAVident
-
-    return {
-        name,
-        email,
-        ident,
-    }
-}
-
-export async function Header() {
-    const user = await getUser()
+    const currentTab = pathname.includes("kafka")
+        ? "kafka" : "scheduler"
 
     return (
         <InternalHeader className={styles.header}>
@@ -59,8 +40,17 @@ export async function Header() {
                     <span>Peisen</span>
                 </span>
             </InternalHeaderTitle>
+            <Tabs
+                className={styles.tabs}
+                value={currentTab}
+                onChange={onChangeTab}
+            >
+                <TabsList>
+                    <TabsTab value="scheduler" label="Scheduler" />
+                    <TabsTab value="kafka" label="Kafka" />
+                </TabsList>
+            </Tabs>
             <Spacer />
-            <UserMenu name={user.name} ident={user.ident} />
         </InternalHeader>
     )
 }

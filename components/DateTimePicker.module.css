@@ -1,0 +1,15 @@
+.container {
+    height: 400px;
+}
+.datePickerContainer {
+    flex-shrink: 0;
+}
+
+.timeListContainer {
+    height: 366px;
+    width: 6rem;
+    flex-shrink: 0;
+    overflow: scroll;
+    list-style-type: none !important;
+}
+

@@ -6,7 +6,7 @@ import {
     TaskTable,
     TaskTableSkeleton,
 } from '@/components/taskTable/TaskTable.tsx'
-import { Filtere } from '@/components/Filtere.tsx'
+import { Filtere } from '@/app/scheduler/Filtere.tsx'
 import { Footer, FooterSkeleton } from '@/components/Footer.tsx'
 import {
     TaskRefresher,

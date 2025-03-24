@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { Alert } from '@navikt/ds-react'
 import { logger } from '@navikt/next-logger'
 
-import styles from '@/app/page.module.css'
+import styles from '@/app/scheduler/page.module.css'
 
 type Props = {
     error: Error & { digest?: string }

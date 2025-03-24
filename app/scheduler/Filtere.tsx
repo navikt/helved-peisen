@@ -3,7 +3,7 @@
 import clsx from 'clsx'
 import React from 'react'
 import { UrlSearchParamInput } from '@/components/UrlSearchParamInput.tsx'
-import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox'
+import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox.tsx'
 import { deslugify, slugifyUpperCase } from '@/lib/string.ts'
 
 import styles from './Filtere.module.css'

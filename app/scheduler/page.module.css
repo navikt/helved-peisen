@@ -1,0 +1,13 @@
+.page {
+    flex: 1;
+    min-height: 100%;
+    position: relative;
+    display: grid;
+    grid-template-areas: 'filters' 'refresher' 'table' 'footer';
+    grid-template-rows: max-content max-content auto max-content;
+    padding: 1rem;
+}
+
+.alert {
+    height: max-content;
+}
