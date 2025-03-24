@@ -3,15 +3,15 @@
 import clsx from 'clsx'
 import React from 'react'
 import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox.tsx'
+import { DateTimePicker } from '@/components/DateTimePicker.tsx'
 
 import styles from './Filtere.module.css'
 
 type Props = React.HTMLAttributes<HTMLDivElement>
-import { DateTimePicker } from '@/components/DateTimePicker.tsx'
 
-export const KafkaFiltere: React.FC<Props> = ({ className, ...rest }) => (
+export const Filtere: React.FC<Props> = ({ className, ...rest }) => (
     <div className={clsx(styles.container, className)} {...rest}>
-        <div className={clsx(styles.filters, styles.visible)}>
+        <div className={clsx(styles.filters)}>
             <UrlSearchParamComboBox
                 label="Topics"
                 searchParamName="topics"
@@ -21,7 +21,8 @@ export const KafkaFiltere: React.FC<Props> = ({ className, ...rest }) => (
                 }
                 isMultiSelect
             />
-            <DateTimePicker/>
+            <DateTimePicker label="Fra og med" />
+            <DateTimePicker label="Til og med" />
         </div>
     </div>
 )

@@ -1,15 +1,47 @@
+.textFieldContainer {
+    position: relative;
+    width: max-content;
+}
+
+.textField > input {
+    padding-right: var(--ax-space-48);
+}
+
+.textFieldButton {
+    height: 48px;
+    padding: var(--ax-space-12);
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
 .container {
-    height: 400px;
-}
-.datePickerContainer {
-    flex-shrink: 0;
+    gap: var(--ax-space-20);
 }
 
-.timeListContainer {
-    height: 366px;
-    width: 6rem;
-    flex-shrink: 0;
-    overflow: scroll;
-    list-style-type: none !important;
+.dateTimeTextField {
+    margin-top: var(--ax-space-8);
 }
 
+.pickerContainer {
+    --timelist-height: auto;
+    position: relative;
+    gap: var(--ax-space-20);
+}
+
+.datePicker > div {
+    padding: 0;
+}
+
+.timeList {
+    height: var(--timelist-height);
+    overflow-y: auto;
+    gap: var(--ax-space-4);
+}
+
+.active {
+    color: var(--ax-text-accent-contrast);
+    background: var(--ax-bg-accent-strong-pressed);
+}

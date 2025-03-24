@@ -1,51 +1,112 @@
+'use client'
+
+import clsx from 'clsx'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { DatePickerStandalone } from '@navikt/ds-react/DatePicker'
+import { Button, HStack, Modal, TextField, VStack } from '@navikt/ds-react'
+import { ModalBody, ModalFooter } from '@navikt/ds-react/Modal'
+import { CalendarIcon } from '@navikt/aksel-icons'
+
+import { useElementHeight } from '@/hooks/useElementHeight.ts'
+
 import styles from './DateTimePicker.module.css'
-import { HStack, VStack, List, Popover, Button } from '@navikt/ds-react'
-import { useRef, useState } from 'react'
 
-export const DateTimePicker = () => {
-    const [openState, setOpenState] = useState(false)
+const times = new Array(24)
+    .fill(0)
+    .map((it, i) => it + i)
+    .flatMap((it) => [`${it}:00`, `${it}:30`])
 
-    const times = []
-    for (let hour = 0; hour <= 23; hour++) {
-        const formattedHour = hour < 10 ? `0${hour}` : hour
-        times.push(`${formattedHour}:00`)
-        times.push(`${formattedHour}:30`)
+type Props = {
+    label: string
+}
+
+export const DateTimePicker: React.FC<Props> = ({ label }) => {
+    const modalRef = useRef<HTMLDialogElement>(null)
+    const [datePickerRef, datePickerHeight] = useElementHeight()
+    const [date, setDate] = useState<Date>(new Date())
+    const [time, setTime] = useState<string>(times[0])
+    const [dateTime, setDateTime] = useState<string>('')
+
+    useLayoutEffect(() => {
+        const newDate = new Date(date)
+        const [hours, minutes] = time.split(':').map((it) => +it)
+        newDate.setHours(hours)
+        newDate.setMinutes(minutes)
+
+        setDateTime(newDate.toLocaleString())
+    }, [date, time])
+
+    const onSelectDate = (selected?: Date) => {
+        setDate(selected ?? new Date())
     }
-    const buttonRef = useRef<HTMLButtonElement>(null)
-
 
     return (
         <>
-
-            <Button
-                ref={buttonRef}
-                onClick={() => setOpenState(!openState)}
-                aria-expanded={openState}
+            <HStack className={styles.textFieldContainer} gap="space-16">
+                <TextField
+                    label={label}
+                    className={styles.textField}
+                    value={dateTime}
+                />
+                <Button
+                    className={styles.textFieldButton}
+                    variant="tertiary"
+                    onClick={() => modalRef.current?.showModal()}
+                >
+                    <CalendarIcon fontSize={24} />
+                </Button>
+            </HStack>
+            <Modal
+                ref={modalRef}
+                header={{ heading: 'Velg tidspunkt' }}
+                closeOnBackdropClick
             >
-                Åpne popover
-            </Button>
-            <Popover
-                open={openState}
-                onClose={() => setOpenState(false)}
-                anchorEl={buttonRef.current}
-                arrow={false}
-            >
-                <Popover.Content>
-                    <HStack gap="2" align="end">
-                        <DatePickerStandalone className={styles.datePickerContainer} onSelect={console.info} />
-                        <VStack className={styles.timeListContainer}>
-                            {times.map((time, index) => (
-                                <List as="ul" size="small" key={index} className={styles.timeList}>
-                                    <List.Item>
-                                        {time}
-                                    </List.Item>
-                                </List>
-                            ))}
-                        </VStack>
-                    </HStack>
-                </Popover.Content>
-            </Popover>
+                <ModalBody>
+                    <VStack className={styles.container}>
+                        <TextField
+                            className={styles.dateTimeTextField}
+                            hideLabel
+                            label="Valgt tidspunkt"
+                        />
+                        <HStack
+                            style={{
+                                '--timelist-height': datePickerHeight,
+                            }}
+                            className={styles.pickerContainer}
+                        >
+                            <DatePickerStandalone
+                                ref={datePickerRef}
+                                className={styles.datePicker}
+                                onSelect={onSelectDate}
+                            />
+                            <VStack className={styles.timeList}>
+                                {times.map((it) => (
+                                    <Button
+                                        key={it}
+                                        variant="tertiary"
+                                        size="small"
+                                        onClick={() => setTime(it)}
+                                        className={clsx(
+                                            it === time && styles.active
+                                        )}
+                                    >
+                                        {it}
+                                    </Button>
+                                ))}
+                            </VStack>
+                        </HStack>
+                    </VStack>
+                </ModalBody>
+                <ModalFooter>
+                    <Button>Velg angitt tidspunkt</Button>
+                    <Button
+                        onClick={() => modalRef.current?.close()}
+                        variant="secondary"
+                    >
+                        Avbryt
+                    </Button>
+                </ModalFooter>
+            </Modal>
         </>
     )
 }
