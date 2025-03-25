@@ -1,7 +1,7 @@
 'use client'
 
 import clsx from 'clsx'
-import { useLayoutEffect, useRef, useState } from 'react'
+import React, { useLayoutEffect, useRef, useState } from 'react'
 import { DatePickerStandalone } from '@navikt/ds-react/DatePicker'
 import { Button, HStack, Modal, TextField, VStack } from '@navikt/ds-react'
 import { ModalBody, ModalFooter } from '@navikt/ds-react/Modal'
@@ -23,9 +23,12 @@ type Props = {
 export const DateTimePicker: React.FC<Props> = ({ label }) => {
     const modalRef = useRef<HTMLDialogElement>(null)
     const [datePickerRef, datePickerHeight] = useElementHeight()
+
     const [date, setDate] = useState<Date>(new Date())
     const [time, setTime] = useState<string>(times[0])
+
     const [dateTime, setDateTime] = useState<string>('')
+    const [error, setError] = useState<string | null>()
 
     useLayoutEffect(() => {
         const newDate = new Date(date)
@@ -33,11 +36,31 @@ export const DateTimePicker: React.FC<Props> = ({ label }) => {
         newDate.setHours(hours)
         newDate.setMinutes(minutes)
 
-        setDateTime(newDate.toLocaleString())
+        setDateTime(newDate.toISOString())
     }, [date, time])
 
     const onSelectDate = (selected?: Date) => {
         setDate(selected ?? new Date())
+    }
+
+    const onChangeDateTime = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target?.value) {
+            setDateTime(event.target.value)
+        }
+
+        const dateTime = new Date(event.target.value)
+
+        if (isNaN(dateTime.valueOf())) {
+            setError('Ugyldig tidspunkt')
+            return
+        }
+
+        const hours = dateTime.getHours()
+        const minutes = dateTime.getMinutes()
+
+        setDate(dateTime)
+        setTime(`${hours}:${minutes}`)
+        setError(null)
     }
 
     return (
@@ -47,6 +70,8 @@ export const DateTimePicker: React.FC<Props> = ({ label }) => {
                     label={label}
                     className={styles.textField}
                     value={dateTime}
+                    onChange={onChangeDateTime}
+                    error={error}
                 />
                 <Button
                     className={styles.textFieldButton}
@@ -67,6 +92,9 @@ export const DateTimePicker: React.FC<Props> = ({ label }) => {
                             className={styles.dateTimeTextField}
                             hideLabel
                             label="Valgt tidspunkt"
+                            value={dateTime}
+                            onChange={onChangeDateTime}
+                            error={error}
                         />
                         <HStack
                             style={{
@@ -77,6 +105,7 @@ export const DateTimePicker: React.FC<Props> = ({ label }) => {
                             <DatePickerStandalone
                                 ref={datePickerRef}
                                 className={styles.datePicker}
+                                selected={date}
                                 onSelect={onSelectDate}
                             />
                             <VStack className={styles.timeList}>

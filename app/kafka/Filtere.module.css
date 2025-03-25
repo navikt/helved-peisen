@@ -18,7 +18,8 @@
 }
 
 .filters > * {
-  min-height: 80px;
+  max-height: max-content;
+  height: max-content;
 }
 
 .input {

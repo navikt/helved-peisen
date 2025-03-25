@@ -1,10 +1,16 @@
 .textFieldContainer {
     position: relative;
     width: max-content;
+    max-height: max-content;
+}
+
+.textField {
+    justify-content: start;
 }
 
 .textField > input {
     padding-right: var(--ax-space-48);
+    height: max-content;
 }
 
 .textFieldButton {
@@ -12,7 +18,7 @@
     padding: var(--ax-space-12);
     position: absolute;
     right: 0;
-    bottom: 0;
+    top: var(--ax-space-32);
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
