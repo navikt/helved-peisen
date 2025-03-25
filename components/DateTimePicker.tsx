@@ -4,12 +4,24 @@ import clsx from 'clsx'
 import React, { useLayoutEffect, useRef, useState } from 'react'
 import { DatePickerStandalone } from '@navikt/ds-react/DatePicker'
 import { Button, HStack, Modal, TextField, VStack } from '@navikt/ds-react'
-import { ModalBody, ModalFooter } from '@navikt/ds-react/Modal'
+import { ModalBody } from '@navikt/ds-react/Modal'
 import { CalendarIcon } from '@navikt/aksel-icons'
+import { format } from 'date-fns/format'
+import { parse } from 'date-fns/parse'
 
 import { useElementHeight } from '@/hooks/useElementHeight.ts'
 
 import styles from './DateTimePicker.module.css'
+
+const FORMAT_STRING = 'dd.MM.yyyy, HH:mm'
+
+const formatDate = (date: Date): string => {
+    return format(date, FORMAT_STRING)
+}
+
+const parseDate = (date: string): Date => {
+    return parse(date, FORMAT_STRING, new Date())
+}
 
 const times = new Array(24)
     .fill(0)
@@ -28,15 +40,18 @@ export const DateTimePicker: React.FC<Props> = ({ label }) => {
     const [time, setTime] = useState<string>(times[0])
 
     const [dateTime, setDateTime] = useState<string>('')
-    const [error, setError] = useState<string | null>()
 
     useLayoutEffect(() => {
-        const newDate = new Date(date)
-        const [hours, minutes] = time.split(':').map((it) => +it)
-        newDate.setHours(hours)
-        newDate.setMinutes(minutes)
+        try {
+            const newDate = new Date(date)
+            const [hours, minutes] = time.split(':').map((it) => +it)
+            newDate.setHours(hours)
+            newDate.setMinutes(minutes)
 
-        setDateTime(newDate.toISOString())
+            setDateTime(formatDate(newDate))
+        } catch (_) {
+            // Bruker har skrevet inn ugyldig tidspunkt. Error vises bruker og vi trenger ikke gjøre noe mer her
+        }
     }, [date, time])
 
     const onSelectDate = (selected?: Date) => {
@@ -49,19 +64,21 @@ export const DateTimePicker: React.FC<Props> = ({ label }) => {
         }
 
         const dateTime = new Date(event.target.value)
-
-        if (isNaN(dateTime.valueOf())) {
-            setError('Ugyldig tidspunkt')
-            return
-        }
-
         const hours = dateTime.getHours()
         const minutes = dateTime.getMinutes()
 
         setDate(dateTime)
         setTime(`${hours}:${minutes}`)
-        setError(null)
     }
+
+    const error = (() => {
+        const date = parseDate(dateTime)
+        if (isNaN(date.valueOf())) {
+            return 'Ugyldig tidspunkt'
+        } else {
+            return null
+        }
+    })()
 
     return (
         <>
