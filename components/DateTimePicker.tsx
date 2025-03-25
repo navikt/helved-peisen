@@ -126,15 +126,6 @@ export const DateTimePicker: React.FC<Props> = ({ label }) => {
                         </HStack>
                     </VStack>
                 </ModalBody>
-                <ModalFooter>
-                    <Button>Velg angitt tidspunkt</Button>
-                    <Button
-                        onClick={() => modalRef.current?.close()}
-                        variant="secondary"
-                    >
-                        Avbryt
-                    </Button>
-                </ModalFooter>
             </Modal>
         </>
     )
