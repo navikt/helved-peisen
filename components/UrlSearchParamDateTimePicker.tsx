@@ -1,7 +1,7 @@
 'use client'
 
 import clsx from 'clsx'
-import React, { useLayoutEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { DatePickerStandalone } from '@navikt/ds-react/DatePicker'
 import { Button, HStack, Modal, TextField, VStack } from '@navikt/ds-react'
 import { ModalBody } from '@navikt/ds-react/Modal'
@@ -10,8 +10,9 @@ import { format } from 'date-fns/format'
 import { parse } from 'date-fns/parse'
 
 import { useElementHeight } from '@/hooks/useElementHeight.ts'
+import { useUpdateSearchParams } from '@/hooks/useUpdateSearchParams.tsx'
 
-import styles from './DateTimePicker.module.css'
+import styles from './UrlSearchParamDateTimePicker.module.css'
 
 const FORMAT_STRING = 'dd.MM.yyyy, HH:mm'
 
@@ -23,6 +24,10 @@ const parseDate = (date: string): Date => {
     return parse(date, FORMAT_STRING, new Date())
 }
 
+const validDate = (date: string): boolean => {
+    return !isNaN(parseDate(date).valueOf())
+}
+
 const times = new Array(24)
     .fill(0)
     .map((it, i) => it + i)
@@ -30,9 +35,10 @@ const times = new Array(24)
 
 type Props = {
     label: string
+    searchParamName: string
 }
 
-export const DateTimePicker: React.FC<Props> = ({ label }) => {
+export const UrlSearchParamDateTimePicker: React.FC<Props> = ({ label, searchParamName }) => {
     const modalRef = useRef<HTMLDialogElement>(null)
     const [datePickerRef, datePickerHeight] = useElementHeight()
 
@@ -40,6 +46,8 @@ export const DateTimePicker: React.FC<Props> = ({ label }) => {
     const [time, setTime] = useState<string>(times[0])
 
     const [dateTime, setDateTime] = useState<string>('')
+
+    const updateSearchParams = useUpdateSearchParams(searchParamName)
 
     useLayoutEffect(() => {
         try {
@@ -71,14 +79,13 @@ export const DateTimePicker: React.FC<Props> = ({ label }) => {
         setTime(`${hours}:${minutes}`)
     }
 
-    const error = (() => {
-        const date = parseDate(dateTime)
-        if (isNaN(date.valueOf())) {
-            return 'Ugyldig tidspunkt'
-        } else {
-            return null
+    const error = validDate(dateTime) ? null : 'Ugyldig tidspunkt'
+
+    useEffect(() => {
+        if (validDate(dateTime)) {
+            updateSearchParams(parseDate(dateTime).toISOString())
         }
-    })()
+    }, [dateTime, updateSearchParams])
 
     return (
         <>
