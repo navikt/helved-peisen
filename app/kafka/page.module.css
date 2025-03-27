@@ -11,3 +11,7 @@
 .alert {
     height: max-content;
 }
+
+.filtere {
+    margin-bottom: var(--ax-space-20);
+}
