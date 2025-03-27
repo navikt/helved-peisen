@@ -69,7 +69,7 @@ export const useMessageMap = (messages: Message[]) => {
     const searchParams = useSearchParams()
 
     // Oppretter et map hvor nøkkel er tidspunktet for meldingene og verdien er meldingene som havner innenfor
-    // tidsspennet fom tidspunkt tom tidspunkt + increment (dag, time, minutt)
+    // tidsspennet hvor fom er tidspunkt og tom er tidspunkt + inkrement (dag, time, minutt)
     return useMemo(() => {
         const start = getStartDate(searchParams)
         const end = getEndDate(searchParams)

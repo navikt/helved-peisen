@@ -1,6 +1,7 @@
 import { checkApiToken, checkToken } from '@/lib/auth/token'
 import { Filtere } from '@/app/kafka/Filtere.tsx'
 import { MessagesChart } from '@/app/kafka/timeline/MessagesChart.tsx'
+import { MessagesTable } from '@/app/kafka/timeline/MessagesTable.tsx'
 
 import styles from './page.module.css'
 
@@ -12,6 +13,7 @@ export default async function KafkaOverview() {
         <section className={styles.page}>
             <Filtere className={styles.filtere} />
             <MessagesChart />
+            <MessagesTable />
         </section>
     )
 }

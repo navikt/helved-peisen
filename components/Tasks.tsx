@@ -5,7 +5,7 @@ import { Alert } from '@navikt/ds-react'
 import {
     TaskTable,
     TaskTableSkeleton,
-} from '@/components/taskTable/TaskTable.tsx'
+} from '@/app/scheduler/taskTable/TaskTable.tsx'
 import { Filtere } from '@/app/scheduler/Filtere.tsx'
 import { Footer, FooterSkeleton } from '@/components/Footer.tsx'
 import {

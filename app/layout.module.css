@@ -1,6 +1,5 @@
 .main {
     --main-height: calc(100dvh - 48px);
-    max-height: var(--main-height);
     min-height: var(--main-height);
     position: relative;
     display: flex;

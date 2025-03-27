@@ -7,13 +7,13 @@ import {
     TableHeaderCell,
     TableRow,
 } from '@navikt/ds-react/Table'
-import { formatDate } from '@/lib/date'
+import { formatDate } from '@/lib/date.ts'
 import { useStatusFilter } from '@/lib/hooks/useStatusFilter.ts'
-import { StatusBadge } from '@/components/StatusBadge'
-import { TaskTableRow } from '@/components/taskTable/TaskTableRow'
-import { RetryTaskButton } from '@/components/RetryTaskButton'
-import { StopTaskButton } from '@/components/StopTaskButton'
-import { ErrorTableRow } from '@/components/taskTable/ErrorTableRow'
+import { StatusBadge } from '@/components/StatusBadge.tsx'
+import { TaskTableRow } from '@/app/scheduler/taskTable/TaskTableRow.tsx'
+import { RetryTaskButton } from '@/components/RetryTaskButton.tsx'
+import { StopTaskButton } from '@/components/StopTaskButton.tsx'
+import { ErrorTableRow } from '@/app/scheduler/taskTable/ErrorTableRow.tsx'
 import { RetryMultipleTasksButton } from '@/components/RetryMultipleTasksButton.tsx'
 import { compareAsc } from 'date-fns'
 

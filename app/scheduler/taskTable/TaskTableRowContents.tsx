@@ -2,9 +2,9 @@
 
 import { Fragment } from 'react'
 import { Alert } from '@navikt/ds-react'
-import { StatusBadge } from '@/components/StatusBadge'
-import { Metadata } from '@/components/Metadata'
-import { formatDate } from '@/lib/date'
+import { StatusBadge } from '@/components/StatusBadge.tsx'
+import { Metadata } from '@/components/Metadata.tsx'
+import { formatDate } from '@/lib/date.ts'
 
 import styles from './TaskTableRowContents.module.css'
 

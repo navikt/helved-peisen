@@ -20,7 +20,7 @@ import styles from './MessagesChart.module.css'
 
 Chart.register(BarElement, BarController, CategoryScale, LinearScale)
 
-const messages: Record<string, Message[]> = {
+export const messages: Record<string, Message[]> = {
     'helved.oppdrag.v1': [
         {
             key: '1',

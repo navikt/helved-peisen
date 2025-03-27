@@ -1,0 +1,22 @@
+.container {
+  background: var(--ax-bg-sunken);
+  padding: var(--ax-space-16);
+  font-size: var(--ax-font-size-small);
+  color: var(--ax-warning-1000);
+}
+
+.key {
+  color: var(--ax-warning-1000);
+}
+
+.string {
+  color: var(--ax-success-900);
+}
+
+.number {
+  color: var(--ax-meta-purple-1000);
+}
+
+.nullish {
+  color: var(--ax-brand-blue-1000);
+}

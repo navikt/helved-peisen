@@ -4,7 +4,7 @@ import { useState } from 'react'
 import clsx from 'clsx'
 import { ExpandableRowProps } from '@navikt/ds-react'
 import { TableExpandableRow } from '@navikt/ds-react/Table'
-import { TaskTableRowContents } from '@/components/taskTable/TaskTableRowContents'
+import { TaskTableRowContents } from '@/app/scheduler/taskTable/TaskTableRowContents.tsx'
 import { fetchHistory, FetchHistoryResponse } from '@/lib/api/history.ts'
 
 import styles from './TaskTableRow.module.css'
