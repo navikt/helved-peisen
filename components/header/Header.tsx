@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { InternalHeader, Spacer, Tabs } from '@navikt/ds-react'
@@ -12,9 +12,8 @@ import styles from './Header.module.css'
 
 import logo from '@/public/logo.png'
 
-const logWelcomeMessage = () => {
-    console.log(
-        `%c
+console.log(
+    `%c
                                                         
  ██████   ███████╗ ██████╗  ██████╗  ███████╗ ███╗  ██╗ 
  ██╔══██╗ ██╔════╝   ██╔═╝ ██╔════╝  ██╔════╝ ████╗ ██║ %c
@@ -26,11 +25,10 @@ const logWelcomeMessage = () => {
  Github: https://github.com/navikt/helved-peisen        
                                                         
 `,
-        'color: #bc002a',
-        'color: #e75e01',
-        'color: #ffcb6f'
-    )
-}
+    'color: #bc002a',
+    'color: #e75e01',
+    'color: #ffcb6f',
+)
 
 export function Header() {
     const pathname = usePathname()
@@ -50,10 +48,6 @@ export function Header() {
     }
 
     const currentTab = pathname.includes('kafka') ? 'kafka' : 'scheduler'
-
-    useEffect(() => {
-        logWelcomeMessage()
-    }, [])
 
     return (
         <InternalHeader className={styles.header}>
