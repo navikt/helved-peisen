@@ -13,13 +13,13 @@ import type { Message } from '@/app/kafka/timeline/types'
 import { useMemo } from 'react'
 
 const getStartDate = (searchParams: ReadonlyURLSearchParams) => {
-    const start = searchParams.get('fom') ?? new Date().toISOString()
-    return new Date(start)
+    const start = searchParams.get('fom')
+    return start ? new Date(start) : null
 }
 
 const getEndDate = (searchParams: ReadonlyURLSearchParams) => {
-    const end = searchParams.get('tom') ?? new Date().toISOString()
-    return new Date(end)
+    const end = searchParams.get('tom')
+    return end ? new Date(end) : null
 }
 
 type Increment = 'days' | 'hours' | 'minutes'
@@ -73,6 +73,11 @@ export const useMessageMap = (messages: Message[]) => {
     return useMemo(() => {
         const start = getStartDate(searchParams)
         const end = getEndDate(searchParams)
+
+        if (!start || !end) {
+            return null
+        }
+
         const increment = getIncrement(start, end)
         const messageMap = getMessageMap(start, end, increment)
         const filteredMessages = messages.filter(

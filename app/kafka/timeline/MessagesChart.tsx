@@ -86,20 +86,21 @@ export const MessagesChart: React.FC<Props> = ({ className, ...rest }) => {
     })
 
     const data = useMemo(
-        () => ({
-            labels: Object.keys(messageMap).map((it) =>
-                format(it, 'yyyy-MM-dd, HH:mm')
-            ),
-            datasets: [
-                {
-                    data: Object.values(messageMap).map((it) => it.length),
-                    barPercentage: 1,
-                    categoryPercentage: 1,
-                    backgroundColor: colors.barColor,
-                    hoverBackgroundColor: colors.barHoverColor,
-                },
-            ],
-        }),
+        () =>
+            messageMap && {
+                labels: Object.keys(messageMap).map((it) =>
+                    format(it, 'yyyy-MM-dd, HH:mm')
+                ),
+                datasets: [
+                    {
+                        data: Object.values(messageMap).map((it) => it.length),
+                        barPercentage: 1,
+                        categoryPercentage: 1,
+                        backgroundColor: colors.barColor,
+                        hoverBackgroundColor: colors.barHoverColor,
+                    },
+                ],
+            },
         [messageMap, colors]
     )
 
@@ -148,6 +149,10 @@ export const MessagesChart: React.FC<Props> = ({ className, ...rest }) => {
                 .removeEventListener('change', updateColor)
         }
     }, [])
+
+    if (!data) {
+        return null
+    }
 
     return (
         <div className={clsx(styles.container, className)} {...rest}>
