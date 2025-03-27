@@ -8,6 +8,7 @@ import { ModalBody } from '@navikt/ds-react/Modal'
 import { CalendarIcon } from '@navikt/aksel-icons'
 import { format } from 'date-fns/format'
 import { parse } from 'date-fns/parse'
+import { useSearchParams } from 'next/navigation'
 
 import { useElementHeight } from '@/hooks/useElementHeight.ts'
 import { useUpdateSearchParams } from '@/hooks/useUpdateSearchParams.tsx'
@@ -28,6 +29,10 @@ const validDate = (date: string): boolean => {
     return !isNaN(parseDate(date).valueOf())
 }
 
+const equal = (a: string | null, b: string | null): boolean => {
+    return a === b || (!!a && parseDate(a).toISOString() === b)
+}
+
 const times = new Array(24)
     .fill(0)
     .map((it, i) => it + i)
@@ -36,20 +41,25 @@ const times = new Array(24)
 type Props = {
     label: string
     searchParamName: string
+    defaultDate?: Date
 }
 
-export const UrlSearchParamDateTimePicker: React.FC<Props> = ({ label, searchParamName }) => {
+export const UrlSearchParamDateTimePicker: React.FC<Props> = ({
+    label,
+    searchParamName,
+    defaultDate = new Date(),
+}) => {
     const modalRef = useRef<HTMLDialogElement>(null)
     const [datePickerRef, datePickerHeight] = useElementHeight()
 
-    const [date, setDate] = useState<Date>(new Date())
+    const [date, setDate] = useState<Date>(defaultDate)
     const [time, setTime] = useState<string>(times[0])
-
     const [dateTime, setDateTime] = useState<string>('')
 
     const updateSearchParams = useUpdateSearchParams(searchParamName)
 
     useLayoutEffect(() => {
+        // Opddater `dateTime` med verdiene til `date` og `time` etterhvert som de endres
         try {
             const newDate = new Date(date)
             const [hours, minutes] = time.split(':').map((it) => +it)
@@ -80,12 +90,14 @@ export const UrlSearchParamDateTimePicker: React.FC<Props> = ({ label, searchPar
     }
 
     const error = validDate(dateTime) ? null : 'Ugyldig tidspunkt'
+    const paramValue = useSearchParams().get(searchParamName)
 
     useEffect(() => {
-        if (validDate(dateTime)) {
+        // Oppdater search param med verdien av `dateTime`
+        if (validDate(dateTime) && !equal(dateTime, paramValue)) {
             updateSearchParams(parseDate(dateTime).toISOString())
         }
-    }, [dateTime, updateSearchParams])
+    }, [paramValue, dateTime, updateSearchParams, searchParamName])
 
     return (
         <>

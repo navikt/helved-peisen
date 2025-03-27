@@ -4,9 +4,10 @@ import clsx from 'clsx'
 import React from 'react'
 import { UrlSearchParamDateTimePicker } from '@/components/UrlSearchParamDateTimePicker.tsx'
 import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox'
+import { UrlSearchParamInput } from '@/components/UrlSearchParamInput.tsx'
+import { subDays } from 'date-fns'
 
 import styles from './Filtere.module.css'
-import { UrlSearchParamInput } from '@/components/UrlSearchParamInput.tsx'
 
 type Props = React.HTMLAttributes<HTMLDivElement>
 
@@ -31,8 +32,16 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => (
                 isMultiSelect
             />
             <UrlSearchParamInput label="Key" searchParamName="key" />
-            <UrlSearchParamDateTimePicker label="Fra og med" searchParamName="fom" />
-            <UrlSearchParamDateTimePicker label="Til og med" searchParamName="tom" />
+            <UrlSearchParamDateTimePicker
+                label="Fra og med"
+                searchParamName="fom"
+                defaultDate={subDays(new Date(), 7)}
+            />
+            <UrlSearchParamDateTimePicker
+                label="Til og med"
+                searchParamName="tom"
+                defaultDate={new Date()}
+            />
         </div>
     </div>
 )
