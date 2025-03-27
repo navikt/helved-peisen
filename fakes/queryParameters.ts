@@ -2,8 +2,12 @@ import type QueryString from 'qs'
 import type { Request } from 'express-serve-static-core'
 
 const parseStringQueryParam = (
-    value?: string | string[] | QueryString.ParsedQs | QueryString.ParsedQs[]
-): undefined | string[] => {
+    value?:
+        | string
+        | QueryString.ParsedQs
+        | (string | QueryString.ParsedQs)[]
+        | undefined
+): string[] | undefined => {
     if (typeof value === 'string') {
         return value.split(',')
     } else if (
