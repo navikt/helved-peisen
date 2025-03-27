@@ -12,25 +12,46 @@ import styles from './Header.module.css'
 
 import logo from '@/public/logo.png'
 
+const logWelcomeMessage = () => {
+    console.log(
+        `%c
+                                                        
+ ██████   ███████╗ ██████╗  ██████╗  ███████╗ ███╗  ██╗ 
+ ██╔══██╗ ██╔════╝   ██╔═╝ ██╔════╝  ██╔════╝ ████╗ ██║ %c
+ ██████╔╝ ██████╗    ██║   ╚██████╗  ██████╗  ██╔██╗██║ 
+ ██╔═══╝  ██╔═══╝    ██║    ╚════██╗ ██╔═══╝  ██║╚████║ %c
+ ██║      ███████╗ ██████╗  ██████╔╝ ███████╗ ██║ ╚███║ 
+ ╚═╝      ╚══════╝ ╚═════╝  ╚═════╝  ╚══════╝ ╚═╝  ╚══╝ 
+                                                        
+ Github: https://github.com/navikt/helved-peisen        
+                                                        
+`,
+        'color: #bc002a',
+        'color: #e75e01',
+        'color: #ffcb6f'
+    )
+}
+
 export function Header() {
     const pathname = usePathname()
     const router = useRouter()
 
     const onChangeTab = (value: string) => {
         switch (value) {
-            case "scheduler": {
+            case 'scheduler': {
                 router.push(`/scheduler`)
                 break
             }
-            case "kafka": {
+            case 'kafka': {
                 router.push(`/kafka`)
                 break
             }
         }
     }
 
-    const currentTab = pathname.includes("kafka")
-        ? "kafka" : "scheduler"
+    const currentTab = pathname.includes('kafka') ? 'kafka' : 'scheduler'
+
+    logWelcomeMessage()
 
     return (
         <InternalHeader className={styles.header}>
