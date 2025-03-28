@@ -58,8 +58,6 @@ export const MessagesChart: React.FC<Props> = ({
                 datasets: [
                     {
                         data: Object.values(messageMap).map((it) => it.length),
-                        barPercentage: 1,
-                        categoryPercentage: 1,
                         backgroundColor: colors.barColor,
                         hoverBackgroundColor: colors.barHoverColor,
                     },
@@ -94,9 +92,11 @@ export const MessagesChart: React.FC<Props> = ({
         const updateColor = () => {
             setColors({
                 labelColor: getCSSPropertyValue('--ax-text-neutral'),
-                barColor: getCSSPropertyValue('--ax-bg-accent-strong'),
+                barColor: getCSSPropertyValue(
+                    '--ax-warning-900'
+                ),
                 barHoverColor: getCSSPropertyValue(
-                    '--ax-bg-accent-strong-hover'
+                    '--ax-warning-1000'
                 ),
             })
         }

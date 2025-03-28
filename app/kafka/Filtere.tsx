@@ -5,7 +5,7 @@ import React from 'react'
 import { UrlSearchParamDateTimePicker } from '@/components/UrlSearchParamDateTimePicker.tsx'
 import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox'
 import { UrlSearchParamInput } from '@/components/UrlSearchParamInput.tsx'
-import { subDays } from 'date-fns'
+import { addDays, subDays } from 'date-fns'
 
 import styles from './Filtere.module.css'
 
@@ -35,12 +35,12 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => (
             <UrlSearchParamDateTimePicker
                 label="Fra og med"
                 searchParamName="fom"
-                defaultDate={subDays(new Date(), 7)}
+                defaultDate={subDays(new Date(), 30)}
             />
             <UrlSearchParamDateTimePicker
                 label="Til og med"
                 searchParamName="tom"
-                defaultDate={new Date()}
+                defaultDate={addDays(new Date(), 1)}
             />
         </div>
     </div>

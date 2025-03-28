@@ -8,7 +8,7 @@ import {
 } from '@navikt/ds-react/Table'
 
 import type { Message } from '@/app/kafka/types'
-import { MessageTableRow } from '@/app/kafka/MessageTableRow.tsx'
+import { MessageTableRow } from '@/app/kafka/table/MessageTableRow.tsx'
 
 import styles from './MessagesTable.module.css'
 
@@ -32,8 +32,8 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                 <TableHeader>
                     <TableRow>
                         <TableHeaderCell />
-                        <TableHeaderCell>Key</TableHeaderCell>
                         <TableHeaderCell>Topic</TableHeaderCell>
+                        <TableHeaderCell>Key</TableHeaderCell>
                         <TableHeaderCell>Timestamp</TableHeaderCell>
                     </TableRow>
                 </TableHeader>

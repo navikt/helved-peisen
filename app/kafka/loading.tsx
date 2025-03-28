@@ -1,6 +1,6 @@
 import styles from '@/app/kafka/page.module.css'
 import { Filtere } from '@/app/kafka/Filtere.tsx'
-import { MessagesTableSkeleton } from '@/app/kafka/MessagesTable.tsx'
+import { MessagesTableSkeleton } from '@/app/kafka/table/MessagesTable.tsx'
 
 export default function Loading() {
     return (

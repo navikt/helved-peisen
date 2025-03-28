@@ -1,8 +1,8 @@
 import { checkApiToken, checkToken } from '@/lib/auth/token'
 import { Filtere } from '@/app/kafka/Filtere.tsx'
 import { MessagesChart } from '@/app/kafka/chart/MessagesChart.tsx'
-import { MessagesTable } from '@/app/kafka/MessagesTable.tsx'
-import { getMessagesByTopic } from '@/app/kafka/getMessagesByTopic.ts'
+import { MessagesTable } from '@/app/kafka/table/MessagesTable.tsx'
+import { getMessagesByTopic } from '@/app/kafka/table/getMessagesByTopic.ts'
 
 import styles from './page.module.css'
 
@@ -15,7 +15,7 @@ export default async function KafkaOverview({ searchParams }: Props) {
     await checkApiToken()
 
     const params = await searchParams
-    const messages = await getMessagesByTopic()
+    const messages = await getMessagesByTopic(params)
 
     return (
         <section className={styles.page}>

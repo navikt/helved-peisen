@@ -18,6 +18,13 @@ function randomDate(dayRange: number) {
     return new Date(randomTime)
 }
 
+function randomDateBetween(start: Date, end: Date): Date {
+    const startTime = start.getTime()
+    const endTime = end.getTime()
+    const randomTime = startTime + Math.random() * (endTime - startTime)
+    return new Date(randomTime)
+}
+
 export const TestData = {
     oppdrag() {
         return {
@@ -25,27 +32,17 @@ export const TestData = {
             oppdrag110: {
                 kodeAksjon: '1',
                 kodeEndring: 'NY',
-                kodeStatus: null,
-                datoStatusFom: null,
                 kodeFagomraade: 'TILLST',
                 fagsystemId: '2412200956',
-                oppdragsId: null,
                 utbetFrekvens: 'MND',
-                datoForfall: null,
-                stonadId: null,
                 oppdragGjelderId: '15898099536',
                 datoOppdragGjelderFom: '1999-12-31T23:00:00.000+00:00',
                 saksbehId: 'A111111',
-                oppdragsStatus111S: null,
-                oppdragGjelder112S: null,
-                bilagstype113: null,
                 avstemming115: {
                     kodeKomponent: 'TILLST',
                     nokkelAvstemming: '2024-12-20-09.00.00.000000',
                     tidspktMelding: '2024-12-20-09.00.00.000000',
                 },
-                ompostering116: null,
-                avvent118: null,
                 oppdragsEnhet120S: [
                     {
                         typeEnhet: 'BOS',
@@ -53,84 +50,114 @@ export const TestData = {
                         datoEnhetFom: '1899-12-31T23:00:00.000+00:00',
                     },
                 ],
-                belopsGrense130S: null,
-                tekst140S: null,
                 oppdragsLinje150S: [
                     {
                         kodeEndringLinje: 'NY',
-                        kodeStatusLinje: null,
-                        datoStatusFom: null,
                         vedtakId: '2024-12-04',
                         delytelseId: '2412200956#1',
-                        linjeId: null,
                         kodeKlassifik: 'TSTBASISP4-OP',
-                        datoKlassifikFom: null,
                         datoVedtakFom: '2024-12-01T23:00:00.000+00:00',
                         datoVedtakTom: '2024-12-02T23:00:00.000+00:00',
                         sats: 500,
                         fradragTillegg: 'T',
                         typeSats: 'DAG',
-                        skyldnerId: null,
-                        datoSkyldnerFom: null,
-                        kravhaverId: null,
-                        datoKravhaverFom: null,
-                        kid: null,
-                        datoKidFom: null,
                         brukKjoreplan: 'N',
                         saksbehId: 'A111111',
                         utbetalesTilId: '15898099536',
-                        datoUtbetalesTilIdFom: null,
-                        kodeArbeidsgiver: null,
                         henvisning: '1',
-                        typeSoknad: null,
-                        refFagsystemId: null,
-                        refOppdragsId: null,
-                        refDelytelseId: null,
-                        refLinjeId: null,
-                        linjeStatus151S: null,
-                        klassifikasjon152S: null,
-                        skyldner153S: null,
-                        kid154S: null,
-                        utbetalesTil155S: null,
-                        refusjonsinfo156: null,
-                        vedtakssats157: null,
-                        linjeTekst158S: null,
-                        linjeEnhet160S: null,
-                        grad170S: null,
-                        attestant180S: [
-                            { attestantId: 'A111111', datoUgyldigFom: null },
-                        ],
-                        valuta190S: null,
+                        attestant180S: [{ attestantId: 'A111111' }],
                     },
                 ],
             },
-            hentOppdrag195: null,
-            simuleringsPeriode300: null,
-            simuleringsResultat301: null,
-            avstemming610: null,
         }
     },
-    message(overrides?: Partial<Message>): Message {
+    status() {
+        return {
+            status: 'OK', // OK, FEILET, MOTTATT, HOS_OPPDRAG
+            error: null, // { statusCode: number, msg: string, doc: string }
+        }
+    },
+    simulering() {
+        return {
+            oppsummeringer: [
+                {
+                    fom: randomDate(30),
+                    tom: randomDate(30),
+                    tidligereUtbetalt: 0,
+                    nyUtbetaling: 1234,
+                    totalEtterbetaling: 0,
+                    totalFeilutbetaling: 0,
+                },
+            ],
+            detaljer: {
+                gjelderId: '12345678910',
+                datoBeregnet: randomDate(30),
+                totalBeløp: 1234,
+                perioder: [
+                    {
+                        fom: randomDate(30),
+                        tom: randomDate(30),
+                        posteringer: [
+                            {
+                                fagområde: 'TILLST',
+                                sakId: 'ABC123',
+                                fom: randomDate(30),
+                                tom: randomDate(30),
+                                beløp: 1234,
+                                type: 'YTELSE',
+                                klassekode: 'YTEL',
+                            },
+                        ],
+                    },
+                ],
+            },
+        }
+    },
+    message(
+        overrides: Partial<Message> = {},
+        options: { fom: Date; tom: Date } = {
+            fom: subDays(new Date(), 30),
+            tom: new Date(),
+        }
+    ): Message {
         return {
             key: randomUUID(),
-            timestamp: new Date().toISOString(),
+            timestamp: randomDateBetween(
+                options.fom,
+                options.tom
+            ).toISOString(),
             data: '',
             ...overrides,
         }
     },
-    messages(size = Math.ceil(Math.random() * 100)): Message[] {
-        return new Array(size).fill(null).map((_) => this.message())
+    messages(
+        options: { size?: number; fom: Date; tom: Date } = {
+            size: Math.ceil(Math.random() * 100),
+            fom: subDays(new Date(), 30),
+            tom: new Date(),
+        },
+        type: 'status' | 'oppdrag' | 'simulering'
+    ): Message[] {
+        return new Array(options.size ?? Math.ceil(Math.random() * 20))
+            .fill(null)
+            .map((_) => {
+                const data = this[type]()
+                return this.message({ data: JSON.stringify(data) }, options)
+            })
     },
-    messagesByTopic(): Record<string, Message[]> {
+    messagesByTopic(options?: {
+        fom: Date
+        tom: Date
+    }): Record<string, Message[]> {
         return {
-            'helved.oppdrag.v1': this.messages(),
-            'helved.simuleringer.v1': this.messages(),
-            'helved.dryrun-aap.v1': this.messages(),
-            'helved.dryrun-ts.v1': this.messages(),
-            'helved.dryrun-tp.v1': this.messages(),
-            'helved.kvittering.v1': this.messages(),
-            'helved.status.v1': this.messages(),
-            'helved.kvittering-queue.v1': this.messages(),
+            'helved.oppdrag.v1': this.messages(options, 'oppdrag'),
+            'helved.simuleringer.v1': this.messages(options, 'simulering'),
+            'helved.dryrun-aap.v1': this.messages(options, 'simulering'),
+            'helved.dryrun-ts.v1': this.messages(options, 'simulering'),
+            'helved.dryrun-tp.v1': this.messages(options, 'simulering'),
+            'helved.kvittering.v1': this.messages(options, 'oppdrag'),
+            'helved.status.v1': this.messages(options, 'status'),
+            'helved.kvittering-queue.v1': this.messages(options, 'oppdrag'),
         }
     },
     taskStatus(): TaskStatus {

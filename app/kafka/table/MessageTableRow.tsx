@@ -33,8 +33,8 @@ export const MessageTableRow: React.FC<Props> = ({ message }) => {
         return (
             <TableRow>
                 <TableDataCell />
-                <TableDataCell>{message.key}</TableDataCell>
                 <TableDataCell>{message.topic}</TableDataCell>
+                <TableDataCell>{message.key}</TableDataCell>
                 <TableDataCell>{time}</TableDataCell>
             </TableRow>
         )
@@ -44,8 +44,8 @@ export const MessageTableRow: React.FC<Props> = ({ message }) => {
         <TableExpandableRow
             content={<MessageTableRowContents message={message} />}
         >
-            <TableDataCell>{message.key}</TableDataCell>
             <TableDataCell>{message.topic}</TableDataCell>
+            <TableDataCell>{message.key}</TableDataCell>
             <TableDataCell>{time}</TableDataCell>
         </TableExpandableRow>
     )
