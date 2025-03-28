@@ -1,4 +1,4 @@
-import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
+import { useMemo } from 'react'
 import {
     add,
     differenceInMinutes,
@@ -9,17 +9,18 @@ import {
     startOfHour,
     startOfMinute,
 } from 'date-fns'
-import type { Message } from '@/app/kafka/timeline/types'
-import { useMemo } from 'react'
+import { SearchParams } from 'next/dist/server/request/search-params'
 
-const getStartDate = (searchParams: ReadonlyURLSearchParams) => {
-    const start = searchParams.get('fom')
-    return start ? new Date(start) : null
+import type { Message } from '@/app/kafka/types'
+
+const getStartDate = (searchParams: SearchParams) => {
+    const start = searchParams['fom']
+    return typeof start === 'string' ? new Date(start) : null
 }
 
-const getEndDate = (searchParams: ReadonlyURLSearchParams) => {
-    const end = searchParams.get('tom')
-    return end ? new Date(end) : null
+const getEndDate = (searchParams: SearchParams) => {
+    const end = searchParams['tom']
+    return typeof end === 'string' ? new Date(end) : null
 }
 
 type Increment = 'days' | 'hours' | 'minutes'
@@ -65,9 +66,10 @@ const truncateDateToIncrement = (date: Date, increment: Increment) => {
     }
 }
 
-export const useMessageMap = (messages: Message[]) => {
-    const searchParams = useSearchParams()
-
+export const useMessageMap = (
+    searchParams: SearchParams,
+    messages: Message[]
+) => {
     // Oppretter et map hvor nøkkel er tidspunktet for meldingene og verdien er meldingene som havner innenfor
     // tidsspennet hvor fom er tidspunkt og tom er tidspunkt + inkrement (dag, time, minutt)
     return useMemo(() => {

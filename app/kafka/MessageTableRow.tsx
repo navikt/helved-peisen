@@ -1,5 +1,5 @@
 import React from 'react'
-import { Message } from '@/app/kafka/timeline/types'
+import { Message } from '@/app/kafka/types'
 import { JsonView } from '@/components/JsonView.tsx'
 import {
     TableDataCell,
@@ -9,7 +9,9 @@ import {
 import { formatDate } from 'date-fns'
 
 type Props = {
-    message: Message
+    message: Message & {
+        topic: string
+    }
 }
 
 const MessageTableRowContents: React.FC<Props> = ({ message }) => {
@@ -32,6 +34,7 @@ export const MessageTableRow: React.FC<Props> = ({ message }) => {
             <TableRow>
                 <TableDataCell />
                 <TableDataCell>{message.key}</TableDataCell>
+                <TableDataCell>{message.topic}</TableDataCell>
                 <TableDataCell>{time}</TableDataCell>
             </TableRow>
         )
@@ -42,6 +45,7 @@ export const MessageTableRow: React.FC<Props> = ({ message }) => {
             content={<MessageTableRowContents message={message} />}
         >
             <TableDataCell>{message.key}</TableDataCell>
+            <TableDataCell>{message.topic}</TableDataCell>
             <TableDataCell>{time}</TableDataCell>
         </TableExpandableRow>
     )

@@ -16,6 +16,16 @@ for (const task of TestData.tasks(85)) {
     taskHistory[task.id] = TestData.taskHistory(task.id)
 }
 
+/* KAFKA */
+
+app.get('/api/messages', async (req, res) => {
+    const messages = TestData.messages()
+    await sleep(100)
+    res.send(JSON.stringify(messages)).status(200)
+})
+
+/* TASKS */
+
 app.get('/api/tasks', async (req, res) => {
     const { page, pageSize, status, kind } = getTaskQueryParameters(req)
 

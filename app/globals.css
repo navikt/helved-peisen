@@ -36,3 +36,13 @@ p, h1, h2, h3, h4, h5, h6 {
   --semantic-color-interaction-primary: rgb(6, 0, 132);
   --semantic-color-interaction-disabled: rgb(127, 120, 127);
 }
+
+html {
+  background: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    background: #0e151f;
+  }
+}
