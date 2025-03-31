@@ -9,17 +9,17 @@ import {
     startOfHour,
     startOfMinute,
 } from 'date-fns'
-import { SearchParams } from 'next/dist/server/request/search-params'
 
 import type { Message } from '@/app/kafka/types'
+import { ReadonlyURLSearchParams } from 'next/navigation'
 
-const getStartDate = (searchParams: SearchParams) => {
-    const start = searchParams['fom']
+const getStartDate = (searchParams: ReadonlyURLSearchParams) => {
+    const start = searchParams.get('fom')
     return typeof start === 'string' ? new Date(start) : null
 }
 
-const getEndDate = (searchParams: SearchParams) => {
-    const end = searchParams['tom']
+const getEndDate = (searchParams: ReadonlyURLSearchParams) => {
+    const end = searchParams.get('tom')
     return typeof end === 'string' ? new Date(end) : null
 }
 
@@ -67,7 +67,7 @@ const truncateDateToIncrement = (date: Date, increment: Increment) => {
 }
 
 export const useMessageMap = (
-    searchParams: SearchParams,
+    searchParams: ReadonlyURLSearchParams,
     messages: Message[]
 ) => {
     // Oppretter et map hvor nøkkel er tidspunktet for meldingene og verdien er meldingene som havner innenfor

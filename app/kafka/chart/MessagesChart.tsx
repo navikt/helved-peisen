@@ -18,6 +18,7 @@ import { useMessageMap } from '@/app/kafka/chart/useMessageMap.ts'
 import type { Message } from '@/app/kafka/types'
 
 import styles from './MessagesChart.module.css'
+import { useSearchParams } from 'next/navigation'
 
 Chart.register(BarElement, BarController, CategoryScale, LinearScale)
 
@@ -28,16 +29,15 @@ const getCSSPropertyValue = (property: string) => {
 }
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
-    searchParams: SearchParams
     messages: Record<string, Message[]>
 }
 
 export const MessagesChart: React.FC<Props> = ({
     className,
-    searchParams,
     messages,
     ...rest
 }) => {
+    const searchParams = useSearchParams()
     const messageMap = useMessageMap(
         searchParams,
         Object.values(messages).flat()

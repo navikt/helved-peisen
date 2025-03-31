@@ -2,11 +2,11 @@
 
 import { TestData } from '@/fakes/testData.ts'
 
-export const getMessagesByTopic = async (params: SearchParams) => {
-    const fom = params.fom ? new Date(params.fom) : null
-    const tom = params.tom ? new Date(params.tom) : null
-    const topics = params.topics?.split(',')
-
+export const getMessagesByTopic = async (
+    fom?: Date,
+    tom?: Date,
+    topics?: string[]
+) => {
     const filteredByDates =
         fom && tom
             ? TestData.messagesByTopic({ fom, tom })
