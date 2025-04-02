@@ -2,10 +2,25 @@ import { randomUUID } from 'node:crypto'
 import { addDays, subDays } from 'date-fns'
 
 type Message = {
-    key: string
-    timestamp: string
-    data: string
+    version: string;
+    topic_name: string;
+    key: string;
+    value: string | null;
+    partition: number;
+    offset: number;
+    timestamp_ms: number;
+    stream_time_ms: number;
+    system_time_ms: number;
 }
+
+const Topics = {
+    oppdrag: 'helved.oppdrag.v1',
+    kvittering: 'helved.kvittering.v1',
+    simulering: 'helved.simuleringer.v1',
+    utbetalinger: 'helved.utbetalinger.v1',
+    saker: 'helved.saker.v1',
+    aap: 'helved.utbetalinger-aap.v1',
+} as const
 
 function randomDate(dayRange: number) {
     const today = new Date()
@@ -118,47 +133,63 @@ export const TestData = {
         options: { fom: Date; tom: Date } = {
             fom: subDays(new Date(), 30),
             tom: new Date(),
-        }
+        },
     ): Message {
         return {
+            version: 'v1',
+            topic_name: 'helved.oppdrag.v1',
             key: randomUUID(),
-            timestamp: randomDateBetween(
+            timestamp_ms: randomDateBetween(
                 options.fom,
-                options.tom
-            ).toISOString(),
-            data: '',
+                options.tom,
+            ).getTime(),
+            value: '',
+            partition: 1,
+            offset: 0,
+            stream_time_ms: randomDateBetween(
+                options.fom,
+                options.tom,
+            ).getTime(),
+            system_time_ms: randomDateBetween(
+                options.fom,
+                options.tom,
+            ).getTime(),
             ...overrides,
         }
     },
     messages(
+        topics: typeof Topics[keyof typeof Topics][] = [],
         options: { size?: number; fom: Date; tom: Date } = {
             size: Math.ceil(Math.random() * 100),
             fom: subDays(new Date(), 30),
             tom: new Date(),
-        },
-        type: 'status' | 'oppdrag' | 'simulering'
-    ): Message[] {
-        return new Array(options.size ?? Math.ceil(Math.random() * 20))
-            .fill(null)
-            .map((_) => {
-                const data = this[type]()
-                return this.message({ data: JSON.stringify(data) }, options)
-            })
-    },
-    messagesByTopic(options?: {
-        fom: Date
-        tom: Date
-    }): Record<string, Message[]> {
-        return {
-            'helved.oppdrag.v1': this.messages(options, 'oppdrag'),
-            'helved.simuleringer.v1': this.messages(options, 'simulering'),
-            'helved.dryrun-aap.v1': this.messages(options, 'simulering'),
-            'helved.dryrun-ts.v1': this.messages(options, 'simulering'),
-            'helved.dryrun-tp.v1': this.messages(options, 'simulering'),
-            'helved.kvittering.v1': this.messages(options, 'oppdrag'),
-            'helved.status.v1': this.messages(options, 'status'),
-            'helved.kvittering-queue.v1': this.messages(options, 'oppdrag'),
         }
+    ): Message[] {
+        const topicNames = topics.length === 0 ? Object.values(Topics) : topics
+        return topicNames.flatMap((topicName) => {
+                const numberOfMessages = options.size ? options.size / topicNames.length : Math.ceil(Math.random() * 50)
+                return new Array(numberOfMessages)
+                    .fill(null).map(
+                    () => {
+                        switch (topicName) {
+                            case 'helved.utbetalinger-aap.v1':
+                                return this.message({ value: JSON.stringify(TestData.oppdrag()) }, options)
+                            case 'helved.kvittering.v1':
+                                return this.message({ value: JSON.stringify(TestData.status()) }, options)
+                            case 'helved.oppdrag.v1':
+                                return this.message({ value: JSON.stringify(TestData.oppdrag()) }, options)
+                            case 'helved.utbetalinger.v1':
+                                return this.message({ value: JSON.stringify(TestData.oppdrag()) }, options)
+                            case 'helved.saker.v1':
+                                return this.message({ value: JSON.stringify(TestData.oppdrag()) }, options)
+                            case 'helved.simuleringer.v1':
+                                return this.message({ value: JSON.stringify(TestData.simulering()) }, options)
+                        }
+                    },
+                )
+
+            },
+        )
     },
     taskStatus(): TaskStatus {
         const random = Math.random()
@@ -186,7 +217,7 @@ export const TestData = {
     },
     task(
         status: TaskStatus = TestData.taskStatus(),
-        kind: TaskKind = TestData.taskKind()
+        kind: TaskKind = TestData.taskKind(),
     ): Task {
         return {
             id: randomUUID(),

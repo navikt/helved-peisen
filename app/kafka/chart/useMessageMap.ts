@@ -10,7 +10,7 @@ import {
     startOfMinute,
 } from 'date-fns'
 
-import type { Message } from '@/app/kafka/types'
+import type { Message } from '@/app/kafka/types.ts'
 import { ReadonlyURLSearchParams } from 'next/navigation'
 
 const getStartDate = (searchParams: ReadonlyURLSearchParams) => {
@@ -83,15 +83,15 @@ export const useMessageMap = (
         const increment = getIncrement(start, end)
         const messageMap = getMessageMap(start, end, increment)
         const filteredMessages = messages.filter(
-            ({ timestamp }) =>
-                isEqual(timestamp, end) ||
-                isEqual(timestamp, start) ||
-                (isBefore(timestamp, end) && isAfter(timestamp, start))
+            ({ timestamp_ms }) =>
+                isEqual(timestamp_ms, end) ||
+                isEqual(timestamp_ms, start) ||
+                (isBefore(timestamp_ms, end) && isAfter(timestamp_ms, start))
         )
 
         for (const message of filteredMessages) {
             const key = truncateDateToIncrement(
-                new Date(message.timestamp),
+                new Date(message.timestamp_ms),
                 increment
             ).toISOString()
 

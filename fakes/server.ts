@@ -17,9 +17,8 @@ for (const task of TestData.tasks(85)) {
 }
 
 /* KAFKA */
-
 app.get('/api/messages', async (req, res) => {
-    const messages = TestData.messagesByTopic()
+    const messages = TestData.messages()
     await sleep(100)
     res.send(JSON.stringify(messages)).status(200)
 })

@@ -7,7 +7,7 @@ import {
     TableRow,
 } from '@navikt/ds-react/Table'
 
-import type { Message } from '@/app/kafka/types'
+import type { Message } from '@/app/kafka/types.ts'
 import { MessageTableRow } from '@/app/kafka/table/MessageTableRow.tsx'
 
 import styles from './MessagesTable.module.css'
@@ -17,14 +17,9 @@ type Props = {
 }
 
 export const MessagesTable: React.FC<Props> = ({ messages }) => {
-    const sortedMessages = Object.entries(messages)
-        .map(([topic, messages]) => messages.map((it) => ({ ...it, topic })))
-        .flat()
-        .sort(
-            (a, b) =>
-                new Date(a.timestamp).getTime() -
-                new Date(b.timestamp).getTime()
-        )
+    const sortedMessages = Object.values(messages).flat().sort(
+        (a, b) => a.timestamp_ms - b.timestamp_ms,
+    )
 
     return (
         <div className={styles.container}>
@@ -35,6 +30,8 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                         <TableHeaderCell>Topic</TableHeaderCell>
                         <TableHeaderCell>Key</TableHeaderCell>
                         <TableHeaderCell>Timestamp</TableHeaderCell>
+                        <TableHeaderCell>Partition</TableHeaderCell>
+                        <TableHeaderCell>Offset</TableHeaderCell>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -56,6 +53,8 @@ export const MessagesTableSkeleton = () => {
                         <TableHeaderCell />
                         <TableHeaderCell>Key</TableHeaderCell>
                         <TableHeaderCell>Timestamp</TableHeaderCell>
+                        <TableHeaderCell>Partition</TableHeaderCell>
+                        <TableHeaderCell>Offset</TableHeaderCell>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
