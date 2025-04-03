@@ -1,14 +1,10 @@
-import { checkApiToken, checkToken } from '@/lib/auth/token'
+import { checkApiToken, checkToken } from '@/lib/auth/peisschtappernToken'
 import { Filtere } from '@/app/kafka/Filtere.tsx'
 import { MessagesView } from '@/app/kafka/MessagesView.tsx'
 
 import styles from './page.module.css'
 
-type Props = {
-    searchParams: Promise<SearchParams>
-}
-
-export default async function KafkaOverview({ searchParams }: Props) {
+export default async function KafkaOverview() {
     await checkToken()
     await checkApiToken()
 

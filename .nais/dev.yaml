@@ -28,6 +28,7 @@ spec:
     outbound:
       rules:
         - application: utsjekk
+        - application: peisschtappern
   env:
     - name: NEXT_PUBLIC_HOSTNAME
       value: https://peisen.intern.dev.nav.no
@@ -35,6 +36,10 @@ spec:
       value: api://dev-gcp.helved.utsjekk/.default
     - name: TASK_API_BASE_URL
       value: http://utsjekk
+    - name: PEISSCHTAPPERN_SCOPE
+      value: api://dev-gcp.helved.peisschtappern/.default
+    - name: KAFKA_API_BASE_URL
+      value: http://peisschtappern
   liveness:
     path: /internal/is-alive
     initialDelay: 10

@@ -1,4 +1,5 @@
 const taskApiBaseUrl = process.env.TASK_API_BASE_URL
+const kafkaApiBaseUrl = process.env.KAFKA_API_BASE_URL
 
 export const Routes = {
     internal: {
@@ -24,5 +25,6 @@ export const Routes = {
         history(id: string): string {
             return `${taskApiBaseUrl}/api/tasks/${id}/history`
         },
+        kafka: `${kafkaApiBaseUrl}/api`,
     },
 } as const
