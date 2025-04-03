@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM node:23-alpine
 WORKDIR /app
 ENV PORT=3000 \
     NODE_ENV=production
