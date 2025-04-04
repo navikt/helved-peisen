@@ -28,15 +28,21 @@ const getCachedMessages = (fom?: Date, tom?: Date) => {
     return cache[key]
 }
 
-const getMessages = async (searchParams: ReadonlyURLSearchParams) => {
+const getMessages = async (
+    searchParams: ReadonlyURLSearchParams
+): Promise<ApiResponse<Record<TopicName, Message[]>>> => {
     const messages = await fetchMessages(searchParams)
+
+    if (messages.error) {
+        return messages
+    }
 
     const entries = Object.values(Topics).map((topic) => [
         topic,
-        messages.filter((message) => topic === message.topic_name),
+        messages.data.filter((message) => topic === message.topic_name),
     ])
 
-    return Object.fromEntries(entries)
+    return { data: Object.fromEntries(entries), error: null }
 }
 
 const getTestMessages = async (searchParams: ReadonlyURLSearchParams) => {
@@ -51,7 +57,7 @@ const getTestMessages = async (searchParams: ReadonlyURLSearchParams) => {
 
     const cached = getCachedMessages(fomDate, tomDate)
     if (cached) {
-        return cached
+        return { data: cached, error: null }
     }
 
     const messages =
@@ -67,7 +73,7 @@ const getTestMessages = async (searchParams: ReadonlyURLSearchParams) => {
     const messageMap = Object.fromEntries(entries)
     saveMessages(messageMap, fomDate, tomDate)
 
-    return messageMap
+    return { data: messageMap, error: null }
 }
 
 const saveMessages = (
@@ -79,7 +85,9 @@ const saveMessages = (
     cache[key] = messages
 }
 
-export const getMessagesByTopic = async (searchParams: string) => {
+export const getMessagesByTopic = async (
+    searchParams: string
+): Promise<ApiResponse<Record<TopicName, Message[]>>> => {
     const params = new ReadonlyURLSearchParams(searchParams)
 
     if (process.env.NODE_ENV === 'production') {

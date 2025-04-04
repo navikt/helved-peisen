@@ -9,10 +9,14 @@ import {
 import { getMessagesByTopic } from '@/app/kafka/table/getMessagesByTopic.ts'
 import { useSearchParams } from 'next/navigation'
 import { Message } from './types.ts'
+import { Alert } from '@navikt/ds-react'
+import styles from '@/components/Tasks.module.css'
 
 export const MessagesView = () => {
     const searchParams = useSearchParams()
-    const [messages, setMessages] = useState<Record<string, Message[]>>({})
+    const [messages, setMessages] = useState<ApiResponse<
+        Record<string, Message[]>
+    > | null>(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -22,14 +26,22 @@ export const MessagesView = () => {
         })
     }, [searchParams])
 
-    if (loading) {
+    if (!messages || loading) {
         return <MessagesTableSkeleton />
+    }
+
+    if (messages.error) {
+        return (
+            <Alert className={styles.alert} variant="error" role="alert">
+                {messages.error.message}
+            </Alert>
+        )
     }
 
     return (
         <>
-            <MessagesChart messages={messages} />
-            <MessagesTable messages={messages} />
+            <MessagesChart messages={messages.data} />
+            <MessagesTable messages={messages.data} />
         </>
     )
 }

@@ -5,7 +5,7 @@ import { Message } from '@/app/kafka/types.ts'
 
 export const fetchMessages = async (
     searchParams: URLSearchParams
-): Promise<Message[]> => {
+): Promise<ApiResponse<Message[]>> => {
     const apiToken = await fetchApiToken()
     const response = await fetch(
         `${Routes.external.kafka}?${searchParams.toString()}`,
@@ -17,11 +17,20 @@ export const fetchMessages = async (
     )
 
     if (response.ok) {
-        return response.json()
+        return {
+            data: await response.json(),
+            error: null,
+        }
     } else {
         logger.error(
             `Klarte ikke hente Kafka data: ${response.status} - ${response.statusText}`
         )
-        return []
+        return {
+            data: null,
+            error: {
+                message: `Klarte ikke hente Kafka data: ${response.status} - ${response.statusText}`,
+                statusCode: response.status,
+            },
+        }
     }
 }

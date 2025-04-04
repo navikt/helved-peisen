@@ -2,15 +2,15 @@ import { randomUUID } from 'node:crypto'
 import { addDays, subDays } from 'date-fns'
 
 type Message = {
-    version: string;
-    topic_name: string;
-    key: string;
-    value: string | null;
-    partition: number;
-    offset: number;
-    timestamp_ms: number;
-    stream_time_ms: number;
-    system_time_ms: number;
+    version: string
+    topic_name: string
+    key: string
+    value: string | null
+    partition: number
+    offset: number
+    timestamp_ms: number
+    stream_time_ms: number
+    system_time_ms: number
 }
 
 const Topics = {
@@ -133,32 +133,29 @@ export const TestData = {
         options: { fom: Date; tom: Date } = {
             fom: subDays(new Date(), 30),
             tom: new Date(),
-        },
+        }
     ): Message {
         return {
             version: 'v1',
             topic_name: 'helved.oppdrag.v1',
             key: randomUUID(),
-            timestamp_ms: randomDateBetween(
-                options.fom,
-                options.tom,
-            ).getTime(),
+            timestamp_ms: randomDateBetween(options.fom, options.tom).getTime(),
             value: '',
             partition: 1,
             offset: 0,
             stream_time_ms: randomDateBetween(
                 options.fom,
-                options.tom,
+                options.tom
             ).getTime(),
             system_time_ms: randomDateBetween(
                 options.fom,
-                options.tom,
+                options.tom
             ).getTime(),
             ...overrides,
         }
     },
     messages(
-        topics: typeof Topics[keyof typeof Topics][] = [],
+        topics: (typeof Topics)[keyof typeof Topics][] = [],
         options: { size?: number; fom: Date; tom: Date } = {
             size: Math.ceil(Math.random() * 100),
             fom: subDays(new Date(), 30),
@@ -167,29 +164,45 @@ export const TestData = {
     ): Message[] {
         const topicNames = topics.length === 0 ? Object.values(Topics) : topics
         return topicNames.flatMap((topicName) => {
-                const numberOfMessages = options.size ? options.size / topicNames.length : Math.ceil(Math.random() * 50)
-                return new Array(numberOfMessages)
-                    .fill(null).map(
-                    () => {
-                        switch (topicName) {
-                            case 'helved.utbetalinger-aap.v1':
-                                return this.message({ value: JSON.stringify(TestData.oppdrag()) }, options)
-                            case 'helved.kvittering.v1':
-                                return this.message({ value: JSON.stringify(TestData.status()) }, options)
-                            case 'helved.oppdrag.v1':
-                                return this.message({ value: JSON.stringify(TestData.oppdrag()) }, options)
-                            case 'helved.utbetalinger.v1':
-                                return this.message({ value: JSON.stringify(TestData.oppdrag()) }, options)
-                            case 'helved.saker.v1':
-                                return this.message({ value: JSON.stringify(TestData.oppdrag()) }, options)
-                            case 'helved.simuleringer.v1':
-                                return this.message({ value: JSON.stringify(TestData.simulering()) }, options)
-                        }
-                    },
-                )
+            const numberOfMessages = options.size
+                ? Math.ceil(options.size / topicNames.length)
+                : Math.ceil(Math.random() * 50)
 
-            },
-        )
+            return new Array(numberOfMessages).fill(null).map(() => {
+                switch (topicName) {
+                    case 'helved.utbetalinger-aap.v1':
+                        return this.message(
+                            { value: JSON.stringify(TestData.oppdrag()) },
+                            options
+                        )
+                    case 'helved.kvittering.v1':
+                        return this.message(
+                            { value: JSON.stringify(TestData.status()) },
+                            options
+                        )
+                    case 'helved.oppdrag.v1':
+                        return this.message(
+                            { value: JSON.stringify(TestData.oppdrag()) },
+                            options
+                        )
+                    case 'helved.utbetalinger.v1':
+                        return this.message(
+                            { value: JSON.stringify(TestData.oppdrag()) },
+                            options
+                        )
+                    case 'helved.saker.v1':
+                        return this.message(
+                            { value: JSON.stringify(TestData.oppdrag()) },
+                            options
+                        )
+                    case 'helved.simuleringer.v1':
+                        return this.message(
+                            { value: JSON.stringify(TestData.simulering()) },
+                            options
+                        )
+                }
+            })
+        })
     },
     taskStatus(): TaskStatus {
         const random = Math.random()
@@ -217,7 +230,7 @@ export const TestData = {
     },
     task(
         status: TaskStatus = TestData.taskStatus(),
-        kind: TaskKind = TestData.taskKind(),
+        kind: TaskKind = TestData.taskKind()
     ): Task {
         return {
             id: randomUUID(),
