@@ -38,7 +38,7 @@ spec:
       value: http://utsjekk
     - name: PEISSCHTAPPERN_SCOPE
       value: api://dev-gcp.helved.peisschtappern/.default
-    - name: KAFKA_API_BASE_URL
+    - name: PEISSCHTAPPERN_API_BASE_URL
       value: http://peisschtappern
   liveness:
     path: /internal/is-alive
