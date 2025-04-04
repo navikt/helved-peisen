@@ -17,9 +17,9 @@ type Props = {
 }
 
 export const MessagesTable: React.FC<Props> = ({ messages }) => {
-    const sortedMessages = Object.values(messages).flat().sort(
-        (a, b) => a.timestamp_ms - b.timestamp_ms,
-    )
+    const sortedMessages = Object.values(messages)
+        .flat()
+        .sort((a, b) => a.timestamp_ms - b.timestamp_ms)
 
     return (
         <div className={styles.container}>
@@ -51,10 +51,12 @@ export const MessagesTableSkeleton = () => {
                 <TableHeader>
                     <TableRow>
                         <TableHeaderCell />
+                        <TableHeaderCell>Topic</TableHeaderCell>
                         <TableHeaderCell>Key</TableHeaderCell>
                         <TableHeaderCell>Timestamp</TableHeaderCell>
                         <TableHeaderCell>Partition</TableHeaderCell>
                         <TableHeaderCell>Offset</TableHeaderCell>
+                        <TableHeaderCell />
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -62,7 +64,7 @@ export const MessagesTableSkeleton = () => {
                         .fill(null)
                         .map((_, i) => (
                             <TableRow key={i}>
-                                <TableDataCell colSpan={3}>
+                                <TableDataCell colSpan={7}>
                                     <Skeleton height={33} />
                                 </TableDataCell>
                             </TableRow>
