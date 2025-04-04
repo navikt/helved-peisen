@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const apiToken = await fetchApiToken()
 
     return fetch(
-        `${process.env.KAFKA_API_BASE_URL}/api?${searchParams.toString()}`,
+        `${process.env.PEISSCHTAPPERN_API_BASE_URL}/api?${searchParams.toString()}`,
         {
             headers: {
                 Authorization: `Bearer ${apiToken}`,
