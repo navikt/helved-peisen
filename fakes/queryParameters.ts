@@ -1,7 +1,7 @@
 import type QueryString from 'qs'
 import type { Request } from 'express-serve-static-core'
 
-const parseStringQueryParam = (
+export const parseStringQueryParam = (
     value?:
         | string
         | QueryString.ParsedQs
