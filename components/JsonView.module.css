@@ -20,3 +20,7 @@
 .nullish {
   color: var(--ax-brand-blue-1000);
 }
+
+.boolean {
+  color: var(--ax-brand-magenta-1000);
+}

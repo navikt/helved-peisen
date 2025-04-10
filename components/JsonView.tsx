@@ -66,26 +66,28 @@ type JsonTypeViewProps = {
 }
 
 const JsonTypeView: React.FC<JsonTypeViewProps> = ({ json, indent }) => {
-    if (typeof json === 'object') {
-        if (json === null) {
-            return <span className={styles.nullish}>null</span>
+    switch (typeof json) {
+        case 'object': {
+            if (json === null) {
+                return <span className={styles.nullish}>null</span>
+            }
+            if (Array.isArray(json)) {
+                return <JsonArrayView json={json} indent={indent - 1} />
+            }
+            return <JsonObjectView json={json} indent={indent + 1} />
         }
-        if (Array.isArray(json)) {
-            return <JsonArrayView json={json} indent={indent - 1} />
+        case 'string': {
+            return <span className={styles.string}>&#34;{json}&#34;</span>
         }
-        return <JsonObjectView json={json} indent={indent + 1} />
-    }
-
-    if (typeof json === 'string') {
-        return <span className={styles.string}>&#34;{json}&#34;</span>
-    }
-
-    if (typeof json === 'number') {
-        return <span className={styles.number}>{json}</span>
-    }
-
-    if (typeof json === 'undefined') {
-        return <span className={styles.nullish}>undefined</span>
+        case 'number': {
+            return <span className={styles.number}>{json}</span>
+        }
+        case 'undefined': {
+            return <span className={styles.nullish}>undefined</span>
+        }
+        case 'boolean': {
+            return <span className={styles.boolean}>{json ? "true" : "false"}</span>
+        }
     }
 
     return null
