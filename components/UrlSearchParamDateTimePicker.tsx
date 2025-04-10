@@ -1,17 +1,13 @@
-'use client'
-
-import clsx from 'clsx'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import clsx from 'clsx'
 import { DatePickerStandalone } from '@navikt/ds-react/DatePicker'
 import { Button, HStack, Modal, TextField, VStack } from '@navikt/ds-react'
 import { ModalBody } from '@navikt/ds-react/Modal'
 import { CalendarIcon } from '@navikt/aksel-icons'
 import { format } from 'date-fns/format'
 import { parse } from 'date-fns/parse'
-import { useSearchParams } from 'next/navigation'
 
 import { useElementHeight } from '@/hooks/useElementHeight.ts'
-import { useUpdateSearchParams } from '@/hooks/useUpdateSearchParams.tsx'
 
 import styles from './UrlSearchParamDateTimePicker.module.css'
 
@@ -29,8 +25,8 @@ const validDate = (date: string): boolean => {
     return !isNaN(parseDate(date).valueOf())
 }
 
-const equal = (a: string | null, b: string | null): boolean => {
-    return a === b || (!!a && parseDate(a).toISOString() === b)
+const getTime = (date: Date): string => {
+    return `${date.getHours()}:${date.getMinutes()}`
 }
 
 const times = new Array(24)
@@ -38,35 +34,43 @@ const times = new Array(24)
     .map((it, i) => it + i)
     .flatMap((it) => [`${it}:00`, `${it}:30`])
 
+const isKeyboardEvent = (
+    event: React.SyntheticEvent
+): event is React.KeyboardEvent<HTMLInputElement> => {
+    return event.type === 'keydown'
+}
+
 type Props = {
     label: string
-    searchParamName: string
-    defaultDate?: Date
+    value: string
+    onUpdateValue: (value: string) => void
 }
 
 export const UrlSearchParamDateTimePicker: React.FC<Props> = ({
     label,
-    searchParamName,
-    defaultDate = new Date(),
+    value,
+    onUpdateValue,
 }) => {
     const modalRef = useRef<HTMLDialogElement>(null)
     const [datePickerRef, datePickerHeight] = useElementHeight()
 
-    const [date, setDate] = useState<Date>(defaultDate)
-    const [time, setTime] = useState<string>(times[0])
-    const [dateTime, setDateTime] = useState<string>('')
+    const parsedValue = new Date(value)
 
-    const updateSearchParams = useUpdateSearchParams(searchParamName)
+    const [date, setDate] = useState<Date>(parsedValue)
+    const [time, setTime] = useState<string>(getTime(parsedValue))
+    const [dateTime, setDateTime] = useState<string>(formatDate(parsedValue))
 
     useLayoutEffect(() => {
         // Opddater `dateTime` med verdiene til `date` og `time` etterhvert som de endres
         try {
-            const newDate = new Date(date)
-            const [hours, minutes] = time.split(':').map((it) => +it)
-            newDate.setHours(hours)
-            newDate.setMinutes(minutes)
+            if (date) {
+                const newDate = new Date(date)
+                const [hours, minutes] = time.split(':').map((it) => +it)
+                newDate.setHours(hours)
+                newDate.setMinutes(minutes)
 
-            setDateTime(formatDate(newDate))
+                setDateTime(formatDate(newDate))
+            }
         } catch (_) {
             // Bruker har skrevet inn ugyldig tidspunkt. Error vises bruker og vi trenger ikke gjøre noe mer her
         }
@@ -80,24 +84,30 @@ export const UrlSearchParamDateTimePicker: React.FC<Props> = ({
         if (event.target?.value) {
             setDateTime(event.target.value)
         }
+    }
 
-        const dateTime = new Date(event.target.value)
-        const hours = dateTime.getHours()
-        const minutes = dateTime.getMinutes()
+    const onSubmitDateTime = (event: React.SyntheticEvent) => {
+        if (isKeyboardEvent(event) && event.key !== 'Enter') {
+            return
+        }
 
-        setDate(dateTime)
+        const dt = parseDate(dateTime)
+        const hours = dt.getHours()
+        const minutes = dt.getMinutes()
+
+        setDate(dt)
         setTime(`${hours}:${minutes}`)
     }
 
-    const error = validDate(dateTime) ? null : 'Ugyldig tidspunkt'
-    const paramValue = useSearchParams().get(searchParamName)
-
     useEffect(() => {
-        // Oppdater search param med verdien av `dateTime`
-        if (validDate(dateTime) && !equal(dateTime, paramValue)) {
-            updateSearchParams(parseDate(dateTime).toISOString())
+        const parsedValue = parseDate(formatDate(new Date(value)))
+        const areEqual = parsedValue.getTime() === parseDate(dateTime).getTime()
+        if (!areEqual && validDate(dateTime)) {
+            onUpdateValue(parseDate(dateTime).toISOString())
         }
-    }, [paramValue, dateTime, updateSearchParams, searchParamName])
+    }, [value, dateTime, onUpdateValue])
+
+    const error = date && validDate(dateTime) ? null : 'Ugyldig tidspunkt'
 
     return (
         <>
@@ -107,6 +117,8 @@ export const UrlSearchParamDateTimePicker: React.FC<Props> = ({
                     className={styles.textField}
                     value={dateTime}
                     onChange={onChangeDateTime}
+                    onKeyDown={onSubmitDateTime}
+                    onBlur={onSubmitDateTime}
                     error={error}
                 />
                 <Button

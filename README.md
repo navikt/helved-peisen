@@ -7,6 +7,7 @@ Lag deg en `.env.local`-fil med følgende innhold:
 NEXT_PUBLIC_API_FAKING=enabled
 NEXT_PUBLIC_HOSTNAME=http://localhost:3000
 TASK_API_BASE_URL=http://localhost:8080
+PEISSCHTAPPERN_API_BASE_URL=http://localhost:8080
 ```
 
 Deretter kjører du appen med `npm run dev`. Da kjører appen på [http://localhost:3000](http://localhost:3000)  og henter data fra `utsjekk` som du må ha kjørende lokalt. 
