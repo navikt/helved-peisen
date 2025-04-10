@@ -29,7 +29,11 @@ const messages = TestData.messages([], {
     .sort((a, b) => a.topic_name.localeCompare(b.topic_name))
 
 for (let i = 1; i < messages.length; i++) {
-    messages[i].offset = messages[i - 1].offset + 1
+    if (messages[i].topic_name === messages[i - 1].topic_name) {
+        messages[i].offset = messages[i - 1].offset + 1
+    } else {
+        messages[i].offset = 1
+    }
 }
 
 function shuffleArray(array: any[]) {
