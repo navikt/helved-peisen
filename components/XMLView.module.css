@@ -1,0 +1,10 @@
+.container {
+    background: var(--ax-bg-sunken);
+    padding: var(--ax-space-16);
+    font-size: var(--ax-font-size-small);
+    color: var(--ax-warning-1000);
+}
+
+.value {
+    color: var(--ax-success-900);
+}
