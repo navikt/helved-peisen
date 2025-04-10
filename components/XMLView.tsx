@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react'
 
 import styles from './XMLView.module.css'
-import { Alert } from '@navikt/ds-react'
+import { Alert, CopyButton } from '@navikt/ds-react'
 
 const useParsedXML = (data: string): string | XMLDocument => {
     return useMemo(() => {
@@ -88,7 +88,9 @@ export const XMLView: React.FC<Props> = ({ data }) => {
     if (typeof parsedData === 'string') {
         return (
             <>
-                <Alert variant="warning">Klarte ikke parse XML. Viser rå melding nedenfor.</Alert>
+                <Alert variant="warning">
+                    Klarte ikke parse XML. Viser rå melding nedenfor.
+                </Alert>
                 <pre className={styles.container}>{parsedData}</pre>
             </>
         )
@@ -96,9 +98,14 @@ export const XMLView: React.FC<Props> = ({ data }) => {
 
     return (
         <pre className={styles.container}>
+            {data.split('\n')[0]}
+            {'\n'}
             {Array.from(parsedData.children).map((node, i) => (
                 <ParentNodeView key={i} node={node} indent={0} />
             ))}
+            <div className={styles.copyButtonContainer}>
+                <CopyButton size="small" copyText={data} text="Kopier" />
+            </div>
         </pre>
     )
 }

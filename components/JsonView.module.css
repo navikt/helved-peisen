@@ -1,4 +1,5 @@
 .container {
+  position: relative;
   background: var(--ax-bg-sunken);
   padding: var(--ax-space-16);
   font-size: var(--ax-font-size-small);
@@ -23,4 +24,10 @@
 
 .boolean {
   color: var(--ax-brand-magenta-1000);
+}
+
+.copyButtonContainer {
+  position: absolute;
+  top: var(--ax-space-16);
+  right: var(--ax-space-16);
 }
