@@ -19,14 +19,19 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => (
                 searchParamName="topics"
                 initialOptions={
                     [
+                        'helved.avstemming.v1',
                         'helved.oppdrag.v1',
-                        'helved.simuleringer.v1',
+                        'helved.oppdragsdata.v1',
                         'helved.dryrun-aap.v1',
                         'helved.dryrun-ts.v1',
                         'helved.dryrun-tp.v1',
+                        'helved.dryrun-dp.v1',
                         'helved.kvittering.v1',
+                        'helved.utbetalinger.v1',
+                        'helved.utbetalinger-aap.v1',
+                        'helved.saker.v1',
                         'helved.status.v1',
-                        'helved.kvittering-queue.v1',
+                        'helved.simuleringer.v1',
                     ] as const
                 }
                 isMultiSelect
