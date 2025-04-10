@@ -281,7 +281,7 @@ export const TestData = {
             timestamp_ms: randomDateBetween(options.fom, options.tom).getTime(),
             value: '',
             partition: 1,
-            offset: 0,
+            offset: 1,
             stream_time_ms: randomDateBetween(
                 options.fom,
                 options.tom

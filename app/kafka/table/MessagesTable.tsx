@@ -1,6 +1,10 @@
-import { Skeleton, Table } from '@navikt/ds-react'
+'use client'
+
+import { useState } from 'react'
+import { Skeleton, SortState, Table } from '@navikt/ds-react'
 import {
     TableBody,
+    TableColumnHeader,
     TableDataCell,
     TableHeader,
     TableHeaderCell,
@@ -12,26 +16,74 @@ import { MessageTableRow } from '@/app/kafka/table/MessageTableRow.tsx'
 
 import styles from './MessagesTable.module.css'
 
+const getNextDirection = (
+    direction: SortState['direction']
+): SortState['direction'] => {
+    return direction === 'descending'
+        ? 'ascending'
+        : direction === 'ascending'
+          ? 'none'
+          : 'descending'
+}
+
 type Props = {
     messages: Record<string, Message[]>
 }
 
 export const MessagesTable: React.FC<Props> = ({ messages }) => {
+    const [sortState, setSortState] = useState<SortState | undefined>({
+        orderBy: 'timestamp_ms',
+        direction: 'descending',
+    })
+
     const sortedMessages = Object.values(messages)
         .flat()
-        .sort((a, b) => b.timestamp_ms - a.timestamp_ms)
+        .sort((a, b) =>
+            sortState
+                ? sortState.direction === 'ascending'
+                    ? // @ts-ignore TODO
+                      +a[sortState.orderBy] - +b[sortState.orderBy]
+                    : // @ts-ignore TODO
+                      +b[sortState.orderBy] - +a[sortState.orderBy]
+                : 0
+        )
+
+    const updateSortState = (key: string) => {
+        setSortState((sort) => {
+            if (!sort || sort.orderBy !== key) {
+                return { orderBy: key, direction: 'descending' }
+            }
+
+            const direction = getNextDirection(sort.direction)
+
+            return direction === 'none'
+                ? undefined
+                : {
+                      orderBy: key,
+                      direction: direction,
+                  }
+        })
+    }
 
     return (
         <div className={styles.container}>
-            <Table className={styles.table}>
+            <Table
+                className={styles.table}
+                sort={sortState}
+                onSortChange={updateSortState}
+            >
                 <TableHeader>
                     <TableRow>
                         <TableHeaderCell />
                         <TableHeaderCell>Topic</TableHeaderCell>
                         <TableHeaderCell>Key</TableHeaderCell>
-                        <TableHeaderCell>Timestamp</TableHeaderCell>
+                        <TableColumnHeader sortKey="timestamp_ms" sortable>
+                            Timestamp
+                        </TableColumnHeader>
                         <TableHeaderCell>Partition</TableHeaderCell>
-                        <TableHeaderCell>Offset</TableHeaderCell>
+                        <TableColumnHeader sortKey="offset" sortable>
+                            Offset
+                        </TableColumnHeader>
                     </TableRow>
                 </TableHeader>
                 <TableBody>

@@ -26,6 +26,22 @@ const messages = TestData.messages([], {
     fom: subDays(new Date(), 30),
     tom: new Date(),
 })
+    .sort((a, b) => a.topic_name.localeCompare(b.topic_name))
+
+for (let i = 1; i < messages.length; i++) {
+    messages[i].offset = messages[i - 1].offset + 1
+}
+
+function shuffleArray(array: any[]) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = array[i]
+        array[i] = array[j]
+        array[j] = temp;
+    }
+}
+
+shuffleArray(messages)
 
 /* KAFKA */
 app.get('/api', async (req, res) => {
