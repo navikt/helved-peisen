@@ -19,7 +19,7 @@ type Props = {
 export const MessagesTable: React.FC<Props> = ({ messages }) => {
     const sortedMessages = Object.values(messages)
         .flat()
-        .sort((a, b) => a.timestamp_ms - b.timestamp_ms)
+        .sort((a, b) => b.timestamp_ms - a.timestamp_ms)
 
     return (
         <div className={styles.container}>
