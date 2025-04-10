@@ -14,12 +14,19 @@ type Message = {
 }
 
 const Topics = {
+    avstemming: 'helved.avstemming.v1',
     oppdrag: 'helved.oppdrag.v1',
+    oppdragsdata: 'helved.oppdragsdata.v1',
+    dryRunAAP: 'helved.dryrun-aap.v1',
+    dryRunTilleggsstønader: 'helved.dryrun-ts.v1',
+    dryRunTiltakspenger: 'helved.dryrun-tp.v1',
+    dryRunDagpenger: 'helved.dryrun-dp.v1',
     kvittering: 'helved.kvittering.v1',
-    simulering: 'helved.simuleringer.v1',
     utbetalinger: 'helved.utbetalinger.v1',
+    utbetalingerAAP: 'helved.utbetalinger-aap.v1',
     saker: 'helved.saker.v1',
-    aap: 'helved.utbetalinger-aap.v1',
+    status: 'helved.status.v1',
+    simuleringer: 'helved.simuleringer.v1',
 } as const
 
 function randomDate(dayRange: number) {
@@ -41,55 +48,160 @@ function randomDateBetween(start: Date, end: Date): Date {
 }
 
 export const TestData = {
+    avstemming() {
+        return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:avstemmingsdata xmlns:ns2="http://nav.no/virksomhet/tjenester/avstemming/meldinger/v1">
+    <aksjon>
+        <aksjonType>AVSL</aksjonType>
+        <kildeType>AVLEV</kildeType>
+        <avstemmingType>GRSN</avstemmingType>
+        <avleverendeKomponentKode>TILTPENG</avleverendeKomponentKode>
+        <mottakendeKomponentKode>OS</mottakendeKomponentKode>
+        <underkomponentKode>TILTPENG</underkomponentKode>
+        <nokkelFom>2025-04-09-00</nokkelFom>
+        <nokkelTom>2025-04-09-00</nokkelTom>
+        <avleverendeAvstemmingId>vh1jac8-TSaZ2cZZuwmRsQ</avleverendeAvstemmingId>
+        <brukerId>TILTPENG</brukerId>
+    </aksjon>
+</ns2:avstemmingsdata>`
+    },
     oppdrag() {
+        return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:oppdrag xmlns:ns2="http://www.trygdeetaten.no/skjema/oppdrag">
+    <mmel>
+        <systemId>231-OPPD</systemId>
+        <alvorlighetsgrad>00</alvorlighetsgrad>
+    </mmel>
+    <oppdrag-110>
+        <kodeAksjon>1</kodeAksjon>
+        <kodeEndring>ENDR</kodeEndring>
+        <kodeFagomraade>TILTPENG</kodeFagomraade>
+        <fagsystemId>202503271001</fagsystemId>
+        <utbetFrekvens>MND</utbetFrekvens>
+        <oppdragGjelderId>14439535912</oppdragGjelderId>
+        <datoOppdragGjelderFom>2000-01-01+01:00</datoOppdragGjelderFom>
+        <saksbehId>Z990123</saksbehId>
+        <avstemming-115>
+            <kodeKomponent>TILTPENG</kodeKomponent>
+            <nokkelAvstemming>2025-04-10-11.00.00.000000</nokkelAvstemming>
+            <tidspktMelding>2025-04-10-11.00.00.000000</tidspktMelding>
+        </avstemming-115>
+        <oppdrags-enhet-120>
+            <typeEnhet>BOS</typeEnhet>
+            <enhet>0321</enhet>
+            <datoEnhetFom>1970-01-01+01:00</datoEnhetFom>
+        </oppdrags-enhet-120>
+        <oppdrags-enhet-120>
+            <typeEnhet>BEH</typeEnhet>
+            <enhet>8020</enhet>
+            <datoEnhetFom>1970-01-01+01:00</datoEnhetFom>
+        </oppdrags-enhet-120>
+        <oppdrags-linje-150>
+            <kodeEndringLinje>NY</kodeEndringLinje>
+            <vedtakId>2025-04-10</vedtakId>
+            <delytelseId>202503271001#16</delytelseId>
+            <kodeKlassifik>TPTPAFT</kodeKlassifik>
+            <datoVedtakFom>2025-01-27+01:00</datoVedtakFom>
+            <datoVedtakTom>2025-01-29+01:00</datoVedtakTom>
+            <sats>298</sats>
+            <fradragTillegg>T</fradragTillegg>
+            <typeSats>DAG7</typeSats>
+            <brukKjoreplan>N</brukKjoreplan>
+            <saksbehId>Z990123</saksbehId>
+            <utbetalesTilId>14439535912</utbetalesTilId>
+            <henvisning>22SK08N2GB3GQ7E</henvisning>
+            <refFagsystemId>202503271001</refFagsystemId>
+            <refDelytelseId>202503271001#12</refDelytelseId>
+            <attestant-180>
+                <attestantId>Z994127</attestantId>
+            </attestant-180>
+        </oppdrags-linje-150>
+        <oppdrags-linje-150>
+            <kodeEndringLinje>NY</kodeEndringLinje>
+            <vedtakId>2025-04-10</vedtakId>
+            <delytelseId>202503271001#17</delytelseId>
+            <kodeKlassifik>TPTPAFT</kodeKlassifik>
+            <datoVedtakFom>2025-01-30+01:00</datoVedtakFom>
+            <datoVedtakTom>2025-01-30+01:00</datoVedtakTom>
+            <sats>224</sats>
+            <fradragTillegg>T</fradragTillegg>
+            <typeSats>DAG7</typeSats>
+            <brukKjoreplan>N</brukKjoreplan>
+            <saksbehId>Z990123</saksbehId>
+            <utbetalesTilId>14439535912</utbetalesTilId>
+            <henvisning>22SK08N2GB3GQ7E</henvisning>
+            <refFagsystemId>202503271001</refFagsystemId>
+            <refDelytelseId>202503271001#16</refDelytelseId>
+            <attestant-180>
+                <attestantId>Z994127</attestantId>
+            </attestant-180>
+        </oppdrags-linje-150>
+        <oppdrags-linje-150>
+            <kodeEndringLinje>NY</kodeEndringLinje>
+            <vedtakId>2025-04-10</vedtakId>
+            <delytelseId>202503271001#18</delytelseId>
+            <kodeKlassifik>TPBTAF</kodeKlassifik>
+            <datoVedtakFom>2025-01-27+01:00</datoVedtakFom>
+            <datoVedtakTom>2025-01-29+01:00</datoVedtakTom>
+            <sats>110</sats>
+            <fradragTillegg>T</fradragTillegg>
+            <typeSats>DAG7</typeSats>
+            <brukKjoreplan>N</brukKjoreplan>
+            <saksbehId>Z990123</saksbehId>
+            <utbetalesTilId>14439535912</utbetalesTilId>
+            <henvisning>22SK08N2GB3GQ7E</henvisning>
+            <refFagsystemId>202503271001</refFagsystemId>
+            <refDelytelseId>202503271001#15</refDelytelseId>
+            <attestant-180>
+                <attestantId>Z994127</attestantId>
+            </attestant-180>
+        </oppdrags-linje-150>
+        <oppdrags-linje-150>
+            <kodeEndringLinje>NY</kodeEndringLinje>
+            <vedtakId>2025-04-10</vedtakId>
+            <delytelseId>202503271001#19</delytelseId>
+            <kodeKlassifik>TPBTAF</kodeKlassifik>
+            <datoVedtakFom>2025-01-30+01:00</datoVedtakFom>
+            <datoVedtakTom>2025-01-30+01:00</datoVedtakTom>
+            <sats>82</sats>
+            <fradragTillegg>T</fradragTillegg>
+            <typeSats>DAG7</typeSats>
+            <brukKjoreplan>N</brukKjoreplan>
+            <saksbehId>Z990123</saksbehId>
+            <utbetalesTilId>14439535912</utbetalesTilId>
+            <henvisning>22SK08N2GB3GQ7E</henvisning>
+            <refFagsystemId>202503271001</refFagsystemId>
+            <refDelytelseId>202503271001#18</refDelytelseId>
+            <attestant-180>
+                <attestantId>Z994127</attestantId>
+            </attestant-180>
+        </oppdrags-linje-150>
+    </oppdrag-110>
+</ns2:oppdrag>`
+    },
+    saker() {
         return {
-            mmel: null,
-            oppdrag110: {
-                kodeAksjon: '1',
-                kodeEndring: 'NY',
-                kodeFagomraade: 'TILLST',
-                fagsystemId: '2412200956',
-                utbetFrekvens: 'MND',
-                oppdragGjelderId: '15898099536',
-                datoOppdragGjelderFom: '1999-12-31T23:00:00.000+00:00',
-                saksbehId: 'A111111',
-                avstemming115: {
-                    kodeKomponent: 'TILLST',
-                    nokkelAvstemming: '2024-12-20-09.00.00.000000',
-                    tidspktMelding: '2024-12-20-09.00.00.000000',
-                },
-                oppdragsEnhet120S: [
-                    {
-                        typeEnhet: 'BOS',
-                        enhet: '8020',
-                        datoEnhetFom: '1899-12-31T23:00:00.000+00:00',
-                    },
-                ],
-                oppdragsLinje150S: [
-                    {
-                        kodeEndringLinje: 'NY',
-                        vedtakId: '2024-12-04',
-                        delytelseId: '2412200956#1',
-                        kodeKlassifik: 'TSTBASISP4-OP',
-                        datoVedtakFom: '2024-12-01T23:00:00.000+00:00',
-                        datoVedtakTom: '2024-12-02T23:00:00.000+00:00',
-                        sats: 500,
-                        fradragTillegg: 'T',
-                        typeSats: 'DAG',
-                        brukKjoreplan: 'N',
-                        saksbehId: 'A111111',
-                        utbetalesTilId: '15898099536',
-                        henvisning: '1',
-                        attestant180S: [{ attestantId: 'A111111' }],
-                    },
-                ],
-            },
+            uids: ['fe60902b-d63d-413a-9aa0-a42a21cda1a9'],
         }
     },
     status() {
         return {
             status: 'OK', // OK, FEILET, MOTTATT, HOS_OPPDRAG
             error: null, // { statusCode: number, msg: string, doc: string }
+        }
+    },
+    oppdragsdata() {
+        return {
+            fagsystem: 'TILTAKSPENGER',
+            personident: '14439535912',
+            sakId: '202503271001',
+            avstemmingsdag: '2025-04-10',
+            totalBeløpAllePerioder: 714,
+            kvittering: {
+                kode: null,
+                alvorlighetsgrad: '00',
+                melding: null,
+            },
         }
     },
     simulering() {
@@ -128,8 +240,35 @@ export const TestData = {
             },
         }
     },
+    utbetaling() {
+        return {
+            simulate: false,
+            uid: 'fe60902b-d63d-413a-9aa0-a42a21cda1a9',
+            action: 'CREATE',
+            førsteUtbetalingPåSak: true,
+            sakId: 'JNC250317014554',
+            behandlingId: '1',
+            lastPeriodeId: '7fa994f2-332f-4c14-9117-214fc262223f',
+            personident: '10917097025',
+            vedtakstidspunkt: '2025-03-17T00:45:54',
+            stønad: 'AAP_UNDER_ARBEIDSAVKLARING',
+            beslutterId: 'Z888888',
+            saksbehandlerId: 'Z999999',
+            periodetype: 'UKEDAG',
+            perioder: [
+                {
+                    fom: '2025-01-01',
+                    tom: '2025-01-03',
+                    beløp: 200,
+                    betalendeEnhet: null,
+                    fastsattDagsats: 200,
+                },
+            ],
+        }
+    },
     message(
         overrides: Partial<Message> = {},
+        topic_name: string = 'helved.oppprag.v1',
         options: { fom: Date; tom: Date } = {
             fom: subDays(new Date(), 30),
             tom: new Date(),
@@ -137,7 +276,7 @@ export const TestData = {
     ): Message {
         return {
             version: 'v1',
-            topic_name: 'helved.oppdrag.v1',
+            topic_name: topic_name,
             key: randomUUID(),
             timestamp_ms: randomDateBetween(options.fom, options.tom).getTime(),
             value: '',
@@ -170,34 +309,82 @@ export const TestData = {
 
             return new Array(numberOfMessages).fill(null).map(() => {
                 switch (topicName) {
-                    case 'helved.utbetalinger-aap.v1':
+                    case 'helved.avstemming.v1':
+                        return this.message(
+                            { value: JSON.stringify(TestData.avstemming()) },
+                            topicName,
+                            options
+                        )
+                    case 'helved.oppdragsdata.v1':
+                        return this.message(
+                            { value: JSON.stringify(TestData.oppdragsdata()) },
+                            topicName,
+                            options
+                        )
+                    case 'helved.dryrun-aap.v1':
                         return this.message(
                             { value: JSON.stringify(TestData.oppdrag()) },
+                            topicName,
+                            options
+                        )
+                    case 'helved.dryrun-ts.v1':
+                        return this.message(
+                            { value: JSON.stringify(TestData.oppdrag()) },
+                            topicName,
+                            options
+                        )
+                    case 'helved.dryrun-tp.v1':
+                        return this.message(
+                            { value: JSON.stringify(TestData.oppdrag()) },
+                            topicName,
+                            options
+                        )
+                    case 'helved.dryrun-dp.v1':
+                        return this.message(
+                            { value: JSON.stringify(TestData.oppdrag()) },
+                            topicName,
+                            options
+                        )
+                    case 'helved.status.v1':
+                        return this.message(
+                            { value: JSON.stringify(TestData.status()) },
+                            topicName,
+                            options
+                        )
+                    case 'helved.utbetalinger-aap.v1':
+                        return this.message(
+                            { value: JSON.stringify(TestData.utbetaling()) },
+                            topicName,
                             options
                         )
                     case 'helved.kvittering.v1':
                         return this.message(
                             { value: JSON.stringify(TestData.status()) },
+                            topicName,
                             options
                         )
                     case 'helved.oppdrag.v1':
                         return this.message(
                             { value: JSON.stringify(TestData.oppdrag()) },
+                            topicName,
                             options
                         )
                     case 'helved.utbetalinger.v1':
                         return this.message(
-                            { value: JSON.stringify(TestData.oppdrag()) },
+                            { value: JSON.stringify(TestData.utbetaling()) },
+                            topicName,
                             options
                         )
                     case 'helved.saker.v1':
                         return this.message(
-                            { value: JSON.stringify(TestData.oppdrag()) },
+                            { value: JSON.stringify(TestData.saker()) },
+                            topicName,
                             options
                         )
                     case 'helved.simuleringer.v1':
                         return this.message(
                             { value: JSON.stringify(TestData.simulering()) },
+                            topicName,
                             options
                         )
                 }
