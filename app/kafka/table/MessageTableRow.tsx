@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Message } from '@/app/kafka/types.ts'
+import { Message, TopicName } from '@/app/kafka/types.ts'
 import { JsonView } from '@/components/JsonView.tsx'
 import {
     TableDataCell,
@@ -10,6 +10,7 @@ import {
 } from '@navikt/ds-react/Table'
 import { formatDate } from 'date-fns'
 import { XMLView } from '@/components/XMLView.tsx'
+import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
 
 type Props = {
     message: Message
@@ -24,9 +25,11 @@ const MessageTableRowContents: React.FC<Props> = ({ message }) => {
         }
     })()
 
-    return typeof data === 'string'
-        ? <XMLView data={data} />
-        : <JsonView json={data} />
+    return typeof data === 'string' ? (
+        <XMLView data={data} />
+    ) : (
+        <JsonView json={data} />
+    )
 }
 
 const ExpandableMessageTableRow: React.FC<Props> = ({ message }) => {
@@ -39,7 +42,9 @@ const ExpandableMessageTableRow: React.FC<Props> = ({ message }) => {
             onOpenChange={setOpen}
             content={open && <MessageTableRowContents message={message} />}
         >
-            <TableDataCell>{message.topic_name}</TableDataCell>
+            <TableDataCell>
+                <TopicNameTag name={message.topic_name as TopicName} />
+            </TableDataCell>
             <TableDataCell>{message.key}</TableDataCell>
             <TableDataCell>{time}</TableDataCell>
             <TableDataCell>{message.partition}</TableDataCell>
@@ -59,7 +64,9 @@ export const MessageTableRow: React.FC<Props> = ({ message }) => {
         return (
             <TableRow>
                 <TableDataCell />
-                <TableDataCell>{message.topic_name}</TableDataCell>
+                <TableDataCell>
+                    <TopicNameTag name={message.topic_name as TopicName} />
+                </TableDataCell>
                 <TableDataCell>{message.key}</TableDataCell>
                 <TableDataCell>{time}</TableDataCell>
                 <TableDataCell>{message.partition}</TableDataCell>
