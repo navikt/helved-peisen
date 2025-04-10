@@ -6,6 +6,7 @@ import {
 } from './queryParameters.ts'
 import { sleep } from './util.ts'
 import { Topics } from '../app/kafka/types.ts'
+import { subDays } from 'date-fns'
 
 const app = express()
 const port = 8080
@@ -20,7 +21,11 @@ for (const task of TestData.tasks(85)) {
     taskHistory[task.id] = TestData.taskHistory(task.id)
 }
 
-const messages = TestData.messages()
+const messages = TestData.messages([], {
+    size: 10_000,
+    fom: subDays(new Date(), 30),
+    tom: new Date(),
+})
 
 /* KAFKA */
 app.get('/api', async (req, res) => {
@@ -28,16 +33,19 @@ app.get('/api', async (req, res) => {
     const tom = typeof req.query.tom === 'string' ? req.query.tom : undefined
     const topics =
         parseStringQueryParam(req.query.topics) ?? Object.values(Topics)
+    const limit = req.query.limit ? +req.query.limit : 1000
 
     const fomDate = fom ? new Date(fom).getTime() : 0
     const tomDate = tom ? new Date(tom).getTime() : Number.MAX_SAFE_INTEGER
 
-    const filteredMessages = messages.filter(
-        (it) =>
-            it.timestamp_ms >= fomDate &&
-            it.timestamp_ms <= tomDate &&
-            topics.includes(it.topic_name)
-    )
+    const filteredMessages = messages
+        .filter(
+            (it) =>
+                it.timestamp_ms >= fomDate &&
+                it.timestamp_ms <= tomDate &&
+                topics.includes(it.topic_name)
+        )
+        .slice(0, limit)
 
     await sleep(100)
     res.send(JSON.stringify(filteredMessages)).status(200)

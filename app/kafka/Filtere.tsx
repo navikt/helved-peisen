@@ -2,11 +2,6 @@
 
 import clsx from 'clsx'
 import React, { useCallback, useEffect, useReducer } from 'react'
-import { UrlSearchParamDateTimePicker } from '@/components/UrlSearchParamDateTimePicker.tsx'
-import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox'
-import { UrlSearchParamInput } from '@/components/UrlSearchParamInput.tsx'
-
-import styles from './Filtere.module.css'
 import { subDays } from 'date-fns'
 import {
     ReadonlyURLSearchParams,
@@ -14,6 +9,12 @@ import {
     useRouter,
     useSearchParams,
 } from 'next/navigation'
+
+import { UrlSearchParamDateTimePicker } from '@/components/UrlSearchParamDateTimePicker.tsx'
+import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox'
+import { UrlSearchParamInput } from '@/components/UrlSearchParamInput.tsx'
+
+import styles from './Filtere.module.css'
 
 type FiltereState = {
     params: Record<string, string>
@@ -122,6 +123,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     isMultiSelect
                 />
                 <UrlSearchParamInput label="Key" searchParamName="key" />
+                <UrlSearchParamInput label="Limit" searchParamName="limit" />
                 <UrlSearchParamDateTimePicker
                     label="Fra og med"
                     value={state.params.fom}
