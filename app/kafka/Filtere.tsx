@@ -14,7 +14,7 @@ import styles from './Filtere.module.css'
 
 const shouldUpdate = (
     searchParams: URLSearchParams,
-    state: Record<string, string>
+    state: Record<string, string | null>
 ): boolean =>
     Object.entries(state).some(
         ([key, value]) => searchParams.get(key) !== value
@@ -27,13 +27,13 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
     const pathname = usePathname()
     const searchParams = useSearchParams()
 
-    const state = useMemo(() => {
+    const state: Record<string, string | null> = useMemo(() => {
         return {
             fom:
                 searchParams.get('fom') ?? subDays(new Date(), 7).toISOString(),
             tom: searchParams.get('tom') ?? new Date().toISOString(),
-            limit: '50',
-            topics: 'helved.utbetalinger.v1',
+            limit: searchParams.get('limit') ?? '50',
+            topics: searchParams.get('topics'),
         }
     }, [searchParams])
     const setSearchParams = useSetSearchParams()
@@ -43,7 +43,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
         const search = new URLSearchParams(window.location.search)
         if (shouldUpdate(search, state)) {
             for (const [key, value] of Object.entries(state)) {
-                if (value.length === 0) {
+                if (!value || value.length === 0) {
                     search.delete(key)
                 } else {
                     search.set(key, value)
@@ -103,12 +103,12 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 <UrlSearchParamInput label="Limit" searchParamName="limit" />
                 <UrlSearchParamDateTimePicker
                     label="Fra og med"
-                    value={state.fom}
+                    value={state.fom!}
                     onUpdateValue={updateFom}
                 />
                 <UrlSearchParamDateTimePicker
                     label="Til og med"
-                    value={state.tom}
+                    value={state.tom!}
                     onUpdateValue={updateTom}
                 />
             </div>
