@@ -69,7 +69,7 @@ const truncateDateToIncrement = (date: Date, increment: Increment) => {
 export const useMessageMap = (
     searchParams: ReadonlyURLSearchParams,
     messages: Message[]
-) => {
+): [Record<string, Message[]>, Increment] | null => {
     // Oppretter et map hvor nøkkel er tidspunktet for meldingene og verdien er meldingene som havner innenfor
     // tidsspennet hvor fom er tidspunkt og tom er tidspunkt + inkrement (dag, time, minutt)
     return useMemo(() => {
@@ -97,6 +97,6 @@ export const useMessageMap = (
 
             messageMap[key].push(message)
         }
-        return messageMap
+        return [messageMap, increment] as const
     }, [searchParams, messages])
 }

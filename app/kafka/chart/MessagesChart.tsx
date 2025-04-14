@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useLayoutEffect, useMemo, useState } from 'react'
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import clsx from 'clsx'
 import {
@@ -11,7 +11,7 @@ import {
     ChartOptions,
     LinearScale,
 } from 'chart.js'
-import { Bar } from 'react-chartjs-2'
+import { Bar, getElementAtEvent } from 'react-chartjs-2'
 import { format } from 'date-fns/format'
 import { Button, HStack, Label } from '@navikt/ds-react'
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons'
@@ -20,8 +20,20 @@ import { useMessageMap } from '@/app/kafka/chart/useMessageMap.ts'
 import type { Message } from '@/app/kafka/types'
 
 import styles from './MessagesChart.module.css'
+import { add } from 'date-fns'
+import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
 
 Chart.register(BarElement, BarController, CategoryScale, LinearScale)
+
+const FORMAT_STRING = 'yyyy-MM-dd, HH:mm'
+
+const formatDate = (date: string | Date) => {
+    return format(date, FORMAT_STRING)
+}
+
+const validDate = (date: Date): boolean => {
+    return !isNaN(date.valueOf())
+}
 
 const getCSSPropertyValue = (property: string) => {
     return getComputedStyle(
@@ -39,10 +51,31 @@ export const MessagesChart: React.FC<Props> = ({
     ...rest
 }) => {
     const searchParams = useSearchParams()
-    const messageMap = useMessageMap(
-        searchParams,
-        Object.values(messages).flat()
-    )
+    const setSearchParams = useSetSearchParams()
+
+    const [messageMap, increment] =
+        useMessageMap(searchParams, Object.values(messages).flat()) ?? []
+
+    const chartRef = useRef<Chart<'bar'>>(null)
+
+    const onClickBar = (event: React.MouseEvent<HTMLCanvasElement>) => {
+        const chart = chartRef.current
+        if (chart && messageMap && increment) {
+            const element = getElementAtEvent(chart, event)[0]
+            if (!element) {
+                return
+            }
+            const fom = new Date(Object.keys(messageMap)[element.index])
+            const tom = add(fom, { [increment]: 1 })
+
+            if (!validDate(fom) || !validDate(tom)) {
+                console.error('Klarte ikke parse fom/tom:', fom, tom)
+                return
+            }
+
+            setSearchParams({ fom: fom.toISOString(), tom: tom.toISOString() })
+        }
+    }
 
     const [open, setOpen] = useState(true)
 
@@ -55,9 +88,7 @@ export const MessagesChart: React.FC<Props> = ({
     const data = useMemo(
         () =>
             messageMap && {
-                labels: Object.keys(messageMap).map((it) =>
-                    format(it, 'yyyy-MM-dd, HH:mm')
-                ),
+                labels: Object.keys(messageMap).map(formatDate),
                 datasets: [
                     {
                         data: Object.values(messageMap).map((it) => it.length),
@@ -139,7 +170,12 @@ export const MessagesChart: React.FC<Props> = ({
             </HStack>
             {open && (
                 <div className={styles.chart}>
-                    <Bar options={options} data={data} />
+                    <Bar
+                        ref={chartRef}
+                        options={options}
+                        data={data}
+                        onClick={onClickBar}
+                    />
                 </div>
             )}
         </div>
