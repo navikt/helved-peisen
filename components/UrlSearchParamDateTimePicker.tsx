@@ -1,32 +1,16 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { startTransition, useRef, useState } from 'react'
 import clsx from 'clsx'
 import { DatePickerStandalone } from '@navikt/ds-react/DatePicker'
 import { Button, HStack, Modal, TextField, VStack } from '@navikt/ds-react'
 import { ModalBody } from '@navikt/ds-react/Modal'
 import { CalendarIcon } from '@navikt/aksel-icons'
-import { format } from 'date-fns/format'
-import { parse } from 'date-fns/parse'
 
 import { useElementHeight } from '@/hooks/useElementHeight.ts'
 
 import styles from './UrlSearchParamDateTimePicker.module.css'
 
-const FORMAT_STRING = 'dd.MM.yyyy, HH:mm'
-
-const formatDate = (date: Date): string => {
-    return format(date, FORMAT_STRING)
-}
-
-const parseDate = (date: string): Date => {
-    return parse(date, FORMAT_STRING, new Date())
-}
-
-const validDate = (date: string): boolean => {
-    return !isNaN(parseDate(date).valueOf())
-}
-
-const getTime = (date: Date): string => {
-    return `${date.getHours()}:${date.getMinutes()}`
+const validDate = (date: Date | string): boolean => {
+    return !isNaN(new Date(date).valueOf())
 }
 
 const times = new Array(24)
@@ -34,9 +18,15 @@ const times = new Array(24)
     .map((it, i) => it + i)
     .flatMap((it) => [`${it}:00`, `${it}:30`])
 
+const isSameTime = (date: string, time: string) => {
+    const parsed = new Date(date)
+    const [hours, minutes] = time.split(':').map((it) => +it)
+    return parsed.getHours() === hours && parsed.getMinutes() === minutes
+}
+
 const isKeyboardEvent = (
     event: React.SyntheticEvent
-): event is React.KeyboardEvent<HTMLInputElement> => {
+): event is React.KeyboardEvent => {
     return event.type === 'keydown'
 }
 
@@ -54,39 +44,14 @@ export const UrlSearchParamDateTimePicker: React.FC<Props> = ({
     const modalRef = useRef<HTMLDialogElement>(null)
     const [datePickerRef, datePickerHeight] = useElementHeight()
 
-    const parsedValue = new Date(value)
-    const [date, setDate] = useState<Date>(parsedValue)
-    const [time, setTime] = useState<string>(getTime(parsedValue))
-    const [dateTime, setDateTime] = useState<string>(formatDate(parsedValue))
+    const [textFieldValue, setTextFieldValue] = useState<string | null>(null)
+    const [error, setError] = useState<string | null>(null)
 
-    useLayoutEffect(() => {
-        // Opddater `dateTime` med verdiene til `date` og `time` etterhvert som de endres
-        try {
-            if (date) {
-                const newDate = new Date(date)
-                const [hours, minutes] = time.split(':').map((it) => +it)
-                newDate.setHours(hours)
-                newDate.setMinutes(minutes)
-
-                setDateTime(formatDate(newDate))
-            }
-        } catch (_) {
-            // Bruker har skrevet inn ugyldig tidspunkt. Error vises bruker og vi trenger ikke gjøre noe mer her
-        }
-    }, [date, time])
-
-    useEffect(() => {
-        // 9setDateTime(parseDate(value))
-    }, [value])
-
-    const onSelectDate = (selected?: Date) => {
-        setDate(selected ?? new Date())
-    }
-
-    const onChangeDateTime = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target?.value) {
-            setDateTime(event.target.value)
-        }
+    const onChangeTextFieldValue = (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        setError(null)
+        setTextFieldValue(event.target.value)
     }
 
     const onSubmitDateTime = (event: React.SyntheticEvent) => {
@@ -94,23 +59,36 @@ export const UrlSearchParamDateTimePicker: React.FC<Props> = ({
             return
         }
 
-        const dt = parseDate(dateTime)
-        const hours = dt.getHours()
-        const minutes = dt.getMinutes()
-
-        setDate(dt)
-        setTime(`${hours}:${minutes}`)
+        const value = textFieldValue
+        if (value && validDate(value)) {
+            startTransition(() => {
+                onUpdateValue(value)
+                setTextFieldValue(null)
+            })
+        } else {
+            setError('Ugyldig tidspunkt')
+        }
     }
 
-    // useEffect(() => {
-    //     const parsedValue = parseDate(formatDate(new Date(value)))
-    //     const areEqual = parsedValue.getTime() === parseDate(dateTime).getTime()
-    //     if (!areEqual && validDate(dateTime)) {
-    //         onUpdateValue(parseDate(dateTime).toISOString())
-    //     }
-    // }, [value, dateTime, onUpdateValue])
+    const onSelectDate = (date?: Date) => {
+        if (date) {
+            onUpdateValue(date.toISOString())
+        }
+    }
 
-    const error = date && validDate(dateTime) ? null : 'Ugyldig tidspunkt'
+    const onSelectTime = (time: string) => {
+        const date = new Date(value)
+        const [hours, minutes] = time.split(':').map((it) => +it)
+        date.setHours(hours)
+        date.setMinutes(minutes)
+        onUpdateValue(date.toISOString())
+    }
+
+    const onStartEditingTextField = () => {
+        if (!textFieldValue) {
+            setTextFieldValue(value)
+        }
+    }
 
     return (
         <>
@@ -118,8 +96,9 @@ export const UrlSearchParamDateTimePicker: React.FC<Props> = ({
                 <TextField
                     label={label}
                     className={styles.textField}
-                    value={dateTime}
-                    onChange={onChangeDateTime}
+                    value={textFieldValue ?? value}
+                    onFocus={onStartEditingTextField}
+                    onChange={onChangeTextFieldValue}
                     onKeyDown={onSubmitDateTime}
                     onBlur={onSubmitDateTime}
                     error={error}
@@ -143,8 +122,11 @@ export const UrlSearchParamDateTimePicker: React.FC<Props> = ({
                             className={styles.dateTimeTextField}
                             hideLabel
                             label="Valgt tidspunkt"
-                            value={dateTime}
-                            onChange={onChangeDateTime}
+                            value={textFieldValue ?? value}
+                            onFocus={onStartEditingTextField}
+                            onChange={onChangeTextFieldValue}
+                            onKeyDown={onSubmitDateTime}
+                            onBlur={onSubmitDateTime}
                             error={error}
                         />
                         <HStack
@@ -156,7 +138,7 @@ export const UrlSearchParamDateTimePicker: React.FC<Props> = ({
                             <DatePickerStandalone
                                 ref={datePickerRef}
                                 className={styles.datePicker}
-                                selected={date}
+                                selected={new Date(value)}
                                 onSelect={onSelectDate}
                             />
                             <VStack className={styles.timeList}>
@@ -165,9 +147,10 @@ export const UrlSearchParamDateTimePicker: React.FC<Props> = ({
                                         key={it}
                                         variant="tertiary"
                                         size="small"
-                                        onClick={() => setTime(it)}
+                                        onClick={() => onSelectTime(it)}
                                         className={clsx(
-                                            it === time && styles.active
+                                            isSameTime(value, it) &&
+                                                styles.active
                                         )}
                                     >
                                         {it}
