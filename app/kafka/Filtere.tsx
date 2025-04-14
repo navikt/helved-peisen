@@ -100,6 +100,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     isMultiSelect
                 />
                 <UrlSearchParamInput label="Key" searchParamName="key" />
+                <UrlSearchParamInput label="Value" searchParamName="value" />
                 <UrlSearchParamInput label="Limit" searchParamName="limit" />
                 <UrlSearchParamDateTimePicker
                     label="Fra og med"
