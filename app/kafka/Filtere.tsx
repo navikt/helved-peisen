@@ -32,7 +32,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
             fom:
                 searchParams.get('fom') ?? subDays(new Date(), 7).toISOString(),
             tom: searchParams.get('tom') ?? new Date().toISOString(),
-            limit: searchParams.get('limit') ?? '50',
+            limit: searchParams.get('limit'),
             topics: searchParams.get('topics'),
         }
     }, [searchParams])
