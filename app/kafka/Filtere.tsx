@@ -8,9 +8,9 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { UrlSearchParamDateTimePicker } from '@/components/UrlSearchParamDateTimePicker.tsx'
 import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox'
 import { UrlSearchParamInput } from '@/components/UrlSearchParamInput.tsx'
+import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
 
 import styles from './Filtere.module.css'
-import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
 
 const shouldUpdate = (
     searchParams: URLSearchParams,
@@ -20,24 +20,13 @@ const shouldUpdate = (
         ([key, value]) => searchParams.get(key) !== value
     )
 
-const defaultState = () => {
-    const search = new URLSearchParams(window.location.search)
-    return {
-        params: {
-            fom: search.get('fom') ?? subDays(new Date(), 7).toISOString(),
-            tom: search.get('tom') ?? new Date().toISOString(),
-            limit: '50',
-            topics: 'helved.utbetalinger.v1',
-        },
-    }
-}
-
 type Props = React.HTMLAttributes<HTMLDivElement>
 
 export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
+
     const state = useMemo(() => {
         return {
             fom:
@@ -117,11 +106,11 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     value={state.fom}
                     onUpdateValue={updateFom}
                 />
-                {/*<UrlSearchParamDateTimePicker*/}
-                {/*    label="Til og med"*/}
-                {/*    value={state.params.tom}*/}
-                {/*    onUpdateValue={updateTom}*/}
-                {/*/>*/}
+                <UrlSearchParamDateTimePicker
+                    label="Til og med"
+                    value={state.tom}
+                    onUpdateValue={updateTom}
+                />
             </div>
         </div>
     )
