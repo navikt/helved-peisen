@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useLayoutEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import clsx from 'clsx'
 import {
     BarController,
@@ -12,13 +13,13 @@ import {
 } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
 import { format } from 'date-fns/format'
-import { Label } from '@navikt/ds-react'
+import { Button, HStack, Label } from '@navikt/ds-react'
+import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons'
 
 import { useMessageMap } from '@/app/kafka/chart/useMessageMap.ts'
 import type { Message } from '@/app/kafka/types'
 
 import styles from './MessagesChart.module.css'
-import { useSearchParams } from 'next/navigation'
 
 Chart.register(BarElement, BarController, CategoryScale, LinearScale)
 
@@ -42,6 +43,8 @@ export const MessagesChart: React.FC<Props> = ({
         searchParams,
         Object.values(messages).flat()
     )
+
+    const [open, setOpen] = useState(true)
 
     const [colors, setColors] = useState({
         labelColor: '',
@@ -92,11 +95,9 @@ export const MessagesChart: React.FC<Props> = ({
         const updateColor = () => {
             setColors({
                 labelColor: getCSSPropertyValue('--ax-text-neutral'),
-                barColor: getCSSPropertyValue(
-                    '--ax-warning-900'
-                ),
+                barColor: getCSSPropertyValue('--ax-bg-brand-magenta-strong'),
                 barHoverColor: getCSSPropertyValue(
-                    '--ax-warning-1000'
+                    '--ax-bg-brand-magenta-strong-hover'
                 ),
             })
         }
@@ -120,10 +121,27 @@ export const MessagesChart: React.FC<Props> = ({
 
     return (
         <div className={clsx(styles.container, className)} {...rest}>
-            <Label>Meldinger</Label>
-            <div className={styles.chart}>
-                <Bar options={options} data={data} />
-            </div>
+            <HStack justify="space-between">
+                <Label>Meldinger</Label>
+                <Button
+                    variant="tertiary-neutral"
+                    size="small"
+                    onClick={() => {
+                        setOpen((open) => !open)
+                    }}
+                >
+                    {open ? (
+                        <ChevronUpIcon fontSize="18" />
+                    ) : (
+                        <ChevronDownIcon fontSize="18" />
+                    )}
+                </Button>
+            </HStack>
+            {open && (
+                <div className={styles.chart}>
+                    <Bar options={options} data={data} />
+                </div>
+            )}
         </div>
     )
 }
