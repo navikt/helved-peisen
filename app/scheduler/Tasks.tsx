@@ -11,7 +11,7 @@ import { Footer, FooterSkeleton } from '@/components/Footer.tsx'
 import {
     TaskRefresher,
     TaskRefresherSkeleton,
-} from '@/components/TaskRefresher.tsx'
+} from '@/app/scheduler/TaskRefresher.tsx'
 import { fetchTasks, FetchTasksResponse } from '@/lib/api/tasks.ts'
 
 import styles from './Tasks.module.css'

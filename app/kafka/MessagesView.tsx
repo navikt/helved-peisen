@@ -1,16 +1,18 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { Alert } from '@navikt/ds-react'
+import { useSearchParams } from 'next/navigation'
+
 import { MessagesChart } from '@/app/kafka/chart/MessagesChart.tsx'
 import {
     MessagesTable,
     MessagesTableSkeleton,
 } from '@/app/kafka/table/MessagesTable.tsx'
 import { getMessagesByTopic } from '@/app/kafka/table/getMessagesByTopic.ts'
-import { useSearchParams } from 'next/navigation'
 import { Message } from './types.ts'
-import { Alert } from '@navikt/ds-react'
-import styles from '@/components/Tasks.module.css'
+
+import styles from '@/app/scheduler/Tasks.module.css'
 
 export const MessagesView = () => {
     const searchParams = useSearchParams()

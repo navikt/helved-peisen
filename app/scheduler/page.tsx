@@ -1,5 +1,5 @@
 import { checkApiToken, checkToken } from '@/lib/auth/token'
-import { Tasks } from '@/components/Tasks.tsx'
+import { Tasks } from '@/app/scheduler/Tasks.tsx'
 
 import styles from './page.module.css'
 

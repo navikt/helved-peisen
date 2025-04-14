@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { server } from '@/fakes/msw/server.ts'
 import { emptyTaskResponse, taskErrorResponse } from '@/fakes/msw/handlers.ts'
 
-import { Tasks } from '@/components/Tasks.tsx'
+import { Tasks } from '@/app/scheduler/Tasks.tsx'
 
 describe('Tasks', async () => {
     test('shows a message when there are no tasks', async () => {

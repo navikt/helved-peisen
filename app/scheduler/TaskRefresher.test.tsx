@@ -9,7 +9,7 @@ import {
 } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { userEvent } from '@testing-library/user-event'
-import { TaskRefresher } from '@/components/TaskRefresher.tsx'
+import { TaskRefresher } from '@/app/scheduler/TaskRefresher.tsx'
 
 describe('TaskRefresher', async () => {
     const user = userEvent.setup({

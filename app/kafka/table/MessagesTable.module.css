@@ -1,8 +1,20 @@
 .container {
-  display: flex;
-  max-width: 100vw;
+    display: flex;
+    flex-direction: column;
+    max-width: 100vw;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    grid-area: table;
 }
 
 .table {
-  height: max-content;
+    height: max-content;
+    overflow: scroll;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: var(--ax-space-8);
+    padding: var(--ax-space-16) 0;
 }

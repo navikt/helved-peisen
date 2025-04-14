@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Skeleton, SortState, Table } from '@navikt/ds-react'
+import { Pagination, Skeleton, SortState, Table } from '@navikt/ds-react'
 import {
     TableBody,
     TableColumnHeader,
@@ -65,6 +65,13 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         })
     }
 
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(20)
+
+    const start = (page - 1) * pageSize
+    const end = Math.min(start + pageSize, sortedMessages.length)
+    const paginatedMessages = sortedMessages.slice(start, end)
+
     return (
         <div className={styles.container}>
             <Table
@@ -87,42 +94,53 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {sortedMessages.map((message, i) => (
+                    {paginatedMessages.map((message, i) => (
                         <MessageTableRow key={i} message={message} />
                     ))}
                 </TableBody>
             </Table>
+            <div className={styles.pagination}>
+                <Pagination
+                    page={page}
+                    onPageChange={setPage}
+                    count={Math.ceil(sortedMessages.length / pageSize)}
+                    size="xsmall"
+                />
+                Viser meldinger {start + 1} - {end}
+            </div>
         </div>
     )
 }
 
 export const MessagesTableSkeleton = () => {
     return (
-        <div className={styles.container}>
-            <Table className={styles.table}>
-                <TableHeader>
-                    <TableRow>
-                        <TableHeaderCell />
-                        <TableHeaderCell>Topic</TableHeaderCell>
-                        <TableHeaderCell>Key</TableHeaderCell>
-                        <TableHeaderCell>Timestamp</TableHeaderCell>
-                        <TableHeaderCell>Partition</TableHeaderCell>
-                        <TableHeaderCell>Offset</TableHeaderCell>
-                        <TableHeaderCell />
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {Array(20)
-                        .fill(null)
-                        .map((_, i) => (
-                            <TableRow key={i}>
-                                <TableDataCell colSpan={7}>
-                                    <Skeleton height={33} />
-                                </TableDataCell>
-                            </TableRow>
-                        ))}
-                </TableBody>
-            </Table>
-        </div>
+        <>
+            <div className={styles.container}>
+                <Table className={styles.table}>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell />
+                            <TableHeaderCell>Topic</TableHeaderCell>
+                            <TableHeaderCell>Key</TableHeaderCell>
+                            <TableHeaderCell>Timestamp</TableHeaderCell>
+                            <TableHeaderCell>Partition</TableHeaderCell>
+                            <TableHeaderCell>Offset</TableHeaderCell>
+                            <TableHeaderCell />
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {Array(20)
+                            .fill(null)
+                            .map((_, i) => (
+                                <TableRow key={i}>
+                                    <TableDataCell colSpan={7}>
+                                        <Skeleton height={33} />
+                                    </TableDataCell>
+                                </TableRow>
+                            ))}
+                    </TableBody>
+                </Table>
+            </div>
+        </>
     )
 }
