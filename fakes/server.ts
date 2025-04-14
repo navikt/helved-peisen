@@ -25,8 +25,7 @@ const messages = TestData.messages([], {
     size: 10_000,
     fom: subDays(new Date(), 30),
     tom: new Date(),
-})
-    .sort((a, b) => a.topic_name.localeCompare(b.topic_name))
+}).sort((a, b) => a.topic_name.localeCompare(b.topic_name))
 
 for (let i = 1; i < messages.length; i++) {
     if (messages[i].topic_name === messages[i - 1].topic_name) {
@@ -38,10 +37,10 @@ for (let i = 1; i < messages.length; i++) {
 
 function shuffleArray(array: any[]) {
     for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
+        const j = Math.floor(Math.random() * (i + 1))
         const temp = array[i]
         array[i] = array[j]
-        array[j] = temp;
+        array[j] = temp
     }
 }
 
@@ -54,6 +53,7 @@ app.get('/api', async (req, res) => {
     const topics =
         parseStringQueryParam(req.query.topics) ?? Object.values(Topics)
     const limit = req.query.limit ? +req.query.limit : 1000
+    const key = typeof req.query.key === 'string' ? req.query.key : undefined
 
     const fomDate = fom ? new Date(fom).getTime() : 0
     const tomDate = tom ? new Date(tom).getTime() : Number.MAX_SAFE_INTEGER
@@ -63,7 +63,8 @@ app.get('/api', async (req, res) => {
             (it) =>
                 it.timestamp_ms >= fomDate &&
                 it.timestamp_ms <= tomDate &&
-                topics.includes(it.topic_name)
+                topics.includes(it.topic_name) &&
+                (key ? it.key === key : true)
         )
         .slice(0, limit)
 

@@ -11,6 +11,7 @@ import {
 import { formatDate } from 'date-fns'
 import { XMLView } from '@/components/XMLView.tsx'
 import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
+import { UrlSearchParamLink } from '@/components/UrlSearchParamLink.tsx'
 
 type Props = {
     message: Message
@@ -32,8 +33,30 @@ const MessageTableRowContents: React.FC<Props> = ({ message }) => {
     )
 }
 
-const ExpandableMessageTableRow: React.FC<Props> = ({ message }) => {
+const RowContents: React.FC<Props> = ({ message }) => {
     const time = formatDate(message.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss')
+
+    return (
+        <>
+            <TableDataCell>
+                <TopicNameTag name={message.topic_name as TopicName} />
+            </TableDataCell>
+            <TableDataCell>
+                <UrlSearchParamLink
+                    searchParamName="key"
+                    searchParamValue={message.key}
+                >
+                    {message.key}
+                </UrlSearchParamLink>
+            </TableDataCell>
+            <TableDataCell>{time}</TableDataCell>
+            <TableDataCell>{message.partition}</TableDataCell>
+            <TableDataCell>{message.offset}</TableDataCell>
+        </>
+    )
+}
+
+const ExpandableMessageTableRow: React.FC<Props> = ({ message }) => {
     const [open, setOpen] = useState(false)
 
     return (
@@ -42,13 +65,7 @@ const ExpandableMessageTableRow: React.FC<Props> = ({ message }) => {
             onOpenChange={setOpen}
             content={open && <MessageTableRowContents message={message} />}
         >
-            <TableDataCell>
-                <TopicNameTag name={message.topic_name as TopicName} />
-            </TableDataCell>
-            <TableDataCell>{message.key}</TableDataCell>
-            <TableDataCell>{time}</TableDataCell>
-            <TableDataCell>{message.partition}</TableDataCell>
-            <TableDataCell>{message.offset}</TableDataCell>
+            <RowContents message={message} />
         </TableExpandableRow>
     )
 }
@@ -58,19 +75,10 @@ export const MessageTableRow: React.FC<Props> = ({ message }) => {
         return <ExpandableMessageTableRow message={message} />
     }
 
-    const time = formatDate(message.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss')
-
     if (!message.value) {
         return (
             <TableRow>
-                <TableDataCell />
-                <TableDataCell>
-                    <TopicNameTag name={message.topic_name as TopicName} />
-                </TableDataCell>
-                <TableDataCell>{message.key}</TableDataCell>
-                <TableDataCell>{time}</TableDataCell>
-                <TableDataCell>{message.partition}</TableDataCell>
-                <TableDataCell>{message.offset}</TableDataCell>
+                <RowContents message={message} />
             </TableRow>
         )
     }
