@@ -1,7 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Pagination, Skeleton, SortState, Table } from '@navikt/ds-react'
+import {
+    HStack,
+    Pagination,
+    Skeleton,
+    SortState,
+    Table,
+    TextField,
+} from '@navikt/ds-react'
 import {
     TableBody,
     TableColumnHeader,
@@ -68,6 +75,13 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(20)
 
+    const onChangePageSize = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = +event.target.value
+        if (!isNaN(value) && value > 0) {
+            setPageSize(value)
+        }
+    }
+
     const start = (page - 1) * pageSize
     const end = Math.min(start + pageSize, sortedMessages.length)
     const paginatedMessages = sortedMessages.slice(start, end)
@@ -100,13 +114,26 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                 </TableBody>
             </Table>
             <div className={styles.pagination}>
-                <Pagination
-                    page={page}
-                    onPageChange={setPage}
-                    count={Math.ceil(sortedMessages.length / pageSize)}
-                    size="xsmall"
-                />
-                Viser meldinger {start + 1} - {end}
+                <HStack align="center" gap="space-8">
+                    <Pagination
+                        page={page}
+                        onPageChange={setPage}
+                        count={Math.ceil(sortedMessages.length / pageSize)}
+                        size="xsmall"
+                    />
+                    Viser meldinger {start + 1} - {end} av{' '}
+                    {sortedMessages.length}
+                </HStack>
+                <HStack align="center" gap="space-12">
+                    Meldinger pr. side
+                    <TextField
+                        label="Sidestørrelse"
+                        hideLabel
+                        size="small"
+                        value={pageSize}
+                        onChange={onChangePageSize}
+                    />
+                </HStack>
             </div>
         </div>
     )
