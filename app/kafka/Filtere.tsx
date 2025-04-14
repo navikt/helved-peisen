@@ -64,6 +64,8 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
             fom:
                 searchParams.get('fom') ?? subDays(new Date(), 7).toISOString(),
             tom: searchParams.get('tom') ?? new Date().toISOString(),
+            limit: "50",
+            topics: "helved.utbetalinger.v1"
         },
     })
 
