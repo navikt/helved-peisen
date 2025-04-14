@@ -55,7 +55,6 @@ export const UrlSearchParamDateTimePicker: React.FC<Props> = ({
     const [datePickerRef, datePickerHeight] = useElementHeight()
 
     const parsedValue = new Date(value)
-
     const [date, setDate] = useState<Date>(parsedValue)
     const [time, setTime] = useState<string>(getTime(parsedValue))
     const [dateTime, setDateTime] = useState<string>(formatDate(parsedValue))
@@ -75,6 +74,10 @@ export const UrlSearchParamDateTimePicker: React.FC<Props> = ({
             // Bruker har skrevet inn ugyldig tidspunkt. Error vises bruker og vi trenger ikke gjøre noe mer her
         }
     }, [date, time])
+
+    useEffect(() => {
+        // 9setDateTime(parseDate(value))
+    }, [value])
 
     const onSelectDate = (selected?: Date) => {
         setDate(selected ?? new Date())
@@ -99,13 +102,13 @@ export const UrlSearchParamDateTimePicker: React.FC<Props> = ({
         setTime(`${hours}:${minutes}`)
     }
 
-    useEffect(() => {
-        const parsedValue = parseDate(formatDate(new Date(value)))
-        const areEqual = parsedValue.getTime() === parseDate(dateTime).getTime()
-        if (!areEqual && validDate(dateTime)) {
-            onUpdateValue(parseDate(dateTime).toISOString())
-        }
-    }, [value, dateTime, onUpdateValue])
+    // useEffect(() => {
+    //     const parsedValue = parseDate(formatDate(new Date(value)))
+    //     const areEqual = parsedValue.getTime() === parseDate(dateTime).getTime()
+    //     if (!areEqual && validDate(dateTime)) {
+    //         onUpdateValue(parseDate(dateTime).toISOString())
+    //     }
+    // }, [value, dateTime, onUpdateValue])
 
     const error = date && validDate(dateTime) ? null : 'Ugyldig tidspunkt'
 

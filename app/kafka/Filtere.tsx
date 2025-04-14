@@ -1,56 +1,36 @@
 'use client'
 
 import clsx from 'clsx'
-import React, { useCallback, useEffect, useReducer } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { subDays } from 'date-fns'
-import {
-    ReadonlyURLSearchParams,
-    usePathname,
-    useRouter,
-    useSearchParams,
-} from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 import { UrlSearchParamDateTimePicker } from '@/components/UrlSearchParamDateTimePicker.tsx'
 import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox'
 import { UrlSearchParamInput } from '@/components/UrlSearchParamInput.tsx'
 
 import styles from './Filtere.module.css'
-
-type FiltereState = {
-    params: Record<string, string>
-}
-
-type UpdateSearchParamAction = {
-    type: 'udateSearchParam'
-    key: string
-    value: string
-}
-
-type FiltereAction = UpdateSearchParamAction
-
-const filtereReducer = (state: FiltereState, action: FiltereAction) => {
-    switch (action.type) {
-        case 'udateSearchParam': {
-            return {
-                ...state,
-                params: {
-                    ...state.params,
-                    [action.key]: action.value,
-                },
-            }
-        }
-    }
-
-    return state
-}
+import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
 
 const shouldUpdate = (
-    searchParams: ReadonlyURLSearchParams,
-    state: FiltereState
+    searchParams: URLSearchParams,
+    state: Record<string, string>
 ): boolean =>
-    Object.entries(state.params).some(
+    Object.entries(state).some(
         ([key, value]) => searchParams.get(key) !== value
     )
+
+const defaultState = () => {
+    const search = new URLSearchParams(window.location.search)
+    return {
+        params: {
+            fom: search.get('fom') ?? subDays(new Date(), 7).toISOString(),
+            tom: search.get('tom') ?? new Date().toISOString(),
+            limit: '50',
+            topics: 'helved.utbetalinger.v1',
+        },
+    }
+}
 
 type Props = React.HTMLAttributes<HTMLDivElement>
 
@@ -58,46 +38,52 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
-
-    const [state, dispatch] = useReducer(filtereReducer, {
-        params: {
+    const state = useMemo(() => {
+        return {
             fom:
                 searchParams.get('fom') ?? subDays(new Date(), 7).toISOString(),
             tom: searchParams.get('tom') ?? new Date().toISOString(),
-            limit: "50",
-            topics: "helved.utbetalinger.v1"
-        },
-    })
+            limit: '50',
+            topics: 'helved.utbetalinger.v1',
+        }
+    }, [searchParams])
+    const setSearchParams = useSetSearchParams()
 
     useEffect(() => {
-        if (shouldUpdate(searchParams, state)) {
-            const params = new URLSearchParams(searchParams.toString())
-
-            for (const [key, value] of Object.entries(state.params)) {
+        // Oppdaterer search parameters med verdiene i state.params
+        const search = new URLSearchParams(window.location.search)
+        if (shouldUpdate(search, state)) {
+            for (const [key, value] of Object.entries(state)) {
                 if (value.length === 0) {
-                    params.delete(key)
+                    search.delete(key)
                 } else {
-                    params.set(key, value)
-                }
-
-                if (params.size === 0) {
-                    router.push(pathname)
-                } else {
-                    router.push(
-                        pathname + '?' + decodeURIComponent(params.toString())
-                    )
+                    search.set(key, value)
                 }
             }
+
+            if (search.size === 0) {
+                router.push(pathname)
+            } else {
+                router.push(
+                    pathname + '?' + decodeURIComponent(search.toString())
+                )
+            }
         }
-    }, [searchParams, state, router, pathname])
+    }, [state, router, pathname])
 
-    const updateFom = useCallback((value: string) => {
-        dispatch({ type: 'udateSearchParam', key: 'fom', value })
-    }, [])
+    const updateFom = useCallback(
+        (value: string) => {
+            setSearchParams({ fom: value })
+        },
+        [setSearchParams]
+    )
 
-    const updateTom = useCallback((value: string) => {
-        dispatch({ type: 'udateSearchParam', key: 'tom', value })
-    }, [])
+    const updateTom = useCallback(
+        (value: string) => {
+            setSearchParams({ tom: value })
+        },
+        [setSearchParams]
+    )
 
     return (
         <div className={clsx(styles.container, className)} {...rest}>
@@ -128,14 +114,14 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 <UrlSearchParamInput label="Limit" searchParamName="limit" />
                 <UrlSearchParamDateTimePicker
                     label="Fra og med"
-                    value={state.params.fom}
+                    value={state.fom}
                     onUpdateValue={updateFom}
                 />
-                <UrlSearchParamDateTimePicker
-                    label="Til og med"
-                    value={state.params.tom}
-                    onUpdateValue={updateTom}
-                />
+                {/*<UrlSearchParamDateTimePicker*/}
+                {/*    label="Til og med"*/}
+                {/*    value={state.params.tom}*/}
+                {/*    onUpdateValue={updateTom}*/}
+                {/*/>*/}
             </div>
         </div>
     )
