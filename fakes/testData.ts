@@ -13,6 +13,13 @@ type Message = {
     system_time_ms: number
 }
 
+const Fagsystem = {
+    AAP: 'AAP',
+    Tiltakspenger: 'TILTAKSPENGER',
+    Tilleggsstønader: 'TILLEGGSSTØNADER',
+    Dagpenger: 'DAGPENGER',
+}
+
 const Topics = {
     avstemming: 'helved.avstemming.v1',
     oppdrag: 'helved.oppdrag.v1',
@@ -359,7 +366,10 @@ export const TestData = {
                         )
                     case 'helved.kvittering.v1':
                         return this.message(
-                            { value: JSON.stringify(TestData.status()) },
+                            {
+                                key: `{"fagsystem":"${randomFagsystem()}","sakId":"${randomSakId()}","behandlingId":"${randomBehandlingId()}","lastPeriodeId":"${randomUUID()}"}`,
+                                value: JSON.stringify(TestData.status()),
+                            },
                             topicName,
                             options
                         )
@@ -458,4 +468,26 @@ export const TestData = {
             },
         ]
     },
+}
+
+function generateRandomString(length: number): string {
+    const chars =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    return new Array(length)
+        .fill(0)
+        .map((_) => chars.charAt(Math.floor(Math.random() * chars.length)))
+        .join("")
+}
+
+function randomFagsystem() {
+    const index = Math.floor(Math.random() * 4)
+    return Object.values(Fagsystem)[index]
+}
+
+function randomSakId() {
+    return generateRandomString(15)
+}
+
+function randomBehandlingId() {
+    return generateRandomString(25)
 }
