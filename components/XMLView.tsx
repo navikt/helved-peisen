@@ -104,7 +104,7 @@ export const XMLView: React.FC<Props> = ({ data }) => {
                 <ParentNodeView key={i} node={node} indent={0} />
             ))}
             <div className={styles.copyButtonContainer}>
-                <CopyButton size="small" copyText={data} text="Kopier" />
+                <CopyButton size="xsmall" copyText={data} />
             </div>
         </pre>
     )

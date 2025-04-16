@@ -4,17 +4,19 @@ import React, { useCallback } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-type Props = {
+type Props = Omit<React.HTMLAttributes<HTMLAnchorElement>, 'href'> & {
     searchParamName: string
     searchParamValue: string
     children: React.ReactNode
 }
 
-export function UrlSearchParamLink({
+export const UrlSearchParamLink: React.FC<Props> = ({
     searchParamName,
     searchParamValue,
     children,
-}: Props) {
+    className,
+    ...rest
+}) => {
     const pathname = usePathname()
     const searchParams = useSearchParams()
 
@@ -35,6 +37,8 @@ export function UrlSearchParamLink({
                 '?' +
                 createQueryString(searchParamName, searchParamValue)
             }
+            className={className}
+            {...rest}
         >
             {children}
         </Link>

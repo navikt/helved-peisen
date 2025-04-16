@@ -107,7 +107,7 @@ export const JsonView: React.FC<JsonViewProps> = ({ json }) => {
         <pre className={styles.container}>
             <JsonTypeView json={json} indent={0} />
             <div className={styles.copyButtonContainer}>
-                <CopyButton size="small" copyText={JSON.stringify(json)} text="Kopier" />
+                <CopyButton size="xsmall" copyText={JSON.stringify(json)} />
             </div>
         </pre>
     )

@@ -8,10 +8,14 @@ import {
     TableExpandableRow,
     TableRow,
 } from '@navikt/ds-react/Table'
+import { CopyButton, HStack, Label, VStack } from '@navikt/ds-react'
 import { formatDate } from 'date-fns'
+
 import { XMLView } from '@/components/XMLView.tsx'
 import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
 import { UrlSearchParamLink } from '@/components/UrlSearchParamLink.tsx'
+
+import styles from './MessageTableRow.module.css'
 
 type Props = {
     message: Message
@@ -26,10 +30,24 @@ const MessageTableRowContents: React.FC<Props> = ({ message }) => {
         }
     })()
 
-    return typeof data === 'string' ? (
-        <XMLView data={data} />
-    ) : (
-        <JsonView json={data} />
+    return (
+        <VStack gap="space-32">
+            <VStack gap="space-12">
+                <Label>Key</Label>
+                <HStack gap="space-8">
+                    {message.key}
+                    <CopyButton size="xsmall" copyText={message.key} />
+                </HStack>
+            </VStack>
+            <VStack gap="space-4">
+                <Label>Value</Label>
+                {typeof data === 'string' ? (
+                    <XMLView data={data} />
+                ) : (
+                    <JsonView json={data} />
+                )}
+            </VStack>
+        </VStack>
     )
 }
 
@@ -45,6 +63,7 @@ const RowContents: React.FC<Props> = ({ message }) => {
                 <UrlSearchParamLink
                     searchParamName="key"
                     searchParamValue={message.key}
+                    className={styles.keyLink}
                 >
                     {message.key}
                 </UrlSearchParamLink>
