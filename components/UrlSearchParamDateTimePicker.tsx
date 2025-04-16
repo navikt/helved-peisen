@@ -34,12 +34,14 @@ type Props = {
     label: string
     value: string
     onUpdateValue: (value: string) => void
+    size?: 'small' | 'medium'
 }
 
 export const UrlSearchParamDateTimePicker: React.FC<Props> = ({
     label,
     value,
     onUpdateValue,
+    size = 'medium',
 }) => {
     const modalRef = useRef<HTMLDialogElement>(null)
     const [datePickerRef, datePickerHeight] = useElementHeight()
@@ -102,9 +104,10 @@ export const UrlSearchParamDateTimePicker: React.FC<Props> = ({
                     onKeyDown={onSubmitDateTime}
                     onBlur={onSubmitDateTime}
                     error={error}
+                    size={size}
                 />
                 <Button
-                    className={styles.textFieldButton}
+                    className={clsx(styles.textFieldButton, styles[size])}
                     variant="tertiary"
                     onClick={() => modalRef.current?.showModal()}
                 >

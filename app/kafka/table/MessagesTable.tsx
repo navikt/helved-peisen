@@ -95,13 +95,17 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
             >
                 <TableHeader>
                     <TableRow>
-                        <TableHeaderCell />
-                        <TableHeaderCell>Topic</TableHeaderCell>
-                        <TableHeaderCell>Key</TableHeaderCell>
+                        <TableHeaderCell textSize="small"/>
+                        <TableHeaderCell textSize="small">
+                            Topic
+                        </TableHeaderCell>
+                        <TableHeaderCell textSize="small">Key</TableHeaderCell>
                         <TableColumnHeader sortKey="timestamp_ms" sortable>
                             Timestamp
                         </TableColumnHeader>
-                        <TableHeaderCell>Partition</TableHeaderCell>
+                        <TableHeaderCell textSize="small">
+                            Partition
+                        </TableHeaderCell>
                         <TableColumnHeader sortKey="offset" sortable>
                             Offset
                         </TableColumnHeader>
@@ -146,13 +150,23 @@ export const MessagesTableSkeleton = () => {
                 <Table className={styles.table}>
                     <TableHeader>
                         <TableRow>
-                            <TableHeaderCell />
-                            <TableHeaderCell>Topic</TableHeaderCell>
-                            <TableHeaderCell>Key</TableHeaderCell>
-                            <TableHeaderCell>Timestamp</TableHeaderCell>
-                            <TableHeaderCell>Partition</TableHeaderCell>
-                            <TableHeaderCell>Offset</TableHeaderCell>
-                            <TableHeaderCell />
+                            <TableHeaderCell textSize="small" />
+                            <TableHeaderCell textSize="small">
+                                Topic
+                            </TableHeaderCell>
+                            <TableHeaderCell textSize="small">
+                                Key
+                            </TableHeaderCell>
+                            <TableHeaderCell textSize="small">
+                                Timestamp
+                            </TableHeaderCell>
+                            <TableHeaderCell textSize="small">
+                                Partition
+                            </TableHeaderCell>
+                            <TableHeaderCell textSize="small">
+                                Offset
+                            </TableHeaderCell>
+                            <TableHeaderCell textSize="small" />
                         </TableRow>
                     </TableHeader>
                     <TableBody>

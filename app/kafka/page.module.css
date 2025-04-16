@@ -14,7 +14,7 @@
 }
 
 .filtere {
-    margin-bottom: var(--ax-space-20);
+    margin-bottom: var(--ax-space-32);
     grid-area: filters;
 }
 

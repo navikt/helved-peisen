@@ -23,6 +23,11 @@
     border-bottom-left-radius: 0;
 }
 
+.textFieldButton.small {
+    height: 32px;
+    top: var(--ax-space-28);
+}
+
 .container {
     gap: var(--ax-space-20);
 }

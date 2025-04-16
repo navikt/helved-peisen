@@ -10,6 +10,7 @@ type Props<T extends string> = Omit<ComboboxProps, 'options'> & {
     initialOptions: T[]
     renderForSearchParam?: (value: string) => string
     renderForCombobox?: (value: string) => string
+    size?: 'small' | 'medium'
 }
 
 export const UrlSearchParamComboBox = <T extends string>({
@@ -19,6 +20,7 @@ export const UrlSearchParamComboBox = <T extends string>({
     renderForCombobox = (value) => value,
     className,
     isMultiSelect,
+    size = 'medium',
     ...rest
 }: Props<T>) => {
     const searchParams = useSearchParams()
@@ -56,6 +58,7 @@ export const UrlSearchParamComboBox = <T extends string>({
             options={initialOptions.map(renderForCombobox)}
             onToggleSelected={onToggleSelected}
             selectedOptions={selectedOptions.map(renderForCombobox)}
+            size={size}
             {...rest}
         />
     )

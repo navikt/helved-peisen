@@ -13,7 +13,7 @@ import {
 } from 'chart.js'
 import { Bar, getElementAtEvent } from 'react-chartjs-2'
 import { format } from 'date-fns/format'
-import { Button, HStack, Label } from '@navikt/ds-react'
+import { Button, Spacer } from '@navikt/ds-react'
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons'
 
 import { useMessageMap } from '@/app/kafka/chart/useMessageMap.ts'
@@ -157,22 +157,6 @@ export const MessagesChart: React.FC<Props> = ({
 
     return (
         <div className={clsx(styles.container, className)} {...rest}>
-            <HStack justify="space-between">
-                <Label>Meldinger</Label>
-                <Button
-                    variant="tertiary-neutral"
-                    size="small"
-                    onClick={() => {
-                        setOpen((open) => !open)
-                    }}
-                >
-                    {open ? (
-                        <ChevronUpIcon fontSize="18" />
-                    ) : (
-                        <ChevronDownIcon fontSize="18" />
-                    )}
-                </Button>
-            </HStack>
             {open && (
                 <div className={styles.chart}>
                     <Bar
@@ -183,6 +167,20 @@ export const MessagesChart: React.FC<Props> = ({
                     />
                 </div>
             )}
+            <Button
+                variant="tertiary-neutral"
+                size="small"
+                onClick={() => {
+                    setOpen((open) => !open)
+                }}
+                className={styles.showButton}
+            >
+                {open ? (
+                    <ChevronUpIcon fontSize="18" />
+                ) : (
+                    <ChevronDownIcon fontSize="18" />
+                )}
+            </Button>
         </div>
     )
 }

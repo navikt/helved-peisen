@@ -1,11 +1,17 @@
 .container {
+    width: 100%;
     margin-bottom: var(--ax-space-20);
     display: flex;
-    flex-direction: column;
+    justify-content: end;
     gap: var(--ax-space-8);
     grid-area: chart;
 }
 
 .chart {
+    flex: 1;
     height: 100px;
+}
+
+.showButton {
+    height: max-content;
 }
