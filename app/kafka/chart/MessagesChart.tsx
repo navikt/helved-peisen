@@ -25,7 +25,7 @@ import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
 
 Chart.register(BarElement, BarController, CategoryScale, LinearScale)
 
-const FORMAT_STRING = 'yyyy-MM-dd, HH:mm'
+const FORMAT_STRING = 'MM-dd, HH:mm'
 
 const formatDate = (date: string | Date) => {
     return format(date, FORMAT_STRING)
@@ -82,6 +82,7 @@ export const MessagesChart: React.FC<Props> = ({
     const [colors, setColors] = useState({
         labelColor: '',
         barColor: '',
+        borderColor: '',
         barHoverColor: '',
     })
 
@@ -93,6 +94,9 @@ export const MessagesChart: React.FC<Props> = ({
                     {
                         data: Object.values(messageMap).map((it) => it.length),
                         backgroundColor: colors.barColor,
+                        borderColor: colors.borderColor,
+                        borderWidth: 1,
+                        borderRadius: 5,
                         hoverBackgroundColor: colors.barHoverColor,
                     },
                 ],
@@ -126,9 +130,10 @@ export const MessagesChart: React.FC<Props> = ({
         const updateColor = () => {
             setColors({
                 labelColor: getCSSPropertyValue('--ax-text-neutral'),
-                barColor: getCSSPropertyValue('--ax-bg-brand-magenta-strong'),
+                barColor: getCSSPropertyValue('--ax-bg-warning-moderateA'),
+                borderColor: getCSSPropertyValue('--ax-border-warning'),
                 barHoverColor: getCSSPropertyValue(
-                    '--ax-bg-brand-magenta-strong-hover'
+                    '--ax-bg-warning-moderate-hoverA'
                 ),
             })
         }
