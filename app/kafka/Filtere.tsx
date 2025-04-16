@@ -98,6 +98,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                         ] as const
                     }
                     isMultiSelect
+                    className={styles.topicsFilter}
                 />
                 <UrlSearchParamInput label="Key" searchParamName="key" />
                 <UrlSearchParamInput label="Value" searchParamName="value" />
