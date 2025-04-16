@@ -4,7 +4,10 @@ import { useEffect, useState } from 'react'
 import { Alert } from '@navikt/ds-react'
 import { useSearchParams } from 'next/navigation'
 
-import { MessagesChart } from '@/app/kafka/chart/MessagesChart.tsx'
+import {
+    MessagesChart,
+    MessagesChartSkeleton,
+} from '@/app/kafka/chart/MessagesChart.tsx'
 import {
     MessagesTable,
     MessagesTableSkeleton,
@@ -29,7 +32,12 @@ export const MessagesView = () => {
     }, [searchParams])
 
     if (!messages || loading) {
-        return <MessagesTableSkeleton />
+        return (
+            <>
+                <MessagesChartSkeleton />
+                <MessagesTableSkeleton />
+            </>
+        )
     }
 
     if (messages.error) {

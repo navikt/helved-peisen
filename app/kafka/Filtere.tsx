@@ -1,11 +1,9 @@
 'use client'
 
 import clsx from 'clsx'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { subDays } from 'date-fns'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { Button, Spacer } from '@navikt/ds-react'
-import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons'
 
 import { UrlSearchParamDateTimePicker } from '@/components/UrlSearchParamDateTimePicker.tsx'
 import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox'
@@ -25,8 +23,6 @@ const shouldUpdate = (
 type Props = React.HTMLAttributes<HTMLDivElement>
 
 export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
-    const [open, setOpen] = useState(true)
-
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
@@ -80,76 +76,59 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
 
     return (
         <div className={clsx(styles.container, className)} {...rest}>
-            {open && (
-                <div className={clsx(styles.filters)}>
-                    <UrlSearchParamComboBox
-                        label="Topics"
-                        searchParamName="topics"
-                        initialOptions={
-                            [
-                                'helved.avstemming.v1',
-                                'helved.oppdrag.v1',
-                                'helved.oppdragsdata.v1',
-                                'helved.dryrun-aap.v1',
-                                'helved.dryrun-ts.v1',
-                                'helved.dryrun-tp.v1',
-                                'helved.dryrun-dp.v1',
-                                'helved.kvittering.v1',
-                                'helved.utbetalinger.v1',
-                                'helved.utbetalinger-aap.v1',
-                                'helved.saker.v1',
-                                'helved.status.v1',
-                                'helved.simuleringer.v1',
-                            ] as const
-                        }
-                        isMultiSelect
-                        className={styles.topicsFilter}
-                        size="small"
-                    />
-                    <UrlSearchParamInput
-                        label="Key"
-                        searchParamName="key"
-                        size="small"
-                    />
-                    <UrlSearchParamInput
-                        label="Søk i value"
-                        searchParamName="value"
-                        size="small"
-                    />
-                    <UrlSearchParamInput
-                        label="Limit"
-                        searchParamName="limit"
-                        size="small"
-                    />
-                    <UrlSearchParamDateTimePicker
-                        label="Fra og med"
-                        value={state.fom!}
-                        onUpdateValue={updateFom}
-                        size="small"
-                    />
-                    <UrlSearchParamDateTimePicker
-                        label="Til og med"
-                        value={state.tom!}
-                        onUpdateValue={updateTom}
-                        size="small"
-                    />
-                </div>
-            )}
-            <Spacer />
-            <Button
-                variant="tertiary-neutral"
-                size="small"
-                onClick={() => {
-                    setOpen((open) => !open)
-                }}
-                className={styles.showButton}
-            >
-                {open ? (
-                    <ChevronUpIcon fontSize="18" />
-                ) : (
-                    <ChevronDownIcon fontSize="18" />
-                )}
-            </Button>
+            <div className={styles.filters}>
+                <UrlSearchParamComboBox
+                    label="Topics"
+                    searchParamName="topics"
+                    initialOptions={
+                        [
+                            'helved.avstemming.v1',
+                            'helved.oppdrag.v1',
+                            'helved.oppdragsdata.v1',
+                            'helved.dryrun-aap.v1',
+                            'helved.dryrun-ts.v1',
+                            'helved.dryrun-tp.v1',
+                            'helved.dryrun-dp.v1',
+                            'helved.kvittering.v1',
+                            'helved.utbetalinger.v1',
+                            'helved.utbetalinger-aap.v1',
+                            'helved.saker.v1',
+                            'helved.status.v1',
+                            'helved.simuleringer.v1',
+                        ] as const
+                    }
+                    isMultiSelect
+                    className={styles.topicsFilter}
+                    size="small"
+                />
+                <UrlSearchParamInput
+                    label="Key"
+                    searchParamName="key"
+                    size="small"
+                />
+                <UrlSearchParamInput
+                    label="Søk i value"
+                    searchParamName="value"
+                    size="small"
+                />
+                <UrlSearchParamInput
+                    label="Limit"
+                    searchParamName="limit"
+                    size="small"
+                />
+                <UrlSearchParamDateTimePicker
+                    label="Fra og med"
+                    value={state.fom!}
+                    onUpdateValue={updateFom}
+                    size="small"
+                />
+                <UrlSearchParamDateTimePicker
+                    label="Til og med"
+                    value={state.tom!}
+                    onUpdateValue={updateTom}
+                    size="small"
+                />
+            </div>
         </div>
     )
 }

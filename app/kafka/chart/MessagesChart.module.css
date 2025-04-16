@@ -7,8 +7,15 @@
     grid-area: chart;
 }
 
-.chart {
+.chartContainer {
+    position: relative;
+    overflow: hidden;
+    height: 0;
+    transition: height 0.2s ease;
     flex: 1;
+}
+
+.chartContainer.open {
     height: 100px;
 }
 

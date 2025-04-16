@@ -1,5 +1,6 @@
 'use client'
 
+import clsx from 'clsx'
 import { useState } from 'react'
 import {
     HStack,
@@ -21,6 +22,7 @@ import {
 import type { Message } from '@/app/kafka/types.ts'
 import { MessageTableRow } from '@/app/kafka/table/MessageTableRow.tsx'
 
+import fadeIn from '@/styles/fadeIn.module.css'
 import styles from './MessagesTable.module.css'
 
 const getNextDirection = (
@@ -87,7 +89,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
     const paginatedMessages = sortedMessages.slice(start, end)
 
     return (
-        <div className={styles.container}>
+        <div className={clsx(styles.container, fadeIn.animation)}>
             <Table
                 className={styles.table}
                 sort={sortState}
@@ -95,7 +97,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
             >
                 <TableHeader>
                     <TableRow>
-                        <TableHeaderCell textSize="small"/>
+                        <TableHeaderCell textSize="small" />
                         <TableHeaderCell textSize="small">
                             Topic
                         </TableHeaderCell>
@@ -148,27 +150,6 @@ export const MessagesTableSkeleton = () => {
         <>
             <div className={styles.container}>
                 <Table className={styles.table}>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHeaderCell textSize="small" />
-                            <TableHeaderCell textSize="small">
-                                Topic
-                            </TableHeaderCell>
-                            <TableHeaderCell textSize="small">
-                                Key
-                            </TableHeaderCell>
-                            <TableHeaderCell textSize="small">
-                                Timestamp
-                            </TableHeaderCell>
-                            <TableHeaderCell textSize="small">
-                                Partition
-                            </TableHeaderCell>
-                            <TableHeaderCell textSize="small">
-                                Offset
-                            </TableHeaderCell>
-                            <TableHeaderCell textSize="small" />
-                        </TableRow>
-                    </TableHeader>
                     <TableBody>
                         {Array(20)
                             .fill(null)

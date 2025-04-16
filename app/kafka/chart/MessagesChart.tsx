@@ -12,16 +12,17 @@ import {
     LinearScale,
 } from 'chart.js'
 import { Bar, getElementAtEvent } from 'react-chartjs-2'
+import { add } from 'date-fns'
 import { format } from 'date-fns/format'
-import { Button, Spacer } from '@navikt/ds-react'
+import { Button, Skeleton } from '@navikt/ds-react'
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons'
 
 import { useMessageMap } from '@/app/kafka/chart/useMessageMap.ts'
 import type { Message } from '@/app/kafka/types'
-
-import styles from './MessagesChart.module.css'
-import { add } from 'date-fns'
 import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
+
+import fadeIn from '@/styles/fadeIn.module.css'
+import styles from './MessagesChart.module.css'
 
 Chart.register(BarElement, BarController, CategoryScale, LinearScale)
 
@@ -84,6 +85,7 @@ export const MessagesChart: React.FC<Props> = ({
         barColor: '',
         borderColor: '',
         barHoverColor: '',
+        gridColor: '',
     })
 
     const data = useMemo(
@@ -115,10 +117,16 @@ export const MessagesChart: React.FC<Props> = ({
                     ticks: {
                         color: colors.labelColor,
                     },
+                    grid: {
+                        color: colors.gridColor,
+                    },
                 },
                 y: {
                     ticks: {
                         color: colors.labelColor,
+                    },
+                    grid: {
+                        color: colors.gridColor,
                     },
                 },
             },
@@ -135,6 +143,7 @@ export const MessagesChart: React.FC<Props> = ({
                 barHoverColor: getCSSPropertyValue(
                     '--ax-bg-warning-moderate-hoverA'
                 ),
+                gridColor: getCSSPropertyValue('--ax-bg-neutral-soft'),
             })
         }
 
@@ -152,13 +161,16 @@ export const MessagesChart: React.FC<Props> = ({
     }, [])
 
     if (!data) {
-        return null
+        return <MessagesChartSkeleton />
     }
 
     return (
-        <div className={clsx(styles.container, className)} {...rest}>
-            {open && (
-                <div className={styles.chart}>
+        <div
+            className={clsx(styles.container, fadeIn.animation, className)}
+            {...rest}
+        >
+            <div className={clsx(styles.chartContainer, open && styles.open)}>
+                <div>
                     <Bar
                         ref={chartRef}
                         options={options}
@@ -166,7 +178,7 @@ export const MessagesChart: React.FC<Props> = ({
                         onClick={onClickBar}
                     />
                 </div>
-            )}
+            </div>
             <Button
                 variant="tertiary-neutral"
                 size="small"
@@ -183,4 +195,8 @@ export const MessagesChart: React.FC<Props> = ({
             </Button>
         </div>
     )
+}
+
+export const MessagesChartSkeleton = () => {
+    return <Skeleton className={styles.container} height={100} />
 }
