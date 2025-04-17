@@ -170,7 +170,7 @@ export const MessagesChart: React.FC<Props> = ({
             {...rest}
         >
             <div className={clsx(styles.chartContainer, open && styles.open)}>
-                <div>
+                <div className={styles.chart}>
                     <Bar
                         ref={chartRef}
                         options={options}
