@@ -7,7 +7,7 @@ const nextConfig = {
         return [
             {
                 source: '/',
-                destination: '/scheduler',
+                destination: '/kafka',
                 permanent: false,
             },
         ]
