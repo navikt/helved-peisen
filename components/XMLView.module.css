@@ -6,12 +6,28 @@
     color: var(--ax-warning-1000);
 }
 
-.value {
+.attributeName {
+    color: var(--ax-warning-900);
+}
+
+.attributeEqualsSign {
+    color: var(--ax-text-neutral);
+}
+
+.attributeValue {
     color: var(--ax-success-900);
+}
+
+.value {
+    color: var(--ax-text-neutral);
 }
 
 .copyButtonContainer {
     position: absolute;
     top: var(--ax-space-16);
     right: var(--ax-space-16);
+}
+
+.subtle {
+    color: var(--ax-text-neutral-subtle);
 }

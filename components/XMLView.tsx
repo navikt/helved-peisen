@@ -62,7 +62,14 @@ const ParentNodeView: React.FC<NodeViewProps> = ({ node, indent }) => {
             {Array.from(node.attributes).map((attribute, i) => (
                 <React.Fragment key={i}>
                     {' '}
-                    {attribute.nodeName}=&#34;{attribute.nodeValue}&#34;
+                    <span className={styles.attributeName}>
+                        {attribute.nodeName}
+                    </span>
+                    <span className={styles.attributeEqualsSign}>=</span>
+                    <span className={styles.attributeValue}>
+                        &#34;
+                        {attribute.nodeValue}&#34;
+                    </span>
                 </React.Fragment>
             ))}
             {'>'}
@@ -82,6 +89,32 @@ type Props = {
     data: string
 }
 
+const MetaTag: React.FC<Props> = ({ data }) => {
+    const [openTag, content, closeTag] = [
+        data.slice(0, 6),
+        data.slice(6, -2),
+        data.slice(-2),
+    ]
+
+    return (
+        <>
+            <span>{openTag}</span>
+            {content.split(' ').map((attribute, i, array) => {
+                const [name, value] = attribute.split('=')
+                return (
+                    <React.Fragment key={i}>
+                        <span className={styles.attributeName}>{name}</span>
+                        <span className={styles.attributeEqualsSign}>=</span>
+                        <span className={styles.attributeValue}>{value}</span>
+                        {i === array.length - 1 ? '' : ' '}
+                    </React.Fragment>
+                )
+            })}
+            <span>{closeTag}</span>
+        </>
+    )
+}
+
 export const XMLView: React.FC<Props> = ({ data }) => {
     const parsedData = useParsedXML(data)
 
@@ -98,7 +131,7 @@ export const XMLView: React.FC<Props> = ({ data }) => {
 
     return (
         <pre className={styles.container}>
-            {data.split('\n')[0]}
+            <MetaTag data={data.split('\n')[0]} />
             {'\n'}
             {Array.from(parsedData.children).map((node, i) => (
                 <ParentNodeView key={i} node={node} indent={0} />
