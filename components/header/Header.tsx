@@ -63,8 +63,8 @@ export function Header() {
                 onChange={onChangeTab}
             >
                 <TabsList>
-                    <TabsTab value="scheduler" label="Scheduler" />
                     <TabsTab value="kafka" label="Kafka" />
+                    <TabsTab value="scheduler" label="Scheduler" />
                 </TabsList>
             </Tabs>
             <Spacer />
