@@ -77,12 +77,20 @@ const RowContents: React.FC<Props> = ({ message }) => {
 
 const ExpandableMessageTableRow: React.FC<Props> = ({ message }) => {
     const [open, setOpen] = useState(false)
+    const [didOpen, setDidOpen] = useState(false)
+
+    const toggleOpen = (open: boolean) => {
+        if (!didOpen) {
+            setDidOpen(true)
+        }
+        setOpen(open)
+    }
 
     return (
         <TableExpandableRow
             open={open}
-            onOpenChange={setOpen}
-            content={open && <MessageTableRowContents message={message} />}
+            onOpenChange={toggleOpen}
+            content={didOpen && <MessageTableRowContents message={message} />}
         >
             <RowContents message={message} />
         </TableExpandableRow>
