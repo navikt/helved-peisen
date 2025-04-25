@@ -105,6 +105,7 @@ export const MessageTableRow: React.FC<Props> = ({ message }) => {
     if (!message.value) {
         return (
             <TableRow>
+                <TableDataCell />
                 <RowContents message={message} />
             </TableRow>
         )

@@ -324,7 +324,7 @@ export const TestData = {
                         )
                     case 'helved.oppdragsdata.v1':
                         return this.message(
-                            { value: JSON.stringify(TestData.oppdragsdata()) },
+                            { value: Math.random() > 0.5 ? JSON.stringify(TestData.oppdragsdata()) : null },
                             topicName,
                             options
                         )
