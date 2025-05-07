@@ -30,7 +30,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
     const state: Record<string, string | null> = useMemo(() => {
         return {
             fom:
-                searchParams.get('fom') ?? subDays(new Date(), 7).toISOString(),
+                searchParams.get('fom') ?? subDays(new Date(), 1).toISOString(),
             tom: searchParams.get('tom') ?? new Date().toISOString(),
             limit: searchParams.get('limit'),
             topics: searchParams.get('topics'),
