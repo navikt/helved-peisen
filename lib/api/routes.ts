@@ -26,5 +26,6 @@ export const Routes = {
             return `${taskApiBaseUrl}/api/tasks/${id}/history`
         },
         kafka: `${kafkaApiBaseUrl}/api`,
+        manuellKvittering: `${kafkaApiBaseUrl}/api/manuell-kvittering`,
     },
 } as const

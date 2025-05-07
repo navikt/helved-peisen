@@ -16,6 +16,7 @@ import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
 import { UrlSearchParamLink } from '@/components/UrlSearchParamLink.tsx'
 
 import styles from './MessageTableRow.module.css'
+import AddNewKvitteringButton from '@/app/kafka/AddNewKvitteringButton.tsx'
 
 type Props = {
     message: Message
@@ -53,6 +54,17 @@ const MessageTableRowContents: React.FC<Props> = ({ message }) => {
 
 const RowContents: React.FC<Props> = ({ message }) => {
     const time = formatDate(message.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss')
+    const containsRequiredXmlTags = (
+        xmlContent: string | null | undefined
+    ): boolean => {
+        if (!xmlContent) return false
+
+        return xmlContent.includes('<mmel>')
+    }
+
+    const showKvitteringButton =
+        message.topic_name === 'helved.oppdrag.v1' &&
+        containsRequiredXmlTags(message.value)
 
     return (
         <>
@@ -71,6 +83,13 @@ const RowContents: React.FC<Props> = ({ message }) => {
             <TableDataCell>{time}</TableDataCell>
             <TableDataCell>{message.partition}</TableDataCell>
             <TableDataCell>{message.offset}</TableDataCell>
+            <TableDataCell>
+                <HStack wrap={false} className={styles.buttons}>
+                    {showKvitteringButton && (
+                        <AddNewKvitteringButton message={message} />
+                    )}
+                </HStack>
+            </TableDataCell>
         </>
     )
 }

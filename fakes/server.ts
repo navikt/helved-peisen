@@ -74,7 +74,10 @@ app.get('/api', async (req, res) => {
     await sleep(100)
     res.send(JSON.stringify(filteredMessages)).status(200)
 })
-
+/* MANUELL KVITTERING ENDPOINT */
+app.post('/api/manuell-kvittering', async (req, res) => {
+    res.status(200).json({ success: true, message: 'Kvittering ble lagt til' })
+})
 /* TASKS */
 
 app.get('/api/tasks', async (req, res) => {
