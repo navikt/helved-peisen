@@ -16,6 +16,10 @@ spec:
       cpu: 100m
     requests:
       cpu: 100m
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: nodejs
   ingresses:
     - 'https://peisen.intern.dev.nav.no'
   azure:
