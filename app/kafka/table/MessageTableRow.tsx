@@ -59,7 +59,7 @@ const RowContents: React.FC<Props> = ({ message }) => {
     ): boolean => {
         if (!xmlContent) return false
 
-        return xmlContent.includes('<mmel>')
+        return !xmlContent.includes('<mmel>')
     }
 
     const showKvitteringButton =

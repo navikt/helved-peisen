@@ -102,15 +102,24 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                             Topic
                         </TableHeaderCell>
                         <TableHeaderCell textSize="small">Key</TableHeaderCell>
-                        <TableColumnHeader sortKey="timestamp_ms" sortable textSize="small">
+                        <TableColumnHeader
+                            sortKey="timestamp_ms"
+                            sortable
+                            textSize="small"
+                        >
                             Timestamp
                         </TableColumnHeader>
                         <TableHeaderCell textSize="small">
                             Partition
                         </TableHeaderCell>
-                        <TableColumnHeader sortKey="offset" sortable textSize="small">
+                        <TableColumnHeader
+                            sortKey="offset"
+                            sortable
+                            textSize="small"
+                        >
                             Offset
                         </TableColumnHeader>
+                        <TableDataCell></TableDataCell>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
