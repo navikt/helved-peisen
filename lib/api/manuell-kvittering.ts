@@ -45,6 +45,10 @@ export const addManuellKvittering = async (
             logger.error(
                 `Server responded with status: ${response.status} - ${response.statusText}`
             )
+            return {
+                success: false,
+                message: `Server responded with status: ${response.status} - ${response.statusText}`,
+            }
         }
 
         return { success: true, message: 'Kvittering ble lagt til' }
