@@ -27,12 +27,7 @@ export const addManuellKvittering = async (
     try {
         const apiToken = await fetchApiToken()
 
-        const url =
-            process.env.NODE_ENV === 'development'
-                ? '/api/manuell-kvittering'
-                : Routes.external.manuellKvittering
-
-        const response = await fetch(url, {
+        const response = await fetch(Routes.external.manuellKvittering, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${apiToken}`,
