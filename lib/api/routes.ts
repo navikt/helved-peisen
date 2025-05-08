@@ -19,6 +19,7 @@ export const Routes = {
         retryAll(): string {
             return '/api/tasks/rerun'
         },
+        manuellKvittering: `/api/manuell-kvittering`,
     },
     external: {
         tasks: `${taskApiBaseUrl}/api/tasks`,
@@ -26,6 +27,6 @@ export const Routes = {
             return `${taskApiBaseUrl}/api/tasks/${id}/history`
         },
         kafka: `${kafkaApiBaseUrl}/api`,
-        manuellKvittering: `/manuell-kvittering`,
+        manuellKvittering: `${kafkaApiBaseUrl}/manuell-kvittering`,
     },
 } as const
