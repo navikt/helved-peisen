@@ -13,6 +13,7 @@ export async function POST(request: NextRequest) {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${apiToken}`,
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(body),
         }
