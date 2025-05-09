@@ -38,6 +38,7 @@ export const UrlSearchParamLink: React.FC<Props> = ({
                 createQueryString(searchParamName, searchParamValue)
             }
             className={className}
+            prefetch={false}
             {...rest}
         >
             {children}
