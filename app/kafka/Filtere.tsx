@@ -40,8 +40,8 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
 
     useEffect(() => {
         // Oppdaterer search parameters med verdiene i state.params
-        const search = new URLSearchParams(window.location.search)
-        if (shouldUpdate(search, state)) {
+        if (shouldUpdate(searchParams, state)) {
+            const search = new URLSearchParams(searchParams.toString())
             for (const [key, value] of Object.entries(state)) {
                 if (!value || value.length === 0) {
                     search.delete(key)
