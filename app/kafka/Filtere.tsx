@@ -58,7 +58,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 )
             }
         }
-    }, [state, router, pathname])
+    }, [state, router, pathname, searchParams])
 
     const updateFom = useCallback(
         (value: string) => {
