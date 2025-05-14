@@ -15,6 +15,7 @@ export default function AddNewKvitteringButton({
     const [alvorlighetsgrad, setAlvorlighetsgrad] = useState<string>('00')
     const [beskrMelding, setBeskrMelding] = useState<string>('')
     const [kodeMelding, setKodeMelding] = useState<string>('')
+    const [kvitteringAdded, setKvitteringAdded] = useState(false)
 
     const handleOpen = () => {
         setAlvorlighetsgrad('00')
@@ -45,6 +46,7 @@ export default function AddNewKvitteringButton({
             if (result.success) {
                 alert(`Kvittering for ${message.key} oppdatert!`)
                 modalRef.current?.close()
+                setKvitteringAdded(true)
             } else {
                 alert(`Feil ved lagring av kvittering: ${result.message}`)
             }
@@ -60,15 +62,24 @@ export default function AddNewKvitteringButton({
         { value: '04', label: '04 - Akseptert men noe er feil' },
     ]
 
+    const buttonText = kvitteringAdded
+        ? 'Endre kvittering'
+        : 'Legg til kvittering'
+    const buttonVariant = kvitteringAdded ? 'secondary' : 'primary'
+
     return (
         <>
-            <Button variant="secondary" size="small" onClick={handleOpen}>
-                Legg til kvittering
+            <Button variant={buttonVariant} size="small" onClick={handleOpen}>
+                {buttonText}
             </Button>
 
             <Modal
                 ref={modalRef}
-                header={{ heading: 'Legg til kvittering' }}
+                header={{
+                    heading: kvitteringAdded
+                        ? 'Endre kvittering'
+                        : 'Legg til kvittering',
+                }}
                 width={600}
             >
                 <Modal.Body>
