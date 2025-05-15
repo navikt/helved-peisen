@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import { Source_Sans_3 } from 'next/font/google'
 import { Header } from '@/components/header/Header.tsx'
 import { ThemeProvider } from '@/components/ThemeProvider.tsx'
-
+import { Toaster } from 'react-hot-toast'
 
 import styles from './layout.module.css'
 
@@ -32,6 +32,7 @@ export default function RootLayout({
             <body className={clsx(sourceSans.className, styles.body)}>
                 <ThemeProvider>
                     <Header />
+                    <Toaster position="top-right" />
                     <main className={styles.main}>{children}</main>
                 </ThemeProvider>
             </body>

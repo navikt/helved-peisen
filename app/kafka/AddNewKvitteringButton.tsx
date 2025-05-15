@@ -2,6 +2,7 @@ import { Button, Modal, Select, TextField, VStack } from '@navikt/ds-react'
 import React, { useRef, useState } from 'react'
 import { Message } from '@/app/kafka/types.ts'
 import { addManuellKvittering } from '@/lib/api/manuell-kvittering.ts'
+import { showErrorToast, showSuccessToast } from '@/components/Toast.tsx'
 
 interface AddNewKvitteringButtonProps {
     message: Message
@@ -47,11 +48,14 @@ export default function AddNewKvitteringButton({
                 kodeMelding
             )
             if (result.success) {
-                alert(`Kvittering for ${message.key} oppdatert!`)
+                showSuccessToast(`Kvittering for ${message.key} oppdatert!`)
                 modalRef.current?.close()
                 setKvitteringAdded(true)
             } else {
-                alert(`Feil ved lagring av kvittering: ${result.message}`)
+                modalRef.current?.close()
+                showErrorToast(
+                    `Feil ved lagring av kvittering: ${result.message}`
+                )
             }
         } catch (error) {
             console.error('Error updating kvittering:', error)
