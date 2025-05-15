@@ -105,10 +105,14 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     searchParamName="key"
                     size="small"
                 />
-                <UrlSearchParamInput
+                <UrlSearchParamComboBox
                     label="Søk i value"
                     searchParamName="value"
+                    allowNewValues
+                    initialOptions={[]}
+                    isMultiSelect
                     size="small"
+                    hideDropdown
                 />
                 <UrlSearchParamInput
                     label="Limit"

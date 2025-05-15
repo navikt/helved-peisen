@@ -5,12 +5,15 @@ import { useSearchParams } from 'next/navigation'
 
 import { useUpdateSearchParams } from '@/hooks/useUpdateSearchParams.tsx'
 
+import styles from './UrlSearchParamComboBox.module.css'
+
 type Props<T extends string> = Omit<ComboboxProps, 'options'> & {
     searchParamName: string
     initialOptions: T[]
     renderForSearchParam?: (value: string) => string
     renderForCombobox?: (value: string) => string
     size?: 'small' | 'medium'
+    hideDropdown?: boolean
 }
 
 export const UrlSearchParamComboBox = <T extends string>({
@@ -21,6 +24,7 @@ export const UrlSearchParamComboBox = <T extends string>({
     className,
     isMultiSelect,
     size = 'medium',
+    hideDropdown = false,
     ...rest
 }: Props<T>) => {
     const searchParams = useSearchParams()
@@ -53,7 +57,7 @@ export const UrlSearchParamComboBox = <T extends string>({
 
     return (
         <UNSAFE_Combobox
-            className={clsx(className)}
+            className={clsx(className, styles.container, hideDropdown && styles.hideDropdown)}
             isMultiSelect={isMultiSelect}
             options={initialOptions.map(renderForCombobox)}
             onToggleSelected={onToggleSelected}

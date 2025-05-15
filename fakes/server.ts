@@ -55,7 +55,7 @@ app.get('/api', async (req, res) => {
     const limit = req.query.limit ? +req.query.limit : 1000
     const key = typeof req.query.key === 'string' ? req.query.key : undefined
     const value =
-        typeof req.query.value === 'string' ? req.query.value : undefined
+        parseStringQueryParam(req.query.value) ?? []
 
     const fomDate = fom ? new Date(fom).getTime() : 0
     const tomDate = tom ? new Date(tom).getTime() : Number.MAX_SAFE_INTEGER
@@ -67,7 +67,7 @@ app.get('/api', async (req, res) => {
                 it.timestamp_ms <= tomDate &&
                 topics.includes(it.topic_name) &&
                 (key ? it.key === key : true) &&
-                (value ? it.value?.includes(value) : true)
+                (value.length > 0 ? value.some(val => it.value?.includes(val)) : true)
         )
         .slice(0, limit)
 
