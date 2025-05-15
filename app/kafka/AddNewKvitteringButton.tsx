@@ -24,6 +24,10 @@ export default function AddNewKvitteringButton({
         modalRef.current?.showModal()
     }
 
+    const handleClose = () => {
+        modalRef.current?.close()
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsSubmitting(true)
@@ -42,7 +46,6 @@ export default function AddNewKvitteringButton({
                 beskrMelding,
                 kodeMelding
             )
-
             if (result.success) {
                 alert(`Kvittering for ${message.key} oppdatert!`)
                 modalRef.current?.close()
@@ -125,17 +128,13 @@ export default function AddNewKvitteringButton({
                     </form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button
-                        form="kvitteringForm"
-                        type="submit"
-                        loading={isSubmitting}
-                    >
+                    <Button loading={isSubmitting} onClick={handleSubmit}>
                         Lagre
                     </Button>
                     <Button
                         type="button"
                         variant="secondary"
-                        onClick={() => modalRef.current?.close()}
+                        onClick={handleClose}
                     >
                         Avbryt
                     </Button>
