@@ -29,9 +29,8 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
 
     const state: Record<string, string | null> = useMemo(() => {
         return {
-            fom:
-                searchParams.get('fom') ?? subDays(new Date(), 1).toISOString(),
-            tom: searchParams.get('tom') ?? new Date().toISOString(),
+            fom: searchParams.get('fom'),
+            tom: searchParams.get('tom'),
             limit: searchParams.get('limit'),
             topics: searchParams.get('topics'),
         }
@@ -118,13 +117,13 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 />
                 <UrlSearchParamDateTimePicker
                     label="Fra og med"
-                    value={state.fom!}
+                    value={state.fom ?? ""}
                     onUpdateValue={updateFom}
                     size="small"
                 />
                 <UrlSearchParamDateTimePicker
                     label="Til og med"
-                    value={state.tom!}
+                    value={state.tom ?? ""}
                     onUpdateValue={updateTom}
                     size="small"
                 />

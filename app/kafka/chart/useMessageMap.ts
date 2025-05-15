@@ -7,7 +7,7 @@ import {
     isEqual,
     startOfDay,
     startOfHour,
-    startOfMinute,
+    startOfMinute, subDays,
 } from 'date-fns'
 
 import type { Message } from '@/app/kafka/types.ts'
@@ -15,12 +15,12 @@ import { ReadonlyURLSearchParams } from 'next/navigation'
 
 const getStartDate = (searchParams: ReadonlyURLSearchParams) => {
     const start = searchParams.get('fom')
-    return typeof start === 'string' ? new Date(start) : null
+    return typeof start === 'string' ? new Date(start) : subDays(new Date(), 30)
 }
 
 const getEndDate = (searchParams: ReadonlyURLSearchParams) => {
     const end = searchParams.get('tom')
-    return typeof end === 'string' ? new Date(end) : null
+    return typeof end === 'string' ? new Date(end) : new Date()
 }
 
 type Increment = 'days' | 'hours' | 'minutes'
