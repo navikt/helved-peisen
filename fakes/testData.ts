@@ -75,10 +75,14 @@ export const TestData = {
     oppdrag() {
         return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:oppdrag xmlns:ns2="http://www.trygdeetaten.no/skjema/oppdrag">
-    <mmel>
+    ${
+        Math.random() > 0.5
+            ? `<mmel>
         <systemId>231-OPPD</systemId>
         <alvorlighetsgrad>00</alvorlighetsgrad>
-    </mmel>
+    </mmel>`
+            : ''
+    }
     <oppdrag-110>
         <kodeAksjon>1</kodeAksjon>
         <kodeEndring>ENDR</kodeEndring>
@@ -324,7 +328,14 @@ export const TestData = {
                         )
                     case 'helved.oppdragsdata.v1':
                         return this.message(
-                            { value: Math.random() > 0.5 ? JSON.stringify(TestData.oppdragsdata()) : null },
+                            {
+                                value:
+                                    Math.random() > 0.5
+                                        ? JSON.stringify(
+                                              TestData.oppdragsdata()
+                                          )
+                                        : null,
+                            },
                             topicName,
                             options
                         )
@@ -476,7 +487,7 @@ function generateRandomString(length: number): string {
     return new Array(length)
         .fill(0)
         .map((_) => chars.charAt(Math.floor(Math.random() * chars.length)))
-        .join("")
+        .join('')
 }
 
 function randomFagsystem() {
