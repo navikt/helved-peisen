@@ -1,11 +1,14 @@
 'use client'
 
 import clsx from 'clsx'
-import { TextField, TextFieldProps } from '@navikt/ds-react'
+import { Button, TextField, TextFieldProps } from '@navikt/ds-react'
 import { useSearchParams } from 'next/navigation'
-import React, { ChangeEvent } from 'react'
+import React, { useRef, useState } from 'react'
 
 import { useUpdateSearchParams } from '@/hooks/useUpdateSearchParams.tsx'
+import { XMarkIcon } from '@navikt/aksel-icons'
+
+import styles from './UrlSearchParamInput.module.css'
 
 type Props = Omit<TextFieldProps, 'onSearchClick'> & {
     searchParamName: string
@@ -16,17 +19,15 @@ export function UrlSearchParamInput({
     className,
     ...rest
 }: Props) {
+    const containerRef = useRef<HTMLDivElement>(null)
     const searchParams = useSearchParams()
-
     const defaultValue: string = (searchParams.get(searchParamName) ??
         rest.defaultValue ??
         '') as string
 
-    const updateSearchParams = useUpdateSearchParams(searchParamName)
+    const [value, setValue] = useState(defaultValue)
 
-    const onBlur = (event: ChangeEvent<HTMLInputElement>) => {
-        updateSearchParams(event.target.value)
-    }
+    const updateSearchParams = useUpdateSearchParams(searchParamName)
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
@@ -34,14 +35,36 @@ export function UrlSearchParamInput({
         }
     }
 
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setValue(event.target.value)
+    }
+
+    const clearValue = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault()
+        setValue('')
+        updateSearchParams('')
+    }
+
     return (
-        <TextField
-            className={clsx(className)}
-            defaultValue={defaultValue}
-            onBlur={onBlur}
-            onKeyDown={onKeyDown}
-            name={searchParamName}
-            {...rest}
-        />
+        <div className={styles.container} ref={containerRef}>
+            <TextField
+                className={clsx(className, styles.textField)}
+                value={value}
+                onChange={onChange}
+                onKeyDown={onKeyDown}
+                name={searchParamName}
+                {...rest}
+            />
+            {value.length > 0 && (
+                <Button
+                    variant="primary"
+                    className={styles.clearButton}
+                    type="button"
+                    onClick={clearValue}
+                >
+                    <XMarkIcon />
+                </Button>
+            )}
+        </div>
     )
 }
