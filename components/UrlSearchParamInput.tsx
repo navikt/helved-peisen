@@ -3,7 +3,7 @@
 import clsx from 'clsx'
 import { Button, TextField, TextFieldProps } from '@navikt/ds-react'
 import { useSearchParams } from 'next/navigation'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useUpdateSearchParams } from '@/hooks/useUpdateSearchParams.tsx'
 import { XMarkIcon } from '@navikt/aksel-icons'
@@ -21,11 +21,18 @@ export function UrlSearchParamInput({
 }: Props) {
     const containerRef = useRef<HTMLDivElement>(null)
     const searchParams = useSearchParams()
-    const defaultValue: string = (searchParams.get(searchParamName) ??
-        rest.defaultValue ??
-        '') as string
+    const defaultValue: string = useMemo(
+        () => (searchParams.get(searchParamName) ?? '') as string,
+        [searchParams, searchParamName]
+    )
 
     const [value, setValue] = useState(defaultValue)
+
+    useEffect(() => {
+        if (defaultValue !== value) {
+            setValue(defaultValue)
+        }
+    }, [defaultValue, value])
 
     const updateSearchParams = useUpdateSearchParams(searchParamName)
 
