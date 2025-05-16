@@ -131,7 +131,7 @@ export const XMLView: React.FC<Props> = ({ data }) => {
 
     return (
         <pre className={styles.container}>
-            <MetaTag data={data.split('\n')[0]} />
+            <MetaTag data={`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`} />
             {'\n'}
             {Array.from(parsedData.children).map((node, i) => (
                 <ParentNodeView key={i} node={node} indent={0} />
