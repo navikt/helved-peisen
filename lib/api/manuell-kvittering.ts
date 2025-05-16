@@ -2,7 +2,7 @@ import { Routes } from '@/lib/api/routes.ts'
 import { fetchApiToken } from '@/lib/auth/token.ts'
 import { logger } from '@navikt/next-logger'
 
-interface KvitteringRequest {
+export interface KvitteringRequest {
     oppdragXml: string
     messageKey: string
     alvorlighetsgrad: string

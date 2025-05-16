@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { addDays, subDays } from 'date-fns'
+import { addDays, subDays, addSeconds } from 'date-fns'
 
 type Message = {
     version: string
@@ -72,11 +72,11 @@ export const TestData = {
     </aksjon>
 </ns2:avstemmingsdata>`
     },
-    oppdrag() {
+    oppdrag(kvittering: boolean = false) {
         return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:oppdrag xmlns:ns2="http://www.trygdeetaten.no/skjema/oppdrag">
     ${
-        Math.random() > 0.5
+        kvittering
             ? `<mmel>
         <systemId>231-OPPD</systemId>
         <alvorlighetsgrad>00</alvorlighetsgrad>
@@ -318,7 +318,7 @@ export const TestData = {
                 ? Math.ceil(options.size / topicNames.length)
                 : Math.ceil(Math.random() * 50)
 
-            return new Array(numberOfMessages).fill(null).map(() => {
+            return new Array(numberOfMessages).fill(null).flatMap(() => {
                 switch (topicName) {
                     case 'helved.avstemming.v1':
                         return this.message(
@@ -384,12 +384,35 @@ export const TestData = {
                             topicName,
                             options
                         )
-                    case 'helved.oppdrag.v1':
-                        return this.message(
-                            { value: JSON.stringify(TestData.oppdrag()) },
-                            topicName,
-                            options
+                    case 'helved.oppdrag.v1': {
+                        const key = randomUUID()
+                        const timestamp = randomDateBetween(
+                            options.fom,
+                            options.tom
                         )
+                        return [
+                            this.message(
+                                {
+                                    key,
+                                    value: JSON.stringify(TestData.oppdrag()),
+                                    timestamp_ms: timestamp.getTime(),
+                                },
+                                topicName,
+                                options
+                            ),
+                            Math.random() > 0.3 && this.message(
+                                {
+                                    key,
+                                    value: JSON.stringify(
+                                        TestData.oppdrag(true)
+                                    ),
+                                    timestamp_ms: addSeconds(timestamp, 2).getTime(),
+                                },
+                                topicName,
+                                options
+                            ),
+                        ].filter(it => it) as Message[]
+                    }
                     case 'helved.utbetalinger.v1':
                         return this.message(
                             { value: JSON.stringify(TestData.utbetaling()) },

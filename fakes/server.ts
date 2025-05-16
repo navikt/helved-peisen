@@ -27,6 +27,7 @@ const messages = TestData.messages([], {
     tom: new Date(),
 }).sort((a, b) => a.topic_name.localeCompare(b.topic_name))
 
+// Tell og sett offset på meldinger pr. topic
 for (let i = 1; i < messages.length; i++) {
     if (messages[i].topic_name === messages[i - 1].topic_name) {
         messages[i].offset = messages[i - 1].offset + 1
@@ -52,7 +53,7 @@ app.get('/api', async (req, res) => {
     const tom = typeof req.query.tom === 'string' ? req.query.tom : undefined
     const topics =
         parseStringQueryParam(req.query.topics) ?? Object.values(Topics)
-    const limit = req.query.limit ? +req.query.limit : 1000
+    const limit = req.query.limit ? +req.query.limit : 10_000
     const key = typeof req.query.key === 'string' ? req.query.key : undefined
     const value =
         parseStringQueryParam(req.query.value) ?? []
@@ -74,12 +75,24 @@ app.get('/api', async (req, res) => {
     await sleep(100)
     res.send(JSON.stringify(filteredMessages)).status(200)
 })
+
 /* MANUELL KVITTERING ENDPOINT */
 app.post('/api/manuell-kvittering', async (req, res) => {
+    messages.push({
+        version: '',
+        topic_name: 'helved.oppdrag.v1',
+        key: req.body.messageKey,
+        value: req.body.oppdragXml,
+        partition: 1,
+        offset: 0, // Fiks denne
+        timestamp_ms: new Date().getTime(),
+        stream_time_ms: new Date().getTime(),
+        system_time_ms: new Date().getTime(),
+    })
     res.status(200).json({ success: true, message: 'Kvittering ble lagt til' })
 })
-/* TASKS */
 
+/* TASKS */
 app.get('/api/tasks', async (req, res) => {
     const { page, pageSize, status, kind } = getTaskQueryParameters(req)
 

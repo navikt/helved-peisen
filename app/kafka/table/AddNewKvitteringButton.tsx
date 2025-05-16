@@ -1,8 +1,9 @@
 import { Button, Modal, Select, TextField, VStack } from '@navikt/ds-react'
-import React, { useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { Message } from '@/app/kafka/types.ts'
 import { addManuellKvittering } from '@/lib/api/manuell-kvittering.ts'
 import { showErrorToast, showSuccessToast } from '@/components/Toast.tsx'
+import { MessagesContext } from '@/app/kafka/table/MessagesContext.tsx'
 
 interface AddNewKvitteringButtonProps {
     message: Message
@@ -11,6 +12,7 @@ interface AddNewKvitteringButtonProps {
 export default function AddNewKvitteringButton({
     message,
 }: AddNewKvitteringButtonProps) {
+    const { messagesPerKey } = useContext(MessagesContext)
     const modalRef = useRef<HTMLDialogElement>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [alvorlighetsgrad, setAlvorlighetsgrad] = useState<string>('00')
@@ -69,10 +71,11 @@ export default function AddNewKvitteringButton({
         { value: '04', label: '04 - Akseptert men noe er feil' },
     ]
 
-    const buttonText = kvitteringAdded
+    const harKvittering = kvitteringAdded || messagesPerKey[message.key] > 1
+    const buttonText = harKvittering
         ? 'Endre kvittering'
         : 'Legg til kvittering'
-    const buttonVariant = kvitteringAdded ? 'secondary' : 'primary'
+    const buttonVariant = harKvittering ? 'secondary' : 'primary'
 
     return (
         <>
@@ -80,15 +83,7 @@ export default function AddNewKvitteringButton({
                 {buttonText}
             </Button>
 
-            <Modal
-                ref={modalRef}
-                header={{
-                    heading: kvitteringAdded
-                        ? 'Endre kvittering'
-                        : 'Legg til kvittering',
-                }}
-                width={600}
-            >
+            <Modal ref={modalRef} header={{ heading: buttonText }} width={600}>
                 <Modal.Body>
                     <form id="kvitteringForm" onSubmit={handleSubmit}>
                         <VStack gap="4">
