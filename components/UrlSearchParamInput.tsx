@@ -28,12 +28,6 @@ export function UrlSearchParamInput({
 
     const [value, setValue] = useState(defaultValue)
 
-    useEffect(() => {
-        if (defaultValue !== value) {
-            setValue(defaultValue)
-        }
-    }, [defaultValue, value])
-
     const updateSearchParams = useUpdateSearchParams(searchParamName)
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
