@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 
 export const useElementHeight = () => {
     const elementRef = useRef(null)
-    const [elementHeight, setelementHeight] = useState('auto')
+    const [elementHeight, setelementHeight] = useState("0")
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const observer = new ResizeObserver((entries) => {
             for (let entry of entries) {
                 setelementHeight(`${entry.contentRect.height}px`)

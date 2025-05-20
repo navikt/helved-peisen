@@ -1,14 +1,11 @@
 'use client'
 
 import clsx from 'clsx'
-import React, { useCallback, useEffect, useMemo } from 'react'
-import { subDays } from 'date-fns'
+import React, { useEffect, useMemo } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-
-import { UrlSearchParamDateTimePicker } from '@/components/UrlSearchParamDateTimePicker.tsx'
 import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox'
 import { UrlSearchParamInput } from '@/components/UrlSearchParamInput.tsx'
-import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
+import { DateRangeSelect } from '@/app/kafka/DateRangeSelect.tsx'
 
 import styles from './Filtere.module.css'
 
@@ -35,7 +32,6 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
             topics: searchParams.get('topics'),
         }
     }, [searchParams])
-    const setSearchParams = useSetSearchParams()
 
     useEffect(() => {
         // Oppdaterer search parameters med verdiene i state.params
@@ -58,20 +54,6 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
             }
         }
     }, [state, router, pathname, searchParams])
-
-    const updateFom = useCallback(
-        (value: string) => {
-            setSearchParams({ fom: value })
-        },
-        [setSearchParams]
-    )
-
-    const updateTom = useCallback(
-        (value: string) => {
-            setSearchParams({ tom: value })
-        },
-        [setSearchParams]
-    )
 
     return (
         <div className={clsx(styles.container, className)} {...rest}>
@@ -119,18 +101,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     searchParamName="limit"
                     size="small"
                 />
-                <UrlSearchParamDateTimePicker
-                    label="Fra og med"
-                    value={state.fom ?? ""}
-                    onUpdateValue={updateFom}
-                    size="small"
-                />
-                <UrlSearchParamDateTimePicker
-                    label="Til og med"
-                    value={state.tom ?? ""}
-                    onUpdateValue={updateTom}
-                    size="small"
-                />
+                <DateRangeSelect />
             </div>
         </div>
     )

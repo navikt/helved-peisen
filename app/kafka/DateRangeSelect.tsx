@@ -1,0 +1,399 @@
+'use client'
+
+import React, { useCallback, useMemo, useState } from 'react'
+import clsx from 'clsx'
+import { format } from 'date-fns/format'
+import { formatDistanceStrict } from 'date-fns/formatDistanceStrict'
+import { intlFormatDistance } from 'date-fns/intlFormatDistance'
+import { parse } from 'date-fns/parse'
+import { sub } from 'date-fns/sub'
+import { subDays } from 'date-fns/subDays'
+import { useSearchParams } from 'next/navigation'
+import {
+    BodyShort,
+    Button,
+    Dropdown,
+    HStack,
+    Select,
+    Tabs,
+    TextField,
+    VStack,
+} from '@navikt/ds-react'
+import { DropdownMenu } from '@navikt/ds-react/Dropdown'
+import { TabsList, TabsPanel, TabsTab } from '@navikt/ds-react/Tabs'
+import { ArrowRightIcon, CalendarIcon } from '@navikt/aksel-icons'
+import { DatePickerStandalone } from '@navikt/ds-react/DatePicker'
+
+import { CompactTextField } from '@/components/CompactTextField.tsx'
+import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
+import { useElementHeight } from '@/hooks/useElementHeight.ts'
+
+import styles from './DateRangeSelect.module.css'
+
+const times = new Array(24)
+    .fill(0)
+    .map((it, i) => it + i)
+    .flatMap((it) => [`${it}:00`, `${it}:30`])
+
+const capitalize = (value: string) => {
+    return value.length > 1
+        ? value[0].toUpperCase() + value.slice(1)
+        : value.toUpperCase()
+}
+
+const parseDate = (localized: string): Date => {
+    return parse(localized, 'dd/MM/yyyy, HH:mm:ss', new Date())
+}
+
+type AbsoluteTimeSelectProps = {
+    time: Date
+    onSelectTime: (date: Date) => void
+}
+
+const AbsoluteTimeSelect: React.FC<AbsoluteTimeSelectProps> = ({
+    time,
+    onSelectTime,
+}) => {
+    const [datePickerRef, datePickerHeight] = useElementHeight()
+
+    const [hours, setHours] = useState(format(time, 'HH:mm'))
+    const [date, setDate] = useState(time)
+    const [value, setValue] = useState(time.toLocaleString())
+    const [error, setError] = useState<string | null>()
+
+    const onChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const time = parseDate(event.target.value)
+        setValue(event.target.value)
+        if (isNaN(time.getTime())) {
+            setError('Ugyldig tidspunkt')
+            return
+        }
+
+        setError(null)
+        setDate(time)
+        setHours(format(time, 'HH:mm'))
+    }
+
+    const onSelectDate = (date?: Date) => {
+        if (date) {
+            setDate(date)
+            setValue(date.toLocaleString())
+            setError(null)
+        }
+    }
+
+    const onSelectHours = (time: string) => {
+        setHours(time)
+        const [hours, minutes] = time.split(':').map((it) => +it)
+
+        const newValue = parseDate(value)
+        if (isNaN(newValue.getTime())) {
+            return
+        }
+
+        newValue.setHours(hours)
+        newValue.setMinutes(minutes)
+        newValue.setSeconds(0)
+        setValue(newValue.toLocaleString())
+    }
+
+    const onClickUpdate = () => {
+        const date = parseDate(value)
+        if (isNaN(date.getTime())) {
+            setError('Ugyldig tidspunkt')
+            return
+        }
+
+        setError(null)
+        onSelectTime(date)
+    }
+
+    return (
+        <>
+            <CompactTextField
+                label="Valgt tidspunkt"
+                value={value}
+                onChange={onChangeValue}
+                error={error}
+            />
+            <HStack
+                style={{ '--timelist-height': datePickerHeight }}
+                className={styles.pickerContainer}
+            >
+                <DatePickerStandalone
+                    ref={datePickerRef}
+                    className={styles.datePicker}
+                    selected={date}
+                    onSelect={onSelectDate}
+                />
+                <VStack className={styles.timeList}>
+                    {times.map((it) => (
+                        <Button
+                            key={it}
+                            variant="tertiary"
+                            size="small"
+                            onClick={() => onSelectHours(it)}
+                            className={clsx(hours === it && styles.active)}
+                        >
+                            {it}
+                        </Button>
+                    ))}
+                </VStack>
+            </HStack>
+            <Button onClick={onClickUpdate} size="small">
+                Oppdater
+            </Button>
+        </>
+    )
+}
+
+type RelativeTimeSelectProps = {
+    time?: Date
+    onSelectTime: (date: Date) => void
+}
+
+const RelativeTimeSelect: React.FC<RelativeTimeSelectProps> = ({
+    time,
+    onSelectTime,
+}) => {
+    const [defaultDuration, defaultUnit] = (
+        time
+            ? formatDistanceStrict(time, new Date())
+            : formatDistanceStrict(subDays(new Date(), 30), new Date())
+    ).split(' ')
+
+    const [duration, setDuration] = useState(+defaultDuration)
+    const [unit, setUnit] = useState(
+        defaultUnit[defaultUnit.length - 1] === 's'
+            ? defaultUnit
+            : defaultUnit + 's'
+    )
+
+    const [value, setValue] = useState(
+        sub(new Date(), { [unit]: duration }).toLocaleString()
+    )
+    const [error, setError] = useState<string | null>()
+
+    const onChangeDuration = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const duration = +event.target.value
+        setDuration(duration)
+        setValue(sub(new Date(), { [unit]: duration }).toLocaleString())
+        setError(null)
+    }
+
+    const onChangeUnit = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const unit = event.target.value
+        setUnit(unit)
+        setValue(sub(new Date(), { [unit]: duration }).toLocaleString())
+        setError(null)
+    }
+
+    const onChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const time = parseDate(event.target.value)
+        setValue(event.target.value)
+        if (isNaN(time.getTime())) {
+            setError('Ugyldig tidspunkt')
+            return
+        }
+
+        const [duration, unit] = formatDistanceStrict(time, new Date()).split(
+            ' '
+        )
+        setError(null)
+        setUnit(unit)
+        setDuration(+duration)
+    }
+
+    const onClickUpdate = () => {
+        const time = parseDate(value)
+        if (isNaN(time.getTime())) {
+            setError('Ugyldig tidspunkt')
+            return
+        }
+
+        setError(null)
+        onSelectTime(time)
+    }
+
+    return (
+        <>
+            <div className={styles.row}>
+                <TextField
+                    className={styles.textField}
+                    label=""
+                    value={duration}
+                    onChange={onChangeDuration}
+                    size="small"
+                />
+                <Select
+                    className={styles.select}
+                    label=""
+                    size="small"
+                    value={unit}
+                    onChange={onChangeUnit}
+                >
+                    <option value="seconds">Sekunder siden</option>
+                    <option value="minutes">Minutter siden</option>
+                    <option value="hours">Timer siden</option>
+                    <option value="days">Dager siden</option>
+                    <option value="weeks">Uker siden</option>
+                    <option value="months">Måneder siden</option>
+                    <option value="years">År siden</option>
+                </Select>
+            </div>
+            <CompactTextField
+                label="Startdato"
+                value={value}
+                onChange={onChangeValue}
+                containerClass={styles.textField}
+                error={error}
+            />
+            <Button onClick={onClickUpdate} size="small">
+                Oppdater
+            </Button>
+        </>
+    )
+}
+
+type NowTimeSelectProps = {
+    onSelectTime: (date: Date) => void
+}
+
+const NowTimeSelect: React.FC<NowTimeSelectProps> = ({ onSelectTime }) => {
+    const setToNow = () => {
+        onSelectTime(new Date())
+    }
+
+    return (
+        <>
+            <BodyShort>
+                Å sette tiden til &quot;Nå&quot; betyr at tiden ved refresh av
+                siden vil settes til tiden du klikket på knappen under.
+            </BodyShort>
+            <Button size="small" onClick={setToNow}>
+                Sett tiden til &quot;Nå&quot;
+            </Button>
+        </>
+    )
+}
+
+type DateSelectDropdownProps = Omit<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    'children'
+> & {
+    time: Date
+    onSelectTime: (date: Date) => void
+}
+
+const DateSelectDropdown: React.FC<DateSelectDropdownProps> = ({
+    time,
+    onSelectTime,
+    ...rest
+}) => {
+    const [label, setLabel] = useState(
+        intlFormatDistance(time, new Date(), {
+            locale: 'no',
+        })
+    )
+
+    const onSetAbsoluteTime = (date: Date) => {
+        setLabel(date.toLocaleString())
+        onSelectTime(date)
+    }
+
+    const onSetRelativeTime = (date: Date) => {
+        setLabel(
+            intlFormatDistance(date, new Date(), {
+                locale: 'no',
+            })
+        )
+        onSelectTime(date)
+    }
+
+    const onSetNowTime = () => {
+        setLabel('Nå')
+        onSelectTime(new Date())
+    }
+
+    return (
+        <Dropdown>
+            <Button as={Dropdown.Toggle} {...rest}>
+                {capitalize(label)}
+            </Button>
+            <DropdownMenu placement="bottom" className={styles.dropdownMenu}>
+                <Tabs
+                    defaultValue={label === 'Nå' ? 'now' : 'relative'}
+                    size="small"
+                    fill
+                >
+                    <TabsList>
+                        <TabsTab value="absolute" label="Absolutt" />
+                        <TabsTab value="relative" label="Relativ" />
+                        <TabsTab value="now" label="Nå" />
+                    </TabsList>
+                    <TabsPanel className={styles.tabsPanel} value="absolute">
+                        <AbsoluteTimeSelect
+                            time={time}
+                            onSelectTime={onSetAbsoluteTime}
+                        />
+                    </TabsPanel>
+                    <TabsPanel className={styles.tabsPanel} value="relative">
+                        <RelativeTimeSelect
+                            time={time}
+                            onSelectTime={onSetRelativeTime}
+                        />
+                    </TabsPanel>
+                    <TabsPanel className={styles.tabsPanel} value="now">
+                        <NowTimeSelect onSelectTime={onSetNowTime} />
+                    </TabsPanel>
+                </Tabs>
+            </DropdownMenu>
+        </Dropdown>
+    )
+}
+
+export const DateRangeSelect = () => {
+    const searchParams = useSearchParams()
+    const setSearchParams = useSetSearchParams()
+
+    const state: Record<string, string> = useMemo(() => {
+        return {
+            fom:
+                searchParams.get('fom') ??
+                subDays(new Date(), 30).toISOString(),
+            tom: searchParams.get('tom') ?? new Date().toISOString(),
+        }
+    }, [searchParams])
+
+    const updateFom = useCallback(
+        (value: Date) => setSearchParams({ fom: value.toISOString() }),
+        [setSearchParams]
+    )
+
+    const updateTom = useCallback(
+        (value: Date) => setSearchParams({ tom: value.toISOString() }),
+        [setSearchParams]
+    )
+
+    return (
+        <div className={styles.container}>
+            <div className={styles.label}>Tidsrom</div>
+            <HStack className={styles.buttons} gap="space-16">
+                <DateSelectDropdown
+                    time={new Date(state.fom)}
+                    onSelectTime={updateFom}
+                    className={styles.dateSelectButton}
+                />
+                <ArrowRightIcon className={styles.arrowIcon} />
+                <DateSelectDropdown
+                    time={new Date(state.tom)}
+                    onSelectTime={updateTom}
+                    className={styles.dateSelectButton}
+                />
+                <Button className={clsx(styles.textFieldButton)}>
+                    <CalendarIcon fontSize={24} />
+                </Button>
+            </HStack>
+        </div>
+    )
+}
