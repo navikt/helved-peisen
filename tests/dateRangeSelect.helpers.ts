@@ -11,11 +11,7 @@ type RelativeCheck = {
     toleranceHours?: number
 }
 
-/**
- * Waits for specific search params in the URL.
- * Optionally checks relative time formatting.
- */
-export async function waitForSearchParams(
+export async function expectDates(
     page: Page,
     {
         fom,
@@ -109,4 +105,36 @@ export async function waitForSearchParams(
         },
         { fomCheck: fom, tomCheck: tom }
     )
+}
+
+export async function setAbsoluteDate(page: Page, testId: string, date: Date) {
+    await page.getByTestId(testId).click()
+    await page.getByRole('tab', { name: 'Absolutt' }).click()
+    await page.getByRole('textbox', { name: 'Valgt tidspunkt Valgt' }).click()
+    await page
+        .getByRole('textbox', { name: 'Valgt tidspunkt Valgt' })
+        .fill(date.toLocaleString('nb-NO'))
+    await page.getByRole('button', { name: 'Oppdater' }).click()
+}
+
+export async function setRelativeDate(
+    page: Page,
+    testId: string,
+    unit: 'seconds' | 'minutes' | 'hours' | 'weeks' | 'months' | 'years',
+    duration: number
+) {
+    await page.getByTestId(testId).click()
+    await page.getByLabel('', { exact: true }).first().click()
+    await page.getByLabel('', { exact: true }).first().fill(`${duration}`)
+    await page
+        .getByRole('tabpanel', { name: 'Relativ' })
+        .getByRole('combobox')
+        .selectOption(unit)
+    await page.getByRole('button', { name: 'Oppdater' }).click()
+}
+
+export async function setNowDate(page: Page, testId: string) {
+    await page.getByTestId(testId).click()
+    await page.getByRole('tab', { name: 'Nå' }).click()
+    await page.getByRole('button', { name: 'Sett tiden til "Nå"' }).click()
 }
