@@ -27,6 +27,7 @@ import { DatePickerStandalone } from '@navikt/ds-react/DatePicker'
 import { CompactTextField } from '@/components/CompactTextField.tsx'
 import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
 import { useElementHeight } from '@/hooks/useElementHeight.ts'
+import { parseSearchParamDate } from '@/lib/date.ts'
 
 import styles from './DateRangeSelect.module.css'
 
@@ -42,7 +43,7 @@ const capitalize = (value: string) => {
 }
 
 const parseDate = (localized: string): Date => {
-    return parse(localized, 'dd/MM/yyyy, HH:mm:ss', new Date())
+    return parse(localized, 'dd.MM.yyyy, HH:mm:ss', new Date())
 }
 
 type AbsoluteTimeSelectProps = {
@@ -58,7 +59,7 @@ const AbsoluteTimeSelect: React.FC<AbsoluteTimeSelectProps> = ({
 
     const [hours, setHours] = useState(format(time, 'HH:mm'))
     const [date, setDate] = useState(time)
-    const [value, setValue] = useState(time.toLocaleString())
+    const [value, setValue] = useState(time.toLocaleString("nb-NO"))
     const [error, setError] = useState<string | null>()
 
     const onChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +78,7 @@ const AbsoluteTimeSelect: React.FC<AbsoluteTimeSelectProps> = ({
     const onSelectDate = (date?: Date) => {
         if (date) {
             setDate(date)
-            setValue(date.toLocaleString())
+            setValue(date.toLocaleString("nb-NO"))
             setError(null)
         }
     }
@@ -94,7 +95,7 @@ const AbsoluteTimeSelect: React.FC<AbsoluteTimeSelectProps> = ({
         newValue.setHours(hours)
         newValue.setMinutes(minutes)
         newValue.setSeconds(0)
-        setValue(newValue.toLocaleString())
+        setValue(newValue.toLocaleString("nb-NO"))
     }
 
     const onClickUpdate = () => {
@@ -170,21 +171,21 @@ const RelativeTimeSelect: React.FC<RelativeTimeSelectProps> = ({
     )
 
     const [value, setValue] = useState(
-        sub(new Date(), { [unit]: duration }).toLocaleString()
+        sub(new Date(), { [unit]: duration }).toLocaleString('nb-NO')
     )
     const [error, setError] = useState<string | null>()
 
     const onChangeDuration = (event: React.ChangeEvent<HTMLInputElement>) => {
         const duration = +event.target.value
         setDuration(duration)
-        setValue(sub(new Date(), { [unit]: duration }).toLocaleString())
+        setValue(sub(new Date(), { [unit]: duration }).toLocaleString('nb-NO'))
         setError(null)
     }
 
     const onChangeUnit = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const unit = event.target.value
         setUnit(unit)
-        setValue(sub(new Date(), { [unit]: duration }).toLocaleString())
+        setValue(sub(new Date(), { [unit]: duration }).toLocaleString('nb-NO'))
         setError(null)
     }
 
@@ -256,12 +257,12 @@ const RelativeTimeSelect: React.FC<RelativeTimeSelectProps> = ({
 }
 
 type NowTimeSelectProps = {
-    onSelectTime: (date: Date) => void
+    onSelectTime: () => void
 }
 
 const NowTimeSelect: React.FC<NowTimeSelectProps> = ({ onSelectTime }) => {
     const setToNow = () => {
-        onSelectTime(new Date())
+        onSelectTime()
     }
 
     return (
@@ -282,7 +283,7 @@ type DateSelectDropdownProps = Omit<
     'children'
 > & {
     time: Date
-    onSelectTime: (date: Date) => void
+    onSelectTime: (date: string) => void
 }
 
 const DateSelectDropdown: React.FC<DateSelectDropdownProps> = ({
@@ -292,27 +293,27 @@ const DateSelectDropdown: React.FC<DateSelectDropdownProps> = ({
 }) => {
     const [label, setLabel] = useState(
         intlFormatDistance(time, new Date(), {
-            locale: 'no',
+            locale: 'nb-NO',
         })
     )
 
     const onSetAbsoluteTime = (date: Date) => {
-        setLabel(date.toLocaleString())
-        onSelectTime(date)
+        setLabel(date.toLocaleString('nb-NO'))
+        onSelectTime(date.toISOString())
     }
 
     const onSetRelativeTime = (date: Date) => {
         setLabel(
             intlFormatDistance(date, new Date(), {
-                locale: 'no',
+                locale: 'nb-NO',
             })
         )
-        onSelectTime(date)
+        onSelectTime(date.toISOString())
     }
 
     const onSetNowTime = () => {
         setLabel('Nå')
-        onSelectTime(new Date())
+        onSelectTime('now')
     }
 
     return (
@@ -327,9 +328,21 @@ const DateSelectDropdown: React.FC<DateSelectDropdownProps> = ({
                     fill
                 >
                     <TabsList>
-                        <TabsTab value="absolute" label="Absolutt" />
-                        <TabsTab value="relative" label="Relativ" />
-                        <TabsTab value="now" label="Nå" />
+                        <TabsTab
+                            value="absolute"
+                            label="Absolutt"
+                            data-testid="date-range-absolute-tab"
+                        />
+                        <TabsTab
+                            value="relative"
+                            label="Relativ"
+                            data-testid="date-range-relative-tab"
+                        />
+                        <TabsTab
+                            value="now"
+                            label="Nå"
+                            data-testid="date-range-now-tab"
+                        />
                     </TabsList>
                     <TabsPanel className={styles.tabsPanel} value="absolute">
                         <AbsoluteTimeSelect
@@ -359,19 +372,21 @@ export const DateRangeSelect = () => {
     const state: Record<string, string> = useMemo(() => {
         return {
             fom:
-                searchParams.get('fom') ??
+                parseSearchParamDate(searchParams, 'fom') ??
                 subDays(new Date(), 30).toISOString(),
-            tom: searchParams.get('tom') ?? new Date().toISOString(),
+            tom:
+                parseSearchParamDate(searchParams, 'tom') ??
+                new Date().toISOString(),
         }
     }, [searchParams])
 
     const updateFom = useCallback(
-        (value: Date) => setSearchParams({ fom: value.toISOString() }),
+        (value: string) => setSearchParams({ fom: value }),
         [setSearchParams]
     )
 
     const updateTom = useCallback(
-        (value: Date) => setSearchParams({ tom: value.toISOString() }),
+        (value: string) => setSearchParams({ tom: value }),
         [setSearchParams]
     )
 
@@ -380,12 +395,14 @@ export const DateRangeSelect = () => {
             <div className={styles.label}>Tidsrom</div>
             <HStack className={styles.buttons} gap="space-16">
                 <DateSelectDropdown
+                    data-testid="date-range-fom"
                     time={new Date(state.fom)}
                     onSelectTime={updateFom}
                     className={styles.dateSelectButton}
                 />
                 <ArrowRightIcon className={styles.arrowIcon} />
                 <DateSelectDropdown
+                    data-testid="date-range-tom"
                     time={new Date(state.tom)}
                     onSelectTime={updateTom}
                     className={styles.dateSelectButton}

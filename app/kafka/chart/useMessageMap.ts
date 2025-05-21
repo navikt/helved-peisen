@@ -7,19 +7,21 @@ import {
     isEqual,
     startOfDay,
     startOfHour,
-    startOfMinute, subDays,
+    startOfMinute,
+    subDays,
 } from 'date-fns'
 
 import type { Message } from '@/app/kafka/types.ts'
 import { ReadonlyURLSearchParams } from 'next/navigation'
+import { parseSearchParamDate } from '@/lib/date.ts'
 
 const getStartDate = (searchParams: ReadonlyURLSearchParams) => {
-    const start = searchParams.get('fom')
+    const start = parseSearchParamDate(searchParams, 'fom')
     return typeof start === 'string' ? new Date(start) : subDays(new Date(), 30)
 }
 
 const getEndDate = (searchParams: ReadonlyURLSearchParams) => {
-    const end = searchParams.get('tom')
+    const end = parseSearchParamDate(searchParams, 'tom')
     return typeof end === 'string' ? new Date(end) : new Date()
 }
 

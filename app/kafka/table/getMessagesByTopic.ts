@@ -2,12 +2,22 @@
 
 import { Message, TopicName, Topics } from '@/app/kafka/types.ts'
 import { fetchMessages } from '@/lib/api/kafka.ts'
-import { ReadonlyURLSearchParams } from 'next/navigation'
+import { parseSearchParamDate } from '@/lib/date.ts'
 
 export const getMessagesByTopic = async (
     params: string
 ): Promise<ApiResponse<Record<TopicName, Message[]>>> => {
-    const searchParams = new ReadonlyURLSearchParams(params)
+    const searchParams = new URLSearchParams(params)
+
+    const fom = parseSearchParamDate(searchParams, 'fom')
+    if (fom) {
+        searchParams.set('fom', fom)
+    }
+
+    const tom = parseSearchParamDate(searchParams, 'tom')
+    if (tom) {
+        searchParams.set('tom', tom)
+    }
 
     const messages = await fetchMessages(searchParams)
 
