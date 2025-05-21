@@ -59,7 +59,7 @@ const AbsoluteTimeSelect: React.FC<AbsoluteTimeSelectProps> = ({
 
     const [hours, setHours] = useState(format(time, 'HH:mm'))
     const [date, setDate] = useState(time)
-    const [value, setValue] = useState(time.toLocaleString("nb-NO"))
+    const [value, setValue] = useState(time.toLocaleString('nb-NO'))
     const [error, setError] = useState<string | null>()
 
     const onChangeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +78,7 @@ const AbsoluteTimeSelect: React.FC<AbsoluteTimeSelectProps> = ({
     const onSelectDate = (date?: Date) => {
         if (date) {
             setDate(date)
-            setValue(date.toLocaleString("nb-NO"))
+            setValue(date.toLocaleString('nb-NO'))
             setError(null)
         }
     }
@@ -95,7 +95,7 @@ const AbsoluteTimeSelect: React.FC<AbsoluteTimeSelectProps> = ({
         newValue.setHours(hours)
         newValue.setMinutes(minutes)
         newValue.setSeconds(0)
-        setValue(newValue.toLocaleString("nb-NO"))
+        setValue(newValue.toLocaleString('nb-NO'))
     }
 
     const onClickUpdate = () => {
@@ -268,8 +268,8 @@ const NowTimeSelect: React.FC<NowTimeSelectProps> = ({ onSelectTime }) => {
     return (
         <>
             <BodyShort>
-                Å sette tiden til &quot;Nå&quot; betyr at tiden ved refresh av
-                siden vil settes til tiden du klikket på knappen under.
+                Å sette tiden til &quot;Nå&quot; betyr at tiden vil oppdatere
+                seg ved hver refresh til å være tiden refreshen ble foretatt.
             </BodyShort>
             <Button size="small" onClick={setToNow}>
                 Sett tiden til &quot;Nå&quot;
