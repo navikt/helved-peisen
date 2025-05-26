@@ -13,11 +13,7 @@ import { logger } from '@navikt/next-logger'
 const UTSJEKK_TOKEN_NAME = 'utsjekk-token'
 
 export const checkToken = async () => {
-    if (
-        process.env.NODE_ENV === 'development' ||
-        process.env.NEXT_PUBLIC_API_FAKING === 'enabled'
-    )
-        return
+    if (isLocal || isFaking) return
 
     const token = getToken(await headers())
     if (!token) {
@@ -93,7 +89,7 @@ export const fetchApiToken = async (): Promise<string> => {
         return existing
     }
 
-    logger.info("Henter nytt token")
+    logger.info('Henter nytt token')
 
     const token = getToken(await headers())
     if (!token) {

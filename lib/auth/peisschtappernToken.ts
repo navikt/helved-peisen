@@ -13,11 +13,7 @@ import { logger } from '@navikt/next-logger'
 const PEISSCHTAPPERN_TOKEN_NAME = 'peisschtappern-token'
 
 export const checkToken = async () => {
-    if (
-        process.env.NODE_ENV === 'development' ||
-        process.env.NEXT_PUBLIC_API_FAKING === 'enabled'
-    )
-        return
+    if (isLocal || isFaking) return
 
     const token = getToken(await headers())
     if (!token) {
@@ -32,7 +28,7 @@ export const checkToken = async () => {
 }
 
 export const checkApiToken = async () => {
-    if (process.env.NEXT_PUBLIC_API_FAKING === 'enabled') {
+    if (isFaking) {
         return
     }
     const cookieStore = await cookies()
@@ -100,7 +96,7 @@ export const fetchApiToken = async (): Promise<string> => {
         throw new Error('Mangler access token')
     }
 
-    const scope = requireEnv('UTSJEKK_SCOPE')
+    const scope = requireEnv('PEISSCHTAPPERN_SCOPE')
     const result = await requestAzureClientCredentialsToken(scope)
     if (!result.ok) {
         logger.error(`Henting av api-token feilet: ${result.error.message}`)

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import clsx from 'clsx'
 import { format } from 'date-fns/format'
 import { formatDistanceStrict } from 'date-fns/formatDistanceStrict'
@@ -30,6 +30,7 @@ import { useElementHeight } from '@/hooks/useElementHeight.ts'
 import { parseSearchParamDate } from '@/lib/date.ts'
 
 import styles from './DateRangeSelect.module.css'
+import { differenceInSeconds } from 'date-fns'
 
 const times = new Array(24)
     .fill(0)
@@ -233,7 +234,6 @@ const RelativeTimeSelect: React.FC<RelativeTimeSelectProps> = ({
                     value={unit}
                     onChange={onChangeUnit}
                 >
-                    <option value="seconds">Sekunder siden</option>
                     <option value="minutes">Minutter siden</option>
                     <option value="hours">Timer siden</option>
                     <option value="days">Dager siden</option>
@@ -278,6 +278,22 @@ const NowTimeSelect: React.FC<NowTimeSelectProps> = ({ onSelectTime }) => {
     )
 }
 
+const formatTimeLabelForMode = (
+    time: Date,
+    mode: 'absolute' | 'relative' | 'now'
+) => {
+    switch (mode) {
+        case 'absolute':
+            return time.toLocaleString()
+        case 'relative':
+            return intlFormatDistance(time, new Date(), {
+                locale: 'nb-NO',
+            })
+        default:
+            return time.toISOString()
+    }
+}
+
 type DateSelectDropdownProps = Omit<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     'children'
@@ -291,28 +307,28 @@ const DateSelectDropdown: React.FC<DateSelectDropdownProps> = ({
     onSelectTime,
     ...rest
 }) => {
-    const [label, setLabel] = useState(
-        intlFormatDistance(time, new Date(), {
-            locale: 'nb-NO',
-        })
-    )
+    const [mode, setMode] = useState<'absolute' | 'relative'>('relative')
+    const [label, setLabel] = useState(formatTimeLabelForMode(time, mode))
+
+    useEffect(() => {
+        if (differenceInSeconds(new Date(), time) < 30) {
+            setLabel('Nå')
+        } else {
+            setLabel(formatTimeLabelForMode(time, mode))
+        }
+    }, [time, mode])
 
     const onSetAbsoluteTime = (date: Date) => {
-        setLabel(date.toLocaleString('nb-NO'))
+        setMode('absolute')
         onSelectTime(date.toISOString())
     }
 
     const onSetRelativeTime = (date: Date) => {
-        setLabel(
-            intlFormatDistance(date, new Date(), {
-                locale: 'nb-NO',
-            })
-        )
+        setMode('relative')
         onSelectTime(date.toISOString())
     }
 
     const onSetNowTime = () => {
-        setLabel('Nå')
         onSelectTime('now')
     }
 

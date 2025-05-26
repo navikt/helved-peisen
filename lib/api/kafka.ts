@@ -1,6 +1,8 @@
+'use server'
+
 import { Routes } from '@/lib/api/routes.ts'
 import { logger } from '@navikt/next-logger'
-import { fetchApiToken } from '@/lib/auth/token.ts'
+import { fetchApiToken } from '@/lib/auth/peisschtappernToken.ts'
 import { Message } from '@/app/kafka/types.ts'
 
 export const fetchMessages = async (

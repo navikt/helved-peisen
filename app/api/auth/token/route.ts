@@ -10,10 +10,11 @@ import { requireEnv } from '@/lib/env'
 
 export const GET = async (_: NextRequest) => {
     await checkToken()
-    await checkPeisToken()
     const token = await fetchApiToken()
-    const peisToken = await fetchPeisApiToken()
     await updateCookieToken(token)
+
+    await checkPeisToken()
+    const peisToken = await fetchPeisApiToken()
     await updatePeisCookieToken(peisToken)
 
     return NextResponse.redirect(requireEnv('NEXT_PUBLIC_HOSTNAME'))
