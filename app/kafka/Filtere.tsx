@@ -1,13 +1,34 @@
 'use client'
 
 import clsx from 'clsx'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useLayoutEffect, useMemo } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { subDays } from 'date-fns'
+
 import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox'
 import { UrlSearchParamInput } from '@/components/UrlSearchParamInput.tsx'
 import { DateRangeSelect } from '@/app/kafka/DateRangeSelect.tsx'
 
 import styles from './Filtere.module.css'
+
+const useDefaultTidsrom = () => {
+    const router = useRouter()
+    const searchParams = useSearchParams()
+
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams)
+        if (!params.has('fom')) {
+            params.set('fom', subDays(new Date(), 30).toISOString())
+        }
+        if (!params.has('tom')) {
+            params.set('tom', new Date().toISOString())
+        }
+
+        if (params.toString() !== searchParams.toString()) {
+            router.push(`?${params.toString()}`, { scroll: false })
+        }
+    }, [searchParams, router])
+}
 
 const shouldUpdate = (
     searchParams: URLSearchParams,
@@ -28,12 +49,13 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
         return {
             fom: searchParams.get('fom'),
             tom: searchParams.get('tom'),
-            limit: searchParams.get('limit'),
             topics: searchParams.get('topics'),
         }
     }, [searchParams])
 
-    useEffect(() => {
+    useDefaultTidsrom()
+
+    useLayoutEffect(() => {
         // Oppdaterer search parameters med verdiene i state.params
         if (shouldUpdate(searchParams, state)) {
             const search = new URLSearchParams(searchParams.toString())
@@ -95,11 +117,6 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     isMultiSelect
                     size="small"
                     hideDropdown
-                />
-                <UrlSearchParamInput
-                    label="Limit"
-                    searchParamName="limit"
-                    size="small"
                 />
                 <DateRangeSelect />
             </div>

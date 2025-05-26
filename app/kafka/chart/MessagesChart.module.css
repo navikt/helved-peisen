@@ -2,7 +2,7 @@
     width: 100%;
     margin-bottom: var(--ax-space-20);
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     gap: var(--ax-space-8);
     grid-area: chart;
 }

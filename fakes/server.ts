@@ -57,7 +57,6 @@ app.get('/api', async (req, res) => {
     const tom = typeof req.query.tom === 'string' ? req.query.tom : undefined
     const topics =
         parseStringQueryParam(req.query.topics) ?? Object.values(Topics)
-    const limit = req.query.limit ? +req.query.limit : 10_000
     const key = typeof req.query.key === 'string' ? req.query.key : undefined
     const value = parseStringQueryParam(req.query.value) ?? []
 
@@ -75,7 +74,6 @@ app.get('/api', async (req, res) => {
                     ? value.some((val) => it.value?.includes(val))
                     : true)
         )
-        .slice(0, limit)
 
     await sleep(100)
     res.send(JSON.stringify(filteredMessages)).status(200)
