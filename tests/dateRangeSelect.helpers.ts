@@ -11,99 +11,83 @@ type RelativeCheck = {
     toleranceHours?: number
 }
 
-export async function expectDates(
+// Waits for given predicate to return true.
+// Predicate tests the value of search param with given key.
+export async function waitForSearchParam(
     page: Page,
-    {
-        fom,
-        tom,
-    }: {
-        fom: {
-            absolute?: AbsoluteCheck
-            relative?: RelativeCheck
-            now?: boolean
-        }
-        tom: {
-            absolute?: AbsoluteCheck
-            relative?: RelativeCheck
-            now?: boolean
-        }
+    key: string,
+    predicate: (value: string) => boolean
+) {
+    await page.waitForFunction(
+        ({ key, predicate }) => {
+            const pred = eval('(' + predicate + ')')
+            const params = new URL(window.location.href).searchParams
+            return pred(params.get(key))
+        },
+        { key, predicate: predicate.toString() }
+    )
+}
+
+function checkRelative(relative: RelativeCheck, value: string): boolean {
+    const date = new Date(value)
+    const now = new Date()
+    const diffHrs = Math.round(
+        (now.getTime() - date.getTime()) / (1000 * 60 * 60)
+    )
+    const rtf = new Intl.RelativeTimeFormat('nb-NO', {
+        numeric: 'auto',
+    })
+    const formatted = rtf.format(-diffHrs, 'hour')
+    const diff = Math.abs(diffHrs - relative.expectedHoursAgo)
+
+    if (diff > (relative.toleranceHours || 0)) {
+        return false
+    }
+
+    return formatted.includes('for')
+}
+
+// Checks that the url has search param with a date value matching the given
+// absolute or relative time predicates or the value "now"
+export async function expectDate(
+    page: Page,
+    key: string,
+    options: {
+        absolute?: AbsoluteCheck
+        relative?: RelativeCheck
+        now?: boolean
     }
 ) {
     await page.waitForFunction(
-        ({ fomCheck, tomCheck }) => {
+        ({ key, options, checkRelativeSerialized }) => {
             const params = new URL(window.location.href).searchParams
-            const fom = params.get('fom')
-            const tom = params.get('tom')
+            const date = params.get(key)
 
-            if (!fom || !tom) {
+            if (!date) {
                 return false
             }
 
-            if (fomCheck.now) {
-                if (fom !== 'now') return false
+            if (options.now) {
+                return date === 'now'
             }
 
-            if (tomCheck.now) {
-                if (tom !== 'now') return false
+            if (options.relative) {
+                const checkRelative = eval('(' + checkRelativeSerialized + ')')
+                return checkRelative(options.relative, date)
             }
 
-            function checkRelative(
-                relative: RelativeCheck,
-                value: string
-            ): boolean {
-                const date = new Date(value)
-                const now = new Date()
-                const diffHrs = Math.round(
-                    (now.getTime() - date.getTime()) / (1000 * 60 * 60)
+            if (options.absolute) {
+                const dateObject = new Date(date)
+                return (
+                    dateObject.getFullYear() === options.absolute.year &&
+                    dateObject.getMonth() === options.absolute.month &&
+                    dateObject.getDate() === options.absolute.date
                 )
-                const rtf = new Intl.RelativeTimeFormat('nb-NO', {
-                    numeric: 'auto',
-                })
-                const formatted = rtf.format(-diffHrs, 'hour')
-                const diff = Math.abs(diffHrs - relative.expectedHoursAgo)
-
-                if (diff > (relative.toleranceHours || 0)) {
-                    return false
-                }
-
-                return formatted.includes('for')
             }
 
-            if (fomCheck.relative) {
-                if (!checkRelative(fomCheck.relative, fom)) {
-                    return false
-                }
-            }
-
-            if (tomCheck.relative) {
-                if (!checkRelative(tomCheck.relative, tom)) {
-                    return false
-                }
-            }
-
-            if (fomCheck.absolute) {
-                const date = new Date(fom)
-                if (
-                    date.getFullYear() !== fomCheck.absolute.year ||
-                    date.getMonth() !== fomCheck.absolute.month ||
-                    date.getDate() !== fomCheck.absolute.date
-                )
-                    return false
-            }
-
-            if (tomCheck.absolute) {
-                const date = new Date(tom)
-                if (
-                    date.getFullYear() !== tomCheck.absolute.year ||
-                    date.getMonth() !== tomCheck.absolute.month ||
-                    date.getDate() !== tomCheck.absolute.date
-                )
-                    return false
-            }
-
-            return true
+            return false
         },
-        { fomCheck: fom, tomCheck: tom }
+        { key, options, checkRelativeSerialized: checkRelative.toString() }
     )
 }
 
