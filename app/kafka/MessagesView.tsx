@@ -26,6 +26,7 @@ export const MessagesView = () => {
 
     useEffect(() => {
         if (searchParams.get("fom") && searchParams.get("tom")) {
+            setLoading(true)
             getMessagesByTopic(searchParams.toString()).then((res) => {
                 setMessages(res)
                 setLoading(false)
