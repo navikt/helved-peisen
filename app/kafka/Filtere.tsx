@@ -18,7 +18,7 @@ const useDefaultTidsrom = () => {
     useEffect(() => {
         const params = new URLSearchParams(searchParams)
         if (!params.has('fom')) {
-            params.set('fom', subDays(new Date(), 30).toISOString())
+            params.set('fom', subDays(new Date(), 7).toISOString())
         }
         if (!params.has('tom')) {
             params.set('tom', new Date().toISOString())
