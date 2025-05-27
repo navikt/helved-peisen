@@ -3,6 +3,9 @@ name: Build, push, and deploy
 on:
   push:
 
+env:
+  PLAYWRIGHT_VERSION: 1.52.0
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -37,19 +40,27 @@ jobs:
       - name: Run unit tests
         run: npm run test
 
-      - name: Set Playwright Version
-        run: echo "PLAYWRIGHT_VERSION=$(npm view @playwright/test version)" >> $GITHUB_ENV
-
-      - name: Cache Playwright Browsers
+      - name: Cache Playwright browsers
         id: cache-playwright-browsers
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
           key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
 
+      - name: Cache Playwright project files
+        uses: actions/cache@v4
+        with:
+          path: .playwright
+          key: playwright-project-cache-${{ hashFiles('playwright.config.*') }}
+
       - name: Install Playwright Browsers
         if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
+
+      - name: Show Playwright version & installed browsers
+        run: |
+          npx playwright --version
+          npx playwright show-browsers
 
       - name: Run Playwright tests
         run: npx playwright test
