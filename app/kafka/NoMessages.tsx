@@ -1,12 +1,14 @@
 'use client'
 
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { BodyShort, Button, Heading, VStack } from '@navikt/ds-react'
 
 import noMessages from '@/public/404.png'
 
 import styles from './NoMessages.module.css'
-import { useRouter } from 'next/navigation'
+import fadeIn from '@/styles/fadeIn.module.css'
+import clsx from 'clsx'
 
 export const NoMessages = () => {
     const size = 300
@@ -18,7 +20,11 @@ export const NoMessages = () => {
     }
 
     return (
-        <VStack className={styles.container} justify="center" align="center">
+        <VStack
+            className={clsx(styles.container, fadeIn.animation)}
+            justify="center"
+            align="center"
+        >
             <Image
                 className={styles.image}
                 src={noMessages.src}
