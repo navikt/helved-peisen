@@ -1,4 +1,4 @@
-import { checkApiToken, checkToken } from '@/lib/auth/peisschtappernToken'
+import { checkApiToken, checkToken } from '@/lib/auth/apiToken.ts'
 import { Filtere } from '@/app/kafka/Filtere.tsx'
 import { MessagesView } from '@/app/kafka/MessagesView.tsx'
 

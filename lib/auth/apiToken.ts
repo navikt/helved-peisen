@@ -34,7 +34,7 @@ export const checkApiToken = async () => {
     const cookieStore = await cookies()
     const existingApiToken = cookieStore.get(PEISSCHTAPPERN_TOKEN_NAME)
     if (!existingApiToken) {
-        redirect('/api/auth/token')
+        redirect('/api/auth/token/kafka')
     }
 }
 
@@ -52,7 +52,7 @@ const getTokenFromCookie = async () => {
     return null
 }
 
-export const updateCookieToken = async (token: string) => {
+export const updateCookie = async (token: string) => {
     const cookieStore = await cookies()
     cookieStore.set({
         name: PEISSCHTAPPERN_TOKEN_NAME,
@@ -71,7 +71,7 @@ const getLocalToken = async (): Promise<string> => {
     const response = await fetch('http://localhost:8080/token')
     const body = await response.json()
 
-    await updateCookieToken(body.access_token)
+    await updateCookie(body.access_token)
     return body.access_token
 }
 

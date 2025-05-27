@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { checkToken, fetchApiToken, updateCookieToken } from '@/lib/auth/token'
 
+import { checkToken, fetchApiToken, updateCookie } from '@/lib/auth/apiToken'
 import { requireEnv } from '@/lib/env'
 
 export const GET = async (_: NextRequest) => {
     await checkToken()
-    const token = await fetchApiToken()
-    await updateCookieToken(token)
+    const apiToken = await fetchApiToken()
+    await updateCookie(apiToken)
 
     return NextResponse.redirect(requireEnv('NEXT_PUBLIC_HOSTNAME'))
 }

@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { checkToken, fetchApiToken } from '@/lib/auth/peisschtappernToken.ts'
+import { checkToken, fetchApiToken } from '@/lib/auth/apiToken'
 
 export async function POST(request: NextRequest) {
     await checkToken()
