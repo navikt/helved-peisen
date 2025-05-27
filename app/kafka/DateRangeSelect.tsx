@@ -416,16 +416,16 @@ export const DateRangeSelect = () => {
                     onSelectTime={updateFom}
                     className={styles.dateSelectButton}
                 />
-                <ArrowRightIcon className={styles.arrowIcon} />
+                <ArrowRightIcon />
                 <DateSelectDropdown
                     data-testid="date-range-tom"
                     time={new Date(state.tom)}
                     onSelectTime={updateTom}
                     className={styles.dateSelectButton}
                 />
-                <Button className={clsx(styles.textFieldButton)}>
+                <div className={clsx(styles.textFieldButton)}>
                     <CalendarIcon fontSize={24} />
-                </Button>
+                </div>
             </HStack>
         </div>
     )
