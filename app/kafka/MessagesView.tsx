@@ -13,6 +13,7 @@ import {
     MessagesTableSkeleton,
 } from '@/app/kafka/table/MessagesTable.tsx'
 import { getMessagesByTopic } from '@/app/kafka/table/getMessagesByTopic.ts'
+import { NoMessages } from '@/app/kafka/NoMessages.tsx'
 import { Message } from './types.ts'
 
 import styles from '@/app/scheduler/Tasks.module.css'
@@ -25,7 +26,7 @@ export const MessagesView = () => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        if (searchParams.get("fom") && searchParams.get("tom")) {
+        if (searchParams.get('fom') && searchParams.get('tom')) {
             setLoading(true)
             getMessagesByTopic(searchParams.toString()).then((res) => {
                 setMessages(res)
@@ -49,6 +50,10 @@ export const MessagesView = () => {
                 {messages.error.message}
             </Alert>
         )
+    }
+
+    if (Object.values(messages.data).flat().length === 0) {
+        return <NoMessages />
     }
 
     return (
