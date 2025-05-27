@@ -2,6 +2,7 @@
 
 import { Message, TopicName, Topics } from '@/app/kafka/types.ts'
 import { fetchMessages } from '@/lib/api/kafka.ts'
+import { requireEnv } from '@/lib/env.ts'
 
 const groupMessagesByTopic = (
     messages: Message[]
@@ -18,10 +19,15 @@ export const getMessagesByTopic = async (
     params: string
 ): Promise<ApiResponse<Record<TopicName, Message[]>>> => {
     const searchParams = new URLSearchParams(params)
-    const messages = await fetchMessages(searchParams)
+    let messages = await fetchMessages(searchParams)
 
     if (messages.error) {
         return messages
+    }
+
+    // Skjuler value hvis vi f.eks. er i prod
+    if (requireEnv("SHOW_MESSAGE_PAYLOAD") === "false") {
+        messages = { data: messages.data.map(it => ({ ...it, value: null })), error: null }
     }
 
     return { data: groupMessagesByTopic(messages.data), error: null }

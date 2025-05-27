@@ -35,15 +35,17 @@ spec:
         - application: peisschtappern
   env:
     - name: NEXT_PUBLIC_HOSTNAME
-      value: https://peisen.intern.dev.nav.no
+      value: "https://peisen.intern.dev.nav.no"
     - name: UTSJEKK_SCOPE
-      value: api://dev-gcp.helved.utsjekk/.default
+      value: "api://dev-gcp.helved.utsjekk/.default"
     - name: TASK_API_BASE_URL
-      value: http://utsjekk
+      value: "http://utsjekk"
     - name: PEISSCHTAPPERN_SCOPE
-      value: api://dev-gcp.helved.peisschtappern/.default
+      value: "api://dev-gcp.helved.peisschtappern/.default"
     - name: PEISSCHTAPPERN_API_BASE_URL
-      value: http://peisschtappern
+      value: "http://peisschtappern"
+    - name: SHOW_MESSAGE_PAYLOAD
+      value: "true"
   liveness:
     path: /internal/is-alive
     initialDelay: 10

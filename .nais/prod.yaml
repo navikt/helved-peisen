@@ -21,7 +21,10 @@ spec:
   azure:
     application:
       enabled: true
-      allowAllUsers: true
+      allowAllUsers: false
+      claims:
+        groups:
+          - id: "97140b9a-07c5-414c-beeb-69824d04c044" # 0000-GA-Dagpenger-Prosessering-Admin
     sidecar:
       enabled: true
   accessPolicy:
@@ -31,15 +34,17 @@ spec:
         - application: peisschtappern
   env:
     - name: NEXT_PUBLIC_HOSTNAME
-      value: https://peisen.intern.nav.no
+      value: "https://peisen.intern.nav.no"
     - name: UTSJEKK_SCOPE
-      value: api://prod-gcp.helved.utsjekk/.default
+      value: "api://prod-gcp.helved.utsjekk/.default"
     - name: TASK_API_BASE_URL
-      value: http://utsjekk
+      value: "http://utsjekk"
     - name: PEISSCHTAPPERN_SCOPE
-      value: api://prod-gcp.helved.peisschtappern/.default
+      value: "api://prod-gcp.helved.peisschtappern/.default"
     - name: PEISSCHTAPPERN_API_BASE_URL
-      value: http://peisschtappern
+      value: "http://peisschtappern"
+    - name: SHOW_MESSAGE_PAYLOAD
+      value: "false"
   liveness:
     path: /internal/is-alive
     initialDelay: 10
