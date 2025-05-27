@@ -29,7 +29,7 @@ test('oppdaterer search params med valgt type', async ({ page }) => {
 
     await selectType('Iverksetting', page)
 
-    await page.waitForURL('http://127.0.0.1:3000/scheduler?kind=Iverksetting')
+    await page.waitForURL('http://localhost:3000/scheduler?kind=Iverksetting')
     await waitForTasksToLoad(page)
 
     expectType('Iverksetting', page)
