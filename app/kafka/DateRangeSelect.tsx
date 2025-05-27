@@ -389,7 +389,7 @@ export const DateRangeSelect = () => {
         return {
             fom:
                 parseSearchParamDate(searchParams, 'fom') ??
-                subDays(new Date(), 30).toISOString(),
+                subDays(new Date(), 7).toISOString(),
             tom:
                 parseSearchParamDate(searchParams, 'tom') ??
                 new Date().toISOString(),
