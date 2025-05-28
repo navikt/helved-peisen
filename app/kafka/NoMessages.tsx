@@ -1,5 +1,6 @@
 'use client'
 
+import clsx from 'clsx'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { BodyShort, Button, Heading, VStack } from '@navikt/ds-react'
@@ -8,7 +9,6 @@ import noMessages from '@/public/404.png'
 
 import styles from './NoMessages.module.css'
 import fadeIn from '@/styles/fadeIn.module.css'
-import clsx from 'clsx'
 
 export const NoMessages = () => {
     const size = 300

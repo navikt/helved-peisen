@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
 import {
-    add,
+    add, addMilliseconds,
     differenceInMinutes,
     isAfter,
     isBefore,
     isEqual,
+    isWithinInterval,
     startOfDay,
     startOfHour,
     startOfMinute,
@@ -14,6 +15,7 @@ import {
 import type { Message } from '@/app/kafka/types.ts'
 import { ReadonlyURLSearchParams } from 'next/navigation'
 import { parseSearchParamDate } from '@/lib/date.ts'
+import { sub } from 'date-fns/sub'
 
 const getStartDate = (searchParams: ReadonlyURLSearchParams) => {
     const start = parseSearchParamDate(searchParams, 'fom')
@@ -45,13 +47,27 @@ const getMessageMap = (
 ): Record<string, Message[]> => {
     const map: Record<string, Message[]> = {}
 
-    let currentTime = truncateDateToIncrement(start, increment)
+    let currentTime = start
     while (currentTime.getTime() <= end.getTime()) {
         map[currentTime.toISOString()] = []
         currentTime = add(currentTime, { [increment]: 1 })
     }
 
     return map
+}
+
+const getKeyForMessage = (
+    message: Message,
+    keys: string[],
+    increment: Increment
+) => {
+    const timestamp = new Date(message.timestamp_ms)
+    return keys.filter((it) =>
+        isWithinInterval(it, {
+            start: addMilliseconds(sub(timestamp, { [increment]: 1 }), 1),
+            end: timestamp, //add(it, { [increment]: 1 }),
+        })
+    ).shift()
 }
 
 const truncateDateToIncrement = (date: Date, increment: Increment) => {
@@ -92,12 +108,15 @@ export const useMessageMap = (
         )
 
         for (const message of filteredMessages) {
-            const key = truncateDateToIncrement(
-                new Date(message.timestamp_ms),
+            const key = getKeyForMessage(
+                message,
+                Object.keys(messageMap),
                 increment
-            ).toISOString()
+            )
 
-            messageMap[key].push(message)
+            if (key) {
+                messageMap[key].push(message)
+            }
         }
         return [messageMap, increment] as const
     }, [searchParams, messages])

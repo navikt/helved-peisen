@@ -7,6 +7,7 @@ import { formatDistanceStrict } from 'date-fns/formatDistanceStrict'
 import { intlFormatDistance } from 'date-fns/intlFormatDistance'
 import { parse } from 'date-fns/parse'
 import { sub } from 'date-fns/sub'
+import { differenceInSeconds } from 'date-fns'
 import { subDays } from 'date-fns/subDays'
 import { useSearchParams } from 'next/navigation'
 import {
@@ -30,7 +31,6 @@ import { useElementHeight } from '@/hooks/useElementHeight.ts'
 import { parseSearchParamDate } from '@/lib/date.ts'
 
 import styles from './DateRangeSelect.module.css'
-import { differenceInSeconds } from 'date-fns'
 
 const times = new Array(24)
     .fill(0)

@@ -26,10 +26,13 @@ import styles from './MessagesChart.module.css'
 
 Chart.register(BarElement, BarController, CategoryScale, LinearScale)
 
-const FORMAT_STRING = 'MM-dd, HH:mm'
-
-const formatDate = (date: string | Date) => {
-    return format(date, FORMAT_STRING)
+const formatDate = (
+    date: string | Date,
+    increment: 'days' | 'hours' | 'minutes'
+) => {
+    return increment === 'days'
+        ? format(date, 'MM-dd')
+        : format(date, 'MM-dd, HH:mm')
 }
 
 const validDate = (date: Date): boolean => {
@@ -90,8 +93,11 @@ export const MessagesChart: React.FC<Props> = ({
 
     const data = useMemo(
         () =>
-            messageMap && {
-                labels: Object.keys(messageMap).map(formatDate),
+            messageMap &&
+            increment && {
+                labels: Object.keys(messageMap).map((it) =>
+                    formatDate(it, increment)
+                ),
                 datasets: [
                     {
                         data: Object.values(messageMap).map((it) => it.length),
