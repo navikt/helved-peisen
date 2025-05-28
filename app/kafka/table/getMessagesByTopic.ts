@@ -19,6 +19,15 @@ export const getMessagesByTopic = async (
     params: string
 ): Promise<ApiResponse<Record<TopicName, Message[]>>> => {
     const searchParams = new URLSearchParams(params)
+
+    if (searchParams.get("fom") === "now") {
+        searchParams.set("fom", new Date().toISOString())
+    }
+
+    if (searchParams.get("tom") === "now") {
+        searchParams.set("tom", new Date().toISOString())
+    }
+
     let messages = await fetchMessages(searchParams)
 
     if (messages.error) {
