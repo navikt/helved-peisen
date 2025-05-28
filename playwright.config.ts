@@ -14,7 +14,7 @@ const testEnv = { ...process.env } as { [key: string]: string }
  */
 export default defineConfig({
     testDir: './tests',
-    fullyParallel: true,
+    fullyParallel: !process.env.CI,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
     workers: process.env.CI ? 1 : undefined,
@@ -35,5 +35,6 @@ export default defineConfig({
         url: 'http://localhost:3000',
         reuseExistingServer: !process.env.CI,
         env: testEnv,
+        timeout: 120 * 1000, // 2 minutter
     },
 })
