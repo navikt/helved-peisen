@@ -17,14 +17,16 @@ export const TopicNameTag: React.FC<Props> = ({ name }) => {
             case 'helved.dryrun-tp.v1':
             case 'helved.dryrun-aap.v1':
             case 'helved.simuleringer.v1':
-                return "neutral"
+                return 'neutral'
             case 'helved.utbetalinger-aap.v1':
             case 'helved.utbetalinger.v1':
                 return 'success'
             case 'helved.saker.v1':
-                return "alt1"
+                return 'alt1'
             case 'helved.oppdrag.v1':
                 return 'warning'
+            case 'helved.status.v1':
+                return 'alt2'
         }
     })()
 
