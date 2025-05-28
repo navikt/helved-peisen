@@ -115,7 +115,8 @@ export const TaskTable: React.FC<Props> = ({
                                         {isStoppable(data) && (
                                             <StopTaskButton task={data} />
                                         )}
-                                        {isRetryable(data.status) && (
+                                        {(data.kind === 'Utbetaling' ||
+                                            isRetryable(data.status)) && (
                                             <RetryTaskButton task={data} />
                                         )}
                                     </HStack>
