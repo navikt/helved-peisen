@@ -31,7 +31,7 @@ export default defineConfig({
         },
     ],
     webServer: {
-        command: 'npm run fake & npx next dev',
+        command: 'npm run start:dev',
         url: 'http://localhost:3000',
         reuseExistingServer: !process.env.CI,
         env: testEnv,

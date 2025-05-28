@@ -1,64 +1,66 @@
 {
-  "name": "helved-peisen",
-  "version": "0.1.0",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "dev": "next dev | pino-pretty",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "test": "vitest run",
-    "e2e-test": "npx playwright test",
-    "fake": "node --watch --experimental-strip-types fakes/server.ts"
-  },
-  "dependencies": {
-    "@navikt/aksel-icons": "^7.20.0",
-    "@navikt/ds-css": "^7.20.0",
-    "@navikt/ds-react": "^7.20.0",
-    "@navikt/ds-tokens": "^7.20.0",
-    "@navikt/next-logger": "^2.0.0",
-    "@navikt/oasis": "^3.7.0",
-    "chart.js": "^4.4.8",
-    "clsx": "^2.1.1",
-    "date-fns": "^4.1.0",
-    "dotenv": "^16.4.7",
-    "next": "^15.1.7",
-    "pino": "^9.6.0",
-    "react": "^19.0.0",
-    "react-chartjs-2": "^5.3.0",
-    "react-dom": "^19.0.0",
-    "react-hot-toast": "^2.5.2",
-    "sharp": "^0.33.5",
-    "zod": "^3.24.2"
-  },
-  "devDependencies": {
-    "@faker-js/faker": "^8.4.1",
-    "@playwright/test": "^1.52.0",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.2.0",
-    "@testing-library/user-event": "^14.6.1",
-    "@types/express": "^5.0.0",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "@vitejs/plugin-react": "^4.3.2",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.3",
-    "express": "^4.21.0",
-    "jsdom": "^25.0.1",
-    "msw": "^2.4.11",
-    "next-router-mock": "^0.9.13",
-    "pino-pretty": "^11.2.2",
-    "prettier": "^3.2.5",
-    "typescript": "^5.5.4",
-    "uuid": "^11.1.0",
-    "vitest": "^3.0.7"
-  },
-  "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.39.0"
-  },
-  "engines": {
-    "node": "^23"
-  }
+    "name": "helved-peisen",
+    "version": "0.1.0",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "next dev | pino-pretty",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint",
+        "test": "vitest run",
+        "fake": "node --watch --experimental-strip-types fakes/server.ts",
+        "start:dev": "concurrently -k --names 'FAKE,NEXT' --prefix '[{name}]' --prefix-colors \"cyan,magenta\" -s first \"npm run fake\" \"npm run dev\"",
+        "test:e2e": "npx playwright test"
+    },
+    "dependencies": {
+        "@navikt/aksel-icons": "^7.20.0",
+        "@navikt/ds-css": "^7.20.0",
+        "@navikt/ds-react": "^7.20.0",
+        "@navikt/ds-tokens": "^7.20.0",
+        "@navikt/next-logger": "^2.0.0",
+        "@navikt/oasis": "^3.7.0",
+        "chart.js": "^4.4.8",
+        "clsx": "^2.1.1",
+        "date-fns": "^4.1.0",
+        "dotenv": "^16.4.7",
+        "next": "^15.1.7",
+        "pino": "^9.6.0",
+        "react": "^19.0.0",
+        "react-chartjs-2": "^5.3.0",
+        "react-dom": "^19.0.0",
+        "react-hot-toast": "^2.5.2",
+        "sharp": "^0.33.5",
+        "zod": "^3.24.2"
+    },
+    "devDependencies": {
+        "@faker-js/faker": "^8.4.1",
+        "@playwright/test": "^1.52.0",
+        "@testing-library/jest-dom": "^6.6.3",
+        "@testing-library/react": "^16.2.0",
+        "@testing-library/user-event": "^14.6.1",
+        "@types/express": "^5.0.0",
+        "@types/node": "^20",
+        "@types/react": "^18",
+        "@types/react-dom": "^18",
+        "@vitejs/plugin-react": "^4.3.2",
+        "concurrently": "^9.1.2",
+        "eslint": "^8",
+        "eslint-config-next": "14.2.3",
+        "express": "^4.21.0",
+        "jsdom": "^25.0.1",
+        "msw": "^2.4.11",
+        "next-router-mock": "^0.9.13",
+        "pino-pretty": "^11.2.2",
+        "prettier": "^3.2.5",
+        "typescript": "^5.5.4",
+        "uuid": "^11.1.0",
+        "vitest": "^3.0.7"
+    },
+    "optionalDependencies": {
+        "@rollup/rollup-linux-x64-gnu": "^4.39.0"
+    },
+    "engines": {
+        "node": "^23"
+    }
 }
