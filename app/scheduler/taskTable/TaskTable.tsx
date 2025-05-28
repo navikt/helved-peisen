@@ -27,6 +27,7 @@ const isRetryable = (status: TaskStatus) => {
     switch (status) {
         case 'IN_PROGRESS':
         case 'FAIL':
+        case 'MANUAL':
             return true
         default:
             return false
