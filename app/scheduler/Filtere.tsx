@@ -22,6 +22,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => (
                 isMultiSelect
                 renderForSearchParam={slugifyUpperCase}
                 renderForCombobox={deslugify}
+                size="small"
             />
             <UrlSearchParamComboBox
                 label="Type"
@@ -31,11 +32,13 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => (
                     ['Avstemming', 'Iverksetting', 'SjekkStatus', 'StatusUtbetaling', 'Utbetaling'] as const
                 }
                 isMultiSelect
+                size="small"
             />
             <UrlSearchParamInput
                 className={styles.input}
                 label="Søk i payload"
                 searchParamName="payload"
+                size="small"
             />
         </div>
     </div>

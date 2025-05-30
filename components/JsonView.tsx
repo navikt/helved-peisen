@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './JsonView.module.css'
 import { CopyButton } from '@navikt/ds-react'
+import clsx from 'clsx'
 
 type IndentProps = {
     indent: number
@@ -98,13 +99,17 @@ const JsonTypeView: React.FC<JsonTypeViewProps> = ({ json, indent }) => {
     return null
 }
 
-type JsonViewProps = {
+type JsonViewProps = React.HTMLAttributes<HTMLPreElement> & {
     json: ReturnType<typeof JSON.parse>
 }
 
-export const JsonView: React.FC<JsonViewProps> = ({ json }) => {
+export const JsonView: React.FC<JsonViewProps> = ({
+    json,
+    className,
+    ...rest
+}) => {
     return (
-        <pre className={styles.container}>
+        <pre className={clsx(styles.container, className)} {...rest}>
             <JsonTypeView json={json} indent={0} />
             <div className={styles.copyButtonContainer}>
                 <CopyButton size="xsmall" copyText={JSON.stringify(json)} />

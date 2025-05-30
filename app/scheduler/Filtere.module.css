@@ -17,14 +17,6 @@
   gap: var(--ax-space-32);
 }
 
-.filters > * {
-  min-height: 80px;
-}
-
-.input {
-  width: 330px;
-}
-
 @media screen and (max-width: 767px) {
   .filters {
     flex-direction: column;
