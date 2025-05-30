@@ -1,4 +1,4 @@
-import { HStack, Skeleton, Spacer, Table } from '@navikt/ds-react'
+import { CopyButton, HStack, Skeleton, Spacer, Table } from '@navikt/ds-react'
 import clsx from 'clsx'
 import {
     TableBody,
@@ -21,7 +21,10 @@ import styles from './TaskTable.module.css'
 
 const isRetryable = (status: TaskStatus) => {
     // Tillatt rekjøring av alle tasks i dev
-    if (window.location.host.includes('dev') || window.location.host.includes('localhost')) {
+    if (
+        window.location.host.includes('dev') ||
+        window.location.host.includes('localhost')
+    ) {
         return true
     }
     switch (status) {
@@ -35,7 +38,10 @@ const isRetryable = (status: TaskStatus) => {
 }
 
 const isStoppable = (task: Task) => {
-    if (!window.location.host.includes('dev') && !window.location.host.includes('localhost')) {
+    if (
+        !window.location.host.includes('dev') &&
+        !window.location.host.includes('localhost')
+    ) {
         // Tillater ikke manuell stopping av tasks i prod
         return false
     }
@@ -66,6 +72,7 @@ export const TaskTable: React.FC<Props> = ({
                         <TableHeaderCell />
                         <TableHeaderCell>Status</TableHeaderCell>
                         <TableHeaderCell>Type</TableHeaderCell>
+                        <TableHeaderCell>ID</TableHeaderCell>
                         <TableHeaderCell>Sist kjørt</TableHeaderCell>
                         <TableHeaderCell>Neste forsøk</TableHeaderCell>
                         <TableHeaderCell>Forsøk</TableHeaderCell>
@@ -100,6 +107,9 @@ export const TaskTable: React.FC<Props> = ({
                                 </TableDataCell>
                                 <TableDataCell>{data.kind}</TableDataCell>
                                 <TableDataCell>
+                                    <CopyButton text={data.id} copyText={data.id} />
+                                </TableDataCell>
+                                <TableDataCell>
                                     {formatDate(data.updatedAt)}
                                 </TableDataCell>
                                 <TableDataCell>
@@ -110,7 +120,10 @@ export const TaskTable: React.FC<Props> = ({
                                 <TableDataCell>{data.attempt}</TableDataCell>
                                 <TableDataCell>{data.message}</TableDataCell>
                                 <TableDataCell>
-                                    <HStack wrap={false} className={styles.buttons}>
+                                    <HStack
+                                        wrap={false}
+                                        className={styles.buttons}
+                                    >
                                         <Spacer />
                                         {isStoppable(data) && (
                                             <StopTaskButton task={data} />
