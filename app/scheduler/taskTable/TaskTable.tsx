@@ -66,7 +66,7 @@ export const TaskTable: React.FC<Props> = ({
 
     return (
         <div className={clsx(className, styles.tableContainer)} {...rest}>
-            <Table className={styles.table}>
+            <Table className={styles.table} size="small">
                 <TableHeader>
                     <TableRow>
                         <TableHeaderCell />
