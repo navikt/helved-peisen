@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { addDays, subDays, addSeconds } from 'date-fns'
+import { addDays, addSeconds, subDays } from 'date-fns'
 
 type Message = {
     version: string
@@ -400,18 +400,22 @@ export const TestData = {
                                 topicName,
                                 options
                             ),
-                            Math.random() > 0.3 && this.message(
-                                {
-                                    key,
-                                    value: JSON.stringify(
-                                        TestData.oppdrag(true)
-                                    ),
-                                    timestamp_ms: addSeconds(timestamp, 2).getTime(),
-                                },
-                                topicName,
-                                options
-                            ),
-                        ].filter(it => it) as Message[]
+                            Math.random() > 0.3 &&
+                                this.message(
+                                    {
+                                        key,
+                                        value: JSON.stringify(
+                                            TestData.oppdrag(true)
+                                        ),
+                                        timestamp_ms: addSeconds(
+                                            timestamp,
+                                            2
+                                        ).getTime(),
+                                    },
+                                    topicName,
+                                    options
+                                ),
+                        ].filter((it) => it) as Message[]
                     }
                     case 'helved.utbetalinger.v1':
                         return this.message(
@@ -465,7 +469,7 @@ export const TestData = {
     ): Task {
         return {
             id: randomUUID(),
-            payload: '',
+            payload: '{ "data": { "a":"b", "c": "d" } }',
             status: status,
             attempt: 1,
             createdAt: new Date().toISOString(),
