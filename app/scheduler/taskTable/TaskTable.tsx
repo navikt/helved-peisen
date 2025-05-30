@@ -147,7 +147,7 @@ export const TaskTableSkeleton: React.FC<
 > = ({ className, ...rest }) => {
     return (
         <div className={clsx(className, styles.tableContainer)} {...rest}>
-            <Table className={styles.table}>
+            <Table className={styles.table} size="small">
                 <TableHeader>
                     <TableRow>
                         <TableHeaderCell />
