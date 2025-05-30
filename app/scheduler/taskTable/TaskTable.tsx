@@ -107,7 +107,7 @@ export const TaskTable: React.FC<Props> = ({
                                 </TableDataCell>
                                 <TableDataCell>{data.kind}</TableDataCell>
                                 <TableDataCell>
-                                    <CopyButton text={data.id} copyText={data.id} />
+                                    <CopyButton size="xsmall" text={data.id} copyText={data.id} />
                                 </TableDataCell>
                                 <TableDataCell>
                                     {formatDate(data.updatedAt)}
