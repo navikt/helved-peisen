@@ -53,7 +53,7 @@ const MessageTableRowContents: React.FC<Props> = ({ message }) => {
 }
 
 const RowContents: React.FC<Props> = ({ message }) => {
-    const time = formatDate(message.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss')
+    const time = formatDate(message.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')
 
     const showKvitteringButton =
         message.topic_name === 'helved.oppdrag.v1' &&
