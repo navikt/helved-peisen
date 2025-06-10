@@ -1,7 +1,7 @@
 'use client'
 
 import clsx from 'clsx'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
     HStack,
     Pagination,
@@ -25,6 +25,7 @@ import { MessageTableRow } from '@/app/kafka/table/MessageTableRow.tsx'
 import fadeIn from '@/styles/fadeIn.module.css'
 import styles from './MessagesTable.module.css'
 import { MessagesProvider } from '@/app/kafka/table/MessagesContext.tsx'
+import { useSearchParams } from 'next/navigation'
 
 const getNextDirection = (
     direction: SortState['direction']
@@ -41,10 +42,26 @@ type Props = {
 }
 
 export const MessagesTable: React.FC<Props> = ({ messages }) => {
+    const searchParams = useSearchParams()
     const [sortState, setSortState] = useState<SortState | undefined>({
         orderBy: 'timestamp_ms',
         direction: 'descending',
     })
+
+    useEffect(() => {
+        const topicsParam = searchParams.get('topics')
+        if (topicsParam) {
+            setSortState({
+                orderBy: 'offset',
+                direction: 'descending',
+            })
+        } else {
+            setSortState({
+                orderBy: 'timestamp_ms',
+                direction: 'descending',
+            })
+        }
+    }, [searchParams])
 
     const sortedMessages = Object.values(messages)
         .flat()
@@ -103,7 +120,9 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                             <TableHeaderCell textSize="small">
                                 Topic
                             </TableHeaderCell>
-                            <TableHeaderCell textSize="small">Key</TableHeaderCell>
+                            <TableHeaderCell textSize="small">
+                                Key
+                            </TableHeaderCell>
                             <TableColumnHeader
                                 sortKey="timestamp_ms"
                                 sortable
