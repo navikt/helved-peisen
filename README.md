@@ -14,7 +14,7 @@ Deretter kjører du appen med `npm run dev`. Da kjører appen på [http://localh
 
 Om du ikke ønsker å kjøre `utsjekk` lokalt kan du kjøre en fake-server med `npm run fake`. Da må du samtidig ha milljøvariabelen `NEXT_PUBLIC_API_FAKING` satt til `enabled`, f.eks. ved å legge den til i `.env.local`-fila.
 
-Alternativt kan du hente meldinger fra kafka rett fra `gcp-dev` ved å [hente et access_token](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp.helved.peisschtappern) og sette denne til en miljøvariabel, `PEISSCHTAPPERN_TOKEN` i `env.local`-fila. Husk å fjerne `NEXT_PUBLIC_API_FAKING`. 
+Alternativt kan du hente meldinger fra kafka rett fra `gcp-dev` ved å [hente et access_token](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp.helved.peisschtappern) og sette denne til en miljøvariabel, `PEISSCHTAPPERN_TOKEN` i `env.local`-fila. Husk å fjerne `NEXT_PUBLIC_API_FAKING` og sette `PEISSCHTAPPERN_API_BASE_URL` til `https://peisschtappern.intern.dev.nav.no`. 
 
 ## Testing
 
