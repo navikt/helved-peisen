@@ -20,8 +20,10 @@ export const fetchMessages = async (
     )
 
     if (response.ok) {
+        const json = await response.json()
+        console.log(json)
         return {
-            data: await response.json(),
+            data: json,
             error: null,
         }
     } else {

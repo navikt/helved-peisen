@@ -12,33 +12,25 @@ import { logger } from '@navikt/next-logger'
 
 const PEISSCHTAPPERN_TOKEN_NAME = 'peisschtappern-token'
 
-export const checkToken = async () => {
-    if (isLocal || isFaking) return
-
-    const token = getToken(await headers())
-    if (!token) {
-        redirect('/oauth2/login')
-    }
-
-    const result = await validateToken(token)
-    if (!result.ok) {
-        logger.warn(`Tokenvalidering gikk galt: ${result.error.message}`)
-        redirect('/oauth2/login')
-    }
+const updateApiToken = async (token: string) => {
+    (await cookies()).set({
+        name: PEISSCHTAPPERN_TOKEN_NAME,
+        value: token,
+        httpOnly: true,
+    })
 }
 
 export const checkApiToken = async () => {
     if (isFaking) {
         return
     }
-    const cookieStore = await cookies()
-    const existingApiToken = cookieStore.get(PEISSCHTAPPERN_TOKEN_NAME)
-    if (!existingApiToken) {
-        redirect('/api/auth/token/kafka')
+    if (!getApiTokenFromCookie()) {
+        const apiToken: string = await fetchApiToken()
+        updateApiToken(apiToken)
     }
 }
 
-const getTokenFromCookie = async () => {
+const getApiTokenFromCookie = async () => {
     const cookieStore = await cookies()
     const existing = cookieStore.get(PEISSCHTAPPERN_TOKEN_NAME)
 
@@ -52,30 +44,20 @@ const getTokenFromCookie = async () => {
     return null
 }
 
-export const updateCookie = async (token: string) => {
-    const cookieStore = await cookies()
-    cookieStore.set({
-        name: PEISSCHTAPPERN_TOKEN_NAME,
-        value: token,
-        httpOnly: true,
-    })
-}
-
 const getLocalToken = async (): Promise<string> => {
-    const cookieStore = await cookies()
-    const existing = cookieStore.get(PEISSCHTAPPERN_TOKEN_NAME)
+    const existing = process.env.PEISSCHTAPPERN_TOKEN ?? await getApiTokenFromCookie()
     if (existing) {
-        return existing.value
+        return existing
     }
 
     const response = await fetch('http://localhost:8080/token')
     const body = await response.json()
 
-    await updateCookie(body.access_token)
+    await updateApiToken(body.access_token)
     return body.access_token
 }
 
-export const fetchApiToken = async (): Promise<string> => {
+export async function fetchApiToken(): Promise<string> {
     if (isFaking) {
         return Promise.resolve('')
     }
@@ -84,7 +66,7 @@ export const fetchApiToken = async (): Promise<string> => {
         return getLocalToken()
     }
 
-    const existing = await getTokenFromCookie()
+    const existing = await getApiTokenFromCookie()
     if (existing) {
         return existing
     }
@@ -102,6 +84,8 @@ export const fetchApiToken = async (): Promise<string> => {
         logger.error(`Henting av api-token feilet: ${result.error.message}`)
         throw Error(`Henting av api-token feilet: ${result.error.message}`)
     }
+
+    await updateApiToken(result.token)
 
     return result.token
 }

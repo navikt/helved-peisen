@@ -63,19 +63,17 @@ app.get('/api', async (req, res) => {
     const fomDate = fom ? new Date(fom).getTime() : 0
     const tomDate = tom ? new Date(tom).getTime() : Number.MAX_SAFE_INTEGER
 
-    const filteredMessages = messages
-        .filter(
-            (it) =>
-                it.timestamp_ms >= fomDate &&
-                it.timestamp_ms <= tomDate &&
-                topics.includes(it.topic_name) &&
-                (key ? it.key === key : true) &&
-                (value.length > 0
-                    ? value.some((val) => it.value?.includes(val))
-                    : true)
-        )
+    const filteredMessages = messages.filter(
+        (it) =>
+            it.timestamp_ms >= fomDate &&
+            it.timestamp_ms <= tomDate &&
+            topics.includes(it.topic_name) &&
+            (key ? it.key === key : true) &&
+            (value.length > 0
+                ? value.some((val) => it.value?.includes(val))
+                : true)
+    )
 
-    await sleep(100)
     res.send(JSON.stringify(filteredMessages)).status(200)
 })
 
@@ -106,7 +104,7 @@ app.post('/api/manuell-kvittering', async (req, res) => {
         key: req.body.messageKey,
         value: value,
         partition: 1,
-        offset: offsets["helved.oppdrag.v1"]++,
+        offset: offsets['helved.oppdrag.v1']++,
         timestamp_ms: new Date().getTime(),
         stream_time_ms: new Date().getTime(),
         system_time_ms: new Date().getTime(),
