@@ -2,19 +2,40 @@
 
 ## Kjøring lokalt
 
-Lag deg en `.env.local`-fil med følgende innhold:
+### Med data fra `gcp-dev`
+
+1. Lag deg en `.env.local`-fil med følgende innhold:
+```
+NEXT_PUBLIC_HOSTNAME=http://localhost:3000
+API_BASE_URL=https://peisschtappern.intern.dev.nav.no
+SHOW_MESSAGE_PAYLOAD=true
+TEST_USER_USERNAME=<epost til testbrukeren din>
+TEST_USER_PASSWORD=<passordet til testbrukeren din>
+```
+
+2. Kjør `npm run fetch-dev-api-token`. Denne kommandoen åpner et nytt nettleservindu som automatisk logger inn testbrukeren din og limer inn access-tokenet i `.env.local`.
+
+3. Kjør `npm run dev`. 
+
+Appen kjører nå på [http://localhost:3000](http://localhost:3000)
+
+Hvis du av en eller annen grunn har problemer med å kjøre scriptet som automatisk henter access-tokenet kan du gjøre det manuelt ved å logge inn i [azure-token-generator](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp.helved.peisschtappern) og manuelt sette miljøvariabelen `API_TOKEN` med access-tokenet du mottar i responsen.
+
+### Med mock-data
+
+1. Lag den en `.env.local`-fil med følgende innhold:
 ```
 NEXT_PUBLIC_API_FAKING=enabled
 NEXT_PUBLIC_HOSTNAME=http://localhost:3000
-TASK_API_BASE_URL=http://localhost:8080
-PEISSCHTAPPERN_API_BASE_URL=http://localhost:8080
+API_BASE_URL=http://localhost:8080
+SHOW_MESSAGE_PAYLOAD=true
 ```
 
-Deretter kjører du appen med `npm run dev`. Da kjører appen på [http://localhost:3000](http://localhost:3000)  og henter data fra `utsjekk` som du må ha kjørende lokalt. 
+2. Kjør `npm run fake`. Dette starter en fake backend som svarer med mock-data.
 
-Om du ikke ønsker å kjøre `utsjekk` lokalt kan du kjøre en fake-server med `npm run fake`. Da må du samtidig ha milljøvariabelen `NEXT_PUBLIC_API_FAKING` satt til `enabled`, f.eks. ved å legge den til i `.env.local`-fila.
+3 Kjør `npm run dev`. 
 
-Alternativt kan du hente meldinger fra kafka rett fra `gcp-dev` ved å [hente et access_token](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp.helved.peisschtappern) og sette denne til en miljøvariabel, `PEISSCHTAPPERN_TOKEN` i `env.local`-fila. Husk å fjerne `NEXT_PUBLIC_API_FAKING` og sette `PEISSCHTAPPERN_API_BASE_URL` til `https://peisschtappern.intern.dev.nav.no`. 
+Appen kjører nå på [http://localhost:3000](http://localhost:3000)
 
 ## Testing
 

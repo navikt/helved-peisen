@@ -40,9 +40,9 @@ spec:
       value: "api://dev-gcp.helved.utsjekk/.default"
     - name: TASK_API_BASE_URL
       value: "http://utsjekk"
-    - name: PEISSCHTAPPERN_SCOPE
+    - name: API_SCOPE
       value: "api://dev-gcp.helved.peisschtappern/.default"
-    - name: PEISSCHTAPPERN_API_BASE_URL
+    - name: API_BASE_URL
       value: "http://peisschtappern"
     - name: SHOW_MESSAGE_PAYLOAD
       value: "true"

@@ -10,8 +10,8 @@
         "lint": "next lint",
         "test": "vitest run",
         "fake": "node --watch --experimental-strip-types fakes/server.ts",
-        "start:dev": "concurrently -k --names 'FAKE,NEXT' --prefix '[{name}]' --prefix-colors \"cyan,magenta\" -s first \"npm run fake\" \"npm run dev\"",
-        "test:e2e": "npx playwright test"
+        "test:e2e": "npx playwright test",
+        "fetch-dev-api-token": "npx ts-node scripts/fetch-dev-api-token.ts"
     },
     "dependencies": {
         "@navikt/aksel-icons": "^7.20.0",

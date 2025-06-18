@@ -1,4 +1,4 @@
-import { checkApiToken, checkToken } from '@/lib/auth/token'
+import { checkToken } from '@/lib/auth/token'
 import { Tasks } from '@/app/scheduler/Tasks.tsx'
 
 import styles from './page.module.css'
@@ -9,7 +9,6 @@ type Props = {
 
 export default async function TaskOverview({ searchParams }: Props) {
     await checkToken()
-    await checkApiToken()
 
     const params = await searchParams
 

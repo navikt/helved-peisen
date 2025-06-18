@@ -1,20 +1,33 @@
-import { isFaking, isLocal } from '@/lib/env.ts'
-import { getToken, validateToken } from '@navikt/oasis'
-import { headers } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { isFaking, isLocal, requireEnv } from '@/lib/env.ts'
+import { expiresIn, getToken, validateToken } from '@navikt/oasis'
+import { cookies, headers } from 'next/headers'
+import { redirect, unauthorized } from 'next/navigation'
 import { logger } from '@navikt/next-logger'
 
+const checkLocalToken = async () => {
+    let token = (await cookies()).get('api-token')
+    if (!token || expiresIn(token.value) <= 0) {
+        redirect('/internal/login')
+    }
+}
+
 export const checkToken = async () => {
-    if (isLocal || isFaking) return
+    if (isFaking) return
+
+    if (isLocal) {
+        return checkLocalToken()
+    }
 
     const token = getToken(await headers())
     if (!token) {
-        redirect('/oauth2/login')
+        redirect(
+            `/internal/login?redirect=${requireEnv('NEXT_PUBLIC_HOSTNAME')}`
+        )
     }
 
     const result = await validateToken(token)
     if (!result.ok) {
         logger.warn(`Tokenvalidering gikk galt: ${result.error.message}`)
-        redirect('/oauth2/login')
+        unauthorized()
     }
 }

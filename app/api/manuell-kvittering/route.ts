@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
 
     return fetch(
-        `${process.env.PEISSCHTAPPERN_API_BASE_URL}/api/manuell-kvittering`,
+        `${process.env.API_BASE_URL}/api/manuell-kvittering`,
         {
             method: 'POST',
             headers: {

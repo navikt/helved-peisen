@@ -1,5 +1,5 @@
 const taskApiBaseUrl = process.env.TASK_API_BASE_URL
-const kafkaApiBaseUrl = process.env.PEISSCHTAPPERN_API_BASE_URL
+const kafkaApiBaseUrl = process.env.API_BASE_URL
 
 export const Routes = {
     internal: {
