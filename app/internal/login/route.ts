@@ -18,13 +18,8 @@ export const GET = async (req: NextRequest) => {
         return handleLocalLogin()
     }
 
-    const searchParams = new URL(req.url).searchParams
-    const pathname =
-        searchParams.size > 0
-            ? '/oauth2/login?' + searchParams.toString()
-            : '/oauth2/login'
     const response = NextResponse.redirect(
-        `${requireEnv('NEXT_PUBLIC_HOSTNAME')}${pathname}`
+        `${requireEnv('NEXT_PUBLIC_HOSTNAME')}/oauth2/login`
     )
 
     response.cookies.set({

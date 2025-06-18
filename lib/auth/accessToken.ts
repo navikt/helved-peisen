@@ -20,9 +20,7 @@ export const checkToken = async () => {
 
     const token = getToken(await headers())
     if (!token) {
-        redirect(
-            `/internal/login?redirect=${requireEnv('NEXT_PUBLIC_HOSTNAME')}`
-        )
+        redirect(`/internal/login`)
     }
 
     const result = await validateToken(token)
