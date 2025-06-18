@@ -1,26 +1,30 @@
 'use server'
 
 import {
+    expiresIn,
     getToken,
     requestAzureClientCredentialsToken,
-    validateToken,
 } from '@navikt/oasis'
 import { cookies, headers } from 'next/headers'
 import { isFaking, isLocal, requireEnv } from '@/lib/env'
 import { logger } from '@navikt/next-logger'
-import { unauthorized } from 'next/navigation'
+import { redirect, unauthorized } from 'next/navigation'
 
 const API_TOKEN_NAME = 'api-token'
 
-const getApiTokenFromCookie = async () => {
+export const ensureValidApiToken = async () => {
+    const existing = await getApiTokenFromCookie()
+    if (!existing) {
+        return redirect('/internal/login')
+    }
+}
+
+export const getApiTokenFromCookie = async () => {
     const cookieStore = await cookies()
     const existing = cookieStore.get(API_TOKEN_NAME)
 
-    if (existing) {
-        const validation = await validateToken(existing.value)
-        if (validation.ok) {
-            return existing.value
-        }
+    if (existing && expiresIn(existing.value) > 0) {
+        return existing.value
     }
 
     return null

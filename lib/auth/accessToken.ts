@@ -1,5 +1,5 @@
-import { isFaking, isLocal, requireEnv } from '@/lib/env.ts'
-import { expiresIn, getToken, validateToken } from '@navikt/oasis'
+import { isFaking, isLocal } from '@/lib/env.ts'
+import { getToken, validateToken } from '@navikt/oasis'
 import { cookies, headers } from 'next/headers'
 import { redirect, unauthorized } from 'next/navigation'
 import { logger } from '@navikt/next-logger'
@@ -20,7 +20,7 @@ export const checkToken = async () => {
 
     const token = getToken(await headers())
     if (!token) {
-        redirect(`/internal/login`)
+        redirect(`/oauth2/login`)
     }
 
     const result = await validateToken(token)

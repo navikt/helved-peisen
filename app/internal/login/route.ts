@@ -18,9 +18,7 @@ export const GET = async (req: NextRequest) => {
         return handleLocalLogin()
     }
 
-    const response = NextResponse.redirect(
-        `${requireEnv('NEXT_PUBLIC_HOSTNAME')}/oauth2/login`
-    )
+    const response = NextResponse.redirect(`${requireEnv('NEXT_PUBLIC_HOSTNAME')}`)
 
     response.cookies.set({
         name: 'utsjekk-token',
