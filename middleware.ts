@@ -23,3 +23,9 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 
     return NextResponse.next()
 }
+
+module.exports = {
+    matcher: [
+        '/((?!_next/static|_next/image|favicon.ico|internal).*)',
+    ],
+};
