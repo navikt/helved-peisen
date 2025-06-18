@@ -6,7 +6,7 @@ import { logger } from '@navikt/next-logger'
 
 const checkLocalToken = async () => {
     let token = (await cookies()).get('api-token')
-    if (!token || expiresIn(token.value) <= 0) {
+    if (!token) {
         redirect('/internal/login')
     }
 }
