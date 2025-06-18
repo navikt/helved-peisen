@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     if (!(await headers()).has('Authorization')) {
         return NextResponse.redirect(
             new URL(
-                `${process.env.NEXT_PUBLIC_HOSTNAME}/internal/login?redirect=${url.pathname}`,
+                `${process.env.NEXT_PUBLIC_HOSTNAME}/internal/login?redirect=${process.env.NEXT_PUBLIC_HOSTNAME}${url.pathname}`,
                 request.url
             )
         )
