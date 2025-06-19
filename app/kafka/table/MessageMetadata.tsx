@@ -1,17 +1,134 @@
-import { Message, StatusMessageValue } from '@/app/kafka/types.ts'
-import React from 'react'
-import { HStack, Label, Table, VStack } from '@navikt/ds-react'
 import {
-    TableBody,
-    TableDataCell,
-    TableHeader,
-    TableHeaderCell,
-    TableRow,
-} from '@navikt/ds-react/Table'
+    Message,
+    OppdragMessageValue,
+    StatusMessageValue,
+} from '@/app/kafka/types.ts'
+import React, { ReactNode } from 'react'
+import { BodyShort, BoxNew, HStack, Label, VStack } from '@navikt/ds-react'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+
+type MetadataCardProps = {
+    label: string
+    value?: string | number | null
+}
+
+const MetadataCard: React.FC<MetadataCardProps> = ({ label, value }) => {
+    if (!value) {
+        return null
+    }
+    return (
+        <BoxNew background="neutral-soft" padding="4" borderRadius="large">
+            <VStack gap="space-12">
+                <Label size="small">{label}</Label>
+                <BodyShort>{value}</BodyShort>
+            </VStack>
+        </BoxNew>
+    )
+}
+
+type MetadataCardContainerProps = {
+    children: ReactNode
+}
+
+const MetadataCardContainer: React.FC<MetadataCardContainerProps> = ({
+    children,
+}) => {
+    return (
+        <BoxNew
+            background="neutral-moderate"
+            padding="3"
+            borderRadius="large"
+            maxWidth="max-content"
+        >
+            {children}
+        </BoxNew>
+    )
+}
 
 type Props = {
     message: Message
+}
+
+const OppdragMessageMetadata: React.FC<Props> = ({ message }) => {
+    if (!message.value) {
+        throw Error('Oppdragsmelding mangler value')
+    }
+
+    const parser = new DOMParser()
+    const xmlDoc = parser.parseFromString(message.value, 'application/xml')
+
+    const mmel: OppdragMessageValue['mmel'] = (() => {
+        const mmel = xmlDoc.querySelector('mmel')
+        return (
+            mmel && {
+                kodeMelding: mmel.querySelector('kodeMelding')?.textContent,
+                alvorlighetsgrad:
+                    mmel.querySelector('alvorlighetsgrad')?.textContent,
+                beskrMelding: mmel.querySelector('beskrMelding')?.textContent,
+            }
+        )
+    })()
+
+    const oppdrag: Partial<OppdragMessageValue['oppdrag-110']> = (() => {
+        const oppdrag = xmlDoc.querySelector('oppdrag-110')
+        if (!oppdrag) {
+            throw Error('Oppdrag mangler oppdrag-110')
+        }
+
+        return {
+            fagsystemId: oppdrag.querySelector('fagsystemId')?.textContent,
+            kodeFagomraade:
+                oppdrag.querySelector('kodeFagomraade')!.textContent!,
+            kodeEndring: oppdrag.querySelector('kodeEndring')!.textContent!,
+        }
+    })()
+
+    return (
+        <VStack gap="space-32">
+            {mmel && (
+                <VStack gap="space-12">
+                    <Label>Mmel</Label>
+                    <MetadataCardContainer>
+                        <HStack wrap gap="space-12">
+                            <MetadataCard
+                                label="Alvorlighetsgrad"
+                                value={mmel.alvorlighetsgrad}
+                            />
+                            <MetadataCard
+                                label="Kodemelding"
+                                value={mmel.kodeMelding}
+                            />
+                            <MetadataCard
+                                label="Beskrivende melding"
+                                value={mmel.beskrMelding}
+                            />
+                        </HStack>
+                    </MetadataCardContainer>
+                </VStack>
+            )}
+            {oppdrag && (
+                <VStack gap="space-12">
+                    <Label>Oppdrag</Label>
+                    <MetadataCardContainer>
+                        <HStack wrap gap="space-12">
+                            <MetadataCard
+                                label="Sak-ID"
+                                value={oppdrag.fagsystemId}
+                            />
+                            <MetadataCard
+                                label="Fagsystem"
+                                value={oppdrag.kodeFagomraade}
+                            />
+                            <MetadataCard
+                                label="Endringskode"
+                                value={oppdrag.kodeEndring}
+                            />
+                        </HStack>
+                    </MetadataCardContainer>
+                </VStack>
+            )}
+        </VStack>
+    )
 }
 
 const StatusMessageMetadata: React.FC<Props> = ({ message }) => {
@@ -38,48 +155,54 @@ const StatusMessageMetadata: React.FC<Props> = ({ message }) => {
             {value.detaljer && value.detaljer.linjer.length > 0 && (
                 <VStack gap="space-12">
                     <Label>Linjer</Label>
-                    <Table size="small">
-                        <TableHeader>
-                            <TableRow>
-                                <TableHeaderCell textSize="small">
-                                    Behandling-ID
-                                </TableHeaderCell>
-                                <TableHeaderCell textSize="small">
-                                    Fra og med
-                                </TableHeaderCell>
-                                <TableHeaderCell textSize="small">
-                                    Til og med
-                                </TableHeaderCell>
-                                <TableHeaderCell textSize="small">
-                                    Vedtakssats
-                                </TableHeaderCell>
-                                <TableHeaderCell textSize="small">
-                                    Beløp
-                                </TableHeaderCell>
-                                <TableHeaderCell textSize="small">
-                                    Klassekode
-                                </TableHeaderCell>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {value.detaljer.linjer.map((it, i) => (
-                                <TableRow key={i}>
-                                    <TableDataCell>
-                                        {it.behandlingId}
-                                    </TableDataCell>
-                                    <TableDataCell>{it.fom}</TableDataCell>
-                                    <TableDataCell>{it.tom}</TableDataCell>
-                                    <TableDataCell>
-                                        {it.vedtakssats}
-                                    </TableDataCell>
-                                    <TableDataCell>{it.beløp}</TableDataCell>
-                                    <TableDataCell>
-                                        {it.klassekode}
-                                    </TableDataCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                    <VStack gap="space-16">
+                        {value.detaljer.linjer.map((it, i) => (
+                            <MetadataCardContainer key={i}>
+                                <HStack wrap gap="space-12">
+                                    <MetadataCard
+                                        label="Behandling-ID"
+                                        value={it.behandlingId}
+                                    />
+                                    <MetadataCard
+                                        label="Fra og med"
+                                        value={it.fom}
+                                    />
+                                    <MetadataCard
+                                        label="Til og med"
+                                        value={it.tom}
+                                    />
+                                    {!!it.vedtakssats && (
+                                        <MetadataCard
+                                            label="Vedtakssats"
+                                            value={it.vedtakssats}
+                                        />
+                                    )}
+                                    <MetadataCard
+                                        label="Beløp"
+                                        value={it.beløp}
+                                    />
+                                    <MetadataCard
+                                        label="Klassekode"
+                                        value={it.klassekode}
+                                    />
+                                </HStack>
+                            </MetadataCardContainer>
+                        ))}
+                    </VStack>
+                </VStack>
+            )}
+            {value.error && (
+                <VStack gap="space-12">
+                    <Label>Error</Label>
+                    <MetadataCardContainer>
+                        <HStack wrap gap="space-12">
+                            <MetadataCard
+                                label="Statuskode"
+                                value={value.error.statusCode}
+                            />
+                            <MetadataCard label="Melding" value={value.error.msg} />
+                        </HStack>
+                    </MetadataCardContainer>
                 </VStack>
             )}
         </VStack>
@@ -94,7 +217,7 @@ export const MessageMetadata: React.FC<Props> = ({ message }) => {
                     case 'helved.avstemming.v1':
                         break
                     case 'helved.oppdrag.v1':
-                        break
+                        return <OppdragMessageMetadata message={message} />
                     case 'helved.oppdragsdata.v1':
                         break
                     case 'helved.dryrun-aap.v1':
