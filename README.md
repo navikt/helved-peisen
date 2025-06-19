@@ -8,7 +8,7 @@
 ```
 NEXT_PUBLIC_HOSTNAME=http://localhost:3000
 API_BASE_URL=https://peisschtappern.intern.dev.nav.no
-SHOW_MESSAGE_PAYLOAD=true
+NEXT_PUBLIC_SHOW_MESSAGE_PAYLOAD=true
 TEST_USER_USERNAME=<epost til testbrukeren din>
 TEST_USER_PASSWORD=<passordet til testbrukeren din>
 ```
@@ -28,7 +28,7 @@ Hvis du av en eller annen grunn har problemer med å kjøre scriptet som automat
 NEXT_PUBLIC_API_FAKING=enabled
 NEXT_PUBLIC_HOSTNAME=http://localhost:3000
 API_BASE_URL=http://localhost:8080
-SHOW_MESSAGE_PAYLOAD=true
+NEXT_PUBLIC_SHOW_MESSAGE_PAYLOAD=true
 ```
 
 2. Kjør `npm run fake`. Dette starter en fake backend som svarer med mock-data.

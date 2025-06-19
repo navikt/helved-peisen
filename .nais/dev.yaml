@@ -44,7 +44,7 @@ spec:
       value: "api://dev-gcp.helved.peisschtappern/.default"
     - name: API_BASE_URL
       value: "http://peisschtappern"
-    - name: SHOW_MESSAGE_PAYLOAD
+    - name: NEXT_PUBLIC_SHOW_MESSAGE_PAYLOAD
       value: "true"
   liveness:
     path: /internal/is-alive

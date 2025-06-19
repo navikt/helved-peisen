@@ -8,7 +8,6 @@ type Props = {
 }
 
 export const ErrorTableRow: React.FC<Props> = ({ error }) => {
-    console.log('RECEIVED ERROR', error.error)
     return (
         <TableRow>
             <TableDataCell colSpan={7}>

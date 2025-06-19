@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react'
 import { Message, TopicName } from '@/app/kafka/types.ts'
-import { JsonView } from '@/components/JsonView.tsx'
 import {
     TableDataCell,
     TableExpandableRow,
@@ -10,27 +9,19 @@ import {
 } from '@navikt/ds-react/Table'
 import { CopyButton, HStack, Label, VStack } from '@navikt/ds-react'
 import { formatDate } from 'date-fns'
-
-import { XMLView } from '@/components/XMLView.tsx'
 import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
 import { UrlSearchParamLink } from '@/components/UrlSearchParamLink.tsx'
 import AddNewKvitteringButton from '@/app/kafka/table/AddNewKvitteringButton.tsx'
+import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
 
 import styles from './MessageTableRow.module.css'
+import { MessageValue } from './MessageValue'
 
 type Props = {
     message: Message
 }
 
 const MessageTableRowContents: React.FC<Props> = ({ message }) => {
-    const data = (() => {
-        try {
-            return JSON.parse(message.value!)
-        } catch {
-            return message.value
-        }
-    })()
-
     return (
         <VStack gap="space-32">
             <VStack gap="space-12">
@@ -40,14 +31,8 @@ const MessageTableRowContents: React.FC<Props> = ({ message }) => {
                     <CopyButton size="xsmall" copyText={message.key} />
                 </HStack>
             </VStack>
-            <VStack gap="space-4">
-                <Label>Value</Label>
-                {typeof data === 'string' ? (
-                    <XMLView data={data} />
-                ) : (
-                    <JsonView json={data} />
-                )}
-            </VStack>
+            <MessageMetadata message={message} />
+            <MessageValue message={message} />
         </VStack>
     )
 }
