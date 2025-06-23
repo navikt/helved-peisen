@@ -20,7 +20,7 @@ const sourceSans = Source_Sans_3({
 export const metadata: Metadata = {
     title: 'Peisen',
     description:
-        'Oversikt og administrering av automatiske oppgaver for Utsjekk',
+        'Oversikt over meldinger i systemene til Team Hel Ved',
 }
 
 export default function RootLayout({
