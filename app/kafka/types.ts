@@ -28,6 +28,38 @@ export type Message = {
     system_time_ms: number
 }
 
+export type UtbetalingMessageValue = {
+    dryrun: boolean
+    originalKey: string
+    fagsystem: string
+    uid: string
+    action: "CREATE" | "UPDATE" | "DELETE"
+    førsteUtbetalingPåSak: boolean
+    sakId: string
+    behandlingId: string
+    lastPeriodeId: string
+    personident: string
+    vedtakstidspunkt: string
+    stønad: string
+    beslutterId: string
+    saksbehandlerId: string
+    periodetype: string
+    avvent?: {
+        fom: string
+        tom: string
+        overføres: string
+        årsak?: "AVVENT_AVREGNING" | "AVVENT_REFUSJONSKRAV" | null
+        feilregistrering: boolean
+    } | null
+    perioder: {
+        fom: string
+        tom: string
+        beløp: number
+        betalendeEnhet?: string | null
+        vedtakssats?: number | null
+    }[]
+}
+
 export type OppdragMessageValue = {
     mmel?: {
         systemId?: string | null

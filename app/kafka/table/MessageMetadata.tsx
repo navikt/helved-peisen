@@ -2,6 +2,7 @@ import {
     Message,
     OppdragMessageValue,
     StatusMessageValue,
+    UtbetalingMessageValue,
 } from '@/app/kafka/types.ts'
 import React, { ReactNode } from 'react'
 import { BodyShort, BoxNew, HStack, Label, VStack } from '@navikt/ds-react'
@@ -47,6 +48,65 @@ const MetadataCardContainer: React.FC<MetadataCardContainerProps> = ({
 
 type Props = {
     message: Message
+}
+
+const UtbetalingMessageMetadata: React.FC<Props> = ({ message }) => {
+    if (!message.value) {
+        throw Error('Utbetalingsmelding mangler value')
+    }
+
+    const value: UtbetalingMessageValue = JSON.parse(message.value)
+
+    return (
+        <VStack gap="space-32">
+            <VStack gap="space-12">
+                <Label>Utbetaling</Label>
+                <MetadataCardContainer>
+                    <HStack wrap gap="space-12">
+                        <MetadataCard
+                            label="Fagsystem"
+                            value={value.fagsystem}
+                        />
+                        <MetadataCard label="Action" value={value.action} />
+                        <MetadataCard
+                            label="Første utbetaling på sak"
+                            value={value.førsteUtbetalingPåSak ? 'Ja' : 'Nei'}
+                        />
+                        <MetadataCard label="Sak-ID" value={value.sakId} />
+                        <MetadataCard
+                            label="Behandling-ID"
+                            value={value.behandlingId}
+                        />
+                        <MetadataCard label="Stønad" value={value.stønad} />
+                    </HStack>
+                </MetadataCardContainer>
+            </VStack>
+            <VStack gap="space-12">
+                <Label>Perioder</Label>
+                {value.perioder.map((it, i) => (
+                    <MetadataCardContainer key={i}>
+                        <HStack wrap gap="space-12">
+                            <MetadataCard label="Fom" value={it.fom} />
+                            <MetadataCard label="Tom" value={it.tom} />
+                            <MetadataCard label="Beløp" value={it.beløp} />
+                            {!!it.vedtakssats && (
+                                <MetadataCard
+                                    label="Vedtakssats"
+                                    value={it.vedtakssats}
+                                />
+                            )}
+                            {!!it.betalendeEnhet && (
+                                <MetadataCard
+                                    label="Betalende enhet"
+                                    value={it.betalendeEnhet}
+                                />
+                            )}
+                        </HStack>
+                    </MetadataCardContainer>
+                ))}
+            </VStack>
+        </VStack>
+    )
 }
 
 const OppdragMessageMetadata: React.FC<Props> = ({ message }) => {
@@ -200,7 +260,10 @@ const StatusMessageMetadata: React.FC<Props> = ({ message }) => {
                                 label="Statuskode"
                                 value={value.error.statusCode}
                             />
-                            <MetadataCard label="Melding" value={value.error.msg} />
+                            <MetadataCard
+                                label="Melding"
+                                value={value.error.msg}
+                            />
                         </HStack>
                     </MetadataCardContainer>
                 </VStack>
@@ -233,7 +296,7 @@ export const MessageMetadata: React.FC<Props> = ({ message }) => {
                     case 'helved.simuleringer.v1':
                         break
                     case 'helved.utbetalinger.v1':
-                        break
+                        return <UtbetalingMessageMetadata message={message} />
                     case 'helved.saker.v1':
                         break
                     case 'helved.utbetalinger-aap.v1':
