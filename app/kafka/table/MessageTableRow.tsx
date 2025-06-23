@@ -47,7 +47,7 @@ const RowContents: React.FC<Props> = ({ message }) => {
     return (
         <>
             <TableDataCell>
-                <TopicNameTag name={message.topic_name as TopicName} />
+                <TopicNameTag message={message} />
             </TableDataCell>
             <TableDataCell>
                 <UrlSearchParamLink

@@ -1,0 +1,35 @@
+.tag {
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 0.75rem;
+  line-height: 0.75rem;
+  background: var(--ax-bg-neutral-soft);
+  padding: var(--ax-space-1) var(--ax-space-4) 0;
+  border: 1px solid  var(--ax-border-neutral);
+  border-radius: var(--ax-border-radius-large);
+  color: var(--ax-text-neutral);
+  transform: translate(50%, -50%);
+}
+
+.success {
+  background: var(--ax-bg-success-moderate);
+  border: 1px solid  var(--ax-border-success);
+  color: var(--ax-text-success);
+}
+
+.info {
+  background: var(--ax-bg-info-moderate);
+  border: 1px solid  var(--ax-border-info);
+  color: var(--ax-text-info);
+}
+
+.error {
+  background: var(--ax-bg-danger-moderate);
+  border: 1px solid  var(--ax-border-danger);
+  color: var(--ax-text-danger);
+}
