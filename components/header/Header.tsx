@@ -64,7 +64,6 @@ export function Header() {
             >
                 <TabsList>
                     <TabsTab value="kafka" label="Kafka" />
-                    <TabsTab value="scheduler" label="Scheduler" />
                 </TabsList>
             </Tabs>
             <Spacer />

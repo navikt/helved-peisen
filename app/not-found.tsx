@@ -1,32 +1,40 @@
-import React from 'react'
-import { BodyShort, Box, Heading, Link, List, Page } from '@navikt/ds-react'
-import { PageBlock } from '@navikt/ds-react/Page'
-import { ListItem } from '@navikt/ds-react/List'
+'use client'
+
+import clsx from 'clsx'
+import Image from 'next/image'
+import { BodyShort, Heading, Link, VStack } from '@navikt/ds-react'
+
+import noMessages from '@/public/404.png'
+import fadeIn from '@/styles/fadeIn.module.css'
+
+import styles from './kafka/NoMessages.module.css'
 
 export default function NotFound() {
+    const size = 300
+
     return (
-        <Page>
-            <PageBlock as="main" width="xl" gutters>
-                <Box paddingBlock="20 16">
-                    <div>
-                        <Heading level="1" size="large" spacing>
-                            Beklager, vi fant ikke siden
-                        </Heading>
-                        <BodyShort>
-                            Denne siden kan være slettet eller flyttet, eller
-                            det er en feil i lenken.
-                        </BodyShort>
-                        <List>
-                            <ListItem>
-                                Bruk gjerne søket eller menyen
-                            </ListItem>
-                            <ListItem>
-                                <Link href="/">Gå til forsiden</Link>
-                            </ListItem>
-                        </List>
-                    </div>
-                </Box>
-            </PageBlock>
-        </Page>
+        <VStack
+            className={clsx(styles.container, fadeIn.animation)}
+            justify="center"
+            align="center"
+        >
+            <Image
+                className={styles.image}
+                src={noMessages.src}
+                alt=""
+                width={size}
+                height={size}
+            />
+            <VStack>
+                <Heading level="2" size="large" className={styles.heading}>
+                    Denne siden finnes ikke
+                </Heading>
+                <BodyShort className={styles.text}>
+                    Siden kan være slettet eller flyttet, eller det er en feil i
+                    lenken.
+                </BodyShort>
+                <Link href="/">Gå til forsiden</Link>
+            </VStack>
+        </VStack>
     )
 }
