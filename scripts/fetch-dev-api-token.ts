@@ -7,8 +7,6 @@ const result = dotenv.config({ path: "./.env.local"});
 
 if (result.error) {
     console.error('Error loading .env file:', result.error);
-} else {
-    console.log('Loaded .env file:', result.parsed);
 }
 
 export async function fetchDevApiToken() {
