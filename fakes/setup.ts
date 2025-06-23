@@ -2,6 +2,13 @@ import { afterAll, afterEach, beforeAll, vi } from 'vitest'
 import { server } from './msw/server'
 import { cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom/vitest'
+import dotenv from 'dotenv'
+
+const result = dotenv.config({ path: "./.env.test"});
+
+if (result.error) {
+    console.error('Error loading .env file:', result.error);
+}
 
 beforeAll(() => {
     server.listen()
@@ -27,5 +34,16 @@ vi.mock('next/navigation', () => {
             get: vi.fn(),
         })),
         usePathname: vi.fn(),
+    }
+})
+
+vi.mock('next/headers', () => {
+    const actual = vi.importActual('next/headers')
+    return {
+        ...actual,
+        cookies: vi.fn(() => ({
+            get: vi.fn(),
+            set: vi.fn(),
+        })),
     }
 })
