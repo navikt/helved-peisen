@@ -15,7 +15,7 @@ const API_TOKEN_NAME = 'api-token'
 export const ensureValidApiToken = async () => {
     const existing = await getApiTokenFromCookie()
     if (!existing) {
-        return redirect('/internal/login')
+        return isLocal ? unauthorized() : redirect('/internal/login')
     }
 }
 
