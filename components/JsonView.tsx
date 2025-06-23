@@ -1,7 +1,8 @@
 import React from 'react'
-import styles from './JsonView.module.css'
 import { CopyButton } from '@navikt/ds-react'
 import clsx from 'clsx'
+
+import styles from './JsonView.module.css'
 
 type IndentProps = {
     indent: number

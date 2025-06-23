@@ -23,10 +23,11 @@ export const getApiTokenFromCookie = async () => {
     const cookieStore = await cookies()
     const existing = cookieStore.get(API_TOKEN_NAME)
 
-    if (existing && expiresIn(existing.value) > 0) {
-        return existing.value
-    }
-
+    try {
+        if (existing && expiresIn(existing.value) > 0) {
+            return existing.value
+        }
+    } catch {}
     return null
 }
 
