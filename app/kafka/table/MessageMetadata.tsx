@@ -1,11 +1,12 @@
+import React, { ReactNode } from 'react'
+import { BodyShort, BoxNew, HStack, Label, VStack } from '@navikt/ds-react'
+
 import {
     Message,
     OppdragMessageValue,
     StatusMessageValue,
     UtbetalingMessageValue,
 } from '@/app/kafka/types.ts'
-import React, { ReactNode } from 'react'
-import { BodyShort, BoxNew, HStack, Label, VStack } from '@navikt/ds-react'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 
 type MetadataCardProps = {
@@ -105,6 +106,30 @@ const UtbetalingMessageMetadata: React.FC<Props> = ({ message }) => {
                     </MetadataCardContainer>
                 ))}
             </VStack>
+        </VStack>
+    )
+}
+
+const AvstemmingMessageMetadata: React.FC<Props> = ({ message }) => {
+    if (!message.value) {
+        throw Error('Avstemmingsmelding mangler value')
+    }
+
+    const parser = new DOMParser()
+    const xmlDoc = parser.parseFromString(message.value, 'application/xml')
+
+    const fagsystem = xmlDoc.querySelector(
+        'aksjon > avleverendeKomponentKode'
+    )?.textContent
+
+    if (!fagsystem) {
+        return null
+    }
+
+    return (
+        <VStack gap="space-12">
+            <Label>Fagsystem</Label>
+            <BodyShort>{fagsystem}</BodyShort>
         </VStack>
     )
 }
@@ -278,7 +303,7 @@ export const MessageMetadata: React.FC<Props> = ({ message }) => {
             {(() => {
                 switch (message.topic_name) {
                     case 'helved.avstemming.v1':
-                        break
+                        return <AvstemmingMessageMetadata message={message} />
                     case 'helved.oppdrag.v1':
                         return <OppdragMessageMetadata message={message} />
                     case 'helved.oppdragsdata.v1':
