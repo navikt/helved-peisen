@@ -16,8 +16,6 @@ import { getMessagesByTopic } from '@/app/kafka/table/getMessagesByTopic.ts'
 import { NoMessages } from '@/app/kafka/NoMessages.tsx'
 import { Message } from './types.ts'
 
-import styles from '@/app/scheduler/Tasks.module.css'
-
 export const MessagesView = () => {
     const searchParams = useSearchParams()
     const [messages, setMessages] = useState<ApiResponse<
@@ -46,7 +44,7 @@ export const MessagesView = () => {
 
     if (messages.error) {
         return (
-            <Alert className={styles.alert} variant="error" role="alert">
+            <Alert variant="error" role="alert">
                 {messages.error.message}
             </Alert>
         )

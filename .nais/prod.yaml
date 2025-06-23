@@ -37,8 +37,6 @@ spec:
       value: "https://peisen.intern.nav.no"
     - name: UTSJEKK_SCOPE
       value: "api://prod-gcp.helved.utsjekk/.default"
-    - name: TASK_API_BASE_URL
-      value: "http://utsjekk"
     - name: API_SCOPE
       value: "api://prod-gcp.helved.peisschtappern/.default"
     - name: API_BASE_URL

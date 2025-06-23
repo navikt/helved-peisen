@@ -1,5 +1,5 @@
 import { Routes } from '@/lib/api/routes.ts'
-import { fetchApiToken } from '@/lib/auth/token.ts'
+import { fetchApiToken } from '@/lib/auth/apiToken'
 import { logger } from '@navikt/next-logger'
 
 export interface KvitteringRequest {
