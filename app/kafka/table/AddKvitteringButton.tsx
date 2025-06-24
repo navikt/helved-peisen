@@ -6,7 +6,7 @@ import { addKvittering } from '@/app/actions'
 import { FormButton } from '@/components/FormButton'
 import { showErrorToast, showSuccessToast } from '@/components/Toast.tsx'
 
-import styles from './AddNewKvitteringButton.module.css'
+import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 
 type Props = {
     messageValue: string
@@ -17,7 +17,8 @@ export const AddKvitteringButton = ({ messageValue, messageKey }: Props) => {
     const ref = useRef<HTMLDialogElement>(null)
     const [alvorlighetsgrad, setAlvorlighetsgrad] = useState('00')
 
-    const showModal = () => {
+    const showModal = (e: Event) => {
+        e.preventDefault()
         ref.current?.showModal()
     }
 
@@ -44,14 +45,9 @@ export const AddKvitteringButton = ({ messageValue, messageKey }: Props) => {
 
     return (
         <>
-            <Button
-                className={styles.button}
-                variant="secondary"
-                size="small"
-                onClick={showModal}
-            >
+            <ActionMenuItem onSelect={showModal}>
                 Legg til kvittering
-            </Button>
+            </ActionMenuItem>
             <Modal
                 ref={ref}
                 header={{ heading: 'Legg til kvittering' }}

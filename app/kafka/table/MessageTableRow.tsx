@@ -7,7 +7,14 @@ import {
     TableExpandableRow,
     TableRow,
 } from '@navikt/ds-react/Table'
-import { CopyButton, HStack, Label, VStack } from '@navikt/ds-react'
+import {
+    ActionMenu,
+    Button,
+    CopyButton,
+    HStack,
+    Label,
+    VStack,
+} from '@navikt/ds-react'
 import { formatDate } from 'date-fns'
 import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
 import { UrlSearchParamLink } from '@/components/UrlSearchParamLink.tsx'
@@ -16,6 +23,11 @@ import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
 
 import styles from './MessageTableRow.module.css'
 import { MessageValue } from './MessageValue'
+import {
+    ActionMenuContent,
+    ActionMenuTrigger,
+} from '@navikt/ds-react/ActionMenu'
+import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'
 
 type Props = {
     message: Message
@@ -60,10 +72,23 @@ const RowContents: React.FC<Props> = ({ message }) => {
             <TableDataCell>
                 {message.topic_name === 'helved.oppdrag.v1' &&
                     message.value && (
-                        <AddKvitteringButton
-                            messageValue={message.value}
-                            messageKey={message.key}
-                        />
+                        <ActionMenu>
+                            <ActionMenuTrigger>
+                                <Button
+                                    variant="tertiary-neutral"
+                                    size="small"
+                                    icon={
+                                        <MenuElipsisVerticalIcon title="Kontekstmeny" />
+                                    }
+                                />
+                            </ActionMenuTrigger>
+                            <ActionMenuContent>
+                                <AddKvitteringButton
+                                    messageValue={message.value}
+                                    messageKey={message.key}
+                                />
+                            </ActionMenuContent>
+                        </ActionMenu>
                     )}
             </TableDataCell>
         </>
