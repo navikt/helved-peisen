@@ -1,6 +1,5 @@
 import clsx from 'clsx'
 import React from 'react'
-import { v4 } from 'uuid'
 import { ErrorMessage, TextField, TextFieldProps } from '@navikt/ds-react'
 
 import styles from './CompactTextField.module.css'
@@ -16,7 +15,7 @@ export const CompactTextField: React.FC<Props> = ({
     error,
     ...props
 }) => {
-    const id = v4()
+    const id = new Date().getDate().toString()
     return (
         <div className={clsx(styles.container, containerClass)}>
             <div className={clsx(styles.inputContainer)}>

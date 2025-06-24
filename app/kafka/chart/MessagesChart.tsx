@@ -109,7 +109,7 @@ export const MessagesChart: React.FC<Props> = ({
                     },
                 ],
             },
-        [messageMap, colors]
+        [messageMap, colors, increment]
     )
 
     const options: ChartOptions<'bar'> = useMemo(

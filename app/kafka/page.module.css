@@ -9,15 +9,7 @@
     padding: 1rem;
 }
 
-.alert {
-    height: max-content;
-}
-
 .filtere {
     margin-bottom: var(--ax-space-32);
     grid-area: filters;
-}
-
-.footer {
-    grid-area: footer;
 }

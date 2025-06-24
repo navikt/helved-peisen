@@ -1,9 +1,6 @@
-'use client'
-
 import clsx from 'clsx'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { BodyShort, Button, Heading, VStack } from '@navikt/ds-react'
+import { BodyShort, Heading, Link, VStack } from '@navikt/ds-react'
 
 import noMessages from '@/public/404.png'
 
@@ -11,14 +8,6 @@ import styles from './NoMessages.module.css'
 import fadeIn from '@/styles/fadeIn.module.css'
 
 export const NoMessages = () => {
-    const size = 300
-
-    const router = useRouter()
-
-    const resetFilters = () => {
-        router.push('/')
-    }
-
     return (
         <VStack
             className={clsx(styles.container, fadeIn.animation)}
@@ -29,8 +18,8 @@ export const NoMessages = () => {
                 className={styles.image}
                 src={noMessages.src}
                 alt=""
-                width={size}
-                height={size}
+                width={300}
+                height={300}
             />
             <VStack>
                 <Heading level="2" size="large" className={styles.heading}>
@@ -39,9 +28,7 @@ export const NoMessages = () => {
                 <BodyShort className={styles.text}>
                     Prøv på nytt med andre filtere.
                 </BodyShort>
-                <Button onClick={resetFilters} className={styles.button}>
-                    Tilbakestill alle filtere
-                </Button>
+                <Link href="/kafka">Tilbakestill alle filtere</Link>
             </VStack>
         </VStack>
     )
