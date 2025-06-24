@@ -305,31 +305,13 @@ export const MessageMetadata: React.FC<Props> = ({ message }) => {
                     case 'helved.avstemming.v1':
                         return <AvstemmingMessageMetadata message={message} />
                     case 'helved.oppdrag.v1':
-                        return <OppdragMessageMetadata message={message} />
-                    case 'helved.oppdragsdata.v1':
-                        break
-                    case 'helved.dryrun-aap.v1':
-                        break
-                    case 'helved.dryrun-tp.v1':
-                        break
-                    case 'helved.dryrun-ts.v1':
-                        break
-                    case 'helved.dryrun-dp.v1':
-                        break
                     case 'helved.kvittering.v1':
-                        break
-                    case 'helved.simuleringer.v1':
-                        break
+                        return <OppdragMessageMetadata message={message} />
                     case 'helved.utbetalinger.v1':
                         return <UtbetalingMessageMetadata message={message} />
-                    case 'helved.saker.v1':
-                        break
-                    case 'helved.utbetalinger-aap.v1':
-                        break
                     case 'helved.status.v1':
                         return <StatusMessageMetadata message={message} />
                 }
-
                 return null
             })()}
         </ErrorBoundary>

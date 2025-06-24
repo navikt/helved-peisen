@@ -2,6 +2,7 @@
 
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import {
     HStack,
     Pagination,
@@ -24,8 +25,6 @@ import { MessageTableRow } from '@/app/kafka/table/MessageTableRow.tsx'
 
 import fadeIn from '@/styles/fadeIn.module.css'
 import styles from './MessagesTable.module.css'
-import { MessagesProvider } from '@/app/kafka/table/MessagesContext.tsx'
-import { useSearchParams } from 'next/navigation'
 
 const getNextDirection = (
     direction: SortState['direction']
@@ -37,13 +36,19 @@ const getNextDirection = (
           : 'descending'
 }
 
+type MessageTableSortState = Omit<SortState, 'orderBy'> & {
+    orderBy: keyof Message
+}
+
 type Props = {
     messages: Record<string, Message[]>
 }
 
 export const MessagesTable: React.FC<Props> = ({ messages }) => {
     const searchParams = useSearchParams()
-    const [sortState, setSortState] = useState<SortState | undefined>({
+    const [sortState, setSortState] = useState<
+        MessageTableSortState | undefined
+    >({
         orderBy: 'timestamp_ms',
         direction: 'descending',
     })
@@ -68,14 +73,12 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         .sort((a, b) =>
             sortState
                 ? sortState.direction === 'ascending'
-                    ? // @ts-ignore TODO
-                      +a[sortState.orderBy] - +b[sortState.orderBy]
-                    : // @ts-ignore TODO
-                      +b[sortState.orderBy] - +a[sortState.orderBy]
+                    ? +a[sortState.orderBy]! - +b[sortState.orderBy]!
+                    : +b[sortState.orderBy]! - +a[sortState.orderBy]!
                 : 0
         )
 
-    const updateSortState = (key: string) => {
+    const updateSortState = (key: keyof Message) => {
         setSortState((sort) => {
             if (!sort || sort.orderBy !== key) {
                 return { orderBy: key, direction: 'descending' }
@@ -107,74 +110,70 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
     const paginatedMessages = sortedMessages.slice(start, end)
 
     return (
-        <MessagesProvider messages={sortedMessages}>
-            <div className={clsx(styles.container, fadeIn.animation)}>
-                <Table
-                    className={styles.table}
-                    sort={sortState}
-                    onSortChange={updateSortState}
-                >
-                    <TableHeader>
-                        <TableRow>
-                            <TableHeaderCell textSize="small" />
-                            <TableHeaderCell textSize="small">
-                                Topic
-                            </TableHeaderCell>
-                            <TableHeaderCell textSize="small">
-                                Key
-                            </TableHeaderCell>
-                            <TableColumnHeader
-                                sortKey="timestamp_ms"
-                                sortable
-                                textSize="small"
-                                className={styles.header}
-                            >
-                                Timestamp
-                            </TableColumnHeader>
-                            <TableHeaderCell textSize="small">
-                                Partition
-                            </TableHeaderCell>
-                            <TableColumnHeader
-                                sortKey="offset"
-                                sortable
-                                textSize="small"
-                                className={styles.header}
-                            >
-                                Offset
-                            </TableColumnHeader>
-                            <TableDataCell></TableDataCell>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {paginatedMessages.map((message, i) => (
-                            <MessageTableRow key={i} message={message} />
-                        ))}
-                    </TableBody>
-                </Table>
-                <div className={styles.pagination}>
-                    <HStack align="center" gap="space-8">
-                        <Pagination
-                            page={page}
-                            onPageChange={setPage}
-                            count={Math.ceil(sortedMessages.length / pageSize)}
-                            size="xsmall"
-                        />
-                        Viser meldinger {start + 1} - {end} av{' '}
-                        {sortedMessages.length}
-                    </HStack>
-                    <HStack align="center" gap="space-12">
-                        Meldinger pr. side
-                        <TextField
-                            label="Sidestørrelse"
-                            hideLabel
-                            size="small"
-                            value={pageSize}
-                            onChange={onChangePageSize}
-                        />
-                    </HStack>
-                </div>
+        <div className={clsx(styles.container, fadeIn.animation)}>
+            <Table
+                className={styles.table}
+                sort={sortState}
+                onSortChange={updateSortState as (key: string) => void}
+            >
+                <TableHeader>
+                    <TableRow>
+                        <TableHeaderCell textSize="small" />
+                        <TableHeaderCell textSize="small">
+                            Topic
+                        </TableHeaderCell>
+                        <TableHeaderCell textSize="small">Key</TableHeaderCell>
+                        <TableColumnHeader
+                            sortKey="timestamp_ms"
+                            sortable
+                            textSize="small"
+                            className={styles.header}
+                        >
+                            Timestamp
+                        </TableColumnHeader>
+                        <TableHeaderCell textSize="small">
+                            Partition
+                        </TableHeaderCell>
+                        <TableColumnHeader
+                            sortKey="offset"
+                            sortable
+                            textSize="small"
+                            className={styles.header}
+                        >
+                            Offset
+                        </TableColumnHeader>
+                        <TableDataCell></TableDataCell>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {paginatedMessages.map((message, i) => (
+                        <MessageTableRow key={i} message={message} />
+                    ))}
+                </TableBody>
+            </Table>
+            <div className={styles.pagination}>
+                <HStack align="center" gap="space-8">
+                    <Pagination
+                        page={page}
+                        onPageChange={setPage}
+                        count={Math.ceil(sortedMessages.length / pageSize)}
+                        size="xsmall"
+                    />
+                    Viser meldinger {start + 1} - {end} av{' '}
+                    {sortedMessages.length}
+                </HStack>
+                <HStack align="center" gap="space-12">
+                    Meldinger pr. side
+                    <TextField
+                        label="Sidestørrelse"
+                        hideLabel
+                        size="small"
+                        value={pageSize}
+                        onChange={onChangePageSize}
+                    />
+                </HStack>
             </div>
-        </MessagesProvider>
+        </div>
     )
 }
 
