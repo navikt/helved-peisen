@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Message, TopicName } from '@/app/kafka/types.ts'
+import { Message } from '@/app/kafka/types.ts'
 import {
     TableDataCell,
     TableExpandableRow,

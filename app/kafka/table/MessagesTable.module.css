@@ -19,3 +19,7 @@
     gap: var(--ax-space-32);
     padding: var(--ax-space-16) 0;
 }
+
+.header button {
+    color: var(--ax-text-accent-subtle);
+}

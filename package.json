@@ -14,10 +14,10 @@
         "fetch-dev-api-token": "npx ts-node scripts/fetch-dev-api-token.ts"
     },
     "dependencies": {
-        "@navikt/aksel-icons": "^7.20.0",
-        "@navikt/ds-css": "^7.20.0",
-        "@navikt/ds-react": "^7.20.0",
-        "@navikt/ds-tokens": "^7.20.0",
+        "@navikt/aksel-icons": "^7.23.2",
+        "@navikt/ds-css": "^7.23.2",
+        "@navikt/ds-react": "^7.23.2",
+        "@navikt/ds-tokens": "^7.23.2",
         "@navikt/next-logger": "^2.0.0",
         "@navikt/oasis": "^3.7.0",
         "chart.js": "^4.4.8",

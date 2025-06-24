@@ -5,6 +5,8 @@ import { addManuellKvittering } from '@/lib/api/manuell-kvittering.ts'
 import { showErrorToast, showSuccessToast } from '@/components/Toast.tsx'
 import { MessagesContext } from '@/app/kafka/table/MessagesContext.tsx'
 
+import styles from './AddNewKvitteringButton.module.css'
+
 interface AddNewKvitteringButtonProps {
     message: Message
 }
@@ -79,7 +81,7 @@ export default function AddNewKvitteringButton({
 
     return (
         <>
-            <Button variant={buttonVariant} size="small" onClick={handleOpen}>
+            <Button className={styles.button} variant={buttonVariant} size="small" onClick={handleOpen}>
                 {buttonText}
             </Button>
 

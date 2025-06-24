@@ -1,6 +1,6 @@
-"use server"
+'use server'
 
-import { faker } from "@faker-js/faker"
+import { faker } from '@faker-js/faker'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
@@ -19,8 +19,7 @@ export async function getUser(): Promise<User> {
         }
     }
 
-    const readonlyHeaders = await headers()
-    const authHeader = readonlyHeaders.get('Authorization')
+    const authHeader = (await headers()).get('Authorization')
     if (!authHeader) {
         redirect('/oauth2/login')
     }

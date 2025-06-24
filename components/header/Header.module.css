@@ -10,7 +10,7 @@
 .tab {
     padding: 0 var(--ax-space-16);
     text-decoration: none;
-    color: var(--ax-text-default);
+    color: var(--ax-text-neutral);
 }
 
 .tab.active {

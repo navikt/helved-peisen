@@ -192,6 +192,7 @@ export const MessagesChart: React.FC<Props> = ({
                     setOpen((open) => !open)
                 }}
                 className={styles.showButton}
+                title="Toggle chart"
             >
                 {open ? (
                     <ChevronUpIcon fontSize="18" />

@@ -127,6 +127,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                                 sortKey="timestamp_ms"
                                 sortable
                                 textSize="small"
+                                className={styles.header}
                             >
                                 Timestamp
                             </TableColumnHeader>
@@ -137,6 +138,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                                 sortKey="offset"
                                 sortable
                                 textSize="small"
+                                className={styles.header}
                             >
                                 Offset
                             </TableColumnHeader>
