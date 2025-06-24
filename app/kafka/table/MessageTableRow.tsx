@@ -15,19 +15,19 @@ import {
     Label,
     VStack,
 } from '@navikt/ds-react'
-import { formatDate } from 'date-fns'
-import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
-import { UrlSearchParamLink } from '@/components/UrlSearchParamLink.tsx'
-import { AddKvitteringButton } from '@/app/kafka/table/AddKvitteringButton.tsx'
-import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
-
-import styles from './MessageTableRow.module.css'
-import { MessageValue } from './MessageValue'
 import {
     ActionMenuContent,
     ActionMenuTrigger,
 } from '@navikt/ds-react/ActionMenu'
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'
+import { formatDate } from 'date-fns'
+import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
+import { UrlSearchParamLink } from '@/components/UrlSearchParamLink.tsx'
+import { AddKvitteringButton } from '@/app/kafka/table/AddKvitteringButton.tsx'
+import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
+import { MessageValue } from './MessageValue'
+
+import styles from './MessageTableRow.module.css'
 
 type Props = {
     message: Message
