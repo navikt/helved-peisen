@@ -53,7 +53,7 @@ export async function fetchApiToken(): Promise<string> {
 
     const token = getToken(await headers())
     if (!token) {
-        throw new Error('Mangler access token')
+        redirect("/internal/login")
     }
 
     const scope = requireEnv('API_SCOPE')

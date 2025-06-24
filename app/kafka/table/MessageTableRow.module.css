@@ -5,7 +5,3 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
-.buttons {
-    gap: var(--ax-space-8)
-}

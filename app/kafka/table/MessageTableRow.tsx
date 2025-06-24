@@ -11,7 +11,7 @@ import { CopyButton, HStack, Label, VStack } from '@navikt/ds-react'
 import { formatDate } from 'date-fns'
 import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
 import { UrlSearchParamLink } from '@/components/UrlSearchParamLink.tsx'
-import AddNewKvitteringButton from '@/app/kafka/table/AddNewKvitteringButton.tsx'
+import { AddKvitteringButton } from '@/app/kafka/table/AddKvitteringButton.tsx'
 import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
 
 import styles from './MessageTableRow.module.css'
@@ -40,10 +40,6 @@ const MessageTableRowContents: React.FC<Props> = ({ message }) => {
 const RowContents: React.FC<Props> = ({ message }) => {
     const time = formatDate(message.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')
 
-    const showKvitteringButton =
-        message.topic_name === 'helved.oppdrag.v1' &&
-        (message.value ? !message.value.includes('<mmel>') : false)
-
     return (
         <>
             <TableDataCell>
@@ -62,11 +58,13 @@ const RowContents: React.FC<Props> = ({ message }) => {
             <TableDataCell>{message.partition}</TableDataCell>
             <TableDataCell>{message.offset}</TableDataCell>
             <TableDataCell>
-                <HStack wrap={false} className={styles.buttons}>
-                    {showKvitteringButton && (
-                        <AddNewKvitteringButton message={message} />
+                {message.topic_name === 'helved.oppdrag.v1' &&
+                    message.value && (
+                        <AddKvitteringButton
+                            messageValue={message.value}
+                            messageKey={message.key}
+                        />
                     )}
-                </HStack>
             </TableDataCell>
         </>
     )
