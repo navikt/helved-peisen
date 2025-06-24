@@ -23,6 +23,10 @@ afterAll(() => {
     server.close()
 })
 
+const searchParams = () => ({
+    get: () => "",
+})
+
 vi.mock('next/navigation', () => {
     const actual = vi.importActual('next/navigation')
     return {
@@ -30,9 +34,7 @@ vi.mock('next/navigation', () => {
         useRouter: vi.fn(() => ({
             push: vi.fn(),
         })),
-        useSearchParams: vi.fn(() => ({
-            get: vi.fn(),
-        })),
+        useSearchParams: searchParams,
         usePathname: vi.fn(),
     }
 })

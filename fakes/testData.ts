@@ -1,9 +1,10 @@
 import { randomUUID } from 'node:crypto'
 import { addDays, addSeconds, subDays } from 'date-fns'
+import type { TopicName } from '@/app/kafka/types'
 
 type Message = {
     version: string
-    topic_name: string
+    topic_name: TopicName
     key: string
     value: string | null
     partition: number
@@ -279,7 +280,7 @@ export const TestData = {
     },
     message(
         overrides: Partial<Message> = {},
-        topic_name: string = 'helved.oppprag.v1',
+        topic_name: TopicName = 'helved.oppdrag.v1',
         options: { fom: Date; tom: Date } = {
             fom: subDays(new Date(), 30),
             tom: new Date(),

@@ -53,8 +53,8 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         direction: 'descending',
     })
 
+    const topicsParam = searchParams.get("topics")
     useEffect(() => {
-        const topicsParam = searchParams.get('topics')
         if (topicsParam) {
             setSortState({
                 orderBy: 'offset',
@@ -66,7 +66,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                 direction: 'descending',
             })
         }
-    }, [searchParams])
+    }, [topicsParam])
 
     const sortedMessages = Object.values(messages)
         .flat()
