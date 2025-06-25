@@ -10,6 +10,7 @@ type Props = {
 
 export const MessageValue: React.FC<Props> = ({ message }) => {
     const showMessagePayload = process.env.NEXT_PUBLIC_SHOW_MESSAGE_PAYLOAD
+    console.log("SHOW_MESSAGE_PAYLOAD", showMessagePayload, !showMessagePayload, showMessagePayload === "false")
     if (!showMessagePayload || showMessagePayload === 'false') {
         return null
     }
