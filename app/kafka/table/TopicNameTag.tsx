@@ -7,6 +7,7 @@ import type { Message, StatusMessageValue } from '@/app/kafka/types.ts'
 
 import styles from './TopicNameTag.module.css'
 import clsx from 'clsx'
+import { parsedXML } from '@/lib/xml.ts'
 
 const parser = new DOMParser()
 
@@ -19,7 +20,7 @@ const AvstemmingStatusBadge: React.FC<Props> = ({ message }) => {
         return null
     }
 
-    const xmlDoc = parser.parseFromString(message.value, 'application/xml')
+    const xmlDoc = parsedXML(message.value)
     const content = xmlDoc.querySelector('aksjon > aksjonType')?.textContent
 
     if (!content) {
@@ -40,7 +41,7 @@ const OppdragStatusBadge: React.FC<Props> = ({ message }) => {
         return null
     }
 
-    const xmlDoc = parser.parseFromString(message.value, 'application/xml')
+    const xmlDoc = parsedXML(message.value)
     const content = xmlDoc.querySelector('mmel > alvorlighetsgrad')?.textContent
 
     if (!content) {

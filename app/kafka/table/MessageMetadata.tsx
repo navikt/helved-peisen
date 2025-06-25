@@ -10,6 +10,7 @@ import {
     UtbetalingMessageValue,
 } from '@/app/kafka/types.ts'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { parsedXML } from '@/lib/xml.ts'
 
 type MetadataCardProps = {
     label: string
@@ -117,8 +118,7 @@ const AvstemmingMessageMetadata: React.FC<Props> = ({ message }) => {
         throw Error('Avstemmingsmelding mangler value')
     }
 
-    const parser = new DOMParser()
-    const xmlDoc = parser.parseFromString(message.value, 'application/xml')
+    const xmlDoc = parsedXML(message.value)
 
     const fagsystem = xmlDoc.querySelector(
         'aksjon > avleverendeKomponentKode'
@@ -141,8 +141,7 @@ const OppdragMessageMetadata: React.FC<Props> = ({ message }) => {
         throw Error('Oppdragsmelding mangler value')
     }
 
-    const parser = new DOMParser()
-    const xmlDoc = parser.parseFromString(message.value, 'application/xml')
+    const xmlDoc = parsedXML(message.value)
 
     const mmel: OppdragMessageValue['mmel'] = (() => {
         const mmel = xmlDoc.querySelector('mmel')

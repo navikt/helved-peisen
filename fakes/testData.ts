@@ -74,8 +74,7 @@ export const TestData = {
 </ns2:avstemmingsdata>`
     },
     oppdrag(kvittering: boolean = false) {
-        return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:oppdrag xmlns:ns2="http://www.trygdeetaten.no/skjema/oppdrag">
+        return `<ns2:oppdrag xmlns:ns2="http://www.trygdeetaten.no/skjema/oppdrag">
     ${
         kvittering
             ? `<mmel>
