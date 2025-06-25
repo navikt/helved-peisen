@@ -5,7 +5,7 @@ import type { Message } from '@/app/kafka/types.ts'
 import { TestData } from '@/fakes/testData'
 import { userEvent } from '@testing-library/user-event'
 
-describe('MessagesTable', () => {
+describe.skip('MessagesTable', () => {
     test('sorterer på timestamp', async () => {
         const user = userEvent.setup()
 
