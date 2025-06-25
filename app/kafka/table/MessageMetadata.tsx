@@ -1,3 +1,5 @@
+'use client'
+
 import React, { ReactNode } from 'react'
 import { BodyShort, BoxNew, HStack, Label, VStack } from '@navikt/ds-react'
 

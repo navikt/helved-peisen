@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { Tag, TagProps } from '@navikt/ds-react'
 
