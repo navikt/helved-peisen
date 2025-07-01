@@ -3,6 +3,7 @@ import { TestData } from './testData.ts'
 import { parseStringQueryParam } from './queryParameters.ts'
 import { Topics } from '../app/kafka/types.ts'
 import { subDays } from 'date-fns'
+import { sleep } from './util.ts'
 
 const app = express()
 const port = 8080
@@ -100,6 +101,32 @@ app.post('/api/manuell-kvittering', async (req, res) => {
     res.status(200).json({ success: true, message: 'Kvittering ble lagt til' })
 })
 
+app.get('/api/saker', async (req, res) => {
+    const sakIdParam =
+        typeof req.query.sakId === 'string' ? req.query.sakId : null
+    const fagsystemParam =
+        typeof req.query.fagsystem === 'string' ? req.query.fagsystem : null
+
+    const saker = messages
+        .filter((it) => it.topic_name === 'helved.saker.v1')
+        .filter((it) => {
+            const { sakId, fagsystem } = JSON.parse(it.key)
+            return (
+                (sakIdParam ? sakId === sakIdParam : true) &&
+                (fagsystemParam ? fagsystem === fagsystemParam : true)
+            )
+        })
+    res.json(saker).status(200)
+})
+
+app.get('/api/saker/:sakId/:fagsystem', async (req, res) => {
+    const oppdrag = messages
+        .filter((it) => it.topic_name === 'helved.oppdrag.v1')
+        .slice(0, 4)
+    await sleep(1000)
+    res.json(oppdrag).status(200)
+})
+
 app.listen(port, () => {
-    console.log(`Utsjekk mock listening on port ${port}`)
+    console.log(`Mock listening on port ${port}`)
 })

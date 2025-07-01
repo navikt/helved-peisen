@@ -33,7 +33,7 @@ type Props = {
     message: Message
 }
 
-const MessageTableRowContents: React.FC<Props> = ({ message }) => {
+export const MessageTableRowContents: React.FC<Props> = ({ message }) => {
     return (
         <VStack gap="space-32">
             <VStack gap="space-12">
@@ -50,8 +50,6 @@ const MessageTableRowContents: React.FC<Props> = ({ message }) => {
 }
 
 const RowContents: React.FC<Props> = ({ message }) => {
-    const time = formatDate(message.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')
-
     return (
         <>
             <TableDataCell>
@@ -66,7 +64,9 @@ const RowContents: React.FC<Props> = ({ message }) => {
                     {message.key}
                 </UrlSearchParamLink>
             </TableDataCell>
-            <TableDataCell>{time}</TableDataCell>
+            <TableDataCell>
+                {formatDate(message.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}
+            </TableDataCell>
             <TableDataCell>{message.partition}</TableDataCell>
             <TableDataCell>{message.offset}</TableDataCell>
             <TableDataCell>

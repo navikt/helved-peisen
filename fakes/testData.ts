@@ -86,7 +86,7 @@ export const TestData = {
     <oppdrag-110>
         <kodeAksjon>1</kodeAksjon>
         <kodeEndring>ENDR</kodeEndring>
-        <kodeFagomraade>TILTPENG</kodeFagomraade>
+        <kodeFagomraade>${randomFagsystem()}</kodeFagomraade>
         <fagsystemId>202503271001</fagsystemId>
         <utbetFrekvens>MND</utbetFrekvens>
         <oppdragGjelderId>14439535912</oppdragGjelderId>
@@ -379,7 +379,7 @@ export const TestData = {
                         return this.message(
                             {
                                 key: `{"fagsystem":"${randomFagsystem()}","sakId":"${randomSakId()}","behandlingId":"${randomBehandlingId()}","lastPeriodeId":"${randomUUID()}"}`,
-                                value: JSON.stringify(TestData.status()),
+                                value: JSON.stringify(TestData.oppdrag(true)),
                             },
                             topicName,
                             options
@@ -425,7 +425,10 @@ export const TestData = {
                         )
                     case 'helved.saker.v1':
                         return this.message(
-                            { value: JSON.stringify(TestData.saker()) },
+                            {
+                                key: `{"sakId":"${generateRandomString(8)}","fagsystem":"${randomFagsystem()}"}`,
+                                value: JSON.stringify(TestData.saker()),
+                            },
                             topicName,
                             options
                         )

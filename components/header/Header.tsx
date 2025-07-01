@@ -36,7 +36,7 @@ console.log(
     'color: #FFED00',
     'color: #008026',
     'color: #004CFF',
-    'color: #732982',
+    'color: #732982'
 )
 
 export function Header() {
@@ -58,6 +58,15 @@ export function Header() {
                     href="/kafka"
                 >
                     Kafka
+                </Link>
+                <Link
+                    className={clsx(
+                        styles.tab,
+                        pathname.startsWith('/sak') && styles.active
+                    )}
+                    href="/sak"
+                >
+                    Sak
                 </Link>
             </HStack>
             <Spacer />

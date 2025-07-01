@@ -53,7 +53,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         direction: 'descending',
     })
 
-    const topicsParam = searchParams.get("topics")
+    const topicsParam = searchParams.get('topics')
     useEffect(() => {
         if (topicsParam) {
             setSortState({
@@ -179,22 +179,20 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
 
 export const MessagesTableSkeleton = () => {
     return (
-        <>
-            <div className={styles.container}>
-                <Table className={styles.table}>
-                    <TableBody>
-                        {Array(20)
-                            .fill(null)
-                            .map((_, i) => (
-                                <TableRow key={i}>
-                                    <TableDataCell colSpan={7}>
-                                        <Skeleton height={33} />
-                                    </TableDataCell>
-                                </TableRow>
-                            ))}
-                    </TableBody>
-                </Table>
-            </div>
-        </>
+        <div className={styles.container}>
+            <Table className={styles.table}>
+                <TableBody>
+                    {Array(20)
+                        .fill(null)
+                        .map((_, i) => (
+                            <TableRow key={i}>
+                                <TableDataCell colSpan={7}>
+                                    <Skeleton height={33} />
+                                </TableDataCell>
+                            </TableRow>
+                        ))}
+                </TableBody>
+            </Table>
+        </div>
     )
 }

@@ -13,6 +13,9 @@ import { redirect, unauthorized } from 'next/navigation'
 const API_TOKEN_NAME = 'api-token'
 
 export const ensureValidApiToken = async () => {
+    if (isFaking) {
+        return
+    }
     const existing = await getApiTokenFromCookie()
     if (!existing) {
         return isLocal ? unauthorized() : redirect('/internal/login')

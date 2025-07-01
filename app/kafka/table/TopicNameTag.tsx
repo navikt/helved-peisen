@@ -1,15 +1,16 @@
 'use client'
 
 import React from 'react'
-import { Tag, TagProps } from '@navikt/ds-react'
+import clsx from 'clsx'
+import { Tag } from '@navikt/ds-react'
 
 import type { Message, StatusMessageValue } from '@/app/kafka/types.ts'
 
-import styles from './TopicNameTag.module.css'
-import clsx from 'clsx'
 import { parsedXML } from '@/lib/xml.ts'
+import { variant } from '@/lib/message.ts'
 
-const parser = new DOMParser()
+import styles from './TopicNameTag.module.css'
+import { ca } from 'date-fns/locale'
 
 type Props = {
     message: Message
@@ -72,7 +73,13 @@ const StatusStatusBadge: React.FC<Props> = ({ message }) => {
         return null
     }
 
-    const value: StatusMessageValue = JSON.parse(message.value)
+    let value: StatusMessageValue
+    try {
+        value = JSON.parse(message.value)
+    } catch (e) {
+        console.error(e)
+        return null
+    }
 
     return (
         <div
@@ -120,32 +127,8 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
 }
 
 export const TopicNameTag: React.FC<Props> = ({ message }) => {
-    const variant: TagProps['variant'] = (() => {
-        switch (message.topic_name) {
-            case 'helved.oppdragsdata.v1':
-            case 'helved.avstemming.v1':
-            case 'helved.kvittering.v1':
-                return 'info'
-            case 'helved.dryrun-ts.v1':
-            case 'helved.dryrun-dp.v1':
-            case 'helved.dryrun-tp.v1':
-            case 'helved.dryrun-aap.v1':
-            case 'helved.simuleringer.v1':
-                return 'neutral'
-            case 'helved.utbetalinger-aap.v1':
-            case 'helved.utbetalinger.v1':
-                return 'success'
-            case 'helved.saker.v1':
-                return 'alt1'
-            case 'helved.oppdrag.v1':
-                return 'warning'
-            case 'helved.status.v1':
-                return 'alt2'
-        }
-    })()
-
     return (
-        <Tag variant={variant} className={styles.tag}>
+        <Tag variant={variant(message)} className={styles.tag}>
             {message.topic_name}
             <StatusBadge message={message} />
         </Tag>
