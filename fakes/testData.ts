@@ -302,6 +302,7 @@ export const TestData = {
                 options.fom,
                 options.tom
             ).getTime(),
+            trace_id: '12345',
             ...overrides,
         }
     },
