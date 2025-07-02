@@ -97,6 +97,7 @@ app.post('/api/manuell-kvittering', async (req, res) => {
         timestamp_ms: new Date().getTime(),
         stream_time_ms: new Date().getTime(),
         system_time_ms: new Date().getTime(),
+        trace_id: '12345',
     })
     res.status(200).json({ success: true, message: 'Kvittering ble lagt til' })
 })
