@@ -10,14 +10,37 @@ import { fetchSak } from './actions'
 
 import styles from './Filtere.module.css'
 
+type FormStateValue = { value: string; error: undefined }
+type FormStateError = { value: undefined; error: string }
+type FormStateInput = FormStateValue | FormStateError
+
 type FormState = {
-    sakId?: { value?: string; error?: string }
-    fagsystem?: { value?: string; error?: string }
+    sakId?: FormStateInput
+    fagsystem?: FormStateInput
 }
 
 const defaultState: FormState = {
     sakId: undefined,
     fagsystem: undefined,
+}
+
+const toFormState = (formData: FormData): FormState => {
+    const { sakId, fagsystem } = Object.fromEntries(formData)
+
+    return {
+        sakId:
+            typeof sakId !== 'string' || sakId.length === 0
+                ? { value: undefined, error: 'Sak-ID må fylles ut' }
+                : { value: sakId, error: undefined },
+        fagsystem:
+            typeof fagsystem !== 'string' || fagsystem.length === 0
+                ? { value: undefined, error: 'Fagsystem må fylles ut' }
+                : { value: fagsystem, error: undefined },
+    }
+}
+
+const hasValue = (input?: FormStateInput): input is FormStateValue => {
+    return typeof (input as any)?.value === 'string'
 }
 
 type Props = React.HTMLAttributes<HTMLDivElement>
@@ -26,32 +49,21 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
     const { setSak } = useSak()
 
     const getSak = async (_: FormState, formData: FormData) => {
-        const { sakId, fagsystem } = Object.fromEntries(formData)
+        const state = toFormState(formData)
 
-        if (
-            typeof sakId !== 'string' ||
-            sakId.length === 0 ||
-            typeof fagsystem !== 'string' ||
-            fagsystem.length === 0
-        ) {
-            return {
-                sakId: {
-                    value: sakId as string | undefined,
-                    error: !sakId ? 'Sak-ID må fylles ut' : undefined,
-                },
-                fagsystem: {
-                    value: fagsystem as string | undefined,
-                    error: !fagsystem ? 'Fagsystem må fylles ut' : undefined,
-                },
-            }
+        if (!hasValue(state.sakId) || !hasValue(state.fagsystem)) {
+            return state
         }
 
-        const response = await fetchSak(sakId, fagsystem)
+        const response = await fetchSak(
+            state.sakId.value,
+            state.fagsystem.value
+        )
 
         if (response.data) {
             setSak({
-                id: sakId,
-                fagsystem: fagsystem,
+                id: state.sakId.value,
+                fagsystem: state.fagsystem.value,
                 hendelser: response.data,
             })
 
