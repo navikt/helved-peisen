@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { TextField } from '@navikt/ds-react'
+import { Select, TextField } from '@navikt/ds-react'
 
 import { showToast } from '@/components/Toast'
 import { FormButton } from '@/components/FormButton'
@@ -47,13 +47,19 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     size="small"
                     required
                 />
-                <TextField
+                <Select
                     className={styles.input}
                     label="Fagsystem"
                     name="fagsystem"
                     size="small"
                     required
-                />
+                >
+                    <option value="">- Velg fagsystem -</option>
+                    <option value="DP">Dagpenger</option>
+                    <option value="AAP">AAP</option>
+                    <option value="TILTPENG">Tiltakspenger</option>
+                    <option value="TILLST">Tilleggsstønader</option>
+                </Select>
                 <FormButton className={styles.button} size="small">
                     Søk
                 </FormButton>
