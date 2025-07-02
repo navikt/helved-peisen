@@ -16,12 +16,10 @@ const buildGrafanaTraceUrl = (
             ? {
                   paneKey: 'sd4',
                   datasourceUid: 'P95CC91DC09CABFC8',
-                  timeRange: { from: 'now-1h', to: 'now' },
               }
             : {
                   paneKey: 'vns',
                   datasourceUid: 'P8A28344D07741F8D',
-                  timeRange: { from: 'now-24h', to: 'now' },
               }
 
     const params = new URLSearchParams({
@@ -37,13 +35,10 @@ const buildGrafanaTraceUrl = (
                             uid: config.datasourceUid,
                         },
                         queryType: 'traceql',
-                        limit: 20,
                         tableType: 'traces',
-                        metricsQueryType: 'range',
                         query: traceId,
                     },
                 ],
-                range: config.timeRange,
             },
         }),
         orgId: '1',
