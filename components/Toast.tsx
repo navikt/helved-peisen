@@ -1,24 +1,25 @@
 import toast from 'react-hot-toast'
 import { Alert } from '@navikt/ds-react'
+import { clsx } from 'clsx'
 
-export const showSuccessToast = (message: string) => {
+import styles from './Toast.module.css'
+import fadeIn from '@/styles/fadeIn.module.css'
+
+export const showToast = (
+    message: string,
+    options: { variant: 'info' | 'success' | 'error' | 'warning' } = {
+        variant: 'info',
+    }
+) => {
     return toast.custom((t) => (
         <div
-            className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md`}
+            className={clsx(
+                fadeIn.animation,
+                styles.toast,
+                t.visible && styles.visible
+            )}
         >
-            <Alert size="small" variant="success">
-                {message}
-            </Alert>
-        </div>
-    ))
-}
-
-export const showErrorToast = (message: string) => {
-    return toast.custom((t) => (
-        <div
-            className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md`}
-        >
-            <Alert size="small" variant="error">
+            <Alert size="small" variant={options.variant}>
                 {message}
             </Alert>
         </div>

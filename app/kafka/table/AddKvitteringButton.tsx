@@ -4,7 +4,7 @@ import { logger } from '@navikt/next-logger'
 
 import { addKvittering } from '@/app/actions'
 import { FormButton } from '@/components/FormButton'
-import { showErrorToast, showSuccessToast } from '@/components/Toast.tsx'
+import { showToast } from '@/components/Toast.tsx'
 
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 
@@ -34,9 +34,11 @@ export const AddKvitteringButton = ({ messageValue, messageKey }: Props) => {
         if (response.error) {
             const message = `Feil ved lagring av kvittering: ${response.error.message}`
             logger.error(message)
-            showErrorToast(message)
+            showToast(message, { variant: 'error' })
         } else {
-            showSuccessToast(`Lagt til ny kvttering for "${messageKey}"`)
+            showToast(`Lagt til ny kvttering for "${messageKey}"`, {
+                variant: 'success',
+            })
         }
 
         closeModal()

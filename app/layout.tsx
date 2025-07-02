@@ -19,8 +19,7 @@ const sourceSans = Source_Sans_3({
 
 export const metadata: Metadata = {
     title: 'Peisen',
-    description:
-        'Oversikt over meldinger i systemene til Team Hel Ved',
+    description: 'Oversikt over meldinger i systemene til Team Hel Ved',
 }
 
 export default function RootLayout({
@@ -34,7 +33,7 @@ export default function RootLayout({
                 <LoggerProvider>
                     <ThemeProvider>
                         <Header />
-                        <Toaster position="top-right" />
+                        <Toaster position="bottom-center" />
                         <main className={styles.main}>{children}</main>
                     </ThemeProvider>
                 </LoggerProvider>

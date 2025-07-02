@@ -2,7 +2,15 @@
     display: flex;
     gap: var(--ax-space-32);
     margin-bottom: var(--ax-space-32);
-    align-items: flex-end;
+}
+
+.input {
+    height: max-content;
+}
+
+.button {
+    height: max-content;
+    margin-top: var(--ax-space-28);
 }
 
 @media screen and (max-width: 767px) {
