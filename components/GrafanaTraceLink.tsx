@@ -5,43 +5,25 @@ type Props = {
     traceId: string | null | undefined
 }
 
-const buildGrafanaTraceUrl = (
-    traceId: string,
-    environment: 'dev' | 'prod' = 'prod'
-): string => {
+const buildGrafanaTraceUrl = (traceId: string): string => {
     const baseUrl = 'https://grafana.nav.cloud.nais.io/explore'
-
-    const config =
-        environment === 'dev'
-            ? {
-                  paneKey: 'sd4',
-                  datasourceUid: 'P95CC91DC09CABFC8',
-              }
-            : {
-                  paneKey: 'vns',
-                  datasourceUid: 'P8A28344D07741F8D',
-              }
 
     const params = new URLSearchParams({
         schemaVersion: '1',
         panes: JSON.stringify({
-            [config.paneKey]: {
-                datasource: config.datasourceUid,
+            trace: {
+                datasource:
+                    process.env.NODE_ENV === 'development'
+                        ? 'P95CC91DC09CABFC8'
+                        : 'P8A28344D07741F8D',
                 queries: [
                     {
-                        refId: 'A',
-                        datasource: {
-                            type: 'tempo',
-                            uid: config.datasourceUid,
-                        },
                         queryType: 'traceql',
-                        tableType: 'traces',
                         query: traceId,
                     },
                 ],
             },
         }),
-        orgId: '1',
     })
     return `${baseUrl}?${params.toString()}`
 }
@@ -51,10 +33,8 @@ export const GrafanaTraceLink: React.FC<Props> = ({ traceId }) => {
         return null
     }
 
-    const environment = process.env.NODE_ENV === 'development' ? 'dev' : 'prod'
-
     return (
-        <Link href={buildGrafanaTraceUrl(traceId, environment)} target="_blank">
+        <Link href={buildGrafanaTraceUrl(traceId)} target="_blank">
             <LinkIcon title="View trace in Grafana" />
         </Link>
     )
