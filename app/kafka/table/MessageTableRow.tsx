@@ -28,6 +28,7 @@ import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
 import { MessageValue } from './MessageValue'
 
 import styles from './MessageTableRow.module.css'
+import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 
 type Props = {
     message: Message
@@ -90,6 +91,9 @@ const RowContents: React.FC<Props> = ({ message }) => {
                             </ActionMenuContent>
                         </ActionMenu>
                     )}
+            </TableDataCell>
+            <TableDataCell>
+                <GrafanaTraceLink traceId={message.trace_id} />
             </TableDataCell>
         </>
     )

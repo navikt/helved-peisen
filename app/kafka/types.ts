@@ -26,6 +26,7 @@ export type Message = {
     timestamp_ms: number
     stream_time_ms: number
     system_time_ms: number
+    trace_id: string
 }
 
 export type UtbetalingMessageValue = {
@@ -33,7 +34,7 @@ export type UtbetalingMessageValue = {
     originalKey: string
     fagsystem: string
     uid: string
-    action: "CREATE" | "UPDATE" | "DELETE"
+    action: 'CREATE' | 'UPDATE' | 'DELETE'
     førsteUtbetalingPåSak: boolean
     sakId: string
     behandlingId: string
@@ -48,7 +49,7 @@ export type UtbetalingMessageValue = {
         fom: string
         tom: string
         overføres: string
-        årsak?: "AVVENT_AVREGNING" | "AVVENT_REFUSJONSKRAV" | null
+        årsak?: 'AVVENT_AVREGNING' | 'AVVENT_REFUSJONSKRAV' | null
         feilregistrering: boolean
     } | null
     perioder: {

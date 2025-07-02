@@ -12,6 +12,7 @@ type Message = {
     timestamp_ms: number
     stream_time_ms: number
     system_time_ms: number
+    trace_id: string
 }
 
 const Fagsystem = {
