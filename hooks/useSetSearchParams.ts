@@ -1,21 +1,27 @@
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 
 export const useSetSearchParams = () => {
-    const searchParams = useSearchParams()
     const router = useRouter()
-    const pathname = usePathname()
 
     return useCallback(
         (values: Record<string, string>) => {
-            const params = new URLSearchParams(searchParams.toString())
+            const params = new URLSearchParams(window.location.search)
 
             for (const [key, value] of Object.entries(values)) {
-                params.set(key, value)
+                if (value.length === 0) {
+                    params.delete(key)
+                } else {
+                    params.set(key, value)
+                }
             }
 
-            router.push(pathname + '?' + decodeURIComponent(params.toString()))
+            router.push(
+                window.location.pathname +
+                    '?' +
+                    decodeURIComponent(params.toString())
+            )
         },
-        [searchParams, router, pathname]
+        [router]
     )
 }

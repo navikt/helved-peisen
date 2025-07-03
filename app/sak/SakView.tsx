@@ -1,6 +1,14 @@
 'use client'
 
-import { BodyShort, BoxNew, Label, Tag, VStack } from '@navikt/ds-react'
+import {
+    BodyShort,
+    BoxNew,
+    HStack,
+    Label,
+    Switch,
+    Tag,
+    VStack,
+} from '@navikt/ds-react'
 import {
     Table,
     TableBody,
@@ -16,9 +24,12 @@ import { MessageTableRowContents } from '@/app/kafka/table/MessageTableRow.tsx'
 import { Message } from '@/app/kafka/types.ts'
 import { variant } from '@/lib/message.ts'
 import { useSak } from './SakProvider'
+import { Timeline, TimelinePeriod, TimelineRow } from './timeline'
 
 import fadeIn from '@/styles/fadeIn.module.css'
 import styles from './SakView.module.css'
+import { useState } from 'react'
+import { TopicNameTag } from '../kafka/table/TopicNameTag'
 
 const type = (message: Message): string => {
     return (() => {
@@ -64,12 +75,51 @@ const fagsystem = (fagsystem: string) => {
     }
 }
 
+const removeDuplicateMessages = (messages: Message[]) => {
+    const messageMap: Record<string, Message> = {}
+
+    for (const message of messages) {
+        if (message.key === '287cd995-ced2-4f13-90a6-681190e63d67') {
+            console.log(message)
+        }
+        const key = JSON.stringify({
+            ...message,
+            offset: null, // Offset vil alltid være forskjellig
+            system_time_ms: null, // Bryr oss ikke om denne
+        })
+        messageMap[key] = message
+    }
+
+    return Object.values(messageMap)
+}
+
+const groupHendelserOnTopic = (
+    hendelser: Message[]
+): Record<string, Message[]> => {
+    return hendelser.reduce(
+        (grouped, hendelse) => {
+            if (!grouped[hendelse.topic_name]) {
+                grouped[hendelse.topic_name] = [hendelse]
+            } else {
+                grouped[hendelse.topic_name].push(hendelse)
+            }
+            return grouped
+        },
+        {} as Record<string, Message[]>
+    )
+}
+
 export const SakView = () => {
     const { sak } = useSak()
+    const [hideDuplicates, setHideDuplicates] = useState(true)
 
     if (!sak || sak.hendelser.length === 0) {
         return null
     }
+
+    const messages = hideDuplicates
+        ? removeDuplicateMessages(sak.hendelser)
+        : sak.hendelser
 
     return (
         <VStack gap="space-32" className={fadeIn.animation}>
@@ -82,7 +132,35 @@ export const SakView = () => {
                 <BodyShort>{fagsystem(sak.fagsystem)}</BodyShort>
             </VStack>
             <VStack gap="space-12">
-                <Label>Hendelser</Label>
+                <Label>Tidslinje</Label>
+                <Timeline>
+                    {Object.entries(groupHendelserOnTopic(messages)).map(
+                        ([topic, messages]) => (
+                            <TimelineRow key={topic} label={topic}>
+                                {messages.map((it, i) => (
+                                    <TimelinePeriod
+                                        key={i}
+                                        date={new Date(it.timestamp_ms)}
+                                    />
+                                ))}
+                            </TimelineRow>
+                        )
+                    )}
+                </Timeline>
+            </VStack>
+            <VStack gap="space-12">
+                <HStack gap="space-16" justify="space-between">
+                    <Label>Hendelser</Label>
+                    <Switch
+                        size="small"
+                        checked={hideDuplicates}
+                        onChange={(event) => {
+                            setHideDuplicates(event.target.checked)
+                        }}
+                    >
+                        Skjul duplikater
+                    </Switch>
+                </HStack>
                 <BoxNew
                     borderRadius="large"
                     background="neutral-soft"
@@ -93,7 +171,7 @@ export const SakView = () => {
                             <TableRow>
                                 <TableHeaderCell />
                                 <TableHeaderCell textSize="small">
-                                    Type
+                                    Topic
                                 </TableHeaderCell>
                                 <TableHeaderCell textSize="small">
                                     Timestamp
@@ -104,7 +182,7 @@ export const SakView = () => {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {sak.hendelser.map((it, i) => (
+                            {messages.map((it, i) => (
                                 <TableExpandableRow
                                     key={it.key + it.timestamp_ms + i}
                                     content={
@@ -112,9 +190,7 @@ export const SakView = () => {
                                     }
                                 >
                                     <TableDataCell>
-                                        <Tag variant={variant(it)}>
-                                            {type(it)}
-                                        </Tag>
+                                        <TopicNameTag message={it} />
                                     </TableDataCell>
                                     <TableDataCell className={styles.cell}>
                                         {format(

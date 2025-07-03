@@ -1,11 +1,13 @@
 'use client'
 
-import React, { useActionState } from 'react'
+import React, { useActionState, useCallback, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Select, TextField } from '@navikt/ds-react'
 
 import { showToast } from '@/components/Toast'
 import { FormButton } from '@/components/FormButton'
 import { useSak } from '@/app/sak/SakProvider.tsx'
+import { useSetSearchParams } from '@/hooks/useSetSearchParams'
 import { fetchSak } from './actions'
 
 import styles from './Filtere.module.css'
@@ -47,37 +49,60 @@ type Props = React.HTMLAttributes<HTMLDivElement>
 
 export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
     const { setSak } = useSak()
+    const setSearchParams = useSetSearchParams()
+    const searchParams = useSearchParams()
 
-    const getSak = async (_: FormState, formData: FormData) => {
-        const state = toFormState(formData)
+    const getSak = useCallback(
+        async (_: FormState, formData: FormData) => {
+            const state = toFormState(formData)
 
-        if (!hasValue(state.sakId) || !hasValue(state.fagsystem)) {
-            return state
-        }
-
-        const response = await fetchSak(
-            state.sakId.value,
-            state.fagsystem.value
-        )
-
-        if (response.data) {
-            setSak({
-                id: state.sakId.value,
-                fagsystem: state.fagsystem.value,
-                hendelser: response.data,
-            })
-
-            if (response.data.length === 0) {
-                showToast('Fant ingen hendelser for sak')
+            if (!hasValue(state.sakId) || !hasValue(state.fagsystem)) {
+                return state
             }
-        }
 
-        if (response.error) {
-            showToast(response.error.message, { variant: 'error' })
-        }
+            const response = await fetchSak(
+                state.sakId.value,
+                state.fagsystem.value
+            )
 
-        return defaultState
-    }
+            if (response.data) {
+                setSak({
+                    id: state.sakId.value,
+                    fagsystem: state.fagsystem.value,
+                    hendelser: response.data,
+                })
+                setSearchParams({
+                    sakId: state.sakId.value,
+                    fagsystem: state.fagsystem.value,
+                })
+
+                if (response.data.length === 0) {
+                    showToast('Fant ingen hendelser for sak')
+                    setSearchParams({ sakId: '', fagsystem: '' })
+                }
+            }
+
+            if (response.error) {
+                showToast(response.error.message, { variant: 'error' })
+            }
+
+            return defaultState
+        },
+        [setSak, setSearchParams]
+    )
+
+    useEffect(() => {
+        const searchParams = new URLSearchParams(window.location.search)
+        const sakId = searchParams.get('sakId')
+        const fagsystem = searchParams.get('fagsystem')
+
+        if (sakId && fagsystem) {
+            const data = new FormData()
+            data.set('sakId', sakId)
+            data.set('fagsystem', fagsystem)
+            getSak({} as unknown as FormState, data)
+        }
+    }, [getSak])
 
     const [state, action] = useActionState(getSak, defaultState)
 
@@ -89,7 +114,13 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     label="Sak-ID"
                     name="sakId"
                     size="small"
-                    defaultValue={state.sakId?.value}
+                    defaultValue={
+                        state.sakId?.error
+                            ? undefined
+                            : (state.sakId?.value ||
+                                  searchParams.get('sakId')) ??
+                              undefined
+                    }
                     error={state.sakId?.error}
                 />
                 <Select
@@ -97,7 +128,13 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     label="Fagsystem"
                     name="fagsystem"
                     size="small"
-                    defaultValue={state.fagsystem?.value}
+                    defaultValue={
+                        state.fagsystem?.error
+                            ? undefined
+                            : (state.fagsystem?.value ||
+                                  searchParams.get('fagsystem')) ??
+                              undefined
+                    }
                     error={state.fagsystem?.error}
                 >
                     <option value="">- Velg fagsystem -</option>

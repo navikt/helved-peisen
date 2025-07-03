@@ -1,0 +1,10 @@
+.periodsContainer {
+  background: var(--ax-bg-neutral-soft);
+  padding: 0 var(--ax-space-24);
+}
+
+.periods {
+  position: relative;
+  min-height: var(--ax-space-24);
+  width: 100%;
+}
