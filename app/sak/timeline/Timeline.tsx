@@ -4,7 +4,7 @@ import { isAfter, isBefore } from 'date-fns'
 
 import { TimelineRow, TimelineRowProps } from './TimelineRow.tsx'
 import { TimelineProvider } from './TimelineContext.tsx'
-import { TimelineEventProps } from './TimelinePeriod.tsx'
+import { TimelineEventProps } from './TimelineEvent.tsx'
 
 import styles from './Timeline.module.css'
 

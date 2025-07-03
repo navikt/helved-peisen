@@ -1,12 +1,12 @@
 'use client'
 
+import { startTransition, useState } from 'react'
 import {
     BodyShort,
     BoxNew,
     HStack,
     Label,
     Switch,
-    Tag,
     VStack,
 } from '@navikt/ds-react'
 import {
@@ -19,17 +19,16 @@ import {
     TableRow,
 } from '@navikt/ds-react/Table'
 import { format } from 'date-fns/format'
+import clsx from 'clsx'
 
+import { TopicNameTag } from '../kafka/table/TopicNameTag'
 import { MessageTableRowContents } from '@/app/kafka/table/MessageTableRow.tsx'
 import { Message } from '@/app/kafka/types.ts'
-import { variant } from '@/lib/message.ts'
 import { useSak } from './SakProvider'
 import { Timeline, TimelinePeriod, TimelineRow } from './timeline'
 
 import fadeIn from '@/styles/fadeIn.module.css'
 import styles from './SakView.module.css'
-import { useState } from 'react'
-import { TopicNameTag } from '../kafka/table/TopicNameTag'
 
 const type = (message: Message): string => {
     return (() => {
@@ -112,6 +111,7 @@ const groupHendelserOnTopic = (
 export const SakView = () => {
     const { sak } = useSak()
     const [hideDuplicates, setHideDuplicates] = useState(true)
+    const [activeMessage, setActiveMessage] = useState<Message | null>()
 
     if (!sak || sak.hendelser.length === 0) {
         return null
@@ -123,30 +123,69 @@ export const SakView = () => {
 
     return (
         <VStack gap="space-32" className={fadeIn.animation}>
-            <VStack gap="space-12">
-                <Label>Sak-ID</Label>
-                <BodyShort>{sak.id}</BodyShort>
-            </VStack>
-            <VStack gap="space-12">
-                <Label>Fagsystem</Label>
-                <BodyShort>{fagsystem(sak.fagsystem)}</BodyShort>
-            </VStack>
+            <HStack gap="space-24">
+                <BoxNew
+                    padding="4"
+                    background="neutral-soft"
+                    borderRadius="large"
+                >
+                    <VStack gap="space-12">
+                        <Label>Sak-ID</Label>
+                        <BodyShort>{sak.id}</BodyShort>
+                    </VStack>
+                </BoxNew>
+                <BoxNew
+                    padding="4"
+                    background="neutral-soft"
+                    borderRadius="large"
+                >
+                    <VStack gap="space-12">
+                        <Label>Fagsystem</Label>
+                        <BodyShort>{fagsystem(sak.fagsystem)}</BodyShort>
+                    </VStack>
+                </BoxNew>
+            </HStack>
             <VStack gap="space-12">
                 <Label>Tidslinje</Label>
-                <Timeline>
-                    {Object.entries(groupHendelserOnTopic(messages)).map(
-                        ([topic, messages]) => (
-                            <TimelineRow key={topic} label={topic}>
-                                {messages.map((it, i) => (
-                                    <TimelinePeriod
-                                        key={i}
-                                        date={new Date(it.timestamp_ms)}
-                                    />
-                                ))}
-                            </TimelineRow>
-                        )
-                    )}
-                </Timeline>
+                <BoxNew
+                    padding="4"
+                    background="neutral-soft"
+                    borderRadius="large"
+                >
+                    <Timeline>
+                        {Object.entries(groupHendelserOnTopic(messages)).map(
+                            ([topic, messages]) => (
+                                <TimelineRow key={topic} label={topic}>
+                                    {messages.map((it, i) => (
+                                        <TimelinePeriod
+                                            key={i}
+                                            date={new Date(it.timestamp_ms)}
+                                            variant="info"
+                                            content={
+                                                <div
+                                                    className={
+                                                        styles.periodContent
+                                                    }
+                                                >
+                                                    <div>Key:</div>
+                                                    <div>{it.key}</div>
+                                                    <div>Timestamp:</div>
+                                                    <div>{it.timestamp_ms}</div>
+                                                </div>
+                                            }
+                                            onShowContent={() =>
+                                                setActiveMessage(it)
+                                            }
+                                            onHideContent={() =>
+                                                setActiveMessage(null)
+                                            }
+                                        />
+                                    ))}
+                                </TimelineRow>
+                            )
+                        )}
+                    </Timeline>
+                </BoxNew>
             </VStack>
             <VStack gap="space-12">
                 <HStack gap="space-16" justify="space-between">
@@ -182,25 +221,34 @@ export const SakView = () => {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {messages.map((it, i) => (
-                                <TableExpandableRow
-                                    key={it.key + it.timestamp_ms + i}
-                                    content={
-                                        <MessageTableRowContents message={it} />
-                                    }
-                                >
-                                    <TableDataCell>
-                                        <TopicNameTag message={it} />
-                                    </TableDataCell>
-                                    <TableDataCell className={styles.cell}>
-                                        {format(
-                                            it.timestamp_ms,
-                                            'yyyy-MM-dd - HH:mm:ss.SSS'
+                            {messages.map((it, i) => {
+                                console.log(it.key + it.system_time_ms)
+                                return (
+                                    <TableExpandableRow
+                                        key={it.key + it.timestamp_ms + i}
+                                        className={clsx(
+                                            activeMessage === it &&
+                                                styles.active
                                         )}
-                                    </TableDataCell>
-                                    <TableDataCell>{it.key}</TableDataCell>
-                                </TableExpandableRow>
-                            ))}
+                                        content={
+                                            <MessageTableRowContents
+                                                message={it}
+                                            />
+                                        }
+                                    >
+                                        <TableDataCell>
+                                            <TopicNameTag message={it} />
+                                        </TableDataCell>
+                                        <TableDataCell className={styles.cell}>
+                                            {format(
+                                                it.timestamp_ms,
+                                                'yyyy-MM-dd - HH:mm:ss.SSS'
+                                            )}
+                                        </TableDataCell>
+                                        <TableDataCell>{it.key}</TableDataCell>
+                                    </TableExpandableRow>
+                                )
+                            })}
                         </TableBody>
                     </Table>
                 </BoxNew>

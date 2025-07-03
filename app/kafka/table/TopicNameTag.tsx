@@ -10,7 +10,6 @@ import { parsedXML } from '@/lib/xml.ts'
 import { variant } from '@/lib/message.ts'
 
 import styles from './TopicNameTag.module.css'
-import { ca } from 'date-fns/locale'
 
 type Props = {
     message: Message

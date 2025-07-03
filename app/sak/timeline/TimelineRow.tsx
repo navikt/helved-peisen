@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 
-import { TimelineEvent } from './TimelinePeriod'
+import { TimelineEvent } from './TimelineEvent'
 
 import styles from './TimelineRow.module.css'
 

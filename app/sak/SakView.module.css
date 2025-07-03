@@ -1,3 +1,15 @@
 .cell {
-  white-space: nowrap;
+    white-space: nowrap;
+}
+
+.periodContent {
+    display: grid;
+    min-width: max-content;
+    grid-template-columns: auto auto;
+    gap: var(--ax-space-8);
+    text-align: start;
+}
+
+.active {
+    background: var(--ax-bg-neutral-moderate-hoverA);
 }
