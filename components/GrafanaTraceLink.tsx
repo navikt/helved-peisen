@@ -7,13 +7,13 @@ type Props = {
 
 const buildGrafanaTraceUrl = (traceId: string): string => {
     const baseUrl = 'https://grafana.nav.cloud.nais.io/explore'
-
     const params = new URLSearchParams({
         schemaVersion: '1',
         panes: JSON.stringify({
             trace: {
                 datasource:
-                    process.env.NODE_ENV === 'development'
+                    window.location.host.includes('dev') ||
+                    window.location.host.includes('localhost')
                         ? 'P95CC91DC09CABFC8'
                         : 'P8A28344D07741F8D',
                 queries: [
