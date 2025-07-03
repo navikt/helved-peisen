@@ -12,31 +12,95 @@ import styles from './Header.module.css'
 
 import logo from '@/public/logo.png'
 
+const shadow = '#8135ff'
+
 console.log(
     `%c
                                                         
- ██████   ███████╗ ██████╗  ██████╗  ███████╗ ███╗  ██╗ %c
- ██╔══██╗ ██╔════╝   ██╔═╝ ██╔════╝  ██╔════╝ ████╗ ██║ %c
- ██████╔╝ ██████╗    ██║   ╚██████╗  ██████╗  ██╔██╗██║ %c
- ██╔═══╝  ██╔═══╝    ██║    ╚════██╗ ██╔═══╝  ██║╚████║ %c
- ██║      ███████╗ ██████╗  ██████╔╝ ███████╗ ██║ ╚███║ %c
+ ██████   ███████%c╗%c ██████%c╗%c  ██████%c╗%c  ███████%c╗%c ███%c╗%c  ██%c╗ %c
+ ██%c╔══%c██%c╗%c ██%c╔════╝%c   ██%c╔═╝%c ██%c╔════╝%c  ██%c╔════╝%c ████%c╗%c ██%c║ %c
+ ██████%c╔╝%c ██████%c╗%c    ██%c║   ╚%c██████%c╗%c  ██████%c╗%c  ██%c╔%c██%c╗%c██%c║ %c
+ ██%c╔═══╝%c  ██%c╔═══╝%c    ██%c║    ╚════%c██%c╗%c ██%c╔═══╝%c  ██%c║╚%c████%c║ %c
+ ██%c║%c      ███████%c╗%c ██████%c╗%c  ██████%c╔╝%c ███████%c╗%c ██%c║ ╚%c███%c║
  ╚═╝      ╚══════╝ ╚═════╝  ╚═════╝  ╚══════╝ ╚═╝  ╚══╝ 
                                                         
- %cG%ci%ct%ch%cu%cb: https://github.com/navikt/helved-peisen        
+ %cGithub: https://github.com/navikt/helved-peisen        
                                                         
 `,
-    'color: #E40303',
+    'color: #FF3434',
+    `color: ${shadow}`,
+    'color: #FF3434',
+    `color: ${shadow}`,
+    'color: #FF3434',
+    `color: ${shadow}`,
+    'color: #FF3434',
+    `color: ${shadow}`,
+    'color: #FF3434',
+    `color: ${shadow}`,
+    'color: #FF3434',
+    `color: ${shadow}`,
     'color: #FF8C00',
-    'color: #FFED00',
-    'color: #008026',
-    'color: #004CFF',
-    'color: #732982',
-    'color: #E40303',
+    `color: ${shadow}`,
     'color: #FF8C00',
+    `color: ${shadow}`,
+    'color: #FF8C00',
+    `color: ${shadow}`,
+    'color: #FF8C00',
+    `color: ${shadow}`,
+    'color: #FF8C00',
+    `color: ${shadow}`,
+    'color: #FF8C00',
+    `color: ${shadow}`,
+    'color: #FF8C00',
+    `color: ${shadow}`,
+    'color: #FF8C00',
+    `color: ${shadow}`,
     'color: #FFED00',
-    'color: #008026',
-    'color: #004CFF',
-    'color: #732982'
+    `color: ${shadow}`,
+    'color: #FFED00',
+    `color: ${shadow}`,
+    'color: #FFED00',
+    `color: ${shadow}`,
+    'color: #FFED00',
+    `color: ${shadow}`,
+    'color: #FFED00',
+    `color: ${shadow}`,
+    'color: #FFED00',
+    `color: ${shadow}`,
+    'color: #FFED00',
+    `color: ${shadow}`,
+    'color: #FFED00',
+    `color: ${shadow}`,
+    'color: #FF8C00',
+    `color: ${shadow}`,
+    'color: #FF8C00',
+    `color: ${shadow}`,
+    'color: #FF8C00',
+    `color: ${shadow}`,
+    'color: #FF8C00',
+    `color: ${shadow}`,
+    'color: #FF8C00',
+    `color: ${shadow}`,
+    'color: #FF8C00',
+    `color: ${shadow}`,
+    'color: #FF8C00',
+    `color: ${shadow}`,
+    'color: #FF3434',
+    `color: ${shadow}`,
+    'color: #FF3434',
+    `color: ${shadow}`,
+    'color: #FF3434',
+    `color: ${shadow}`,
+    'color: #FF3434',
+    `color: ${shadow}`,
+    'color: #FF3434',
+    `color: ${shadow}`,
+    'color: #FF3434',
+    `color: ${shadow}`,
+    'color: #FF3434',
+    `color: ${shadow}`,
+    'color: #FF3434',
+    `color: ${shadow}`
 )
 
 export function Header() {
