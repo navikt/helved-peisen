@@ -143,7 +143,6 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                             Offset
                         </TableColumnHeader>
                         <TableDataCell></TableDataCell>
-                        <TableDataCell></TableDataCell>
                     </TableRow>
                 </TableHeader>
                 <TableBody>

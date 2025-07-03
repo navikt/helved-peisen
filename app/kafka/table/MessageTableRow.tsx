@@ -17,6 +17,7 @@ import {
 } from '@navikt/ds-react'
 import {
     ActionMenuContent,
+    ActionMenuItem,
     ActionMenuTrigger,
 } from '@navikt/ds-react/ActionMenu'
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'
@@ -71,29 +72,30 @@ const RowContents: React.FC<Props> = ({ message }) => {
             <TableDataCell>{message.partition}</TableDataCell>
             <TableDataCell>{message.offset}</TableDataCell>
             <TableDataCell>
-                {message.topic_name === 'helved.oppdrag.v1' &&
-                    message.value && (
-                        <ActionMenu>
-                            <ActionMenuTrigger>
-                                <Button
-                                    variant="tertiary-neutral"
-                                    size="small"
-                                    icon={
-                                        <MenuElipsisVerticalIcon title="Kontekstmeny" />
-                                    }
-                                />
-                            </ActionMenuTrigger>
-                            <ActionMenuContent>
+                {message.value && (
+                    <ActionMenu>
+                        <ActionMenuTrigger>
+                            <Button
+                                variant="tertiary-neutral"
+                                size="small"
+                                icon={
+                                    <MenuElipsisVerticalIcon title="Kontekstmeny" />
+                                }
+                            />
+                        </ActionMenuTrigger>
+                        <ActionMenuContent>
+                            {message.topic_name === 'helved.oppdrag.v1' && (
                                 <AddKvitteringButton
                                     messageValue={message.value}
                                     messageKey={message.key}
                                 />
-                            </ActionMenuContent>
-                        </ActionMenu>
-                    )}
-            </TableDataCell>
-            <TableDataCell>
-                <GrafanaTraceLink traceId={message.trace_id} />
+                            )}
+                            <ActionMenuItem>
+                                <GrafanaTraceLink traceId={message.trace_id} />
+                            </ActionMenuItem>
+                        </ActionMenuContent>
+                    </ActionMenu>
+                )}
             </TableDataCell>
         </>
     )

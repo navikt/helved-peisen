@@ -1,8 +1,7 @@
 import { Link } from '@navikt/ds-react'
-import { LinkIcon } from '@navikt/aksel-icons'
 
 type Props = {
-    traceId: string | null | undefined
+    traceId: string
 }
 
 const buildGrafanaTraceUrl = (traceId: string): string => {
@@ -34,8 +33,18 @@ export const GrafanaTraceLink: React.FC<Props> = ({ traceId }) => {
     }
 
     return (
-        <Link href={buildGrafanaTraceUrl(traceId)} target="_blank">
-            <LinkIcon title="View trace in Grafana" />
+        <Link
+            href={buildGrafanaTraceUrl(traceId)}
+            target="_blank"
+            style={{
+                textDecoration: 'none',
+                color: 'inherit',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+            }}
+        >
+            Vis trace i Grafana
         </Link>
     )
 }
