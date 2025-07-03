@@ -17,11 +17,15 @@ const useDefaultTidsrom = () => {
 
     useEffect(() => {
         const params = new URLSearchParams(searchParams)
+        const today = new Date()
+        const isMonday = today.getDay() === 1
+        const daysToSubtract = isMonday ? 3 : 1
+
         if (!params.has('fom')) {
-            params.set('fom', subDays(new Date(), 7).toISOString())
+            params.set('fom', subDays(today, daysToSubtract).toISOString())
         }
         if (!params.has('tom')) {
-            params.set('tom', new Date().toISOString())
+            params.set('tom', today.toISOString())
         }
 
         if (params.toString() !== searchParams.toString()) {

@@ -386,13 +386,17 @@ export const DateRangeSelect = () => {
     const setSearchParams = useSetSearchParams()
 
     const state: Record<string, string> = useMemo(() => {
+        const today = new Date()
+        const isMonday = today.getDay() === 1
+        const daysToSubtract = isMonday ? 3 : 1
+
         return {
             fom:
                 parseSearchParamDate(searchParams, 'fom') ??
-                subDays(new Date(), 7).toISOString(),
+                subDays(today, daysToSubtract).toISOString(),
             tom:
                 parseSearchParamDate(searchParams, 'tom') ??
-                new Date().toISOString(),
+                today.toISOString(),
         }
     }, [searchParams])
 

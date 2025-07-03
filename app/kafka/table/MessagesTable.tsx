@@ -96,7 +96,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
     }
 
     const [page, setPage] = useState(1)
-    const [pageSize, setPageSize] = useState(20)
+    const [pageSize, setPageSize] = useState(100)
 
     const onChangePageSize = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = +event.target.value
