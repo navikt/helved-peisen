@@ -78,9 +78,6 @@ const removeDuplicateMessages = (messages: Message[]) => {
     const messageMap: Record<string, Message> = {}
 
     for (const message of messages) {
-        if (message.key === '287cd995-ced2-4f13-90a6-681190e63d67') {
-            console.log(message)
-        }
         const key = JSON.stringify({
             ...message,
             offset: null, // Offset vil alltid være forskjellig
