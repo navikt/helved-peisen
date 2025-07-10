@@ -1,13 +1,14 @@
 'use client'
 
 import clsx from 'clsx'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import {
     HStack,
     Pagination,
     Skeleton,
     SortState,
+    Switch,
     Table,
     TextField,
 } from '@navikt/ds-react'
@@ -52,6 +53,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         orderBy: 'timestamp_ms',
         direction: 'descending',
     })
+    const [showLatestOnly, setShowLatestOnly] = useState(false)
 
     const topicsParam = searchParams.get('topics')
     useEffect(() => {
@@ -68,15 +70,29 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         }
     }, [topicsParam])
 
-    const sortedMessages = Object.values(messages)
-        .flat()
-        .sort((a, b) =>
+    const allMessages = Object.values(messages).flat()
+
+    const latestMessages = useMemo(() => {
+        const grouped = new Map<string, Message>()
+        allMessages.forEach((message) => {
+            const key = `${message.topic_name}:${message.key}`
+            const existing = grouped.get(key)
+            if (!existing || message.timestamp_ms > existing.timestamp_ms) {
+                grouped.set(key, message)
+            }
+        })
+
+        return Array.from(grouped.values())
+    }, [messages.data])
+
+    const sortedMessages = (showLatestOnly ? latestMessages : allMessages).sort(
+        (a, b) =>
             sortState
                 ? sortState.direction === 'ascending'
                     ? +a[sortState.orderBy]! - +b[sortState.orderBy]!
                     : +b[sortState.orderBy]! - +a[sortState.orderBy]!
                 : 0
-        )
+    )
 
     const updateSortState = (key: keyof Message) => {
         setSortState((sort) => {
@@ -111,6 +127,21 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
 
     return (
         <div className={clsx(styles.container, fadeIn.animation)}>
+            <div className={styles.controls}>
+                <HStack gap="space-4" align="center" justify="end">
+                    <Switch
+                        checked={showLatestOnly}
+                        onChange={() => {
+                            setShowLatestOnly(!showLatestOnly)
+                            setPage(1)
+                        }}
+                        size="small"
+                    >
+                        Vis siste
+                    </Switch>
+                </HStack>
+            </div>
+
             <Table
                 className={styles.table}
                 sort={sortState}
@@ -142,6 +173,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                         >
                             Offset
                         </TableColumnHeader>
+                        <TableDataCell></TableDataCell>
                         <TableDataCell></TableDataCell>
                     </TableRow>
                 </TableHeader>
