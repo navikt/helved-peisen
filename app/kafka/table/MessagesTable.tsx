@@ -8,7 +8,7 @@ import {
     Pagination,
     Skeleton,
     SortState,
-    Switch,
+    ToggleGroup,
     Table,
     TextField,
 } from '@navikt/ds-react'
@@ -53,7 +53,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         orderBy: 'timestamp_ms',
         direction: 'descending',
     })
-    const [showLatestOnly, setShowLatestOnly] = useState(false)
+    const [messageFilter, setMessageFilter] = useState<'alle' | 'siste'>('alle')
 
     const topicsParam = searchParams.get('topics')
     useEffect(() => {
@@ -85,13 +85,14 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         return Array.from(grouped.values())
     }, [messages.data])
 
-    const sortedMessages = (showLatestOnly ? latestMessages : allMessages).sort(
-        (a, b) =>
-            sortState
-                ? sortState.direction === 'ascending'
-                    ? +a[sortState.orderBy]! - +b[sortState.orderBy]!
-                    : +b[sortState.orderBy]! - +a[sortState.orderBy]!
-                : 0
+    const sortedMessages = (
+        messageFilter === 'siste' ? latestMessages : allMessages
+    ).sort((a, b) =>
+        sortState
+            ? sortState.direction === 'ascending'
+                ? +a[sortState.orderBy]! - +b[sortState.orderBy]!
+                : +b[sortState.orderBy]! - +a[sortState.orderBy]!
+            : 0
     )
 
     const updateSortState = (key: keyof Message) => {
@@ -121,6 +122,11 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         }
     }
 
+    const handleFilterChange = (value: string) => {
+        setMessageFilter(value as 'alle' | 'siste')
+        setPage(1)
+    }
+
     const start = (page - 1) * pageSize
     const end = Math.min(start + pageSize, sortedMessages.length)
     const paginatedMessages = sortedMessages.slice(start, end)
@@ -128,17 +134,16 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
     return (
         <div className={clsx(styles.container, fadeIn.animation)}>
             <div className={styles.controls}>
-                <HStack gap="space-4" align="center" justify="end">
-                    <Switch
-                        checked={showLatestOnly}
-                        onChange={() => {
-                            setShowLatestOnly(!showLatestOnly)
-                            setPage(1)
-                        }}
+                <HStack gap="space-8" align="center">
+                    <ToggleGroup
+                        defaultValue="alle"
+                        onChange={handleFilterChange}
+                        fill
                         size="small"
                     >
-                        Vis siste
-                    </Switch>
+                        <ToggleGroup.Item value="alle" label="Alle" />
+                        <ToggleGroup.Item value="siste" label="Siste" />
+                    </ToggleGroup>
                 </HStack>
             </div>
 
