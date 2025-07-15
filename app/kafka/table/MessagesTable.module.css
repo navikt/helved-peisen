@@ -7,6 +7,10 @@
     grid-area: table;
 }
 
+.tabs {
+    padding: var(--ax-space-8) 0;
+}
+
 .table {
     height: max-content;
     overflow: scroll;

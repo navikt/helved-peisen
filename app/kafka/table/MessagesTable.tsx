@@ -133,8 +133,8 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
 
     return (
         <div className={clsx(styles.container, fadeIn.animation)}>
-            <div className={styles.controls}>
-                <HStack gap="space-8" align="center">
+            <div className={styles.tabs}>
+                <HStack align="center" justify="end">
                     <ToggleGroup
                         defaultValue="alle"
                         onChange={handleFilterChange}
