@@ -82,6 +82,7 @@ const removeDuplicateMessages = (messages: Message[]) => {
             ...message,
             offset: null, // Offset vil alltid være forskjellig
             system_time_ms: null, // Bryr oss ikke om denne
+            stream_time_ms: null, // eller denne
         })
         messageMap[key] = message
     }
