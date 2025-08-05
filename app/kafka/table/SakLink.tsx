@@ -1,0 +1,72 @@
+import type { Message } from '@/app/kafka/types.ts'
+import { Link } from '@navikt/ds-react'
+import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
+
+import styles from './SakLink.module.css'
+import { parsedXML } from '@/lib/xml'
+
+const sakUrl = (message: Message) => {
+    if (!message.value) {
+        return null
+    }
+    switch (message.topic_name) {
+        case 'helved.avstemming.v1':
+        case 'helved.oppdragsdata.v1':
+        case 'helved.dryrun-aap.v1':
+        case 'helved.dryrun-tp.v1':
+        case 'helved.dryrun-ts.v1':
+        case 'helved.dryrun-dp.v1':
+        case 'helved.simuleringer.v1':
+        case 'helved.saker.v1':
+        case 'helved.utbetalinger-aap.v1':
+        case 'helved.status.v1':
+            return null
+        case 'helved.utbetalinger.v1': {
+            const json = JSON.parse(message.value)
+            const fagsystem = json.fagsystem
+            const sakId = json.sakId
+
+            if (!fagsystem || !sakId) {
+                return null
+            }
+
+            return `/sak?sakId=${sakId}&fagsystem=${fagsystem}`
+        }
+        case 'helved.kvittering.v1':
+        case 'helved.oppdrag.v1': {
+            const xml = parsedXML(message.value)
+            const sakId = xml.querySelector(
+                'oppdrag-110 > fagsystemId'
+            )?.textContent
+            const fagsystem = xml.querySelector(
+                'oppdrag-110 > kodeFagomraade'
+            )?.textContent
+
+            if (!fagsystem || !sakId) {
+                return null
+            }
+
+            return `/sak?sakId=${sakId}&fagsystem=${fagsystem}`
+        }
+    }
+}
+
+type Props = {
+    message: Message
+}
+
+export const SakLink: React.FC<Props> = ({ message }) => {
+    const url = sakUrl(message)
+
+    if (!url) {
+        return null
+    }
+
+    return (
+        <ActionMenuItem>
+            <Link className={styles.link} href={url}>
+                Gå til sak
+            </Link>
+        </ActionMenuItem>
+    )
+}

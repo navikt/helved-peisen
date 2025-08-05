@@ -22,12 +22,14 @@ import {
 } from '@navikt/ds-react/ActionMenu'
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'
 import { formatDate } from 'date-fns'
+
 import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import { UrlSearchParamLink } from '@/components/UrlSearchParamLink.tsx'
 import { AddKvitteringButton } from '@/app/kafka/table/AddKvitteringButton.tsx'
 import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
 import { MessageValue } from './MessageValue'
+import { SakLink } from './SakLink'
 
 import styles from './MessageTableRow.module.css'
 
@@ -93,6 +95,7 @@ const RowContents: React.FC<Props> = ({ message }) => {
                             <ActionMenuItem>
                                 <GrafanaTraceLink traceId={message.trace_id} />
                             </ActionMenuItem>
+                            <SakLink message={message} />
                         </ActionMenuContent>
                     </ActionMenu>
                 )}
