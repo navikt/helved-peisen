@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import {
+    ActionMenu,
     BodyShort,
     BoxNew,
+    Button,
     HStack,
     Label,
     Switch,
@@ -26,38 +28,16 @@ import { MessageTableRowContents } from '@/app/kafka/table/MessageTableRow.tsx'
 import { Message } from '@/app/kafka/types.ts'
 import { useSak } from './SakProvider'
 import { Timeline, TimelinePeriod, TimelineRow } from './timeline'
+import {
+    ActionMenuContent,
+    ActionMenuItem,
+    ActionMenuTrigger,
+} from '@navikt/ds-react/ActionMenu'
+import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'
+import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 
 import fadeIn from '@/styles/fadeIn.module.css'
 import styles from './SakView.module.css'
-
-const type = (message: Message): string => {
-    return (() => {
-        switch (message.topic_name) {
-            case 'helved.avstemming.v1':
-                return 'Avstemming'
-            case 'helved.oppdrag.v1':
-                return 'Oppdrag'
-            case 'helved.oppdragsdata.v1':
-                return 'Oppdragsdata'
-            case 'helved.kvittering.v1':
-                return 'Kvittering'
-            case 'helved.dryrun-aap.v1':
-            case 'helved.dryrun-tp.v1':
-            case 'helved.dryrun-ts.v1':
-            case 'helved.dryrun-dp.v1':
-            case 'helved.simuleringer.v1':
-                return 'Simulering'
-            case 'helved.utbetalinger.v1':
-                return 'Utbetaling'
-            case 'helved.saker.v1':
-                return 'Sak'
-            case 'helved.utbetalinger-aap.v1':
-                return 'Utbetaling-AAP'
-            case 'helved.status.v1':
-                return 'Status'
-        }
-    })()
-}
 
 const fagsystem = (fagsystem: string) => {
     switch (fagsystem) {
@@ -217,37 +197,57 @@ export const SakView = () => {
                                 <TableHeaderCell textSize="small">
                                     Key
                                 </TableHeaderCell>
+                                <TableHeaderCell />
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {messages.map((it, i) => {
-                                console.log(it.key + it.system_time_ms)
-                                return (
-                                    <TableExpandableRow
-                                        key={it.key + it.timestamp_ms + i}
-                                        className={clsx(
-                                            activeMessage === it &&
-                                                styles.active
+                            {messages.map((it, i) => (
+                                <TableExpandableRow
+                                    key={it.key + it.timestamp_ms + i}
+                                    className={clsx(
+                                        activeMessage === it && styles.active
+                                    )}
+                                    content={
+                                        <MessageTableRowContents message={it} />
+                                    }
+                                >
+                                    <TableDataCell>
+                                        <TopicNameTag message={it} />
+                                    </TableDataCell>
+                                    <TableDataCell className={styles.cell}>
+                                        {format(
+                                            it.timestamp_ms,
+                                            'yyyy-MM-dd - HH:mm:ss.SSS'
                                         )}
-                                        content={
-                                            <MessageTableRowContents
-                                                message={it}
-                                            />
-                                        }
-                                    >
-                                        <TableDataCell>
-                                            <TopicNameTag message={it} />
-                                        </TableDataCell>
-                                        <TableDataCell className={styles.cell}>
-                                            {format(
-                                                it.timestamp_ms,
-                                                'yyyy-MM-dd - HH:mm:ss.SSS'
-                                            )}
-                                        </TableDataCell>
-                                        <TableDataCell>{it.key}</TableDataCell>
-                                    </TableExpandableRow>
-                                )
-                            })}
+                                    </TableDataCell>
+                                    <TableDataCell>{it.key}</TableDataCell>
+
+                                    <TableDataCell>
+                                        {it.value && (
+                                            <ActionMenu>
+                                                <ActionMenuTrigger>
+                                                    <Button
+                                                        variant="tertiary-neutral"
+                                                        size="small"
+                                                        icon={
+                                                            <MenuElipsisVerticalIcon title="Kontekstmeny" />
+                                                        }
+                                                    />
+                                                </ActionMenuTrigger>
+                                                <ActionMenuContent>
+                                                    <ActionMenuItem>
+                                                        <GrafanaTraceLink
+                                                            traceId={
+                                                                it.trace_id
+                                                            }
+                                                        />
+                                                    </ActionMenuItem>
+                                                </ActionMenuContent>
+                                            </ActionMenu>
+                                        )}
+                                    </TableDataCell>
+                                </TableExpandableRow>
+                            ))}
                         </TableBody>
                     </Table>
                 </BoxNew>

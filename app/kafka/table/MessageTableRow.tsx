@@ -23,13 +23,13 @@ import {
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'
 import { formatDate } from 'date-fns'
 import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
+import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import { UrlSearchParamLink } from '@/components/UrlSearchParamLink.tsx'
 import { AddKvitteringButton } from '@/app/kafka/table/AddKvitteringButton.tsx'
 import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
 import { MessageValue } from './MessageValue'
 
 import styles from './MessageTableRow.module.css'
-import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 
 type Props = {
     message: Message
