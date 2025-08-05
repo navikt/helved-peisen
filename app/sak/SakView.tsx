@@ -1,6 +1,6 @@
 'use client'
 
-import { startTransition, useState } from 'react'
+import { useState } from 'react'
 import {
     BodyShort,
     BoxNew,
@@ -82,7 +82,8 @@ const removeDuplicateMessages = (messages: Message[]) => {
             ...message,
             offset: null, // Offset vil alltid være forskjellig
             system_time_ms: null, // Bryr oss ikke om denne
-            stream_time_ms: null, // eller denne
+            stream_time_ms: null, // eller denne,
+            trace_id: null, // eller denne,
         })
         messageMap[key] = message
     }
