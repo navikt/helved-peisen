@@ -118,6 +118,8 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
             break
         case 'helved.utbetalinger-aap.v1':
             break
+        case 'helved.utbetalinger-dp.v1':
+            break
         case 'helved.status.v1':
             return <StatusStatusBadge message={message} />
     }

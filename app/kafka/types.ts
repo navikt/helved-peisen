@@ -11,6 +11,7 @@ export const Topics = {
     utbetalinger: 'helved.utbetalinger.v1',
     saker: 'helved.saker.v1',
     aap: 'helved.utbetalinger-aap.v1',
+    dp: 'helved.utbetalinger-dp.v1',
     status: 'helved.status.v1',
 } as const
 

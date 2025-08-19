@@ -99,6 +99,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                             'helved.kvittering.v1',
                             'helved.utbetalinger.v1',
                             'helved.utbetalinger-aap.v1',
+                            'helved.utbetalinger-dp.v1',
                             'helved.saker.v1',
                             'helved.status.v1',
                             'helved.simuleringer.v1',
