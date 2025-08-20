@@ -31,6 +31,8 @@ const type = (message: Message): string => {
             case 'helved.dryrun-tp.v1':
             case 'helved.dryrun-ts.v1':
             case 'helved.dryrun-dp.v1':
+            case 'helved.utbetalinger-dp.v1':
+            case 'teamdagpenger.utbetaling.v1':
             case 'helved.simuleringer.v1':
                 return 'Simulering'
             case 'helved.utbetalinger.v1':
