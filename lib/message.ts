@@ -39,6 +39,8 @@ export const variant = (message: Message): Variant => {
         case 'helved.simuleringer.v1':
             return 'neutral'
         case 'helved.utbetalinger-aap.v1':
+        case 'helved.utbetalinger-dp.v1':
+        case 'teamdagpenger.utbetaling.v1':
         case 'helved.utbetalinger.v1':
             return 'success'
         case 'helved.saker.v1':
