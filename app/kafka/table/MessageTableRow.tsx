@@ -32,6 +32,7 @@ import { MessageValue } from './MessageValue'
 import { SakLink } from './SakLink'
 
 import styles from './MessageTableRow.module.css'
+import { AddOppdragButton } from '@/app/kafka/table/AddOppdragButton.tsx'
 
 type Props = {
     message: Message
@@ -87,10 +88,16 @@ const RowContents: React.FC<Props> = ({ message }) => {
                         </ActionMenuTrigger>
                         <ActionMenuContent>
                             {message.topic_name === 'helved.oppdrag.v1' && (
-                                <AddKvitteringButton
-                                    messageValue={message.value}
-                                    messageKey={message.key}
-                                />
+                                <>
+                                    <AddKvitteringButton
+                                        messageValue={message.value}
+                                        messageKey={message.key}
+                                    />
+                                    <AddOppdragButton
+                                        messageValue={message.value}
+                                        messageKey={message.key}
+                                    />
+                                </>
                             )}
                             <ActionMenuItem>
                                 <GrafanaTraceLink traceId={message.trace_id} />
