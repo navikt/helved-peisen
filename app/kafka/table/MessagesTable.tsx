@@ -90,14 +90,15 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
 
     const sortedMessages = useMemo(
         () =>
-            (messageFilter === 'siste' ? latestMessages : allMessages).sort(
-                (a, b) =>
+            (messageFilter === 'siste' ? latestMessages : allMessages)
+                .slice(0) // Kopierer lista. Kan skape kluss om man sorterer in-place i en memoisert liste
+                .sort((a, b) =>
                     sortState
                         ? sortState.direction === 'ascending'
                             ? +a[sortState.orderBy]! - +b[sortState.orderBy]!
                             : +b[sortState.orderBy]! - +a[sortState.orderBy]!
                         : 0
-            ),
+                ),
         [allMessages, latestMessages, messageFilter, sortState]
     )
 
