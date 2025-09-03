@@ -70,7 +70,10 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         }
     }, [topicsParam])
 
-    const allMessages = Object.values(messages).flat()
+    const allMessages = useMemo(
+        () => Object.values(messages).flat(),
+        [messages]
+    )
 
     const latestMessages = useMemo(() => {
         const grouped = new Map<string, Message>()
@@ -83,16 +86,19 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         })
 
         return Array.from(grouped.values())
-    }, [messages.data])
+    }, [allMessages])
 
-    const sortedMessages = (
-        messageFilter === 'siste' ? latestMessages : allMessages
-    ).sort((a, b) =>
-        sortState
-            ? sortState.direction === 'ascending'
-                ? +a[sortState.orderBy]! - +b[sortState.orderBy]!
-                : +b[sortState.orderBy]! - +a[sortState.orderBy]!
-            : 0
+    const sortedMessages = useMemo(
+        () =>
+            (messageFilter === 'siste' ? latestMessages : allMessages).sort(
+                (a, b) =>
+                    sortState
+                        ? sortState.direction === 'ascending'
+                            ? +a[sortState.orderBy]! - +b[sortState.orderBy]!
+                            : +b[sortState.orderBy]! - +a[sortState.orderBy]!
+                        : 0
+            ),
+        [allMessages, latestMessages, messageFilter, sortState]
     )
 
     const updateSortState = (key: keyof Message) => {
