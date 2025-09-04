@@ -1,16 +1,16 @@
 'use client'
 
 import clsx from 'clsx'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import {
     HStack,
     Pagination,
     Skeleton,
-    SortState,
-    ToggleGroup,
+    SortState as AkselSortState,
     Table,
     TextField,
+    ToggleGroup,
 } from '@navikt/ds-react'
 import {
     TableBody,
@@ -27,70 +27,32 @@ import { MessageTableRow } from '@/app/kafka/table/MessageTableRow.tsx'
 import fadeIn from '@/styles/fadeIn.module.css'
 import styles from './MessagesTable.module.css'
 
-const getNextDirection = (
-    direction: SortState['direction']
-): SortState['direction'] => {
-    return direction === 'descending'
-        ? 'ascending'
-        : direction === 'ascending'
-          ? 'none'
-          : 'descending'
+const getNextDirection = (direction: SortState['direction']): SortState['direction'] => {
+    return direction === 'descending' ? 'ascending' : direction === 'ascending' ? 'none' : 'descending'
 }
 
-type MessageTableSortState = Omit<SortState, 'orderBy'> & {
-    orderBy: keyof Message
+const useDefaultSortState = (): SortState => {
+    return useSearchParams().get('topics')
+        ? { orderBy: 'offset', direction: 'descending' }
+        : { orderBy: 'timestamp_ms', direction: 'descending' }
 }
 
-type Props = {
-    messages: Record<string, Message[]>
-}
-
-export const MessagesTable: React.FC<Props> = ({ messages }) => {
-    const searchParams = useSearchParams()
-    const [sortState, setSortState] = useState<
-        MessageTableSortState | undefined
-    >({
-        orderBy: 'timestamp_ms',
-        direction: 'descending',
-    })
-    const [messageFilter, setMessageFilter] = useState<'alle' | 'siste'>('alle')
-
-    const topicsParam = searchParams.get('topics')
-    useEffect(() => {
-        if (topicsParam) {
-            setSortState({
-                orderBy: 'offset',
-                direction: 'descending',
-            })
-        } else {
-            setSortState({
-                orderBy: 'timestamp_ms',
-                direction: 'descending',
-            })
+const latestMessages = (messages: Message[]) => {
+    const grouped = new Map<string, Message>()
+    messages.forEach((message) => {
+        const key = `${message.topic_name}:${message.key}`
+        const existing = grouped.get(key)
+        if (!existing || message.timestamp_ms > existing.timestamp_ms) {
+            grouped.set(key, message)
         }
-    }, [topicsParam])
+    })
+    return Array.from(grouped.values())
+}
 
-    const allMessages = useMemo(
-        () => Object.values(messages).flat(),
-        [messages]
-    )
-
-    const latestMessages = useMemo(() => {
-        const grouped = new Map<string, Message>()
-        allMessages.forEach((message) => {
-            const key = `${message.topic_name}:${message.key}`
-            const existing = grouped.get(key)
-            if (!existing || message.timestamp_ms > existing.timestamp_ms) {
-                grouped.set(key, message)
-            }
-        })
-
-        return Array.from(grouped.values())
-    }, [allMessages])
-
-    const sortedMessages = useMemo(
+const useSortedAndFilteredMessages = (messages: Message[], filter: 'siste' | 'alle', sortState?: SortState) => {
+    return useMemo(
         () =>
-            (messageFilter === 'siste' ? latestMessages : allMessages)
+            (filter === 'siste' ? latestMessages(messages) : messages)
                 .slice(0) // Kopierer lista. Kan skape kluss om man sorterer in-place i en memoisert liste
                 .sort((a, b) =>
                     sortState
@@ -99,23 +61,32 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                             : +b[sortState.orderBy]! - +a[sortState.orderBy]!
                         : 0
                 ),
-        [allMessages, latestMessages, messageFilter, sortState]
+        [messages, filter, sortState]
     )
+}
+
+type SortState = Omit<AkselSortState, 'orderBy'> & {
+    orderBy: keyof Message
+}
+
+type Props = {
+    messages: Record<string, Message[]>
+}
+
+export const MessagesTable: React.FC<Props> = ({ messages }) => {
+    const [sortState, setSortState] = useState<SortState | undefined>(useDefaultSortState())
+    const [messageFilter, setMessageFilter] = useState<'alle' | 'siste'>('alle')
+
+    const allMessages = useMemo(() => Object.values(messages).flat(), [messages])
+    const sortedMessages = useSortedAndFilteredMessages(allMessages, messageFilter, sortState)
 
     const updateSortState = (key: keyof Message) => {
         setSortState((sort) => {
             if (!sort || sort.orderBy !== key) {
                 return { orderBy: key, direction: 'descending' }
             }
-
             const direction = getNextDirection(sort.direction)
-
-            return direction === 'none'
-                ? undefined
-                : {
-                      orderBy: key,
-                      direction: direction,
-                  }
+            return direction === 'none' ? undefined : { orderBy: key, direction: direction }
         })
     }
 
@@ -142,47 +113,24 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         <div className={clsx(styles.container, fadeIn.animation)}>
             <div className={styles.tabs}>
                 <HStack align="center" justify="end">
-                    <ToggleGroup
-                        defaultValue="alle"
-                        onChange={handleFilterChange}
-                        fill
-                        size="small"
-                    >
+                    <ToggleGroup defaultValue="alle" onChange={handleFilterChange} fill size="small">
                         <ToggleGroup.Item value="alle" label="Alle" />
                         <ToggleGroup.Item value="siste" label="Siste" />
                     </ToggleGroup>
                 </HStack>
             </div>
 
-            <Table
-                className={styles.table}
-                sort={sortState}
-                onSortChange={updateSortState as (key: string) => void}
-            >
+            <Table className={styles.table} sort={sortState} onSortChange={updateSortState as (key: string) => void}>
                 <TableHeader>
                     <TableRow>
                         <TableHeaderCell textSize="small" />
-                        <TableHeaderCell textSize="small">
-                            Topic
-                        </TableHeaderCell>
+                        <TableHeaderCell textSize="small">Topic</TableHeaderCell>
                         <TableHeaderCell textSize="small">Key</TableHeaderCell>
-                        <TableColumnHeader
-                            sortKey="timestamp_ms"
-                            sortable
-                            textSize="small"
-                            className={styles.header}
-                        >
+                        <TableColumnHeader sortKey="timestamp_ms" sortable textSize="small" className={styles.header}>
                             Timestamp
                         </TableColumnHeader>
-                        <TableHeaderCell textSize="small">
-                            Partition
-                        </TableHeaderCell>
-                        <TableColumnHeader
-                            sortKey="offset"
-                            sortable
-                            textSize="small"
-                            className={styles.header}
-                        >
+                        <TableHeaderCell textSize="small">Partition</TableHeaderCell>
+                        <TableColumnHeader sortKey="offset" sortable textSize="small" className={styles.header}>
                             Offset
                         </TableColumnHeader>
                         <TableDataCell></TableDataCell>
@@ -202,8 +150,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                         count={Math.ceil(sortedMessages.length / pageSize)}
                         size="xsmall"
                     />
-                    Viser meldinger {start + 1} - {end} av{' '}
-                    {sortedMessages.length}
+                    Viser meldinger {start + 1} - {end} av {sortedMessages.length}
                 </HStack>
                 <HStack align="center" gap="space-12">
                     Meldinger pr. side
