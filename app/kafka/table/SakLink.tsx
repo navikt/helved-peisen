@@ -1,9 +1,24 @@
 import type { Message } from '@/app/kafka/types.ts'
 import { Link } from '@navikt/ds-react'
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
+import { parsedXML } from '@/lib/xml'
 
 import styles from './SakLink.module.css'
-import { parsedXML } from '@/lib/xml'
+
+const tilFagsystem = (kode: string) => {
+    switch (kode) {
+        case 'TILTAKSPENGER':
+            return 'TILTPENG'
+        case 'TILLEGGSSTØNADER':
+            return 'TILLST'
+        case 'DAGPENGER':
+            return 'DP'
+        case 'HISTORISK':
+            return 'HELSREF'
+        default:
+            return kode
+    }
+}
 
 const sakUrl = (message: Message) => {
     if (!message.value) {
@@ -30,23 +45,19 @@ const sakUrl = (message: Message) => {
                 return null
             }
 
-            return `/sak?sakId=${sakId}&fagsystem=${fagsystem}`
+            return `/sak?sakId=${sakId}&fagsystem=${tilFagsystem(fagsystem)}`
         }
         case 'helved.kvittering.v1':
         case 'helved.oppdrag.v1': {
             const xml = parsedXML(message.value)
-            const sakId = xml.querySelector(
-                'oppdrag-110 > fagsystemId'
-            )?.textContent
-            const fagsystem = xml.querySelector(
-                'oppdrag-110 > kodeFagomraade'
-            )?.textContent
+            const sakId = xml.querySelector('oppdrag-110 > fagsystemId')?.textContent
+            const fagsystem = xml.querySelector('oppdrag-110 > kodeFagomraade')?.textContent
 
             if (!fagsystem || !sakId) {
                 return null
             }
 
-            return `/sak?sakId=${sakId}&fagsystem=${fagsystem}`
+            return `/sak?sakId=${sakId}&fagsystem=${tilFagsystem(fagsystem)}`
         }
     }
 }
