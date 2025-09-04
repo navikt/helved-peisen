@@ -237,11 +237,11 @@ export const SakView = () => {
                                                     />
                                                 </ActionMenuTrigger>
                                                 <ActionMenuContent>
+                                                    <AddKvitteringButton messageValue={it.value} messageKey={it.key} />
+                                                    <AddOppdragButton messageValue={it.value} messageKey={it.key} />
                                                     <ActionMenuItem>
                                                         <GrafanaTraceLink traceId={it.trace_id} />
                                                     </ActionMenuItem>
-                                                    <AddKvitteringButton messageValue={it.value} messageKey={it.key} />
-                                                    <AddOppdragButton messageValue={it.value} messageKey={it.key} />
                                                 </ActionMenuContent>
                                             </ActionMenu>
                                         )}
