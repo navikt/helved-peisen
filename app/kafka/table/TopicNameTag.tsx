@@ -4,7 +4,7 @@ import React from 'react'
 import clsx from 'clsx'
 import { Tag } from '@navikt/ds-react'
 
-import type { Message, StatusMessageValue } from '@/app/kafka/types.ts'
+import type { Message, StatusMessageValue, UtbetalingMessageValue } from '@/app/kafka/types.ts'
 
 import { parsedXML } from '@/lib/xml.ts'
 import { variant } from '@/lib/message.ts'
@@ -27,13 +27,7 @@ const AvstemmingStatusBadge: React.FC<Props> = ({ message }) => {
         return null
     }
 
-    return (
-        <div
-            className={clsx(styles.badge, content === 'DATA' && styles.success)}
-        >
-            {content}
-        </div>
-    )
+    return <div className={clsx(styles.badge, content === 'DATA' && styles.success)}>{content}</div>
 }
 
 const OppdragStatusBadge: React.FC<Props> = ({ message }) => {
@@ -49,12 +43,7 @@ const OppdragStatusBadge: React.FC<Props> = ({ message }) => {
     }
 
     return (
-        <div
-            className={clsx(
-                styles.badge,
-                content === '00' ? styles.success : styles.error
-            )}
-        >
+        <div className={clsx(styles.badge, content === '00' ? styles.success : styles.error)}>
             {(() => {
                 switch (content) {
                     case '00':
@@ -93,6 +82,26 @@ const StatusStatusBadge: React.FC<Props> = ({ message }) => {
     )
 }
 
+const UtbetalingStatusBadge: React.FC<Props> = ({ message }) => {
+    if (!message.value) {
+        return null
+    }
+
+    let value: UtbetalingMessageValue
+    try {
+        value = JSON.parse(message.value)
+    } catch (e) {
+        console.error(e)
+        return null
+    }
+
+    if (!value.dryrun) {
+        return null
+    }
+
+    return <div className={clsx(styles.badge)}>DRYRUN</div>
+}
+
 const StatusBadge: React.FC<Props> = ({ message }) => {
     switch (message.topic_name) {
         case 'helved.avstemming.v1':
@@ -112,14 +121,12 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
             break
         case 'helved.simuleringer.v1':
             break
-        case 'helved.utbetalinger.v1':
-            break
         case 'helved.saker.v1':
             break
+        case 'helved.utbetalinger.v1':
         case 'helved.utbetalinger-aap.v1':
-            break
         case 'helved.utbetalinger-dp.v1':
-            break
+            return <UtbetalingStatusBadge message={message} />
         case 'teamdagpenger.utbetaling.v1':
             break
         case 'helved.status.v1':
