@@ -38,6 +38,8 @@ import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 
 import fadeIn from '@/styles/fadeIn.module.css'
 import styles from './SakView.module.css'
+import { AddKvitteringButton } from '@/app/kafka/table/AddKvitteringButton.tsx'
+import { AddOppdragButton } from '@/app/kafka/table/AddOppdragButton.tsx'
 
 const fagsystem = (fagsystem: string) => {
     switch (fagsystem) {
@@ -236,12 +238,10 @@ export const SakView = () => {
                                                 </ActionMenuTrigger>
                                                 <ActionMenuContent>
                                                     <ActionMenuItem>
-                                                        <GrafanaTraceLink
-                                                            traceId={
-                                                                it.trace_id
-                                                            }
-                                                        />
+                                                        <GrafanaTraceLink traceId={it.trace_id} />
                                                     </ActionMenuItem>
+                                                    <AddKvitteringButton messageValue={it.value} messageKey={it.key} />
+                                                    <AddOppdragButton messageValue={it.value} messageKey={it.key} />
                                                 </ActionMenuContent>
                                             </ActionMenu>
                                         )}
