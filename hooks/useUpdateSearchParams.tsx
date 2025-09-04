@@ -1,16 +1,7 @@
-import {
-    ReadonlyURLSearchParams,
-    usePathname,
-    useRouter,
-    useSearchParams,
-} from 'next/navigation'
+import { ReadonlyURLSearchParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback } from 'react'
 
-const shouldUpdate = (
-    searchParams: ReadonlyURLSearchParams,
-    key: string,
-    value: string
-): boolean => {
+const shouldUpdate = (searchParams: ReadonlyURLSearchParams, key: string, value: string): boolean => {
     // Ingenting å oppdatere hvis verdien ikke finnes
     if (!searchParams.get(key) && value.length === 0) {
         return false
@@ -35,15 +26,13 @@ export const useUpdateSearchParams = (searchParamName: string) => {
             if (query.length === 0) {
                 params.delete(searchParamName)
             } else {
-                params.set(searchParamName, query)
+                params.set(searchParamName, encodeURIComponent(query))
             }
 
             if (params.size === 0) {
                 router.push(pathname)
             } else {
-                router.push(
-                    pathname + '?' + decodeURIComponent(params.toString())
-                )
+                router.push(pathname + '?' + decodeURIComponent(params.toString()))
             }
         },
         [pathname, router, searchParamName, searchParams]
