@@ -36,6 +36,16 @@ const sakUrl = (message: Message) => {
         case 'helved.utbetalinger-aap.v1':
         case 'helved.status.v1':
             return null
+        case 'teamdagpenger.utbetaling.v1': {
+            const json = JSON.parse(message.value)
+            const sakId = json.sakId
+
+            if (!sakId) {
+                return null
+            }
+
+            return `/sak?sakId=${sakId}&fagsystem=DP`
+        }
         case 'helved.utbetalinger.v1': {
             const json = JSON.parse(message.value)
             const fagsystem = json.fagsystem
