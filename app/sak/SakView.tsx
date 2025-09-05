@@ -1,16 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import {
-    ActionMenu,
-    BodyShort,
-    BoxNew,
-    Button,
-    HStack,
-    Label,
-    Switch,
-    VStack,
-} from '@navikt/ds-react'
+import { ActionMenu, BodyShort, BoxNew, Button, HStack, Label, Switch, VStack } from '@navikt/ds-react'
 import {
     Table,
     TableBody,
@@ -28,11 +19,7 @@ import { MessageTableRowContents } from '@/app/kafka/table/MessageTableRow.tsx'
 import { Message } from '@/app/kafka/types.ts'
 import { useSak } from './SakProvider'
 import { Timeline, TimelinePeriod, TimelineRow } from './timeline'
-import {
-    ActionMenuContent,
-    ActionMenuItem,
-    ActionMenuTrigger,
-} from '@navikt/ds-react/ActionMenu'
+import { ActionMenuContent, ActionMenuItem, ActionMenuTrigger } from '@navikt/ds-react/ActionMenu'
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 
@@ -73,9 +60,7 @@ const removeDuplicateMessages = (messages: Message[]) => {
     return Object.values(messageMap)
 }
 
-const groupHendelserOnTopic = (
-    hendelser: Message[]
-): Record<string, Message[]> => {
+const groupHendelserOnTopic = (hendelser: Message[]): Record<string, Message[]> => {
     return hendelser.reduce(
         (grouped, hendelse) => {
             if (!grouped[hendelse.topic_name]) {
@@ -98,28 +83,18 @@ export const SakView = () => {
         return null
     }
 
-    const messages = hideDuplicates
-        ? removeDuplicateMessages(sak.hendelser)
-        : sak.hendelser
+    const messages = hideDuplicates ? removeDuplicateMessages(sak.hendelser) : sak.hendelser
 
     return (
         <VStack gap="space-32" className={fadeIn.animation}>
             <HStack gap="space-24">
-                <BoxNew
-                    padding="4"
-                    background="neutral-soft"
-                    borderRadius="large"
-                >
+                <BoxNew padding="4" background="neutral-soft" borderRadius="large">
                     <VStack gap="space-12">
                         <Label>Sak-ID</Label>
                         <BodyShort>{sak.id}</BodyShort>
                     </VStack>
                 </BoxNew>
-                <BoxNew
-                    padding="4"
-                    background="neutral-soft"
-                    borderRadius="large"
-                >
+                <BoxNew padding="4" background="neutral-soft" borderRadius="large">
                     <VStack gap="space-12">
                         <Label>Fagsystem</Label>
                         <BodyShort>{fagsystem(sak.fagsystem)}</BodyShort>
@@ -128,43 +103,29 @@ export const SakView = () => {
             </HStack>
             <VStack gap="space-12">
                 <Label>Tidslinje</Label>
-                <BoxNew
-                    padding="4"
-                    background="neutral-soft"
-                    borderRadius="large"
-                >
+                <BoxNew padding="4" background="neutral-soft" borderRadius="large">
                     <Timeline>
-                        {Object.entries(groupHendelserOnTopic(messages)).map(
-                            ([topic, messages]) => (
-                                <TimelineRow key={topic} label={topic}>
-                                    {messages.map((it, i) => (
-                                        <TimelinePeriod
-                                            key={i}
-                                            date={new Date(it.timestamp_ms)}
-                                            variant="info"
-                                            content={
-                                                <div
-                                                    className={
-                                                        styles.periodContent
-                                                    }
-                                                >
-                                                    <div>Key:</div>
-                                                    <div>{it.key}</div>
-                                                    <div>Timestamp:</div>
-                                                    <div>{it.timestamp_ms}</div>
-                                                </div>
-                                            }
-                                            onShowContent={() =>
-                                                setActiveMessage(it)
-                                            }
-                                            onHideContent={() =>
-                                                setActiveMessage(null)
-                                            }
-                                        />
-                                    ))}
-                                </TimelineRow>
-                            )
-                        )}
+                        {Object.entries(groupHendelserOnTopic(messages)).map(([topic, messages]) => (
+                            <TimelineRow key={topic} label={topic}>
+                                {messages.map((it, i) => (
+                                    <TimelinePeriod
+                                        key={i}
+                                        date={new Date(it.timestamp_ms)}
+                                        variant="info"
+                                        content={
+                                            <div className={styles.periodContent}>
+                                                <div>Key:</div>
+                                                <div>{it.key}</div>
+                                                <div>Timestamp:</div>
+                                                <div>{it.timestamp_ms}</div>
+                                            </div>
+                                        }
+                                        onShowContent={() => setActiveMessage(it)}
+                                        onHideContent={() => setActiveMessage(null)}
+                                    />
+                                ))}
+                            </TimelineRow>
+                        ))}
                     </Timeline>
                 </BoxNew>
             </VStack>
@@ -181,49 +142,24 @@ export const SakView = () => {
                         Skjul duplikater
                     </Switch>
                 </HStack>
-                <BoxNew
-                    borderRadius="large"
-                    background="neutral-soft"
-                    padding="4"
-                >
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHeaderCell />
-                                <TableHeaderCell textSize="small">
-                                    Topic
-                                </TableHeaderCell>
-                                <TableHeaderCell textSize="small">
-                                    Timestamp
-                                </TableHeaderCell>
-                                <TableHeaderCell textSize="small">
-                                    Key
-                                </TableHeaderCell>
-                                <TableHeaderCell />
-                            </TableRow>
-                        </TableHeader>
+                <BoxNew borderRadius="large" background="neutral-soft" padding="4" className={styles.tableContainer}>
+                    <Table className={styles.table}>
                         <TableBody>
                             {messages.map((it, i) => (
                                 <TableExpandableRow
                                     key={it.key + it.timestamp_ms + i}
-                                    className={clsx(
-                                        activeMessage === it && styles.active
-                                    )}
-                                    content={
-                                        <MessageTableRowContents message={it} />
-                                    }
+                                    className={clsx(activeMessage === it && styles.active)}
+                                    content={<MessageTableRowContents message={it} />}
                                 >
                                     <TableDataCell>
                                         <TopicNameTag message={it} />
                                     </TableDataCell>
                                     <TableDataCell className={styles.cell}>
-                                        {format(
-                                            it.timestamp_ms,
-                                            'yyyy-MM-dd - HH:mm:ss.SSS'
-                                        )}
+                                        {format(it.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}
                                     </TableDataCell>
-                                    <TableDataCell>{it.key}</TableDataCell>
-
+                                    <TableDataCell>
+                                        <div className={styles.messageKey}>{it.key}</div>
+                                    </TableDataCell>
                                     <TableDataCell>
                                         {it.value && (
                                             <ActionMenu>
@@ -231,9 +167,7 @@ export const SakView = () => {
                                                     <Button
                                                         variant="tertiary-neutral"
                                                         size="small"
-                                                        icon={
-                                                            <MenuElipsisVerticalIcon title="Kontekstmeny" />
-                                                        }
+                                                        icon={<MenuElipsisVerticalIcon title="Kontekstmeny" />}
                                                     />
                                                 </ActionMenuTrigger>
                                                 <ActionMenuContent>
@@ -249,6 +183,15 @@ export const SakView = () => {
                                 </TableExpandableRow>
                             ))}
                         </TableBody>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHeaderCell />
+                                <TableHeaderCell textSize="small">Topic</TableHeaderCell>
+                                <TableHeaderCell textSize="small">Timestamp</TableHeaderCell>
+                                <TableHeaderCell textSize="small">Key</TableHeaderCell>
+                                <TableHeaderCell />
+                            </TableRow>
+                        </TableHeader>
                     </Table>
                 </BoxNew>
             </VStack>
