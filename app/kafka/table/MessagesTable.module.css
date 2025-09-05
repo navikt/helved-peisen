@@ -1,14 +1,12 @@
-.container {
-    display: flex;
-    flex-direction: column;
+.tableContainer {
     max-width: 100vw;
     overflow-y: auto;
     scrollbar-gutter: stable;
-    grid-area: table;
 }
 
 .tabs {
     padding: var(--ax-space-8) 0;
+    margin-bottom: var(--ax-space-16);
 }
 
 .table {
