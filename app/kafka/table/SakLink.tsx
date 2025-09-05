@@ -31,11 +31,22 @@ const sakUrl = (message: Message) => {
         case 'helved.dryrun-tp.v1':
         case 'helved.dryrun-ts.v1':
         case 'helved.dryrun-dp.v1':
-        case 'helved.simuleringer.v1':
         case 'helved.saker.v1':
         case 'helved.utbetalinger-aap.v1':
         case 'helved.status.v1':
             return null
+        case 'helved.simuleringer.v1': {
+            const xml = parsedXML(message.value)
+            const sakId = xml.querySelector('request > oppdrag > fagsystemId')?.textContent
+            const fagsystem = xml.querySelector('request > oppdrag > kodeFagomraade')?.textContent
+
+            if (!fagsystem || !sakId) {
+                return null
+            }
+
+            return `/sak?sakId=${sakId}&fagsystem=${tilFagsystem(fagsystem)}`
+        }
+        case 'helved.utbetalinger-dp.v1':
         case 'teamdagpenger.utbetaling.v1': {
             const json = JSON.parse(message.value)
             const sakId = json.sakId
