@@ -10,7 +10,6 @@ import {
     SortState as AkselSortState,
     Table,
     TextField,
-    ToggleGroup,
 } from '@navikt/ds-react'
 import {
     TableBody,
@@ -26,9 +25,15 @@ import { MessageTableRow } from '@/app/kafka/table/MessageTableRow.tsx'
 
 import fadeIn from '@/styles/fadeIn.module.css'
 import styles from './MessagesTable.module.css'
+import MessageFilter from '@/components/MessageFilter.tsx'
 
 const getNextDirection = (direction: SortState['direction']): SortState['direction'] => {
     return direction === 'descending' ? 'ascending' : direction === 'ascending' ? 'none' : 'descending'
+}
+
+export type MessageFilters = {
+    visning: 'alle' | 'siste'
+    utbetalingManglerKvittering: boolean
 }
 
 const useDefaultSortState = (): SortState => {
@@ -49,20 +54,37 @@ const latestMessages = (messages: Message[]) => {
     return Array.from(grouped.values())
 }
 
-const useSortedAndFilteredMessages = (messages: Message[], filter: 'siste' | 'alle', sortState?: SortState) => {
-    return useMemo(
-        () =>
-            (filter === 'siste' ? latestMessages(messages) : messages)
-                .slice(0) // Kopierer lista. Kan skape kluss om man sorterer in-place i en memoisert liste
-                .sort((a, b) =>
-                    sortState
-                        ? sortState.direction === 'ascending'
-                            ? +a[sortState.orderBy]! - +b[sortState.orderBy]!
-                            : +b[sortState.orderBy]! - +a[sortState.orderBy]!
-                        : 0
-                ),
-        [messages, filter, sortState]
-    )
+const useSortedAndFilteredMessages = (
+    messages: Message[],
+    filter: MessageFilters,
+    sortState?: SortState,
+) => {
+    return useMemo(() => {
+        let filtered = filter.visning === 'siste' ? latestMessages(messages) : messages
+
+        if (filter.utbetalingManglerKvittering
+        ) {
+            filtered = filtered.filter(
+                (m) =>
+                    m.topic_name === 'helved.oppdrag.v1' &&
+                    !messages.some(
+                        (kv) =>
+                            kv.topic_name === 'helved.kvittering.v1' &&
+                            kv.key === m.key,
+                    ),
+            )
+        }
+
+        return filtered
+            .slice(0) // unngå in-place sort på memoisert array
+            .sort((a, b) =>
+                sortState
+                    ? sortState.direction === 'ascending'
+                        ? +a[sortState.orderBy]! - +b[sortState.orderBy]!
+                        : +b[sortState.orderBy]! - +a[sortState.orderBy]!
+                    : 0,
+            )
+    }, [messages, filter, sortState])
 }
 
 type SortState = Omit<AkselSortState, 'orderBy'> & {
@@ -75,10 +97,13 @@ type Props = {
 
 export const MessagesTable: React.FC<Props> = ({ messages }) => {
     const [sortState, setSortState] = useState<SortState | undefined>(useDefaultSortState())
-    const [messageFilter, setMessageFilter] = useState<'alle' | 'siste'>('alle')
+    const [filters, setFilters] = useState<MessageFilters>({
+        visning: 'alle',
+        utbetalingManglerKvittering: false,
+    })
 
     const allMessages = useMemo(() => Object.values(messages).flat(), [messages])
-    const sortedMessages = useSortedAndFilteredMessages(allMessages, messageFilter, sortState)
+    const sortedMessages = useSortedAndFilteredMessages(allMessages, filters)
 
     const updateSortState = (key: keyof Message) => {
         setSortState((sort) => {
@@ -100,10 +125,11 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         }
     }
 
-    const handleFilterChange = (value: string) => {
-        setMessageFilter(value as 'alle' | 'siste')
+    const handleFilterChange = (filter: MessageFilters) => {
+        setFilters(filter)
         setPage(1)
     }
+
 
     const start = (page - 1) * pageSize
     const end = Math.min(start + pageSize, sortedMessages.length)
@@ -111,15 +137,13 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
 
     return (
         <>
-            <div className={clsx(styles.tabs, fadeIn.animation)}>
-                <HStack align="center" justify="end">
-                    <ToggleGroup defaultValue="alle" onChange={handleFilterChange} fill size="small">
-                        <ToggleGroup.Item value="alle" label="Alle" />
-                        <ToggleGroup.Item value="siste" label="Siste" />
-                    </ToggleGroup>
-                </HStack>
-            </div>
             <div className={clsx(styles.tableContainer, fadeIn.animation)}>
+                <HStack align="center" justify="end">
+                    <MessageFilter
+                        filters={filters}
+                        onFiltersChange={handleFilterChange}
+                    />
+                </HStack>
                 <Table
                     className={styles.table}
                     sort={sortState}
