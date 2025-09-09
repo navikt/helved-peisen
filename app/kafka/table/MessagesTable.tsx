@@ -103,7 +103,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
     })
 
     const allMessages = useMemo(() => Object.values(messages).flat(), [messages])
-    const sortedMessages = useSortedAndFilteredMessages(allMessages, filters)
+    const sortedMessages = useSortedAndFilteredMessages(allMessages, filters, sortState)
 
     const updateSortState = (key: keyof Message) => {
         setSortState((sort) => {

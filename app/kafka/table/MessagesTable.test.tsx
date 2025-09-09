@@ -4,7 +4,6 @@ import { MessagesTable } from './MessagesTable'
 import type { Message } from '@/app/kafka/types.ts'
 import { TestData } from '@/fakes/testData'
 import { userEvent } from '@testing-library/user-event'
-import { beforeEach } from 'node:test'
 
 describe('MessagesTable', () => {
     test('sorterer på timestamp', async () => {
@@ -60,7 +59,8 @@ describe('MessagesTable', () => {
         render(<MessagesTable messages={messages} />)
         expect(screen.getAllByRole('row')).toHaveLength(7)
 
-        await user.click(screen.getByText('Siste'))
+        await user.click(screen.getByText('Filter'));
+        await user.click(screen.getByText('Vis siste'));
         expect(screen.getAllByRole('row')).toHaveLength(5)
     })
 })
