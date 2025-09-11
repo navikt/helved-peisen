@@ -2,24 +2,9 @@
 
 import React, { useState } from 'react'
 import { Message } from '@/app/kafka/types.ts'
-import {
-    TableDataCell,
-    TableExpandableRow,
-    TableRow,
-} from '@navikt/ds-react/Table'
-import {
-    ActionMenu,
-    Button,
-    CopyButton,
-    HStack,
-    Label,
-    VStack,
-} from '@navikt/ds-react'
-import {
-    ActionMenuContent,
-    ActionMenuItem,
-    ActionMenuTrigger,
-} from '@navikt/ds-react/ActionMenu'
+import { TableDataCell, TableExpandableRow, TableRow } from '@navikt/ds-react/Table'
+import { ActionMenu, Button, CopyButton, HStack, Label, VStack } from '@navikt/ds-react'
+import { ActionMenuContent, ActionMenuItem, ActionMenuTrigger } from '@navikt/ds-react/ActionMenu'
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'
 import { formatDate } from 'date-fns'
 
@@ -61,17 +46,11 @@ const RowContents: React.FC<Props> = ({ message }) => {
                 <TopicNameTag message={message} />
             </TableDataCell>
             <TableDataCell>
-                <UrlSearchParamLink
-                    searchParamName="key"
-                    searchParamValue={message.key}
-                    className={styles.keyLink}
-                >
+                <UrlSearchParamLink searchParamName="key" searchParamValue={message.key} className={styles.keyLink}>
                     {message.key}
                 </UrlSearchParamLink>
             </TableDataCell>
-            <TableDataCell>
-                {formatDate(message.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}
-            </TableDataCell>
+            <TableDataCell>{formatDate(message.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}</TableDataCell>
             <TableDataCell>{message.partition}</TableDataCell>
             <TableDataCell>{message.offset}</TableDataCell>
             <TableDataCell>
@@ -81,22 +60,14 @@ const RowContents: React.FC<Props> = ({ message }) => {
                             <Button
                                 variant="tertiary-neutral"
                                 size="small"
-                                icon={
-                                    <MenuElipsisVerticalIcon title="Kontekstmeny" />
-                                }
+                                icon={<MenuElipsisVerticalIcon title="Kontekstmeny" />}
                             />
                         </ActionMenuTrigger>
                         <ActionMenuContent>
                             {message.topic_name === 'helved.oppdrag.v1' && (
                                 <>
-                                    <AddKvitteringButton
-                                        messageValue={message.value}
-                                        messageKey={message.key}
-                                    />
-                                    <AddOppdragButton
-                                        messageValue={message.value}
-                                        messageKey={message.key}
-                                    />
+                                    <AddKvitteringButton messageValue={message.value} messageKey={message.key} />
+                                    <AddOppdragButton messageValue={message.value} messageKey={message.key} />
                                 </>
                             )}
                             <ActionMenuItem>
@@ -141,7 +112,7 @@ export const MessageTableRow: React.FC<Props> = ({ message }) => {
     if (!message.value) {
         return (
             <TableRow>
-                <TableDataCell />
+                <TableDataCell textSize="small" />
                 <RowContents message={message} />
             </TableRow>
         )

@@ -43,9 +43,7 @@ function randomDate(dayRange: number) {
     const startDate = subDays(today, dayRange)
     const endDate = addDays(today, dayRange)
 
-    const randomTime =
-        startDate.getTime() +
-        Math.random() * (endDate.getTime() - startDate.getTime())
+    const randomTime = startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime())
     return new Date(randomTime)
 }
 
@@ -57,14 +55,14 @@ function randomDateBetween(start: Date, end: Date): Date {
 }
 
 export const TestData = {
-    avstemming() {
+    avstemming(fagsystem: string = 'TILTPENG') {
         return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:avstemmingsdata xmlns:ns2="http://nav.no/virksomhet/tjenester/avstemming/meldinger/v1">
     <aksjon>
         <aksjonType>AVSL</aksjonType>
         <kildeType>AVLEV</kildeType>
         <avstemmingType>GRSN</avstemmingType>
-        <avleverendeKomponentKode>TILTPENG</avleverendeKomponentKode>
+        <avleverendeKomponentKode>${fagsystem}</avleverendeKomponentKode>
         <mottakendeKomponentKode>OS</mottakendeKomponentKode>
         <underkomponentKode>TILTPENG</underkomponentKode>
         <nokkelFom>2025-04-09-00</nokkelFom>
@@ -294,14 +292,8 @@ export const TestData = {
             value: '',
             partition: 1,
             offset: 1,
-            stream_time_ms: randomDateBetween(
-                options.fom,
-                options.tom
-            ).getTime(),
-            system_time_ms: randomDateBetween(
-                options.fom,
-                options.tom
-            ).getTime(),
+            stream_time_ms: randomDateBetween(options.fom, options.tom).getTime(),
+            system_time_ms: randomDateBetween(options.fom, options.tom).getTime(),
             trace_id: '12345',
             ...overrides,
         }
@@ -323,60 +315,27 @@ export const TestData = {
             return new Array(numberOfMessages).fill(null).flatMap(() => {
                 switch (topicName) {
                     case 'helved.avstemming.v1':
-                        return this.message(
-                            { value: JSON.stringify(TestData.avstemming()) },
-                            topicName,
-                            options
-                        )
+                        return this.message({ value: JSON.stringify(TestData.avstemming()) }, topicName, options)
                     case 'helved.oppdragsdata.v1':
                         return this.message(
                             {
-                                value:
-                                    Math.random() > 0.5
-                                        ? JSON.stringify(
-                                              TestData.oppdragsdata()
-                                          )
-                                        : null,
+                                value: Math.random() > 0.5 ? JSON.stringify(TestData.oppdragsdata()) : null,
                             },
                             topicName,
                             options
                         )
                     case 'helved.dryrun-aap.v1':
-                        return this.message(
-                            { value: JSON.stringify(TestData.oppdrag()) },
-                            topicName,
-                            options
-                        )
+                        return this.message({ value: JSON.stringify(TestData.oppdrag()) }, topicName, options)
                     case 'helved.dryrun-ts.v1':
-                        return this.message(
-                            { value: JSON.stringify(TestData.oppdrag()) },
-                            topicName,
-                            options
-                        )
+                        return this.message({ value: JSON.stringify(TestData.oppdrag()) }, topicName, options)
                     case 'helved.dryrun-tp.v1':
-                        return this.message(
-                            { value: JSON.stringify(TestData.oppdrag()) },
-                            topicName,
-                            options
-                        )
+                        return this.message({ value: JSON.stringify(TestData.oppdrag()) }, topicName, options)
                     case 'helved.dryrun-dp.v1':
-                        return this.message(
-                            { value: JSON.stringify(TestData.oppdrag()) },
-                            topicName,
-                            options
-                        )
+                        return this.message({ value: JSON.stringify(TestData.oppdrag()) }, topicName, options)
                     case 'helved.status.v1':
-                        return this.message(
-                            { value: JSON.stringify(TestData.status()) },
-                            topicName,
-                            options
-                        )
+                        return this.message({ value: JSON.stringify(TestData.status()) }, topicName, options)
                     case 'helved.utbetalinger-aap.v1':
-                        return this.message(
-                            { value: JSON.stringify(TestData.utbetaling()) },
-                            topicName,
-                            options
-                        )
+                        return this.message({ value: JSON.stringify(TestData.utbetaling()) }, topicName, options)
                     case 'helved.kvittering.v1':
                         return this.message(
                             {
@@ -388,10 +347,7 @@ export const TestData = {
                         )
                     case 'helved.oppdrag.v1': {
                         const key = randomUUID()
-                        const timestamp = randomDateBetween(
-                            options.fom,
-                            options.tom
-                        )
+                        const timestamp = randomDateBetween(options.fom, options.tom)
                         return [
                             this.message(
                                 {
@@ -406,13 +362,8 @@ export const TestData = {
                                 this.message(
                                     {
                                         key,
-                                        value: JSON.stringify(
-                                            TestData.oppdrag(true)
-                                        ),
-                                        timestamp_ms: addSeconds(
-                                            timestamp,
-                                            2
-                                        ).getTime(),
+                                        value: JSON.stringify(TestData.oppdrag(true)),
+                                        timestamp_ms: addSeconds(timestamp, 2).getTime(),
                                     },
                                     topicName,
                                     options
@@ -420,11 +371,7 @@ export const TestData = {
                         ].filter((it) => it) as Message[]
                     }
                     case 'helved.utbetalinger.v1':
-                        return this.message(
-                            { value: JSON.stringify(TestData.utbetaling()) },
-                            topicName,
-                            options
-                        )
+                        return this.message({ value: JSON.stringify(TestData.utbetaling()) }, topicName, options)
                     case 'helved.saker.v1':
                         return this.message(
                             {
@@ -435,11 +382,7 @@ export const TestData = {
                             options
                         )
                     case 'helved.simuleringer.v1':
-                        return this.message(
-                            { value: JSON.stringify(TestData.simulering()) },
-                            topicName,
-                            options
-                        )
+                        return this.message({ value: JSON.stringify(TestData.simulering()) }, topicName, options)
                 }
             })
         })
@@ -447,8 +390,7 @@ export const TestData = {
 }
 
 function generateRandomString(length: number): string {
-    const chars =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
     return new Array(length)
         .fill(0)
         .map((_) => chars.charAt(Math.floor(Math.random() * chars.length)))

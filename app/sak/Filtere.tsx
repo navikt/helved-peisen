@@ -48,22 +48,20 @@ const hasValue = (input?: FormStateInput): input is FormStateValue => {
 type Props = React.HTMLAttributes<HTMLDivElement>
 
 export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
-    const { setSak } = useSak()
+    const { setSak, setIsLoading } = useSak()
     const setSearchParams = useSetSearchParams()
     const searchParams = useSearchParams()
 
     const getSak = useCallback(
         async (_: FormState, formData: FormData) => {
+            setIsLoading(true)
             const state = toFormState(formData)
 
             if (!hasValue(state.sakId) || !hasValue(state.fagsystem)) {
                 return state
             }
 
-            const response = await fetchSak(
-                state.sakId.value,
-                state.fagsystem.value
-            )
+            const response = await fetchSak(state.sakId.value, state.fagsystem.value)
 
             if (response.data) {
                 setSak({
@@ -86,6 +84,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 showToast(response.error.message, { variant: 'error' })
             }
 
+            setIsLoading(false)
             return defaultState
         },
         [setSak, setSearchParams]
@@ -115,11 +114,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     name="sakId"
                     size="small"
                     defaultValue={
-                        state.sakId?.error
-                            ? undefined
-                            : (state.sakId?.value ||
-                                  searchParams.get('sakId')) ??
-                              undefined
+                        state.sakId?.error ? undefined : (state.sakId?.value || searchParams.get('sakId')) ?? undefined
                     }
                     error={state.sakId?.error}
                 />
@@ -131,9 +126,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     defaultValue={
                         state.fagsystem?.error
                             ? undefined
-                            : (state.fagsystem?.value ||
-                                  searchParams.get('fagsystem')) ??
-                              undefined
+                            : (state.fagsystem?.value || searchParams.get('fagsystem')) ?? undefined
                     }
                     error={state.fagsystem?.error}
                 >

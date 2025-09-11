@@ -3,14 +3,7 @@
 import clsx from 'clsx'
 import { useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import {
-    HStack,
-    Pagination,
-    Skeleton,
-    SortState as AkselSortState,
-    Table,
-    TextField,
-} from '@navikt/ds-react'
+import { HStack, Pagination, Skeleton, SortState as AkselSortState, Table, TextField } from '@navikt/ds-react'
 import {
     TableBody,
     TableColumnHeader,
@@ -54,24 +47,15 @@ const latestMessages = (messages: Message[]) => {
     return Array.from(grouped.values())
 }
 
-const useSortedAndFilteredMessages = (
-    messages: Message[],
-    filter: MessageFilters,
-    sortState?: SortState,
-) => {
+const useSortedAndFilteredMessages = (messages: Message[], filter: MessageFilters, sortState?: SortState) => {
     return useMemo(() => {
         let filtered = filter.visning === 'siste' ? latestMessages(messages) : messages
 
-        if (filter.utbetalingManglerKvittering
-        ) {
+        if (filter.utbetalingManglerKvittering) {
             filtered = filtered.filter(
                 (m) =>
                     m.topic_name === 'helved.oppdrag.v1' &&
-                    !messages.some(
-                        (kv) =>
-                            kv.topic_name === 'helved.kvittering.v1' &&
-                            kv.key === m.key,
-                    ),
+                    !messages.some((kv) => kv.topic_name === 'helved.kvittering.v1' && kv.key === m.key)
             )
         }
 
@@ -82,7 +66,7 @@ const useSortedAndFilteredMessages = (
                     ? sortState.direction === 'ascending'
                         ? +a[sortState.orderBy]! - +b[sortState.orderBy]!
                         : +b[sortState.orderBy]! - +a[sortState.orderBy]!
-                    : 0,
+                    : 0
             )
     }, [messages, filter, sortState])
 }
@@ -130,7 +114,6 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         setPage(1)
     }
 
-
     const start = (page - 1) * pageSize
     const end = Math.min(start + pageSize, sortedMessages.length)
     const paginatedMessages = sortedMessages.slice(start, end)
@@ -139,16 +122,19 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         <>
             <div className={clsx(styles.tableContainer, fadeIn.animation)}>
                 <HStack align="center" justify="end">
-                    <MessageFilter
-                        filters={filters}
-                        onFiltersChange={handleFilterChange}
-                    />
+                    <MessageFilter filters={filters} onFiltersChange={handleFilterChange} />
                 </HStack>
                 <Table
                     className={styles.table}
                     sort={sortState}
                     onSortChange={updateSortState as (key: string) => void}
+                    size="small"
                 >
+                    <TableBody>
+                        {paginatedMessages.map((message, i) => (
+                            <MessageTableRow key={i} message={message} />
+                        ))}
+                    </TableBody>
                     <TableHeader>
                         <TableRow>
                             <TableHeaderCell textSize="small" />
@@ -169,11 +155,6 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                             <TableDataCell></TableDataCell>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>
-                        {paginatedMessages.map((message, i) => (
-                            <MessageTableRow key={i} message={message} />
-                        ))}
-                    </TableBody>
                 </Table>
                 <div className={styles.pagination}>
                     <HStack align="center" gap="space-8">
@@ -204,7 +185,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
 export const MessagesTableSkeleton = () => {
     return (
         <div className={styles.container}>
-            <Table className={styles.table}>
+            <Table className={styles.table} size="small">
                 <TableBody>
                     {Array(20)
                         .fill(null)

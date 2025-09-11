@@ -12,11 +12,15 @@ type SakContextValue = {
         hendelser: Message[]
     } | null
     setSak: Dispatch<SetStateAction<SakContextValue['sak']>>
+    isLoading: boolean
+    setIsLoading: (isLoading: boolean) => void
 }
 
 const SakContext = createContext<SakContextValue>({
     sak: null,
     setSak: () => null,
+    isLoading: false,
+    setIsLoading: () => null,
 })
 
 export const useSak = () => {
@@ -29,12 +33,15 @@ type Props = {
 
 export const SakProvider: React.FC<Props> = ({ children }) => {
     const [sak, setSak] = useState<SakContextValue['sak'] | null>(null)
+    const [isLoading, setIsLoading] = useState(false)
 
     return (
         <SakContext.Provider
             value={{
                 sak: sak,
                 setSak: setSak,
+                isLoading: isLoading,
+                setIsLoading: setIsLoading,
             }}
         >
             {children}

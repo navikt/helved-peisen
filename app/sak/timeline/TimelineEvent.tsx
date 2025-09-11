@@ -13,7 +13,10 @@ export type TimelineEventProps = {
     content?: ReactNode
     onShowContent?: () => void
     onHideContent?: () => void
-}
+} & Omit<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    'onFocus' | 'onBlur' | 'onMouseOver' | 'onMouseOut' | 'tabIndex' | 'content'
+>
 
 export const TimelineEvent: React.FC<TimelineEventProps> = ({
     date,
@@ -21,6 +24,8 @@ export const TimelineEvent: React.FC<TimelineEventProps> = ({
     content,
     onShowContent,
     onHideContent,
+    className,
+    ...buttonProps
 }) => {
     const timeline = useTimeline()
 
@@ -28,9 +33,7 @@ export const TimelineEvent: React.FC<TimelineEventProps> = ({
     const anchor = useRef<HTMLButtonElement>(null)
 
     const startPositionPercentage =
-        ((date.getTime() - timeline.start.getTime()) /
-            (timeline.end.getTime() - timeline.start.getTime())) *
-        100
+        ((date.getTime() - timeline.start.getTime()) / (timeline.end.getTime() - timeline.start.getTime())) * 100
 
     const showContent = () => {
         setShow(true)
@@ -44,7 +47,7 @@ export const TimelineEvent: React.FC<TimelineEventProps> = ({
 
     return (
         <button
-            className={clsx(styles.period, styles[variant])}
+            className={clsx(styles.period, styles[variant], className)}
             style={{
                 left: `${startPositionPercentage}%`,
             }}
@@ -54,13 +57,10 @@ export const TimelineEvent: React.FC<TimelineEventProps> = ({
             onBlur={hideContent}
             onMouseOver={showContent}
             onMouseOut={hideContent}
+            {...buttonProps}
         >
             {!!content && (
-                <Popover
-                    open={show}
-                    anchorEl={anchor.current}
-                    onClose={() => setShow(false)}
-                >
+                <Popover open={show} anchorEl={anchor.current} onClose={() => setShow(false)}>
                     <PopoverContent>{content}</PopoverContent>
                 </Popover>
             )}

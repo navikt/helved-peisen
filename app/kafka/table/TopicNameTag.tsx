@@ -110,17 +110,11 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
         case 'helved.kvittering.v1':
             return <OppdragStatusBadge message={message} />
         case 'helved.oppdragsdata.v1':
-            break
         case 'helved.dryrun-aap.v1':
-            break
         case 'helved.dryrun-tp.v1':
-            break
         case 'helved.dryrun-ts.v1':
-            break
         case 'helved.dryrun-dp.v1':
-            break
         case 'helved.simuleringer.v1':
-            break
         case 'helved.saker.v1':
             break
         case 'helved.utbetalinger.v1':
@@ -138,7 +132,7 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
 
 export const TopicNameTag: React.FC<Props> = ({ message }) => {
     return (
-        <Tag variant={variant(message)} className={styles.tag}>
+        <Tag variant={variant(message)} size="small" className={styles.tag}>
             {message.topic_name}
             <StatusBadge message={message} />
         </Tag>

@@ -9,6 +9,10 @@
     overflow: scroll;
 }
 
+.row {
+    transition: background 0.2s ease;
+}
+
 .cell {
     white-space: nowrap;
 }

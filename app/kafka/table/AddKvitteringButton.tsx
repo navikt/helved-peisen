@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useRef, useState } from 'react'
 import { Button, Modal, Select, TextField, VStack } from '@navikt/ds-react'
 import { logger } from '@navikt/next-logger'
@@ -47,28 +49,18 @@ export const AddKvitteringButton = ({ messageValue, messageKey }: Props) => {
 
     return (
         <>
-            <ActionMenuItem onSelect={showModal}>
-                Legg til kvittering
-            </ActionMenuItem>
-            <Modal
-                ref={ref}
-                header={{ heading: 'Legg til kvittering' }}
-                width={600}
-            >
+            <ActionMenuItem onSelect={showModal}>Legg til kvittering</ActionMenuItem>
+            <Modal ref={ref} header={{ heading: 'Legg til kvittering' }} width={600}>
                 <form action={submitAction}>
                     <Modal.Body>
                         <VStack gap="4">
                             <Select
                                 name="alvorlighetsgrad"
                                 label="Alvorlighetsgrad"
-                                onChange={(e) =>
-                                    setAlvorlighetsgrad(e.target.value)
-                                }
+                                onChange={(e) => setAlvorlighetsgrad(e.target.value)}
                             >
                                 <option value="00">00 - Ok</option>
-                                <option value="04">
-                                    04 - Akseptert men noe er feil
-                                </option>
+                                <option value="04">04 - Akseptert men noe er feil</option>
                             </Select>
                             {alvorlighetsgrad === '04' && (
                                 <VStack gap="4">
@@ -88,11 +80,7 @@ export const AddKvitteringButton = ({ messageValue, messageKey }: Props) => {
                     </Modal.Body>
                     <Modal.Footer>
                         <FormButton>Lagre</FormButton>
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            onClick={closeModal}
-                        >
+                        <Button type="button" variant="secondary" onClick={closeModal}>
                             Avbryt
                         </Button>
                     </Modal.Footer>

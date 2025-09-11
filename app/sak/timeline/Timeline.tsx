@@ -1,4 +1,4 @@
-import { ReactElement, useMemo } from 'react'
+import { ReactElement, ReactNode, useMemo } from 'react'
 import { VStack } from '@navikt/ds-react'
 import { isAfter, isBefore } from 'date-fns'
 
@@ -19,8 +19,7 @@ const useTimelineRange = (children: Props['children']) => {
                 const props = row.props as unknown as TimelineRowProps
                 const { min, max } = props.children.reduce(
                     ({ min, max }, period) => {
-                        const props =
-                            period.props as unknown as TimelineEventProps
+                        const props = period.props as unknown as TimelineEventProps
                         const date = props.date
                         return {
                             min: isBefore(date, min) ? date : min,
@@ -54,6 +53,14 @@ export const Timeline: React.FC<Props> = ({ children }) => {
             <TimelineProvider start={start} end={end}>
                 {children}
             </TimelineProvider>
+        </VStack>
+    )
+}
+
+export const TimelineSkeleton: React.FC<{ children: ReactNode }> = ({ children }) => {
+    return (
+        <VStack className={styles.timeline} gap="space-4">
+            {children}
         </VStack>
     )
 }
