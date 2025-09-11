@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, test } from 'vitest'
 import { MessagesTable } from './MessagesTable'
 import type { Message } from '@/app/kafka/types.ts'
@@ -22,23 +22,23 @@ describe('MessagesTable', () => {
         expect(rows).toHaveLength(4)
 
         // Expect descending sort order
-        expect(within(rows[1]).getByText('369')).toBeVisible()
-        expect(within(rows[2]).getByText('246')).toBeVisible()
-        expect(within(rows[3]).getByText('123')).toBeVisible()
+        expect(within(rows[0]).getByText('369')).toBeVisible()
+        expect(within(rows[1]).getByText('246')).toBeVisible()
+        expect(within(rows[2]).getByText('123')).toBeVisible()
 
         await user.click(screen.getByText('Timestamp'))
 
         // Expect ascending sort order
-        expect(within(rows[1]).getByText('123')).toBeVisible()
-        expect(within(rows[2]).getByText('246')).toBeVisible()
-        expect(within(rows[3]).getByText('369')).toBeVisible()
+        expect(within(rows[0]).getByText('123')).toBeVisible()
+        expect(within(rows[1]).getByText('246')).toBeVisible()
+        expect(within(rows[2]).getByText('369')).toBeVisible()
 
         await user.click(screen.getByText('Timestamp'))
 
         // Expect original sort order
-        expect(within(rows[1]).getByText('123')).toBeVisible()
-        expect(within(rows[2]).getByText('369')).toBeVisible()
-        expect(within(rows[3]).getByText('246')).toBeVisible()
+        expect(within(rows[0]).getByText('123')).toBeVisible()
+        expect(within(rows[1]).getByText('369')).toBeVisible()
+        expect(within(rows[2]).getByText('246')).toBeVisible()
     })
 
     test('filtrerer vekk alle utenom de siste meldingene på samme nøkkel og topic', async () => {
@@ -59,8 +59,8 @@ describe('MessagesTable', () => {
         render(<MessagesTable messages={messages} />)
         expect(screen.getAllByRole('row')).toHaveLength(7)
 
-        await user.click(screen.getByText('Filter'));
-        await user.click(screen.getByText('Vis siste'));
+        await user.click(screen.getByText('Filter'))
+        await user.click(screen.getByText('Vis siste'))
         expect(screen.getAllByRole('row')).toHaveLength(5)
     })
 })
