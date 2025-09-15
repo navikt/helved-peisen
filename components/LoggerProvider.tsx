@@ -3,12 +3,20 @@
 import React, { ReactNode } from 'react'
 import { configureLogger } from '@navikt/next-logger'
 
-configureLogger({
-    basePath: window.location.host.includes('localhost')
+const basePath = () => {
+    if (typeof window === 'undefined') {
+        return
+    }
+
+    return window.location.host.includes('localhost')
         ? 'http://localhost:3000'
         : window.location.host.includes('dev')
           ? 'https://peisen.intern.dev.nav.no'
-          : 'https://peisen.intern.nav.no',
+          : 'https://peisen.intern.nav.no'
+}
+
+configureLogger({
+    basePath: basePath(),
 })
 
 type Props = {
