@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { Label, Switch, VStack } from '@navikt/ds-react'
 import { teamLogger } from '@navikt/next-logger/team-log'
