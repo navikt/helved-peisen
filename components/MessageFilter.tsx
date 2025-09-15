@@ -20,37 +20,28 @@ export default function MessageFilter({ filters, onFiltersChange }: Props) {
     }
 
     return (
-            <ActionMenu>
-                <ActionMenu.Trigger>
-                    <Button
-                        variant="secondary-neutral"
-                        icon={<ChevronDownIcon aria-hidden />}
-                        iconPosition="right"
-                    >
-                        Filter
-                    </Button>
-                </ActionMenu.Trigger>
-                <ActionMenu.Content>
-                    <ActionMenu.RadioGroup
-                        onValueChange={handleRadioChange}
-                        value={filters.visning}
-                        label="Visning"
-                    >
-                        <ActionMenu.RadioItem value="alle">
-                            Vis alle
-                        </ActionMenu.RadioItem>
-                        <ActionMenu.RadioItem value="siste">
-                            Vis siste
-                        </ActionMenu.RadioItem>
-                    </ActionMenu.RadioGroup>
-                    <ActionMenu.Divider />
-                    <ActionMenu.CheckboxItem
-                        checked={filters.utbetalingManglerKvittering}
-                        onSelect={handleCheckboxToggle}
-                    >
-                        Oppdrag uten kvittering
-                    </ActionMenu.CheckboxItem>
-                </ActionMenu.Content>
-            </ActionMenu>
+        <ActionMenu>
+            <ActionMenu.Trigger>
+                <Button
+                    size="small"
+                    variant="secondary-neutral"
+                    icon={<ChevronDownIcon aria-hidden />}
+                    iconPosition="right"
+                    style={{ marginBottom: '1rem' }}
+                >
+                    Filter
+                </Button>
+            </ActionMenu.Trigger>
+            <ActionMenu.Content>
+                <ActionMenu.RadioGroup onValueChange={handleRadioChange} value={filters.visning} label="Visning">
+                    <ActionMenu.RadioItem value="alle">Vis alle</ActionMenu.RadioItem>
+                    <ActionMenu.RadioItem value="siste">Vis siste</ActionMenu.RadioItem>
+                </ActionMenu.RadioGroup>
+                <ActionMenu.Divider />
+                <ActionMenu.CheckboxItem checked={filters.utbetalingManglerKvittering} onSelect={handleCheckboxToggle}>
+                    Oppdrag uten kvittering
+                </ActionMenu.CheckboxItem>
+            </ActionMenu.Content>
+        </ActionMenu>
     )
 }
