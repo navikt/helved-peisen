@@ -31,7 +31,7 @@ export const MessageValue: React.FC<Props> = ({ message }) => {
 
     return (
         <>
-            {(!showMessagePayload() || true) && (
+            {!showMessagePayload() && (
                 <Switch
                     size="small"
                     checked={showValue}
