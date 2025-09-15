@@ -12,12 +12,12 @@ import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import { UrlSearchParamLink } from '@/components/UrlSearchParamLink.tsx'
 import { AddKvitteringButton } from '@/app/kafka/table/AddKvitteringButton.tsx'
+import { AddOppdragButton } from '@/app/kafka/table/AddOppdragButton.tsx'
 import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
 import { MessageValue } from './MessageValue'
 import { SakLink } from './SakLink'
 
 import styles from './MessageTableRow.module.css'
-import { AddOppdragButton } from '@/app/kafka/table/AddOppdragButton.tsx'
 
 type Props = {
     message: Message

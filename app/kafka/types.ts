@@ -31,6 +31,21 @@ export type Message = {
     trace_id: string
 }
 
+export type DagpengerUtbetalingMessageValue = {
+    sakId: string
+    behandlingId: string
+    ident: string
+    vedtakstidspunktet: string
+    utbetalinger: {
+        meldeperiode: string
+        dato: string
+        sats: number
+        utbetaltBeløp: number
+        utbetalingstype: string
+        rettighetstype: string
+    }[]
+}
+
 export type UtbetalingMessageValue = {
     dryrun: boolean
     originalKey: string
@@ -278,12 +293,7 @@ export type OppdragMessageValue = {
 export type StatusMessageValue = {
     status: 'OK' | 'FEILET' | 'MOTTATT' | 'HOS_OPPDRAG'
     detaljer?: {
-        ytelse:
-            | 'DAGPENGER'
-            | 'TILTAKSPENGER'
-            | 'TILLEGGSSTØNADER'
-            | 'AAP'
-            | 'HISTORISK'
+        ytelse: 'DAGPENGER' | 'TILTAKSPENGER' | 'TILLEGGSSTØNADER' | 'AAP' | 'HISTORISK'
         linjer: {
             behandlingId: string
             fom: string

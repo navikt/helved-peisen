@@ -4,6 +4,7 @@ import React, { ReactNode } from 'react'
 import { BodyShort, BoxNew, HStack, Label, VStack } from '@navikt/ds-react'
 
 import {
+    DagpengerUtbetalingMessageValue,
     Message,
     OppdragMessageValue,
     StatusMessageValue,
@@ -35,16 +36,9 @@ type MetadataCardContainerProps = {
     children: ReactNode
 }
 
-const MetadataCardContainer: React.FC<MetadataCardContainerProps> = ({
-    children,
-}) => {
+const MetadataCardContainer: React.FC<MetadataCardContainerProps> = ({ children }) => {
     return (
-        <BoxNew
-            background="neutral-moderate"
-            padding="3"
-            borderRadius="large"
-            maxWidth="max-content"
-        >
+        <BoxNew background="neutral-moderate" padding="3" borderRadius="large" maxWidth="max-content">
             {children}
         </BoxNew>
     )
@@ -52,6 +46,28 @@ const MetadataCardContainer: React.FC<MetadataCardContainerProps> = ({
 
 type Props = {
     message: Message
+}
+
+const DagpengerUtbetalingMessageMetadata: React.FC<Props> = ({ message }) => {
+    if (!message.value) {
+        throw Error('Dagpengeutbetaling mangler value')
+    }
+
+    const value: DagpengerUtbetalingMessageValue = JSON.parse(message.value)
+
+    return (
+        <VStack gap="space-32">
+            <VStack gap="space-12">
+                <Label>Utbetaling</Label>
+                <MetadataCardContainer>
+                    <HStack wrap gap="space-12">
+                        <MetadataCard label="Sak-ID" value={value.sakId} />
+                        <MetadataCard label="Behandling-ID" value={value.behandlingId} />
+                    </HStack>
+                </MetadataCardContainer>
+            </VStack>
+        </VStack>
+    )
 }
 
 const UtbetalingMessageMetadata: React.FC<Props> = ({ message }) => {
@@ -67,20 +83,14 @@ const UtbetalingMessageMetadata: React.FC<Props> = ({ message }) => {
                 <Label>Utbetaling</Label>
                 <MetadataCardContainer>
                     <HStack wrap gap="space-12">
-                        <MetadataCard
-                            label="Fagsystem"
-                            value={value.fagsystem}
-                        />
+                        <MetadataCard label="Fagsystem" value={value.fagsystem} />
                         <MetadataCard label="Action" value={value.action} />
                         <MetadataCard
                             label="Første utbetaling på sak"
                             value={value.førsteUtbetalingPåSak ? 'Ja' : 'Nei'}
                         />
                         <MetadataCard label="Sak-ID" value={value.sakId} />
-                        <MetadataCard
-                            label="Behandling-ID"
-                            value={value.behandlingId}
-                        />
+                        <MetadataCard label="Behandling-ID" value={value.behandlingId} />
                         <MetadataCard label="Stønad" value={value.stønad} />
                     </HStack>
                 </MetadataCardContainer>
@@ -93,18 +103,8 @@ const UtbetalingMessageMetadata: React.FC<Props> = ({ message }) => {
                             <MetadataCard label="Fom" value={it.fom} />
                             <MetadataCard label="Tom" value={it.tom} />
                             <MetadataCard label="Beløp" value={it.beløp} />
-                            {!!it.vedtakssats && (
-                                <MetadataCard
-                                    label="Vedtakssats"
-                                    value={it.vedtakssats}
-                                />
-                            )}
-                            {!!it.betalendeEnhet && (
-                                <MetadataCard
-                                    label="Betalende enhet"
-                                    value={it.betalendeEnhet}
-                                />
-                            )}
+                            {!!it.vedtakssats && <MetadataCard label="Vedtakssats" value={it.vedtakssats} />}
+                            {!!it.betalendeEnhet && <MetadataCard label="Betalende enhet" value={it.betalendeEnhet} />}
                         </HStack>
                     </MetadataCardContainer>
                 ))}
@@ -120,9 +120,7 @@ const AvstemmingMessageMetadata: React.FC<Props> = ({ message }) => {
 
     const xmlDoc = parsedXML(message.value)
 
-    const fagsystem = xmlDoc.querySelector(
-        'aksjon > avleverendeKomponentKode'
-    )?.textContent
+    const fagsystem = xmlDoc.querySelector('aksjon > avleverendeKomponentKode')?.textContent
 
     if (!fagsystem) {
         return null
@@ -148,8 +146,7 @@ const OppdragMessageMetadata: React.FC<Props> = ({ message }) => {
         return (
             mmel && {
                 kodeMelding: mmel.querySelector('kodeMelding')?.textContent,
-                alvorlighetsgrad:
-                    mmel.querySelector('alvorlighetsgrad')?.textContent,
+                alvorlighetsgrad: mmel.querySelector('alvorlighetsgrad')?.textContent,
                 beskrMelding: mmel.querySelector('beskrMelding')?.textContent,
             }
         )
@@ -163,8 +160,7 @@ const OppdragMessageMetadata: React.FC<Props> = ({ message }) => {
 
         return {
             fagsystemId: oppdrag.querySelector('fagsystemId')?.textContent,
-            kodeFagomraade:
-                oppdrag.querySelector('kodeFagomraade')!.textContent!,
+            kodeFagomraade: oppdrag.querySelector('kodeFagomraade')!.textContent!,
             kodeEndring: oppdrag.querySelector('kodeEndring')!.textContent!,
         }
     })()
@@ -176,18 +172,9 @@ const OppdragMessageMetadata: React.FC<Props> = ({ message }) => {
                     <Label>Mmel</Label>
                     <MetadataCardContainer>
                         <HStack wrap gap="space-12">
-                            <MetadataCard
-                                label="Alvorlighetsgrad"
-                                value={mmel.alvorlighetsgrad}
-                            />
-                            <MetadataCard
-                                label="Kodemelding"
-                                value={mmel.kodeMelding}
-                            />
-                            <MetadataCard
-                                label="Beskrivende melding"
-                                value={mmel.beskrMelding}
-                            />
+                            <MetadataCard label="Alvorlighetsgrad" value={mmel.alvorlighetsgrad} />
+                            <MetadataCard label="Kodemelding" value={mmel.kodeMelding} />
+                            <MetadataCard label="Beskrivende melding" value={mmel.beskrMelding} />
                         </HStack>
                     </MetadataCardContainer>
                 </VStack>
@@ -197,18 +184,9 @@ const OppdragMessageMetadata: React.FC<Props> = ({ message }) => {
                     <Label>Oppdrag</Label>
                     <MetadataCardContainer>
                         <HStack wrap gap="space-12">
-                            <MetadataCard
-                                label="Sak-ID"
-                                value={oppdrag.fagsystemId}
-                            />
-                            <MetadataCard
-                                label="Fagsystem"
-                                value={oppdrag.kodeFagomraade}
-                            />
-                            <MetadataCard
-                                label="Endringskode"
-                                value={oppdrag.kodeEndring}
-                            />
+                            <MetadataCard label="Sak-ID" value={oppdrag.fagsystemId} />
+                            <MetadataCard label="Fagsystem" value={oppdrag.kodeFagomraade} />
+                            <MetadataCard label="Endringskode" value={oppdrag.kodeEndring} />
                         </HStack>
                     </MetadataCardContainer>
                 </VStack>
@@ -245,32 +223,12 @@ const StatusMessageMetadata: React.FC<Props> = ({ message }) => {
                         {value.detaljer.linjer.map((it, i) => (
                             <MetadataCardContainer key={i}>
                                 <HStack wrap gap="space-12">
-                                    <MetadataCard
-                                        label="Behandling-ID"
-                                        value={it.behandlingId}
-                                    />
-                                    <MetadataCard
-                                        label="Fra og med"
-                                        value={it.fom}
-                                    />
-                                    <MetadataCard
-                                        label="Til og med"
-                                        value={it.tom}
-                                    />
-                                    {!!it.vedtakssats && (
-                                        <MetadataCard
-                                            label="Vedtakssats"
-                                            value={it.vedtakssats}
-                                        />
-                                    )}
-                                    <MetadataCard
-                                        label="Beløp"
-                                        value={it.beløp}
-                                    />
-                                    <MetadataCard
-                                        label="Klassekode"
-                                        value={it.klassekode}
-                                    />
+                                    <MetadataCard label="Behandling-ID" value={it.behandlingId} />
+                                    <MetadataCard label="Fra og med" value={it.fom} />
+                                    <MetadataCard label="Til og med" value={it.tom} />
+                                    {!!it.vedtakssats && <MetadataCard label="Vedtakssats" value={it.vedtakssats} />}
+                                    <MetadataCard label="Beløp" value={it.beløp} />
+                                    <MetadataCard label="Klassekode" value={it.klassekode} />
                                 </HStack>
                             </MetadataCardContainer>
                         ))}
@@ -282,14 +240,8 @@ const StatusMessageMetadata: React.FC<Props> = ({ message }) => {
                     <Label>Error</Label>
                     <MetadataCardContainer>
                         <HStack wrap gap="space-12">
-                            <MetadataCard
-                                label="Statuskode"
-                                value={value.error.statusCode}
-                            />
-                            <MetadataCard
-                                label="Melding"
-                                value={value.error.msg}
-                            />
+                            <MetadataCard label="Statuskode" value={value.error.statusCode} />
+                            <MetadataCard label="Melding" value={value.error.msg} />
                         </HStack>
                     </MetadataCardContainer>
                 </VStack>
@@ -312,6 +264,8 @@ export const MessageMetadata: React.FC<Props> = ({ message }) => {
                         return <UtbetalingMessageMetadata message={message} />
                     case 'helved.status.v1':
                         return <StatusMessageMetadata message={message} />
+                    case 'teamdagpenger.utbetaling.v1':
+                        return <DagpengerUtbetalingMessageMetadata message={message} />
                 }
                 return null
             })()}
