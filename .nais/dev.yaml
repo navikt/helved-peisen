@@ -20,6 +20,10 @@ spec:
     autoInstrumentation:
       enabled: true
       runtime: nodejs
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
   ingresses:
     - 'https://peisen.intern.dev.nav.no'
   azure:

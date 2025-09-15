@@ -16,6 +16,7 @@ const nextConfig = {
             },
         ]
     },
+    serverExternalPackages: ['@navikt/next-logger', 'pino'],
 }
 
 export default nextConfig

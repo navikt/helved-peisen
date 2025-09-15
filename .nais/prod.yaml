@@ -16,6 +16,14 @@ spec:
       cpu: 100m
     requests:
       cpu: 100m
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: nodejs
+    logging:
+      destinations:
+        - id: loki
+        - id: elastic
   ingresses:
     - 'https://peisen.intern.nav.no'
   azure:
