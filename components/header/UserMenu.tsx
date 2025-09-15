@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { InternalHeaderUserButton } from '@navikt/ds-react/InternalHeader'
 import { BodyShort, Detail, Dropdown, Link, Spacer } from '@navikt/ds-react'
 import {
@@ -9,14 +9,10 @@ import {
     DropdownToggle,
 } from '@navikt/ds-react/Dropdown'
 import { LeaveIcon } from '@navikt/aksel-icons'
-import { getUser, User } from '@/components/header/getUser.ts'
+import { useUser } from '../UserProvider'
 
 export const UserMenu: React.FC = () => {
-    const [user, setUser] = useState<User | null>()
-
-    useEffect(() => {
-        getUser().then(setUser)
-    }, [])
+    const user = useUser()
 
     if (!user) {
         return null
@@ -35,8 +31,7 @@ export const UserMenu: React.FC = () => {
                 <DropdownMenuDivider />
                 <DropdownMenuList>
                     <DropdownMenuListItem as={Link} href="/oauth2/logout">
-                        Logg ut <Spacer />{' '}
-                        <LeaveIcon aria-hidden fontSize="1.5rem" />
+                        Logg ut <Spacer /> <LeaveIcon aria-hidden fontSize="1.5rem" />
                     </DropdownMenuListItem>
                 </DropdownMenuList>
             </DropdownMenu>

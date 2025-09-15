@@ -2,10 +2,12 @@ import React from 'react'
 import clsx from 'clsx'
 import type { Metadata } from 'next'
 import { Source_Sans_3 } from 'next/font/google'
+import { Toaster } from 'react-hot-toast'
+
 import { Header } from '@/components/header/Header.tsx'
 import { ThemeProvider } from '@/components/ThemeProvider.tsx'
 import { LoggerProvider } from '@/components/LoggerProvider.tsx'
-import { Toaster } from 'react-hot-toast'
+import { UserProvider } from '@/components/UserProvider'
 
 import styles from './layout.module.css'
 
@@ -30,13 +32,15 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={clsx(sourceSans.className, styles.body)}>
-                <LoggerProvider>
-                    <ThemeProvider>
-                        <Header />
-                        <Toaster position="bottom-center" />
-                        <main className={styles.main}>{children}</main>
-                    </ThemeProvider>
-                </LoggerProvider>
+                <UserProvider>
+                    <LoggerProvider>
+                        <ThemeProvider>
+                            <Header />
+                            <Toaster position="bottom-center" />
+                            <main className={styles.main}>{children}</main>
+                        </ThemeProvider>
+                    </LoggerProvider>
+                </UserProvider>
             </body>
         </html>
     )

@@ -32,6 +32,8 @@ spec:
       rules:
         - application: utsjekk
         - application: peisschtappern
+        - application: logging
+          namespace: nais-system
   env:
     - name: NEXT_PUBLIC_HOSTNAME
       value: "https://peisen.intern.nav.no"

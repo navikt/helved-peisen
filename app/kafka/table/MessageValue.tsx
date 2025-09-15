@@ -1,9 +1,11 @@
 import React from 'react'
-import { Label, VStack } from '@navikt/ds-react'
+import { Label, Switch, VStack } from '@navikt/ds-react'
+import { teamLogger } from '@navikt/next-logger/team-log'
 
 import { Message } from '@/app/kafka/types.ts'
 import { XMLView } from '@/components/XMLView.tsx'
 import { JsonView } from '@/components/JsonView.tsx'
+import { useUser } from '@/components/UserProvider'
 
 const showMessagePayload = () => {
     const isLocal = window.location.host.includes('localhost')
@@ -16,9 +18,8 @@ type Props = {
 }
 
 export const MessageValue: React.FC<Props> = ({ message }) => {
-    if (!showMessagePayload()) {
-        return null
-    }
+    const [showValue, setShowValue] = React.useState(showMessagePayload())
+    const user = useUser()
 
     const data = (() => {
         try {
@@ -29,13 +30,29 @@ export const MessageValue: React.FC<Props> = ({ message }) => {
     })()
 
     return (
-        <VStack gap="space-4">
-            <Label>Value</Label>
-            {typeof data === 'string' ? (
-                <XMLView data={data} />
-            ) : (
-                <JsonView json={data} />
+        <>
+            {(!showMessagePayload() || true) && (
+                <Switch
+                    size="small"
+                    checked={showValue}
+                    onChange={(event) => {
+                        setShowValue(event.target.checked)
+                        if (event.target.checked) {
+                            teamLogger.info(
+                                `${user?.name} (${user?.ident}) ser på meldingsinnhold for topic ${message.topic_name} med key ${message.key}`
+                            )
+                        }
+                    }}
+                >
+                    Vis melding
+                </Switch>
             )}
-        </VStack>
+            {showValue && (
+                <VStack gap="space-4">
+                    <Label>Value</Label>
+                    {typeof data === 'string' ? <XMLView data={data} /> : <JsonView json={data} />}
+                </VStack>
+            )}
+        </>
     )
 }
