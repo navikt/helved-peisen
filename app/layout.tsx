@@ -15,11 +15,6 @@ import styles from './layout.module.css'
 import '@navikt/ds-css/darkside'
 import './globals.css'
 
-const sourceSans = Source_Sans_3({
-    subsets: ['latin'],
-    display: 'swap',
-})
-
 export const metadata: Metadata = {
     title: 'Peisen',
     description: 'Oversikt over meldinger i systemene til Team Hel Ved',
@@ -33,7 +28,7 @@ export default async function RootLayout({
     const user = await getUser()
     return (
         <html lang="en">
-            <body className={clsx(sourceSans.className, styles.body)}>
+            <body className={clsx(styles.body)}>
                 <UserProvider user={user}>
                     <LoggerProvider>
                         <ThemeProvider>
