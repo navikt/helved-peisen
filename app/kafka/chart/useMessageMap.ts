@@ -1,14 +1,12 @@
 import { useMemo } from 'react'
 import {
-    add, addMilliseconds,
+    add,
+    addMilliseconds,
     differenceInMinutes,
     isAfter,
     isBefore,
     isEqual,
     isWithinInterval,
-    startOfDay,
-    startOfHour,
-    startOfMinute,
     subDays,
 } from 'date-fns'
 
@@ -40,11 +38,7 @@ const getIncrement = (start: Date, end: Date): Increment => {
     }
 }
 
-const getMessageMap = (
-    start: Date,
-    end: Date,
-    increment: Increment
-): Record<string, Message[]> => {
+const getMessageMap = (start: Date, end: Date, increment: Increment): Record<string, Message[]> => {
     const map: Record<string, Message[]> = {}
 
     let currentTime = start
@@ -56,32 +50,16 @@ const getMessageMap = (
     return map
 }
 
-const getKeyForMessage = (
-    message: Message,
-    keys: string[],
-    increment: Increment
-) => {
+const getKeyForMessage = (message: Message, keys: string[], increment: Increment) => {
     const timestamp = new Date(message.timestamp_ms)
-    return keys.filter((it) =>
-        isWithinInterval(it, {
-            start: addMilliseconds(sub(timestamp, { [increment]: 1 }), 1),
-            end: timestamp, //add(it, { [increment]: 1 }),
-        })
-    ).shift()
-}
-
-const truncateDateToIncrement = (date: Date, increment: Increment) => {
-    switch (increment) {
-        case 'days': {
-            return startOfDay(date)
-        }
-        case 'hours': {
-            return startOfHour(date)
-        }
-        case 'minutes': {
-            return startOfMinute(date)
-        }
-    }
+    return keys
+        .filter((it) =>
+            isWithinInterval(it, {
+                start: addMilliseconds(sub(timestamp, { [increment]: 1 }), 1),
+                end: timestamp, //add(it, { [increment]: 1 }),
+            })
+        )
+        .shift()
 }
 
 export const useMessageMap = (
@@ -108,11 +86,7 @@ export const useMessageMap = (
         )
 
         for (const message of filteredMessages) {
-            const key = getKeyForMessage(
-                message,
-                Object.keys(messageMap),
-                increment
-            )
+            const key = getKeyForMessage(message, Object.keys(messageMap), increment)
 
             if (key) {
                 messageMap[key].push(message)

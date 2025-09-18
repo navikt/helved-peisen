@@ -3,104 +3,46 @@
 import React, { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import clsx from 'clsx'
-import {
-    BarController,
-    BarElement,
-    CategoryScale,
-    Chart,
-    ChartOptions,
-    LinearScale,
-} from 'chart.js'
+import { BarController, BarElement, CategoryScale, Chart, ChartOptions, LinearScale } from 'chart.js'
 import { Bar, getElementAtEvent } from 'react-chartjs-2'
 import { add } from 'date-fns'
-import { format } from 'date-fns/format'
+import { parse } from 'date-fns/parse'
 import { Button, Skeleton } from '@navikt/ds-react'
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons'
 
 import { useMessageMap } from '@/app/kafka/chart/useMessageMap.ts'
 import type { Message } from '@/app/kafka/types'
 import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
+import { formatDate, validDate } from './date'
+import { getCSSPropertyValue } from './css'
+import { BrushPlugin } from './brush'
 
 import fadeIn from '@/styles/fadeIn.module.css'
 import styles from './MessagesChart.module.css'
 
-Chart.register(BarElement, BarController, CategoryScale, LinearScale)
+Chart.register(BarElement, BarController, CategoryScale, LinearScale, BrushPlugin)
 
-const formatDate = (
-    date: string | Date,
-    increment: 'days' | 'hours' | 'minutes'
-) => {
-    return increment === 'days'
-        ? format(date, 'MM-dd')
-        : format(date, 'MM-dd, HH:mm')
+type Colors = {
+    labelColor: string
+    barColor: string
+    borderColor: string
+    barHoverColor: string
+    gridColor: string
 }
 
-const validDate = (date: Date): boolean => {
-    return !isNaN(date.valueOf())
-}
+type MessageMap = Record<string, Message[]>
 
-const getCSSPropertyValue = (property: string) => {
-    return getComputedStyle(
-        document.body.getElementsByTagName('main')[0]
-    ).getPropertyValue(property)
-}
+type Increment = 'days' | 'hours' | 'minutes'
 
-type Props = React.HTMLAttributes<HTMLDivElement> & {
-    messages: Record<string, Message[]>
-}
-
-export const MessagesChart: React.FC<Props> = ({
-    className,
-    messages,
-    ...rest
-}) => {
-    const searchParams = useSearchParams()
-    const setSearchParams = useSetSearchParams()
-
-    const [messageMap, increment] =
-        useMessageMap(searchParams, Object.values(messages).flat()) ?? []
-
-    const chartRef = useRef<Chart<'bar'>>(null)
-
-    const onClickBar = (event: React.MouseEvent<HTMLCanvasElement>) => {
-        const chart = chartRef.current
-        if (chart && messageMap && increment) {
-            const element = getElementAtEvent(chart, event)[0]
-            if (!element) {
-                return
-            }
-            const fom = new Date(Object.keys(messageMap)[element.index])
-            const tom = add(fom, { [increment]: 1 })
-
-            if (!validDate(fom) || !validDate(tom)) {
-                console.error('Klarte ikke parse fom/tom:', fom, tom)
-                return
-            }
-
-            setSearchParams({ fom: fom.toISOString(), tom: tom.toISOString() })
-        }
-    }
-
-    const [open, setOpen] = useState(true)
-
-    const [colors, setColors] = useState({
-        labelColor: '',
-        barColor: '',
-        borderColor: '',
-        barHoverColor: '',
-        gridColor: '',
-    })
-
-    const data = useMemo(
+const useChartData = (colors: Colors, messages?: MessageMap, increment?: Increment) => {
+    return useMemo(
         () =>
-            messageMap &&
+            messages &&
             increment && {
-                labels: Object.keys(messageMap).map((it) =>
-                    formatDate(it, increment)
-                ),
+                labels: Object.keys(messages).map((it) => formatDate(it, increment)),
                 datasets: [
                     {
-                        data: Object.values(messageMap).map((it) => it.length),
+                        data: Object.values(messages).map((it) => it.length),
                         backgroundColor: colors.barColor,
                         borderColor: colors.borderColor,
                         borderWidth: 1,
@@ -109,36 +51,55 @@ export const MessagesChart: React.FC<Props> = ({
                     },
                 ],
             },
-        [messageMap, colors, increment]
+        [messages, colors, increment]
     )
+}
 
-    const options: ChartOptions<'bar'> = useMemo(
+const useChartOptions = (colors: Colors): ChartOptions<'bar'> => {
+    const setSearchParams = useSetSearchParams()
+    return useMemo(
         () => ({
-            animation: {
-                duration: 0,
-            },
+            animation: { duration: 0 },
             maintainAspectRatio: false,
             scales: {
-                x: {
-                    ticks: {
-                        color: colors.labelColor,
-                    },
-                    grid: {
-                        color: colors.gridColor,
-                    },
-                },
-                y: {
-                    ticks: {
-                        color: colors.labelColor,
-                    },
-                    grid: {
-                        color: colors.gridColor,
+                x: { ticks: { color: colors.labelColor }, grid: { color: colors.gridColor } },
+                y: { ticks: { color: colors.labelColor }, grid: { color: colors.gridColor } },
+            },
+            events: ['mousemove', 'mouseout', 'mousedown', 'mouseup', 'click'],
+            plugins: {
+                brush: {
+                    strokeStyle: getCSSPropertyValue('--ax-border-accent-subtleA'),
+                    fillStyle: getCSSPropertyValue('--ax-bg-info-moderateA'),
+                    minPixels: 6,
+                    onSelect: ({ min, max }, chart) => {
+                        const x = (chart.scales as any).x
+                        const minDate = x.getLabelForValue(min)
+                        const maxDate = x.getLabelForValue(Math.max(max, min + 1))
+
+                        if (typeof minDate !== 'string' || typeof maxDate !== 'string') {
+                            return
+                        }
+
+                        const fom = new Date(parse(minDate, 'MM-dd, HH:mm', new Date()))
+                        const tom = new Date(parse(maxDate, 'MM-dd, HH:mm', new Date()))
+
+                        setSearchParams({ fom: fom.toISOString(), tom: tom.toISOString() })
                     },
                 },
             },
         }),
-        [colors]
+        [colors, setSearchParams]
     )
+}
+
+const useColors = () => {
+    const [colors, setColors] = useState({
+        labelColor: '',
+        barColor: '',
+        borderColor: '',
+        barHoverColor: '',
+        gridColor: '',
+    })
 
     useLayoutEffect(() => {
         const updateColor = () => {
@@ -146,59 +107,57 @@ export const MessagesChart: React.FC<Props> = ({
                 labelColor: getCSSPropertyValue('--ax-text-neutral'),
                 barColor: getCSSPropertyValue('--ax-bg-warning-moderateA'),
                 borderColor: getCSSPropertyValue('--ax-border-warning'),
-                barHoverColor: getCSSPropertyValue(
-                    '--ax-bg-warning-moderate-hoverA'
-                ),
+                barHoverColor: getCSSPropertyValue('--ax-bg-warning-moderate-hoverA'),
                 gridColor: getCSSPropertyValue('--ax-bg-neutral-soft'),
             })
         }
 
         updateColor()
 
-        window
-            .matchMedia('(prefers-color-scheme: dark)')
-            .addEventListener('change', updateColor)
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateColor)
 
         return () => {
-            window
-                .matchMedia('(prefers-color-scheme: dark)')
-                .removeEventListener('change', updateColor)
+            window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', updateColor)
         }
     }, [])
+
+    return colors
+}
+
+type Props = React.HTMLAttributes<HTMLDivElement> & {
+    messages: Record<string, Message[]>
+}
+
+export const MessagesChart: React.FC<Props> = ({ className, messages, ...rest }) => {
+    const searchParams = useSearchParams()
+    const chartRef = useRef<Chart<'bar'>>(null)
+
+    const [messageMap, increment] = useMessageMap(searchParams, Object.values(messages).flat()) ?? []
+    const [open, setOpen] = useState(true)
+
+    const colors = useColors()
+    const data = useChartData(colors, messageMap, increment)
+    const options: ChartOptions<'bar'> = useChartOptions(colors)
 
     if (!data) {
         return <MessagesChartSkeleton />
     }
 
     return (
-        <div
-            className={clsx(styles.container, fadeIn.animation, className)}
-            {...rest}
-        >
+        <div className={clsx(styles.container, fadeIn.animation, className)} {...rest}>
             <div className={clsx(styles.chartContainer, open && styles.open)}>
                 <div className={styles.chart}>
-                    <Bar
-                        ref={chartRef}
-                        options={options}
-                        data={data}
-                        onClick={onClickBar}
-                    />
+                    <Bar ref={chartRef} options={options} data={data} />
                 </div>
             </div>
             <Button
                 variant="tertiary-neutral"
                 size="small"
-                onClick={() => {
-                    setOpen((open) => !open)
-                }}
+                onClick={() => setOpen((open) => !open)}
                 className={styles.showButton}
                 title="Toggle chart"
             >
-                {open ? (
-                    <ChevronUpIcon fontSize="18" />
-                ) : (
-                    <ChevronDownIcon fontSize="18" />
-                )}
+                {open ? <ChevronUpIcon fontSize="18" /> : <ChevronDownIcon fontSize="18" />}
             </Button>
         </div>
     )

@@ -1,7 +1,6 @@
 import React from 'react'
 import clsx from 'clsx'
 import type { Metadata } from 'next'
-import { Source_Sans_3 } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
 
 import { Header } from '@/components/header/Header.tsx'
