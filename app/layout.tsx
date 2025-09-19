@@ -9,10 +9,10 @@ import { LoggerProvider } from '@/components/LoggerProvider.tsx'
 import { UserProvider } from '@/components/UserProvider'
 import { getUser } from '@/components/header/getUser'
 
-import styles from './layout.module.css'
-
 import '@navikt/ds-css/darkside'
 import './globals.css'
+
+import styles from './layout.module.css'
 
 export const metadata: Metadata = {
     title: 'Peisen',
