@@ -4,8 +4,7 @@ import React, { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import clsx from 'clsx'
 import { BarController, BarElement, CategoryScale, Chart, ChartOptions, LinearScale } from 'chart.js'
-import { Bar, getElementAtEvent } from 'react-chartjs-2'
-import { add } from 'date-fns'
+import { Bar } from 'react-chartjs-2'
 import { parse } from 'date-fns/parse'
 import { Button, Skeleton } from '@navikt/ds-react'
 import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons'
@@ -13,12 +12,9 @@ import { ChevronDownIcon, ChevronUpIcon } from '@navikt/aksel-icons'
 import { useMessageMap } from '@/app/kafka/chart/useMessageMap.ts'
 import type { Message } from '@/app/kafka/types'
 import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
-import { formatDate, validDate } from './date'
+import { formatDate } from './date'
 import { getCSSPropertyValue } from './css'
 import { BrushPlugin } from './brush'
-
-import fadeIn from '@/styles/fadeIn.module.css'
-import styles from './MessagesChart.module.css'
 
 Chart.register(BarElement, BarController, CategoryScale, LinearScale, BrushPlugin)
 
@@ -144,9 +140,14 @@ export const MessagesChart: React.FC<Props> = ({ className, messages, ...rest })
     }
 
     return (
-        <div className={clsx(styles.container, fadeIn.animation, className)} {...rest}>
-            <div className={clsx(styles.chartContainer, open && styles.open)}>
-                <div className={styles.chart}>
+        <div className={clsx('animate-fade-in relative w-full mb-6 flex justify-end gap-2', className)} {...rest}>
+            <div
+                className={clsx(
+                    'relative overflow-hidden h-0 transition-[height] flex-1 cursor-crosshair',
+                    open && 'h-[100px]'
+                )}
+            >
+                <div className="h-[100px]">
                     <Bar ref={chartRef} options={options} data={data} />
                 </div>
             </div>
@@ -154,7 +155,7 @@ export const MessagesChart: React.FC<Props> = ({ className, messages, ...rest })
                 variant="tertiary-neutral"
                 size="small"
                 onClick={() => setOpen((open) => !open)}
-                className={styles.showButton}
+                className="max-h-max"
                 title="Toggle chart"
             >
                 {open ? <ChevronUpIcon fontSize="18" /> : <ChevronDownIcon fontSize="18" />}
@@ -164,5 +165,5 @@ export const MessagesChart: React.FC<Props> = ({ className, messages, ...rest })
 }
 
 export const MessagesChartSkeleton = () => {
-    return <Skeleton className={styles.container} height={100} />
+    return <Skeleton className="relative w-full mb-6 flex justify-end gap-2" height={100} />
 }

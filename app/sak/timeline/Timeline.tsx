@@ -6,8 +6,6 @@ import { TimelineRow, TimelineRowProps } from './TimelineRow.tsx'
 import { TimelineProvider } from './TimelineContext.tsx'
 import { TimelineEventProps } from './TimelineEvent.tsx'
 
-import styles from './Timeline.module.css'
-
 type Props = {
     children: ReactElement<typeof TimelineRow>[]
 }
@@ -49,7 +47,7 @@ export const Timeline: React.FC<Props> = ({ children }) => {
     const [start, end] = useTimelineRange(children)
 
     return (
-        <VStack className={styles.timeline} gap="space-4">
+        <VStack className="grid gap-4 grid-cols-[max-content_auto] items-center" gap="space-4">
             <TimelineProvider start={start} end={end}>
                 {children}
             </TimelineProvider>
@@ -59,7 +57,7 @@ export const Timeline: React.FC<Props> = ({ children }) => {
 
 export const TimelineSkeleton: React.FC<{ children: ReactNode }> = ({ children }) => {
     return (
-        <VStack className={styles.timeline} gap="space-4">
+        <VStack className="grid gap-4 grid-cols-[max-content_auto] items-center" gap="space-4">
             {children}
         </VStack>
     )

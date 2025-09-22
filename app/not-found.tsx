@@ -1,37 +1,22 @@
 'use client'
 
-import clsx from 'clsx'
 import Image from 'next/image'
 import { BodyShort, Heading, Link, VStack } from '@navikt/ds-react'
 
 import noMessages from '@/public/404.png'
-import fadeIn from '@/styles/fadeIn.module.css'
-
-import styles from './kafka/NoMessages.module.css'
 
 export default function NotFound() {
     const size = 300
 
     return (
-        <VStack
-            className={clsx(styles.container, fadeIn.animation)}
-            justify="center"
-            align="center"
-        >
-            <Image
-                className={styles.image}
-                src={noMessages.src}
-                alt=""
-                width={size}
-                height={size}
-            />
+        <VStack className="p-6 h-full animate-fade-in" justify="center" align="center">
+            <Image className="mb-8" src={noMessages.src} alt="" width={size} height={size} />
             <VStack>
-                <Heading level="2" size="large" className={styles.heading}>
+                <Heading level="2" size="large" className="mb-4">
                     Denne siden finnes ikke
                 </Heading>
-                <BodyShort className={styles.text}>
-                    Siden kan være slettet eller flyttet, eller det er en feil i
-                    lenken.
+                <BodyShort className="mb-6">
+                    Siden kan være slettet eller flyttet, eller det er en feil i lenken.
                 </BodyShort>
                 <Link href="/">Gå til forsiden</Link>
             </VStack>

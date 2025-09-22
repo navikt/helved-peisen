@@ -1,5 +1,4 @@
 import React from 'react'
-import clsx from 'clsx'
 import type { Metadata } from 'next'
 import { Toaster } from 'react-hot-toast'
 
@@ -9,10 +8,7 @@ import { LoggerProvider } from '@/components/LoggerProvider.tsx'
 import { UserProvider } from '@/components/UserProvider'
 import { getUser } from '@/components/header/getUser'
 
-import '@navikt/ds-css/darkside'
 import './globals.css'
-
-import styles from './layout.module.css'
 
 export const metadata: Metadata = {
     title: 'Peisen',
@@ -27,13 +23,13 @@ export default async function RootLayout({
     const user = await getUser()
     return (
         <html lang="en">
-            <body className={clsx(styles.body)}>
+            <body>
                 <UserProvider user={user}>
                     <LoggerProvider>
                         <ThemeProvider>
                             <Header />
                             <Toaster position="bottom-center" />
-                            <main className={styles.main}>{children}</main>
+                            <main className="relative flex flex-col p-4">{children}</main>
                         </ThemeProvider>
                     </LoggerProvider>
                 </UserProvider>

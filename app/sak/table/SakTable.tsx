@@ -20,8 +20,6 @@ import { AddOppdragButton } from '@/app/kafka/table/AddOppdragButton.tsx'
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import { Message } from '@/app/kafka/types.ts'
 
-import styles from '@/app/sak/SakView.module.css'
-
 type Props = {
     messages: Message[]
     activeMessage?: Message | null
@@ -29,22 +27,27 @@ type Props = {
 
 export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
     return (
-        <Table className={styles.table} size="small">
+        <Table className="overflow-scroll" size="small">
             <TableBody>
                 {messages.map((it, i) => (
                     <TableExpandableRow
                         key={it.key + it.timestamp_ms + i}
-                        className={clsx(styles.row, activeMessage === it && styles.active)}
+                        className={clsx(
+                            'transition-[background]',
+                            activeMessage === it && 'bg-(--ax-bg-neutral-moderate-hoverA)'
+                        )}
                         content={<MessageTableRowContents message={it} />}
                     >
                         <TableDataCell>
                             <TopicNameTag message={it} />
                         </TableDataCell>
-                        <TableDataCell className={styles.cell}>
+                        <TableDataCell className="whitespace-nowrap">
                             {format(it.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}
                         </TableDataCell>
                         <TableDataCell>
-                            <div className={styles.messageKey}>{it.key}</div>
+                            <div className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">
+                                {it.key}
+                            </div>
                         </TableDataCell>
                         <TableDataCell>
                             {it.value && (
@@ -84,7 +87,7 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
 
 export const SakTableSkeleton = () => {
     return (
-        <Table className={styles.table} size="small">
+        <Table className="overflow-scroll" size="small">
             <TableBody>
                 {new Array(20).fill(null).map((_, i) => (
                     <TableExpandableRow key={i} content={undefined}>

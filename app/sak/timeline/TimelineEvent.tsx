@@ -5,8 +5,6 @@ import { Popover } from '@navikt/ds-react'
 import { PopoverContent } from '@navikt/ds-react/Popover'
 import { useTimeline } from './TimelineContext'
 
-import styles from './TimelineEvent.module.css'
-
 export type TimelineEventProps = {
     date: Date
     variant?: 'success' | 'warning' | 'info' | 'neutral' | 'danger'
@@ -47,7 +45,15 @@ export const TimelineEvent: React.FC<TimelineEventProps> = ({
 
     return (
         <button
-            className={clsx(styles.period, styles[variant], className)}
+            className={clsx(
+                'absolute h-full min-w-[1%] rounded-sm -translate-x-[50%] border',
+                variant === 'neutral' && 'border-(--ax-border-neutral) bg-(--ax-bg-neutral-moderate)',
+                variant === 'success' && 'border-(--ax-border-success) bg-(--ax-bg-success-moderate)',
+                variant === 'danger' && 'border-(--ax-border-danger) bg-(--ax-bg-danger-moderate)',
+                variant === 'warning' && 'border-(--ax-border-warning) bg-(--ax-bg-warning-moderate)',
+                variant === 'info' && 'border-(--ax-border-info) bg-(--ax-bg-info-moderate)',
+                className
+            )}
             style={{
                 left: `${startPositionPercentage}%`,
             }}

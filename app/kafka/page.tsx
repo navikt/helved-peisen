@@ -3,15 +3,13 @@ import { MessagesView } from '@/app/kafka/MessagesView.tsx'
 import { checkToken } from '@/lib/auth/accessToken'
 import { ensureValidApiToken } from '@/lib/auth/apiToken.ts'
 
-import styles from './page.module.css'
-
 export default async function KafkaOverview() {
     await checkToken()
     await ensureValidApiToken()
 
     return (
-        <section className={styles.page}>
-            <Filtere className={styles.filtere} />
+        <section className="flex flex-col p-4">
+            <Filtere className="mb-8" />
             <MessagesView />
         </section>
     )

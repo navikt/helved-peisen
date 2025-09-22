@@ -9,9 +9,6 @@ import { SakTable, SakTableSkeleton } from './table/SakTable'
 import { TimelineRowSkeleton } from './timeline/TimelineRow'
 import { TimelineSkeleton } from './timeline/Timeline'
 
-import fadeIn from '@/styles/fadeIn.module.css'
-import styles from './SakView.module.css'
-
 const fagsystem = (fagsystem: string) => {
     switch (fagsystem) {
         case 'TILLST':
@@ -101,7 +98,7 @@ export const SakView = () => {
                                         date={new Date(it.timestamp_ms)}
                                         variant="info"
                                         content={
-                                            <div className={styles.periodContent}>
+                                            <div className="grid grid-cols-[auto_auto] min-w-max gap-4 text-start">
                                                 <div>Key:</div>
                                                 <div>{it.key}</div>
                                                 <div>Timestamp:</div>
@@ -131,7 +128,12 @@ export const SakView = () => {
                         Skjul duplikater
                     </Switch>
                 </HStack>
-                <BoxNew borderRadius="large" background="neutral-soft" padding="4" className={styles.tableContainer}>
+                <BoxNew
+                    borderRadius="large"
+                    background="neutral-soft"
+                    padding="4"
+                    className="max-w-[100vw] flex overflow-x-auto scrollbar-gutter-stable"
+                >
                     <SakTable messages={messages} activeMessage={activeMessage} />
                 </BoxNew>
             </VStack>
@@ -141,7 +143,7 @@ export const SakView = () => {
 
 export const SakViewSkeleton = () => {
     return (
-        <VStack gap="space-32" className={fadeIn.animation}>
+        <VStack gap="space-32" className="animate-fade-in">
             <HStack gap="space-24">
                 <BoxNew padding="4" background="neutral-soft" borderRadius="large">
                     <VStack gap="space-12">
@@ -171,7 +173,12 @@ export const SakViewSkeleton = () => {
                     <Label>Hendelser</Label>
                     <Switch size="small">Skjul duplikater</Switch>
                 </HStack>
-                <BoxNew borderRadius="large" background="neutral-soft" padding="4" className={styles.tableContainer}>
+                <BoxNew
+                    borderRadius="large"
+                    background="neutral-soft"
+                    padding="4"
+                    className="max-w-[100vw] flex overflow-x-auto scrollbar-gutter-stable"
+                >
                     <SakTableSkeleton />
                 </BoxNew>
             </VStack>

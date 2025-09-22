@@ -5,14 +5,12 @@ import { Filtere } from './Filtere'
 import { SakProvider } from './SakProvider'
 import { SakView } from './SakView'
 
-import styles from './page.module.css'
-
 export default async function SakerView() {
     await checkToken()
     await ensureValidApiToken()
 
     return (
-        <section className={styles.page}>
+        <section className="flex-1 h-full max-h-full relative flex flex-col p-4">
             <SakProvider>
                 <Filtere />
                 <SakView />

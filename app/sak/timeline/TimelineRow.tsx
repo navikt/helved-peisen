@@ -1,9 +1,7 @@
 import { ReactElement } from 'react'
 
-import { TimelineEvent } from './TimelineEvent'
-
-import styles from './TimelineRow.module.css'
 import { Skeleton } from '@navikt/ds-react'
+import { TimelineEvent } from './TimelineEvent'
 
 export type TimelineRowProps = {
     label: string
@@ -14,8 +12,8 @@ export const TimelineRow: React.FC<TimelineRowProps> = ({ label, children }) => 
     return (
         <>
             <div>{label}</div>
-            <div className={styles.periodsContainer}>
-                <div className={styles.periods}>{children}</div>
+            <div className="bg-(--ax-bg-neutral-moderate) py-0 px-6">
+                <div className="relative min-h-6 w-full">{children}</div>
             </div>
         </>
     )
@@ -27,8 +25,8 @@ export const TimelineRowSkeleton = () => {
             <div>
                 <Skeleton />
             </div>
-            <div className={styles.periodsContainer}>
-                <div className={styles.periods}></div>
+            <div className="bg-(--ax-bg-neutral-moderate) py-0 px-6">
+                <div className="relative min-h-6 w-full"></div>
             </div>
         </>
     )

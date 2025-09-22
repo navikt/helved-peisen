@@ -10,8 +10,6 @@ import { useSak } from '@/app/sak/SakProvider.tsx'
 import { useSetSearchParams } from '@/hooks/useSetSearchParams'
 import { fetchSak } from './actions'
 
-import styles from './Filtere.module.css'
-
 type FormStateValue = { value: string; error: undefined }
 type FormStateError = { value: undefined; error: string }
 type FormStateInput = FormStateValue | FormStateError
@@ -87,7 +85,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
             setIsLoading(false)
             return defaultState
         },
-        [setSak, setSearchParams]
+        [setIsLoading, setSak, setSearchParams]
     )
 
     useEffect(() => {
@@ -107,9 +105,9 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
 
     return (
         <div {...rest}>
-            <form className={styles.form} action={action}>
+            <form className="flex gap-8 mb-8" action={action}>
                 <TextField
-                    className={styles.input}
+                    className="h-max"
                     label="Sak-ID"
                     name="sakId"
                     size="small"
@@ -119,7 +117,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     error={state.sakId?.error}
                 />
                 <Select
-                    className={styles.input}
+                    className="h-max"
                     label="Fagsystem"
                     name="fagsystem"
                     size="small"
@@ -136,7 +134,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     <option value="TILTPENG">Tiltakspenger</option>
                     <option value="TILLST">Tilleggsstønader</option>
                 </Select>
-                <FormButton className={styles.button} size="small">
+                <FormButton className="h-max mt-7" size="small">
                     Søk
                 </FormButton>
             </form>

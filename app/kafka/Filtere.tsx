@@ -9,8 +9,6 @@ import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox'
 import { UrlSearchParamInput } from '@/components/UrlSearchParamInput.tsx'
 import { DateRangeSelect } from '@/app/kafka/DateRangeSelect.tsx'
 
-import styles from './Filtere.module.css'
-
 const useDefaultTidsrom = () => {
     const router = useRouter()
     const searchParams = useSearchParams()
@@ -34,13 +32,8 @@ const useDefaultTidsrom = () => {
     }, [searchParams, router])
 }
 
-const shouldUpdate = (
-    searchParams: URLSearchParams,
-    state: Record<string, string | null>
-): boolean =>
-    Object.entries(state).some(
-        ([key, value]) => searchParams.get(key) !== value
-    )
+const shouldUpdate = (searchParams: URLSearchParams, state: Record<string, string | null>): boolean =>
+    Object.entries(state).some(([key, value]) => searchParams.get(key) !== value)
 
 type Props = React.HTMLAttributes<HTMLDivElement>
 
@@ -74,16 +67,14 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
             if (search.size === 0) {
                 router.push(pathname)
             } else {
-                router.push(
-                    pathname + '?' + decodeURIComponent(search.toString())
-                )
+                router.push(pathname + '?' + decodeURIComponent(search.toString()))
             }
         }
     }, [state, router, pathname, searchParams])
 
     return (
-        <div className={clsx(styles.container, className)} {...rest}>
-            <div className={styles.filters}>
+        <div className={clsx('flex gap-4 justify-between flex-nowrap', className)} {...rest}>
+            <div className="flex flex-wrap gap-x-8 gap-y-5">
                 <UrlSearchParamComboBox
                     label="Topics"
                     searchParamName="topics"
@@ -107,14 +98,9 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                         ] as const
                     }
                     isMultiSelect
-                    className={styles.topicsFilter}
                     size="small"
                 />
-                <UrlSearchParamInput
-                    label="Key"
-                    searchParamName="key"
-                    size="small"
-                />
+                <UrlSearchParamInput label="Key" searchParamName="key" size="small" />
                 <UrlSearchParamComboBox
                     label="Søk i value"
                     searchParamName="value"

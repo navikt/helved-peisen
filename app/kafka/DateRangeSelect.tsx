@@ -10,16 +10,7 @@ import { sub } from 'date-fns/sub'
 import { differenceInSeconds } from 'date-fns'
 import { subDays } from 'date-fns/subDays'
 import { useSearchParams } from 'next/navigation'
-import {
-    BodyShort,
-    Button,
-    Dropdown,
-    HStack,
-    Select,
-    Tabs,
-    TextField,
-    VStack,
-} from '@navikt/ds-react'
+import { BodyShort, Button, Dropdown, HStack, Select, Tabs, TextField, VStack } from '@navikt/ds-react'
 import { DropdownMenu } from '@navikt/ds-react/Dropdown'
 import { TabsList, TabsPanel, TabsTab } from '@navikt/ds-react/Tabs'
 import { ArrowRightIcon, CalendarIcon } from '@navikt/aksel-icons'
@@ -30,17 +21,13 @@ import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
 import { useElementHeight } from '@/hooks/useElementHeight.ts'
 import { parseSearchParamDate } from '@/lib/date.ts'
 
-import styles from './DateRangeSelect.module.css'
-
 const times = new Array(24)
     .fill(0)
     .map((it, i) => it + i)
     .flatMap((it) => [`${it}:00`, `${it}:30`])
 
 const capitalize = (value: string) => {
-    return value.length > 1
-        ? value[0].toUpperCase() + value.slice(1)
-        : value.toUpperCase()
+    return value.length > 1 ? value[0].toUpperCase() + value.slice(1) : value.toUpperCase()
 }
 
 const parseDate = (localized: string): Date => {
@@ -52,10 +39,7 @@ type AbsoluteTimeSelectProps = {
     onSelectTime: (date: Date) => void
 }
 
-const AbsoluteTimeSelect: React.FC<AbsoluteTimeSelectProps> = ({
-    time,
-    onSelectTime,
-}) => {
+const AbsoluteTimeSelect: React.FC<AbsoluteTimeSelectProps> = ({ time, onSelectTime }) => {
     const [datePickerRef, datePickerHeight] = useElementHeight()
 
     const [hours, setHours] = useState(format(time, 'HH:mm'))
@@ -113,6 +97,7 @@ const AbsoluteTimeSelect: React.FC<AbsoluteTimeSelectProps> = ({
     return (
         <>
             <CompactTextField
+                containerClass="mt-4"
                 label="Valgt tidspunkt"
                 value={value}
                 onChange={onChangeValue}
@@ -120,22 +105,24 @@ const AbsoluteTimeSelect: React.FC<AbsoluteTimeSelectProps> = ({
             />
             <HStack
                 style={{ '--timelist-height': datePickerHeight }}
-                className={styles.pickerContainer}
+                className="relative justify-between gap-5 flex-nowrap"
             >
                 <DatePickerStandalone
                     ref={datePickerRef}
-                    className={styles.datePicker}
+                    className="[&>div]:p-0"
                     selected={date}
                     onSelect={onSelectDate}
                 />
-                <VStack className={styles.timeList}>
+                <VStack className="h-(--timelist-height) overflow-y-auto gap-1">
                     {times.map((it) => (
                         <Button
                             key={it}
                             variant="tertiary"
                             size="small"
                             onClick={() => onSelectHours(it)}
-                            className={clsx(hours === it && styles.active)}
+                            className={clsx(
+                                hours === it && 'text-(--ax-text-accent-contrast) bg-(--ax-bg-accent-strong-pressed)'
+                            )}
                         >
                             {it}
                         </Button>
@@ -154,26 +141,15 @@ type RelativeTimeSelectProps = {
     onSelectTime: (date: Date) => void
 }
 
-const RelativeTimeSelect: React.FC<RelativeTimeSelectProps> = ({
-    time,
-    onSelectTime,
-}) => {
+const RelativeTimeSelect: React.FC<RelativeTimeSelectProps> = ({ time, onSelectTime }) => {
     const [defaultDuration, defaultUnit] = (
-        time
-            ? formatDistanceStrict(time, new Date())
-            : formatDistanceStrict(subDays(new Date(), 30), new Date())
+        time ? formatDistanceStrict(time, new Date()) : formatDistanceStrict(subDays(new Date(), 30), new Date())
     ).split(' ')
 
     const [duration, setDuration] = useState(+defaultDuration)
-    const [unit, setUnit] = useState(
-        defaultUnit[defaultUnit.length - 1] === 's'
-            ? defaultUnit
-            : defaultUnit + 's'
-    )
+    const [unit, setUnit] = useState(defaultUnit[defaultUnit.length - 1] === 's' ? defaultUnit : defaultUnit + 's')
 
-    const [value, setValue] = useState(
-        sub(new Date(), { [unit]: duration }).toLocaleString('nb-NO')
-    )
+    const [value, setValue] = useState(sub(new Date(), { [unit]: duration }).toLocaleString('nb-NO'))
     const [error, setError] = useState<string | null>()
 
     const onChangeDuration = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -198,9 +174,7 @@ const RelativeTimeSelect: React.FC<RelativeTimeSelectProps> = ({
             return
         }
 
-        const [duration, unit] = formatDistanceStrict(time, new Date()).split(
-            ' '
-        )
+        const [duration, unit] = formatDistanceStrict(time, new Date()).split(' ')
         setError(null)
         setUnit(unit)
         setDuration(+duration)
@@ -219,21 +193,9 @@ const RelativeTimeSelect: React.FC<RelativeTimeSelectProps> = ({
 
     return (
         <>
-            <div className={styles.row}>
-                <TextField
-                    className={styles.textField}
-                    label=""
-                    value={duration}
-                    onChange={onChangeDuration}
-                    size="small"
-                />
-                <Select
-                    className={styles.select}
-                    label=""
-                    size="small"
-                    value={unit}
-                    onChange={onChangeUnit}
-                >
+            <div className="flex gap-2 w-full mt-4">
+                <TextField className="w-full" label="" value={duration} onChange={onChangeDuration} size="small" />
+                <Select className="w-full" label="" size="small" value={unit} onChange={onChangeUnit}>
                     <option value="minutes">Minutter siden</option>
                     <option value="hours">Timer siden</option>
                     <option value="days">Dager siden</option>
@@ -246,7 +208,7 @@ const RelativeTimeSelect: React.FC<RelativeTimeSelectProps> = ({
                 label="Startdato"
                 value={value}
                 onChange={onChangeValue}
-                containerClass={styles.textField}
+                containerClass="w-full"
                 error={error}
             />
             <Button onClick={onClickUpdate} size="small">
@@ -267,9 +229,9 @@ const NowTimeSelect: React.FC<NowTimeSelectProps> = ({ onSelectTime }) => {
 
     return (
         <>
-            <BodyShort>
-                Å sette tiden til &quot;Nå&quot; betyr at tiden vil oppdatere
-                seg ved hver refresh til å være tiden refreshen ble foretatt.
+            <BodyShort className="mt-4">
+                Å sette tiden til &quot;Nå&quot; betyr at tiden vil oppdatere seg ved hver refresh til å være tiden
+                refreshen ble foretatt.
             </BodyShort>
             <Button size="small" onClick={setToNow}>
                 Sett tiden til &quot;Nå&quot;
@@ -278,10 +240,7 @@ const NowTimeSelect: React.FC<NowTimeSelectProps> = ({ onSelectTime }) => {
     )
 }
 
-const formatTimeLabelForMode = (
-    time: Date,
-    mode: 'absolute' | 'relative' | 'now'
-) => {
+const formatTimeLabelForMode = (time: Date, mode: 'absolute' | 'relative' | 'now') => {
     switch (mode) {
         case 'absolute':
             return time.toLocaleString()
@@ -294,19 +253,12 @@ const formatTimeLabelForMode = (
     }
 }
 
-type DateSelectDropdownProps = Omit<
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    'children'
-> & {
+type DateSelectDropdownProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
     time: Date
     onSelectTime: (date: string) => void
 }
 
-const DateSelectDropdown: React.FC<DateSelectDropdownProps> = ({
-    time,
-    onSelectTime,
-    ...rest
-}) => {
+const DateSelectDropdown: React.FC<DateSelectDropdownProps> = ({ time, onSelectTime, ...rest }) => {
     const [mode, setMode] = useState<'absolute' | 'relative'>('relative')
     const [label, setLabel] = useState(formatTimeLabelForMode(time, mode))
 
@@ -337,42 +289,20 @@ const DateSelectDropdown: React.FC<DateSelectDropdownProps> = ({
             <Button as={Dropdown.Toggle} {...rest}>
                 {capitalize(label)}
             </Button>
-            <DropdownMenu placement="bottom" className={styles.dropdownMenu}>
-                <Tabs
-                    defaultValue={label === 'Nå' ? 'now' : 'relative'}
-                    size="small"
-                    fill
-                >
+            <DropdownMenu placement="bottom" className="w-[500px]">
+                <Tabs defaultValue={label === 'Nå' ? 'now' : 'relative'} size="small" fill>
                     <TabsList>
-                        <TabsTab
-                            value="absolute"
-                            label="Absolutt"
-                            data-testid="date-range-absolute-tab"
-                        />
-                        <TabsTab
-                            value="relative"
-                            label="Relativ"
-                            data-testid="date-range-relative-tab"
-                        />
-                        <TabsTab
-                            value="now"
-                            label="Nå"
-                            data-testid="date-range-now-tab"
-                        />
+                        <TabsTab value="absolute" label="Absolutt" data-testid="date-range-absolute-tab" />
+                        <TabsTab value="relative" label="Relativ" data-testid="date-range-relative-tab" />
+                        <TabsTab value="now" label="Nå" data-testid="date-range-now-tab" />
                     </TabsList>
-                    <TabsPanel className={styles.tabsPanel} value="absolute">
-                        <AbsoluteTimeSelect
-                            time={time}
-                            onSelectTime={onSetAbsoluteTime}
-                        />
+                    <TabsPanel className="flex flex-col gap-4" value="absolute">
+                        <AbsoluteTimeSelect time={time} onSelectTime={onSetAbsoluteTime} />
                     </TabsPanel>
-                    <TabsPanel className={styles.tabsPanel} value="relative">
-                        <RelativeTimeSelect
-                            time={time}
-                            onSelectTime={onSetRelativeTime}
-                        />
+                    <TabsPanel className="flex flex-col gap-4" value="relative">
+                        <RelativeTimeSelect time={time} onSelectTime={onSetRelativeTime} />
                     </TabsPanel>
-                    <TabsPanel className={styles.tabsPanel} value="now">
+                    <TabsPanel className="flex flex-col gap-4" value="now">
                         <NowTimeSelect onSelectTime={onSetNowTime} />
                     </TabsPanel>
                 </Tabs>
@@ -391,43 +321,36 @@ export const DateRangeSelect = () => {
         const daysToSubtract = isMonday ? 3 : 1
 
         return {
-            fom:
-                parseSearchParamDate(searchParams, 'fom') ??
-                subDays(today, daysToSubtract).toISOString(),
-            tom:
-                parseSearchParamDate(searchParams, 'tom') ??
-                today.toISOString(),
+            fom: parseSearchParamDate(searchParams, 'fom') ?? subDays(today, daysToSubtract).toISOString(),
+            tom: parseSearchParamDate(searchParams, 'tom') ?? today.toISOString(),
         }
     }, [searchParams])
 
-    const updateFom = useCallback(
-        (value: string) => setSearchParams({ fom: value }),
-        [setSearchParams]
-    )
+    const updateFom = useCallback((value: string) => setSearchParams({ fom: value }), [setSearchParams])
 
-    const updateTom = useCallback(
-        (value: string) => setSearchParams({ tom: value }),
-        [setSearchParams]
-    )
+    const updateTom = useCallback((value: string) => setSearchParams({ tom: value }), [setSearchParams])
 
     return (
-        <div className={styles.container}>
-            <div className={styles.label}>Tidsrom</div>
-            <HStack className={styles.buttons} gap="space-16">
+        <div className="flex flex-col gap-2">
+            <div className="text-base/(--ax-font-line-height-medium) font-semibold">Tidsrom</div>
+            <HStack
+                className="relative max-w-max h-[32px] flex items-center gap-0 bg-(--ax-bg-input) rounded-lg border border-(--ax-border-neutral)"
+                gap="space-16"
+            >
                 <DateSelectDropdown
                     data-testid="date-range-fom"
                     time={new Date(state.fom)}
                     onSelectTime={updateFom}
-                    className={styles.dateSelectButton}
+                    className="border-none bg-transparent text-inherit h-full py-0 px-3"
                 />
                 <ArrowRightIcon />
                 <DateSelectDropdown
                     data-testid="date-range-tom"
                     time={new Date(state.tom)}
                     onSelectTime={updateTom}
-                    className={styles.dateSelectButton}
+                    className="border-none bg-transparent text-inherit h-full py-0 px-3"
                 />
-                <div className={clsx(styles.textFieldButton)}>
+                <div className="h-full py-0 px-2 flex items-center rounded-l-none">
                     <CalendarIcon fontSize={24} />
                 </div>
             </HStack>

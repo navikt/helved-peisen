@@ -8,8 +8,6 @@ import { HStack, InternalHeader, Link, Spacer } from '@navikt/ds-react'
 import { InternalHeaderTitle } from '@navikt/ds-react/InternalHeader'
 import { UserMenu } from '@/components/header/UserMenu.tsx'
 
-import styles from './Header.module.css'
-
 import logo from '@/public/logo.png'
 
 const top = '#FF3434'
@@ -110,9 +108,9 @@ console.log(
 export function Header() {
     const pathname = usePathname()
     return (
-        <InternalHeader className={styles.header}>
+        <InternalHeader>
             <InternalHeaderTitle as="h1">
-                <span className={styles.title}>
+                <span className="flex gap-2">
                     <Image src={logo.src} alt="" width={24} height={24} />
                     <span>Peisen</span>
                 </span>
@@ -120,8 +118,8 @@ export function Header() {
             <HStack>
                 <Link
                     className={clsx(
-                        styles.tab,
-                        pathname.startsWith('/kafka') && styles.active
+                        'component px-4 py-0 no-underline text-text-on-neutral',
+                        pathname.startsWith('/kafka') && 'shadow-tab-shadow'
                     )}
                     href="/kafka"
                 >
@@ -129,8 +127,8 @@ export function Header() {
                 </Link>
                 <Link
                     className={clsx(
-                        styles.tab,
-                        pathname.startsWith('/sak') && styles.active
+                        'component px-4 py-0 no-underline text-text-on-neutral',
+                        pathname.startsWith('/sak') && 'shadow-tab-shadow'
                     )}
                     href="/sak"
                 >
