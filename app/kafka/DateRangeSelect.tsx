@@ -334,7 +334,7 @@ export const DateRangeSelect = () => {
         <div className="flex flex-col gap-2">
             <div className="text-base/(--ax-font-line-height-medium) font-semibold">Tidsrom</div>
             <HStack
-                className="relative max-w-max h-[32px] flex items-center gap-0 bg-(--ax-bg-input) rounded-lg border border-(--ax-border-neutral)"
+                className="relative max-w-max h-[32px] flex items-center gap-0 bg-(--ax-bg-input) rounded-lg border border-(--ax-border-neutral) hover:border-(--ax-border-accent)"
                 gap="space-16"
             >
                 <DateSelectDropdown
