@@ -76,6 +76,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
         <div className={clsx('flex gap-4 justify-between flex-nowrap', className)} {...rest}>
             <div className="flex flex-wrap gap-x-8 gap-y-5">
                 <UrlSearchParamComboBox
+                    className="min-w-[15rem]"
                     label="Topics"
                     searchParamName="topics"
                     initialOptions={
