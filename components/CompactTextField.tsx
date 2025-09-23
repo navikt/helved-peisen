@@ -2,31 +2,26 @@ import clsx from 'clsx'
 import React from 'react'
 import { ErrorMessage, TextField, TextFieldProps } from '@navikt/ds-react'
 
-import styles from './CompactTextField.module.css'
-
 type Props = Omit<TextFieldProps, 'size'> & {
     containerClass?: string
 }
 
-export const CompactTextField: React.FC<Props> = ({
-    className,
-    containerClass,
-    label,
-    error,
-    ...props
-}) => {
+export const CompactTextField: React.FC<Props> = ({ className, containerClass, label, error, ...props }) => {
     const id = new Date().getDate().toString()
     return (
-        <div className={clsx(styles.container, containerClass)}>
-            <div className={clsx(styles.inputContainer)}>
+        <div className={clsx('flex flex-col gap-2', containerClass)}>
+            <div className="flex items-center relative">
                 <label
-                    className={clsx(styles.label, error && styles.error)}
+                    className={clsx(
+                        'h-[2rem] bg-(--ax-bg-sunken) flex items-center py-0 px-2 rounded-l-lg border-(--ax-border-neutral) border-r-0 text-sm whitespace-nowrap',
+                        error && 'border-2 border-(--ax-border-danger)'
+                    )}
                     htmlFor={id}
                 >
                     {label}
                 </label>
                 <TextField
-                    className={clsx(styles.textField, error && styles.error)}
+                    className={clsx('w-full [&_input]:rounded-l-none', error && 'border-2 border-(--ax-border-danger)')}
                     id={id}
                     label={label}
                     hideLabel

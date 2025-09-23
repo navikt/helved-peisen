@@ -17,8 +17,6 @@ import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
 import { MessageValue } from './MessageValue'
 import { SakLink } from './SakLink'
 
-import styles from './MessageTableRow.module.css'
-
 type Props = {
     message: Message
 }
@@ -46,7 +44,11 @@ const RowContents: React.FC<Props> = ({ message }) => {
                 <TopicNameTag message={message} />
             </TableDataCell>
             <TableDataCell>
-                <UrlSearchParamLink searchParamName="key" searchParamValue={message.key} className={styles.keyLink}>
+                <UrlSearchParamLink
+                    searchParamName="key"
+                    searchParamValue={message.key}
+                    className="max-w-[380px] text-ellipsis block whitespace-nowrap overflow-hidden"
+                >
                     {message.key}
                 </UrlSearchParamLink>
             </TableDataCell>

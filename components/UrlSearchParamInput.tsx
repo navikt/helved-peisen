@@ -8,17 +8,11 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useUpdateSearchParams } from '@/hooks/useUpdateSearchParams.tsx'
 import { XMarkIcon } from '@navikt/aksel-icons'
 
-import styles from './UrlSearchParamInput.module.css'
-
 type Props = Omit<TextFieldProps, 'onSearchClick'> & {
     searchParamName: string
 }
 
-export function UrlSearchParamInput({
-    searchParamName,
-    className,
-    ...rest
-}: Props) {
+export function UrlSearchParamInput({ searchParamName, className, ...rest }: Props) {
     const containerRef = useRef<HTMLDivElement>(null)
     const searchParams = useSearchParams()
     const defaultValue: string = useMemo(
@@ -52,9 +46,9 @@ export function UrlSearchParamInput({
     }
 
     return (
-        <div className={styles.container} ref={containerRef}>
+        <div className="relative" ref={containerRef}>
             <TextField
-                className={clsx(className, styles.textField)}
+                className={clsx(className, '[&>input]:pr-8')}
                 value={value}
                 onChange={onChange}
                 onKeyDown={onKeyDown}
@@ -64,7 +58,7 @@ export function UrlSearchParamInput({
             {value.length > 0 && (
                 <Button
                     variant="primary"
-                    className={styles.clearButton}
+                    className="absolute bottom-0 right-0 h-8 w-8 p-0 rounded-l-none"
                     type="button"
                     onClick={clearValue}
                 >

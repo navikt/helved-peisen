@@ -3,8 +3,6 @@ import { Link } from '@navikt/ds-react'
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 import { parsedXML } from '@/lib/xml'
 
-import styles from './SakLink.module.css'
-
 const tilFagsystem = (kode: string) => {
     switch (kode) {
         case 'TILTAKSPENGER':
@@ -96,7 +94,7 @@ export const SakLink: React.FC<Props> = ({ message }) => {
 
     return (
         <ActionMenuItem>
-            <Link className={styles.link} href={url}>
+            <Link className="no-underline text-inherit w-full" href={url}>
                 Gå til sak
             </Link>
         </ActionMenuItem>

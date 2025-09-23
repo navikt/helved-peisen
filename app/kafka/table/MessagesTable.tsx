@@ -1,6 +1,5 @@
 'use client'
 
-import clsx from 'clsx'
 import { useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { HStack, Pagination, Skeleton, SortState as AkselSortState, Table, TextField } from '@navikt/ds-react'
@@ -15,9 +14,6 @@ import {
 
 import type { Message } from '@/app/kafka/types.ts'
 import { MessageTableRow } from '@/app/kafka/table/MessageTableRow.tsx'
-
-import fadeIn from '@/styles/fadeIn.module.css'
-import styles from './MessagesTable.module.css'
 import MessageFilter from '@/components/MessageFilter.tsx'
 
 const getNextDirection = (direction: SortState['direction']): SortState['direction'] => {
@@ -120,12 +116,12 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
 
     return (
         <>
-            <div className={clsx(styles.tableContainer, fadeIn.animation)}>
+            <div className="animate-fade-in max-w-[100vw] overflow-y-auto scrollbar-gutter-stable">
                 <HStack align="center" justify="end">
                     <MessageFilter filters={filters} onFiltersChange={handleFilterChange} />
                 </HStack>
                 <Table
-                    className={styles.table}
+                    className="h-max overflow-scroll"
                     sort={sortState}
                     onSortChange={updateSortState as (key: string) => void}
                     size="small"
@@ -144,19 +140,24 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                                 sortKey="timestamp_ms"
                                 sortable
                                 textSize="small"
-                                className={styles.header}
+                                className="[&_button]:text-(--ax-text-accent-subtle)"
                             >
                                 Timestamp
                             </TableColumnHeader>
                             <TableHeaderCell textSize="small">Partition</TableHeaderCell>
-                            <TableColumnHeader sortKey="offset" sortable textSize="small" className={styles.header}>
+                            <TableColumnHeader
+                                sortKey="offset"
+                                sortable
+                                textSize="small"
+                                className="[&_button]:text-(--ax-text-accent-subtle)"
+                            >
                                 Offset
                             </TableColumnHeader>
                             <TableDataCell></TableDataCell>
                         </TableRow>
                     </TableHeader>
                 </Table>
-                <div className={styles.pagination}>
+                <div className="flex items-center justify-between gap-8 py-4 px-0">
                     <HStack align="center" gap="space-8">
                         <Pagination
                             page={page}
@@ -184,8 +185,8 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
 
 export const MessagesTableSkeleton = () => {
     return (
-        <div className={styles.container}>
-            <Table className={styles.table} size="small">
+        <div className="max-w-[100vw] overflow-y-auto scrollbar-gutter-stable">
+            <Table className="h-max overflow-scroll" size="small">
                 <TableBody>
                     {Array(20)
                         .fill(null)

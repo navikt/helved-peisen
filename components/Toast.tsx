@@ -2,9 +2,6 @@ import toast from 'react-hot-toast'
 import { Alert } from '@navikt/ds-react'
 import { clsx } from 'clsx'
 
-import styles from './Toast.module.css'
-import fadeIn from '@/styles/fadeIn.module.css'
-
 export const showToast = (
     message: string,
     options: { variant: 'info' | 'success' | 'error' | 'warning' } = {
@@ -12,13 +9,7 @@ export const showToast = (
     }
 ) => {
     return toast.custom((t) => (
-        <div
-            className={clsx(
-                fadeIn.animation,
-                styles.toast,
-                t.visible && styles.visible
-            )}
-        >
+        <div className={clsx('animate-fade-in opacity-0 transition-opacity', t.visible && 'opacity-100')}>
             <Alert size="small" variant={options.variant}>
                 {message}
             </Alert>

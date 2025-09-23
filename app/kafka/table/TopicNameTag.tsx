@@ -9,7 +9,25 @@ import type { Message, StatusMessageValue, UtbetalingMessageValue } from '@/app/
 import { parsedXML } from '@/lib/xml.ts'
 import { variant } from '@/lib/message.ts'
 
-import styles from './TopicNameTag.module.css'
+type BadgeProps = {
+    variant?: 'success' | 'danger' | 'warning' | 'info' | 'neutral'
+    children: React.ReactNode
+}
+
+const Badge: React.FC<BadgeProps> = ({ variant = 'neutral', children }) => (
+    <div
+        className={clsx(
+            'absolute right-0 top-0 text-xs pt-[1px] px-1 pb-0 border rounded-lg translate-x-[50%] -translate-y-[50%] leading-none',
+            variant === 'neutral' && 'bg-(--ax-bg-neutral-soft) border-(--ax-border-neutral) text-(--ax-text-neutral)',
+            variant === 'success' &&
+                'bg-(--ax-bg-success-moderate) border-(--ax-border-success) text-(--ax-text-success)',
+            variant === 'danger' && 'bg-(--ax-bg-danger-moderate) border-(--ax-border-danger) text-(--ax-text-danger)',
+            variant === 'info' && 'bg-(--ax-bg-info-moderate) border-(--ax-border-info) text-(--ax-text-info)'
+        )}
+    >
+        {children}
+    </div>
+)
 
 type Props = {
     message: Message
@@ -27,7 +45,7 @@ const AvstemmingStatusBadge: React.FC<Props> = ({ message }) => {
         return null
     }
 
-    return <div className={clsx(styles.badge, content === 'DATA' && styles.success)}>{content}</div>
+    return <Badge variant={content === 'DATA' ? 'success' : 'neutral'}>{content}</Badge>
 }
 
 const OppdragStatusBadge: React.FC<Props> = ({ message }) => {
@@ -43,7 +61,7 @@ const OppdragStatusBadge: React.FC<Props> = ({ message }) => {
     }
 
     return (
-        <div className={clsx(styles.badge, content === '00' ? styles.success : styles.error)}>
+        <Badge variant={content === '00' ? 'success' : 'danger'}>
             {(() => {
                 switch (content) {
                     case '00':
@@ -52,7 +70,7 @@ const OppdragStatusBadge: React.FC<Props> = ({ message }) => {
                         return 'FEILET'
                 }
             })()}
-        </div>
+        </Badge>
     )
 }
 
@@ -70,15 +88,9 @@ const StatusStatusBadge: React.FC<Props> = ({ message }) => {
     }
 
     return (
-        <div
-            className={clsx(
-                styles.badge,
-                value.status === 'OK' && styles.success,
-                value.status === 'FEILET' && styles.error
-            )}
-        >
+        <Badge variant={value.status === 'OK' ? 'success' : value.status === 'FEILET' ? 'danger' : 'neutral'}>
             {value.status}
-        </div>
+        </Badge>
     )
 }
 
@@ -99,7 +111,7 @@ const UtbetalingStatusBadge: React.FC<Props> = ({ message }) => {
         return null
     }
 
-    return <div className={clsx(styles.badge)}>DRYRUN</div>
+    return <Badge>DRYRUN</Badge>
 }
 
 const StatusBadge: React.FC<Props> = ({ message }) => {
@@ -132,7 +144,7 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
 
 export const TopicNameTag: React.FC<Props> = ({ message }) => {
     return (
-        <Tag variant={variant(message)} size="small" className={styles.tag}>
+        <Tag variant={variant(message)} size="small" className="relative whitespace-nowrap">
             {message.topic_name}
             <StatusBadge message={message} />
         </Tag>

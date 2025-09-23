@@ -2,8 +2,6 @@ import React from 'react'
 import { CopyButton } from '@navikt/ds-react'
 import clsx from 'clsx'
 
-import styles from './JsonView.module.css'
-
 type IndentProps = {
     indent: number
     indentLength?: number
@@ -28,7 +26,7 @@ const JsonObjectView: React.FC<JsonObjectViewProps> = ({ json, indent }) => {
             {Object.entries(json).map(([key, value], i, array) => (
                 <span key={key}>
                     <Indent indent={indent} />
-                    <span className={styles.key}>&#34;{key}&#34;</span>:{' '}
+                    <span className="text-(--ax-warning-1000)">&#34;{key}&#34;</span>:{' '}
                     <JsonTypeView json={value} indent={indent + 1} />
                     {i < array.length - 1 && ',\n'}
                 </span>
@@ -72,7 +70,7 @@ const JsonTypeView: React.FC<JsonTypeViewProps> = ({ json, indent }) => {
     switch (typeof json) {
         case 'object': {
             if (json === null) {
-                return <span className={styles.nullish}>null</span>
+                return <span className="text-(--ax-brand-blue-1000)">null</span>
             }
             if (Array.isArray(json)) {
                 return <JsonArrayView json={json} indent={indent - 1} />
@@ -80,20 +78,16 @@ const JsonTypeView: React.FC<JsonTypeViewProps> = ({ json, indent }) => {
             return <JsonObjectView json={json} indent={indent + 1} />
         }
         case 'string': {
-            return <span className={styles.string}>&#34;{json}&#34;</span>
+            return <span className="text-(--ax-success-900)">&#34;{json}&#34;</span>
         }
         case 'number': {
-            return <span className={styles.number}>{json}</span>
+            return <span className="text-(--ax-meta-purple-1000)">{json}</span>
         }
         case 'undefined': {
-            return <span className={styles.nullish}>undefined</span>
+            return <span className="text-(--ax-brand-blue-1000)">undefined</span>
         }
         case 'boolean': {
-            return (
-                <span className={styles.boolean}>
-                    {json ? 'true' : 'false'}
-                </span>
-            )
+            return <span className="text-(--ax-brand-magenta-1000)">{json ? 'true' : 'false'}</span>
         }
     }
 
@@ -104,15 +98,11 @@ type JsonViewProps = React.HTMLAttributes<HTMLPreElement> & {
     json: ReturnType<typeof JSON.parse>
 }
 
-export const JsonView: React.FC<JsonViewProps> = ({
-    json,
-    className,
-    ...rest
-}) => {
+export const JsonView: React.FC<JsonViewProps> = ({ json, className, ...rest }) => {
     return (
-        <pre className={clsx(styles.container, className)} {...rest}>
+        <pre className={clsx('relative bg-(--ax-bg-sunken) p-4 text-sm text-(--ax-warning-1000)', className)} {...rest}>
             <JsonTypeView json={json} indent={0} />
-            <div className={styles.copyButtonContainer}>
+            <div className="absolute top-4 right-4">
                 <CopyButton size="xsmall" copyText={JSON.stringify(json)} />
             </div>
         </pre>

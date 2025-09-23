@@ -2,7 +2,6 @@
 
 import React, { useMemo } from 'react'
 
-import styles from './XMLView.module.css'
 import { Alert, CopyButton } from '@navikt/ds-react'
 
 const useParsedXML = (data: string): string | XMLDocument => {
@@ -41,7 +40,7 @@ const LeafNodeView: React.FC<NodeViewProps> = ({ node, indent }) => (
             </React.Fragment>
         ))}
         {'>'}
-        <span className={styles.value}>{node.firstChild?.nodeValue}</span>
+        <span className="text-(--ax-text-neutral)">{node.firstChild?.nodeValue}</span>
         {'</'}
         {node.nodeName}
         {'>'}
@@ -62,11 +61,9 @@ const ParentNodeView: React.FC<NodeViewProps> = ({ node, indent }) => {
             {Array.from(node.attributes).map((attribute, i) => (
                 <React.Fragment key={i}>
                     {' '}
-                    <span className={styles.attributeName}>
-                        {attribute.nodeName}
-                    </span>
-                    <span className={styles.attributeEqualsSign}>=</span>
-                    <span className={styles.attributeValue}>
+                    <span className="text-(--ax-warning-900)">{attribute.nodeName}</span>
+                    <span className="text-(--ax-text-neutral)">=</span>
+                    <span className="text-(--ax-success-900)">
                         &#34;
                         {attribute.nodeValue}&#34;
                     </span>
@@ -90,11 +87,7 @@ type Props = {
 }
 
 const MetaTag: React.FC<Props> = ({ data }) => {
-    const [openTag, content, closeTag] = [
-        data.slice(0, 6),
-        data.slice(6, -2),
-        data.slice(-2),
-    ]
+    const [openTag, content, closeTag] = [data.slice(0, 6), data.slice(6, -2), data.slice(-2)]
 
     return (
         <>
@@ -103,9 +96,9 @@ const MetaTag: React.FC<Props> = ({ data }) => {
                 const [name, value] = attribute.split('=')
                 return (
                     <React.Fragment key={i}>
-                        <span className={styles.attributeName}>{name}</span>
-                        <span className={styles.attributeEqualsSign}>=</span>
-                        <span className={styles.attributeValue}>{value}</span>
+                        <span className="text-(--ax-warning-900)">{name}</span>
+                        <span className="text-(--ax-text-neutral)">=</span>
+                        <span className="text-(--ax-success-900)">{value}</span>
                         {i === array.length - 1 ? '' : ' '}
                     </React.Fragment>
                 )
@@ -121,22 +114,20 @@ export const XMLView: React.FC<Props> = ({ data }) => {
     if (typeof parsedData === 'string') {
         return (
             <>
-                <Alert variant="warning">
-                    Klarte ikke parse XML. Viser rå melding nedenfor.
-                </Alert>
-                <pre className={styles.container}>{parsedData}</pre>
+                <Alert variant="warning">Klarte ikke parse XML. Viser rå melding nedenfor.</Alert>
+                <pre className="relative bg-(--ax-bg-sunken) p-4 text-sm text-(--ax-warning-1000)">{parsedData}</pre>
             </>
         )
     }
 
     return (
-        <pre className={styles.container}>
+        <pre className="relative bg-(--ax-bg-sunken) p-4 text-sm text-(--ax-warning-1000)">
             <MetaTag data={`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`} />
             {'\n'}
             {Array.from(parsedData.children).map((node, i) => (
                 <ParentNodeView key={i} node={node} indent={0} />
             ))}
-            <div className={styles.copyButtonContainer}>
+            <div className="absolute top-4 right-4">
                 <CopyButton size="xsmall" copyText={data} />
             </div>
         </pre>
