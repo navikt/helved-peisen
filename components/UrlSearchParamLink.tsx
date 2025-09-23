@@ -2,7 +2,7 @@
 
 import React, { useCallback } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
+import { Link } from '@navikt/ds-react'
 
 type Props = Omit<React.HTMLAttributes<HTMLAnchorElement>, 'href'> & {
     searchParamName: string
@@ -32,13 +32,8 @@ export const UrlSearchParamLink: React.FC<Props> = ({
 
     return (
         <Link
-            href={
-                pathname +
-                '?' +
-                createQueryString(searchParamName, searchParamValue)
-            }
+            href={pathname + '?' + createQueryString(searchParamName, searchParamValue)}
             className={className}
-            prefetch={false}
             {...rest}
         >
             {children}
