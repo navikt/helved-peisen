@@ -44,6 +44,8 @@ type JsonArrayViewProps = {
 }
 
 const JsonArrayView: React.FC<JsonArrayViewProps> = ({ json, indent }) => {
+    if (json.length === 0) return '[]'
+
     return (
         <>
             {'[\n'}
