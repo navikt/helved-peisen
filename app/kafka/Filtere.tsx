@@ -23,7 +23,7 @@ const useDefaultTidsrom = () => {
             params.set('fom', subDays(today, daysToSubtract).toISOString())
         }
         if (!params.has('tom')) {
-            params.set('tom', today.toISOString())
+            params.set('tom', 'now')
         }
 
         if (params.toString() !== searchParams.toString()) {
