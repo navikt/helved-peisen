@@ -15,6 +15,8 @@ import {
 import type { Message } from '@/app/kafka/types.ts'
 import { MessageTableRow } from '@/app/kafka/table/MessageTableRow.tsx'
 import MessageFilter from '@/components/MessageFilter.tsx'
+import { parsedXML } from '@/lib/xml'
+import { NoMessages } from '../NoMessages'
 
 const getNextDirection = (direction: SortState['direction']): SortState['direction'] => {
     return direction === 'descending' ? 'ascending' : direction === 'ascending' ? 'none' : 'descending'
@@ -45,14 +47,16 @@ const latestMessages = (messages: Message[]) => {
 
 const useSortedAndFilteredMessages = (messages: Message[], filter: MessageFilters, sortState?: SortState) => {
     return useMemo(() => {
-        let filtered = filter.visning === 'siste' ? latestMessages(messages) : messages
+        let filtered =
+            filter.visning === 'siste' || filter.utbetalingManglerKvittering ? latestMessages(messages) : messages
 
         if (filter.utbetalingManglerKvittering) {
-            filtered = filtered.filter(
-                (m) =>
-                    m.topic_name === 'helved.oppdrag.v1' &&
-                    !messages.some((kv) => kv.topic_name === 'helved.kvittering.v1' && kv.key === m.key)
-            )
+            filtered = filtered.filter((m) => {
+                if (!m.value || m.topic_name !== 'helved.oppdrag.v1') return false
+                const doc = parsedXML(m.value)
+                const alvorlighetsgrad = doc.querySelector('mmel > alvorlighetsgrad')?.textContent
+                return !alvorlighetsgrad
+            })
         }
 
         return filtered
@@ -157,27 +161,32 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                         </TableRow>
                     </TableHeader>
                 </Table>
-                <div className="flex items-center justify-between gap-8 py-4 px-0">
-                    <HStack align="center" gap="space-8">
-                        <Pagination
-                            page={page}
-                            onPageChange={setPage}
-                            count={Math.ceil(sortedMessages.length / pageSize)}
-                            size="xsmall"
-                        />
-                        Viser meldinger {start + 1} - {end} av {sortedMessages.length}
-                    </HStack>
-                    <HStack align="center" gap="space-12">
-                        Meldinger pr. side
-                        <TextField
-                            label="Sidestørrelse"
-                            hideLabel
-                            size="small"
-                            value={pageSize}
-                            onChange={onChangePageSize}
-                        />
-                    </HStack>
-                </div>
+                {sortedMessages.length === 0 && <NoMessages />}
+                {sortedMessages.length > 0 && (
+                    <div className="flex items-center justify-between gap-8 py-4 px-0">
+                        <HStack align="center" gap="space-8">
+                            <>
+                                <Pagination
+                                    page={page}
+                                    onPageChange={setPage}
+                                    count={Math.ceil(sortedMessages.length / pageSize)}
+                                    size="xsmall"
+                                />
+                                Viser meldinger {start + 1} - {end} av {sortedMessages.length}
+                            </>
+                        </HStack>
+                        <HStack align="center" gap="space-12">
+                            Meldinger pr. side
+                            <TextField
+                                label="Sidestørrelse"
+                                hideLabel
+                                size="small"
+                                value={pageSize}
+                                onChange={onChangePageSize}
+                            />
+                        </HStack>
+                    </div>
+                )}
             </div>
         </>
     )
