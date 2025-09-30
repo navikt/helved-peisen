@@ -190,7 +190,7 @@ export const SakViewSkeleton = () => {
                 <HStack gap="space-16" justify="space-between">
                     <Label>Hendelser</Label>
                     <HStack gap="space-16">
-                        <ToggleGroup size="small" onChange={() => null}>
+                        <ToggleGroup defaultValue="Alle" size="small" onChange={() => null}>
                             <ToggleGroupItem value="alle" label="Alle" />
                             <ToggleGroupItem value="siste" label="Siste" />
                         </ToggleGroup>
