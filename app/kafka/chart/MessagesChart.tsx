@@ -121,14 +121,14 @@ const useColors = () => {
 }
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
-    messages: Record<string, Message[]>
+    messages: Message[]
 }
 
 export const MessagesChart: React.FC<Props> = ({ className, messages, ...rest }) => {
     const searchParams = useSearchParams()
     const chartRef = useRef<Chart<'bar'>>(null)
 
-    const [messageMap, increment] = useMessageMap(searchParams, Object.values(messages).flat()) ?? []
+    const [messageMap, increment] = useMessageMap(searchParams, messages) ?? []
     const [open, setOpen] = useState(true)
 
     const colors = useColors()

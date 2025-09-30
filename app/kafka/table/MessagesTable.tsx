@@ -1,9 +1,9 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
-import { HStack, Pagination, Skeleton, SortState as AkselSortState, Table, TextField } from '@navikt/ds-react'
+import { useContext, useState } from 'react'
+import { HStack, Pagination, Skeleton, Table, TextField } from '@navikt/ds-react'
 import {
+    type SortState,
     TableBody,
     TableColumnHeader,
     TableDataCell,
@@ -14,88 +14,27 @@ import {
 
 import type { Message } from '@/app/kafka/types.ts'
 import { MessageTableRow } from '@/app/kafka/table/MessageTableRow.tsx'
-import MessageFilter from '@/components/MessageFilter.tsx'
-import { parsedXML } from '@/lib/xml'
 import { NoMessages } from '../NoMessages'
+import { SortStateContext } from './SortState'
 
 const getNextDirection = (direction: SortState['direction']): SortState['direction'] => {
     return direction === 'descending' ? 'ascending' : direction === 'ascending' ? 'none' : 'descending'
 }
 
-export type MessageFilters = {
-    visning: 'alle' | 'siste'
-    utbetalingManglerKvittering: boolean
-}
-
-const useDefaultSortState = (): SortState => {
-    return useSearchParams().get('topics')
-        ? { orderBy: 'offset', direction: 'descending' }
-        : { orderBy: 'timestamp_ms', direction: 'descending' }
-}
-
-const latestMessages = (messages: Message[]) => {
-    const grouped = new Map<string, Message>()
-    messages.forEach((message) => {
-        const key = `${message.topic_name}:${message.key}`
-        const existing = grouped.get(key)
-        if (!existing || message.timestamp_ms > existing.timestamp_ms) {
-            grouped.set(key, message)
-        }
-    })
-    return Array.from(grouped.values())
-}
-
-const useSortedAndFilteredMessages = (messages: Message[], filter: MessageFilters, sortState?: SortState) => {
-    return useMemo(() => {
-        let filtered =
-            filter.visning === 'siste' || filter.utbetalingManglerKvittering ? latestMessages(messages) : messages
-
-        if (filter.utbetalingManglerKvittering) {
-            filtered = filtered.filter((m) => {
-                if (!m.value || m.topic_name !== 'helved.oppdrag.v1') return false
-                const doc = parsedXML(m.value)
-                const alvorlighetsgrad = doc.querySelector('mmel > alvorlighetsgrad')?.textContent
-                return !alvorlighetsgrad
-            })
-        }
-
-        return filtered
-            .slice(0) // unngå in-place sort på memoisert array
-            .sort((a, b) =>
-                sortState
-                    ? sortState.direction === 'ascending'
-                        ? +a[sortState.orderBy]! - +b[sortState.orderBy]!
-                        : +b[sortState.orderBy]! - +a[sortState.orderBy]!
-                    : 0
-            )
-    }, [messages, filter, sortState])
-}
-
-type SortState = Omit<AkselSortState, 'orderBy'> & {
-    orderBy: keyof Message
-}
-
 type Props = {
-    messages: Record<string, Message[]>
+    messages: Message[]
 }
 
 export const MessagesTable: React.FC<Props> = ({ messages }) => {
-    const [sortState, setSortState] = useState<SortState | undefined>(useDefaultSortState())
-    const [filters, setFilters] = useState<MessageFilters>({
-        visning: 'alle',
-        utbetalingManglerKvittering: false,
-    })
-
-    const allMessages = useMemo(() => Object.values(messages).flat(), [messages])
-    const sortedMessages = useSortedAndFilteredMessages(allMessages, filters, sortState)
+    const { setSortState, ...sortState } = useContext(SortStateContext)
 
     const updateSortState = (key: keyof Message) => {
         setSortState((sort) => {
-            if (!sort || sort.orderBy !== key) {
+            if (sort.orderBy !== key) {
                 return { orderBy: key, direction: 'descending' }
             }
             const direction = getNextDirection(sort.direction)
-            return direction === 'none' ? undefined : { orderBy: key, direction: direction }
+            return { orderBy: direction === 'none' ? '' : key, direction: direction }
         })
     }
 
@@ -109,21 +48,13 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
         }
     }
 
-    const handleFilterChange = (filter: MessageFilters) => {
-        setFilters(filter)
-        setPage(1)
-    }
-
     const start = (page - 1) * pageSize
-    const end = Math.min(start + pageSize, sortedMessages.length)
-    const paginatedMessages = sortedMessages.slice(start, end)
+    const end = Math.min(start + pageSize, messages.length)
+    const paginatedMessages = messages.slice(start, end)
 
     return (
         <>
             <div className="animate-fade-in max-w-[100vw] overflow-y-auto scrollbar-gutter-stable">
-                <HStack align="center" justify="end">
-                    <MessageFilter filters={filters} onFiltersChange={handleFilterChange} />
-                </HStack>
                 <Table
                     className="h-max overflow-scroll"
                     sort={sortState}
@@ -161,18 +92,18 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                         </TableRow>
                     </TableHeader>
                 </Table>
-                {sortedMessages.length === 0 && <NoMessages />}
-                {sortedMessages.length > 0 && (
+                {messages.length === 0 && <NoMessages />}
+                {messages.length > 0 && (
                     <div className="flex items-center justify-between gap-8 py-4 px-0">
                         <HStack align="center" gap="space-8">
                             <>
                                 <Pagination
                                     page={page}
                                     onPageChange={setPage}
-                                    count={Math.ceil(sortedMessages.length / pageSize)}
+                                    count={Math.ceil(messages.length / pageSize)}
                                     size="xsmall"
                                 />
-                                Viser meldinger {start + 1} - {end} av {sortedMessages.length}
+                                Viser meldinger {start + 1} - {end} av {messages.length}
                             </>
                         </HStack>
                         <HStack align="center" gap="space-12">
