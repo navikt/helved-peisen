@@ -52,7 +52,11 @@ const RowContents: React.FC<Props> = ({ message }) => {
                     {message.key}
                 </UrlSearchParamLink>
             </TableDataCell>
-            <TableDataCell>{formatDate(message.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}</TableDataCell>
+            <TableDataCell>
+                <span className="whitespace-nowrap">
+                    {formatDate(message.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}
+                </span>
+            </TableDataCell>
             <TableDataCell>{message.partition}</TableDataCell>
             <TableDataCell>{message.offset}</TableDataCell>
             <TableDataCell>

@@ -13,7 +13,7 @@ const config = {
                 },
             },
             animation: {
-                'fade-in': 'fadeIn 0.3s ease-in-out forwards',
+                'fade-in': 'fadeIn 0.2s ease-in-out forwards',
             },
         },
     },

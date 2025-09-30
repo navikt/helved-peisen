@@ -8,8 +8,10 @@ import { subDays } from 'date-fns'
 import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox'
 import { UrlSearchParamInput } from '@/components/UrlSearchParamInput.tsx'
 import { DateRangeSelect } from '@/app/kafka/DateRangeSelect.tsx'
-import { Checkbox, ToggleGroup } from '@navikt/ds-react'
+import { Switch, ToggleGroup } from '@navikt/ds-react'
 import { ToggleGroupItem } from '@navikt/ds-react/ToggleGroup'
+import { LiveButton } from './LiveButton'
+import { RefreshButton } from './RefreshButton'
 
 const useDefaultTidsrom = () => {
     const router = useRouter()
@@ -78,7 +80,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
 
     return (
         <div className={clsx('flex gap-6 justify-between flex-wrap', className)} {...rest}>
-            <div className="flex flex-wrap gap-x-8 gap-y-5">
+            <div className="flex flex-wrap gap-x-8 gap-y-5 items-end">
                 <UrlSearchParamComboBox
                     className="min-w-[15rem]"
                     label="Topics"
@@ -116,8 +118,6 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     hideDropdown
                 />
                 <DateRangeSelect />
-            </div>
-            <div className="self-end flex gap-4">
                 <ToggleGroup
                     className="h-max"
                     defaultValue="alle"
@@ -128,7 +128,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     <ToggleGroupItem value="alle" label="Alle" />
                     <ToggleGroupItem value="siste" label="Siste" />
                 </ToggleGroup>
-                <Checkbox
+                <Switch
                     className="h-max whitespace-nowrap"
                     value="utenKvittering"
                     size="small"
@@ -141,7 +141,11 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     }}
                 >
                     Oppdrag uten kvittering
-                </Checkbox>
+                </Switch>
+            </div>
+            <div className="self-end flex gap-2">
+                <LiveButton />
+                <RefreshButton />
             </div>
         </div>
     )

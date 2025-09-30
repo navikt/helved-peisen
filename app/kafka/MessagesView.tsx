@@ -1,37 +1,23 @@
 'use client'
 
-import { useContext, useEffect, useState } from 'react'
+import { useContext } from 'react'
 import { Alert } from '@navikt/ds-react'
-import { useSearchParams } from 'next/navigation'
 
 import { MessagesChart, MessagesChartSkeleton } from '@/app/kafka/chart/MessagesChart.tsx'
 import { MessagesTable, MessagesTableSkeleton } from '@/app/kafka/table/MessagesTable.tsx'
-import { getMessagesByTopic } from '@/app/kafka/table/getMessagesByTopic.ts'
 import { NoMessages } from '@/app/kafka/NoMessages.tsx'
 import { parsedXML } from '@/lib/xml.ts'
 import { FiltereContext } from '@/app/kafka/Filtere.tsx'
 import { SortStateContext } from '@/app/kafka/table/SortState.tsx'
-import { type Message } from './types.ts'
 import { keepLatest } from '@/lib/message.ts'
+import { MessagesContext } from './MessagesContext.tsx'
 
 export const MessagesView = () => {
-    const searchParams = useSearchParams()
-    const [messages, setMessages] = useState<ApiResponse<Record<string, Message[]>> | null>(null)
-    const [loading, setLoading] = useState(true)
+    const { messages } = useContext(MessagesContext)
     const sortState = useContext(SortStateContext)
     const filtere = useContext(FiltereContext)
 
-    useEffect(() => {
-        if (searchParams.get('fom') && searchParams.get('tom')) {
-            setLoading(true)
-            getMessagesByTopic(searchParams.toString()).then((res) => {
-                setMessages(res)
-                setLoading(false)
-            })
-        }
-    }, [searchParams])
-
-    if (!messages || loading) {
+    if (!messages) {
         return (
             <>
                 <MessagesChartSkeleton />
