@@ -12,18 +12,7 @@ import { parsedXML } from '@/lib/xml.ts'
 import { FiltereContext } from '@/app/kafka/Filtere.tsx'
 import { SortStateContext } from '@/app/kafka/table/SortState.tsx'
 import { type Message } from './types.ts'
-
-const latestMessages = (messages: Message[]) => {
-    const grouped = new Map<string, Message>()
-    messages.forEach((message) => {
-        const key = `${message.topic_name}:${message.key}`
-        const existing = grouped.get(key)
-        if (!existing || message.timestamp_ms > existing.timestamp_ms) {
-            grouped.set(key, message)
-        }
-    })
-    return Array.from(grouped.values())
-}
+import { keepLatest } from '@/lib/message.ts'
 
 export const MessagesView = () => {
     const searchParams = useSearchParams()
@@ -66,7 +55,7 @@ export const MessagesView = () => {
     let filteredMessages = Object.values(messages.data).flat()
 
     if (filtere.visning === 'siste' || filtere.utenKvittering) {
-        filteredMessages = latestMessages(filteredMessages)
+        filteredMessages = keepLatest(filteredMessages)
     }
 
     if (filtere.utenKvittering) {
