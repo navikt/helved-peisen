@@ -1,6 +1,8 @@
+import akselTw from '@navikt/ds-tailwind'
+
 const config = {
     content: ['./app/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
-    presets: [require('@navikt/ds-tailwind')],
+    presets: [akselTw],
     theme: {
         extend: {
             boxShadow: {

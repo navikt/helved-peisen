@@ -17,6 +17,10 @@ body {
     display: block;
     max-width: 100%;
   }
+
+  button, a, input {
+    transition: all 0.2s ease;
+  }
 }
 
 input, button, textarea, select {
