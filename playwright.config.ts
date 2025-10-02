@@ -23,7 +23,6 @@ export default defineConfig({
         baseURL: 'http://localhost:3000',
         trace: 'on-first-retry',
         locale: 'nb-NO',
-        headless: !process.env.CI,
     },
     projects: [
         {
