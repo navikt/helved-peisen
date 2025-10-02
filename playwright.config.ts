@@ -22,7 +22,8 @@ export default defineConfig({
     use: {
         baseURL: 'http://localhost:3000',
         trace: 'on-first-retry',
-        locale: "nb-NO"
+        locale: 'nb-NO',
+        headless: !process.env.CI,
     },
     projects: [
         {
@@ -30,11 +31,20 @@ export default defineConfig({
             use: { ...devices['Desktop Chrome'] },
         },
     ],
-    webServer: {
-        command: 'npm run start:dev',
-        url: 'http://localhost:3000',
-        reuseExistingServer: !process.env.CI,
-        env: testEnv,
-        timeout: 120 * 1000, // 2 minutter
-    },
+    webServer: [
+        {
+            command: 'npm run fake',
+            port: 8080,
+            env: testEnv,
+            // reuseExistingServer: !process.env.CI,
+            timeout: 10 * 1000, // 10 sec
+        },
+        {
+            command: 'npm run dev',
+            port: 3000,
+            env: testEnv,
+            // reuseExistingServer: !process.env.CI,
+            timeout: 10 * 1000, // 10 sec
+        },
+    ],
 })

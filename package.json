@@ -9,9 +9,9 @@
         "start": "next start",
         "lint": "next lint",
         "test": "vitest run",
-        "fake": "node --watch --experimental-strip-types fakes/server.ts",
         "test:e2e": "npx playwright test",
-        "fetch-dev-api-token": "npx ts-node scripts/fetch-dev-api-token.ts"
+        "fetch-dev-api-token": "npx ts-node scripts/fetch-dev-api-token.ts",
+        "fake": "node --watch --experimental-strip-types fakes/server.ts"
     },
     "dependencies": {
         "@navikt/aksel-icons": "^7.30.1",

@@ -125,7 +125,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
 
 export const MessagesTableSkeleton = () => {
     return (
-        <div className="max-w-[100vw] overflow-y-auto scrollbar-gutter-stable">
+        <div className="max-w-[100vw] overflow-y-auto scrollbar-gutter-stable" data-testid="messages-table-skeleton">
             <Table className="h-max overflow-scroll" size="small">
                 <TableBody>
                     {Array(20)
