@@ -1,7 +1,6 @@
 import express from 'express'
-import { parseStringQueryParam } from './queryParameters.ts'
 import { type Message, Topics } from '../app/kafka/types.ts'
-import { sleep } from './util.ts'
+import { parseStringQueryParam, sleep } from './util.ts'
 
 import testMessages from './data/messages.json' with { type: 'json' }
 
@@ -12,7 +11,6 @@ app.use(express.json())
 
 const messages = testMessages as Message[]
 
-/* KAFKA */
 app.get('/api', async (req, res) => {
     const topics = parseStringQueryParam(req.query.topics) ?? Object.values(Topics)
     const key = typeof req.query.key === 'string' ? req.query.key : undefined
