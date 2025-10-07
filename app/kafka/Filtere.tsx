@@ -52,6 +52,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
             fom: searchParams.get('fom'),
             tom: searchParams.get('tom'),
             topics: searchParams.get('topics'),
+            trace_id: searchParams.get('trace_id'),
         }
     }, [searchParams])
 
@@ -107,6 +108,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     isMultiSelect
                     size="small"
                 />
+                <UrlSearchParamInput label="Trace-ID" searchParamName="trace_id" size="small" />
                 <UrlSearchParamInput label="Key" searchParamName="key" size="small" />
                 <UrlSearchParamComboBox
                     label="Søk i value"
@@ -157,6 +159,7 @@ export type Filtere = {
     topics: string | null
     key: string | null
     value: string | null
+    trace_id: string | null
     utenKvittering: boolean
     visning: 'alle' | 'siste'
 }
@@ -171,6 +174,7 @@ export const FiltereContext = React.createContext<FiltereContextValue>({
     topics: null,
     key: null,
     value: null,
+    trace_id: null,
     utenKvittering: false,
     visning: 'alle',
     setFiltere: () => {
@@ -179,12 +183,14 @@ export const FiltereContext = React.createContext<FiltereContextValue>({
 })
 
 export const FiltereProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+    const searchParams = useSearchParams()
     const [filtere, setFiltere] = useState<Filtere>({
         fom: null,
         tom: null,
         topics: null,
         key: null,
         value: null,
+        trace_id: searchParams.get('trace_id') || null,
         utenKvittering: false,
         visning: 'alle',
     })
