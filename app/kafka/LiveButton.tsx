@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useContext, useEffect } from 'react'
 import { Button } from '@navikt/ds-react'
 import { PlayIcon, StopIcon } from '@navikt/aksel-icons'
