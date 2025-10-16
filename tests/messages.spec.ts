@@ -67,7 +67,7 @@ test('filter by key', async ({ page }) => {
     await expect(loading).toBeHidden()
 
     await expect(page.locator('text=Viser meldinger 1 - 100 av 231')).toBeVisible()
-    await page.getByRole('textbox').first().fill('e0938c7c-ddf3-4b39-9994-cbee87726ebd')
+    await page.getByRole('textbox').nth(1).fill('e0938c7c-ddf3-4b39-9994-cbee87726ebd')
     await page.keyboard.press('Enter')
     await expect(page.locator('text=Viser meldinger 1 - 5 av 5')).toBeVisible()
 })
