@@ -8,6 +8,9 @@ export default defineConfig({
         environment: 'jsdom',
         setupFiles: './fakes/setup.ts',
         exclude: [...configDefaults.exclude, 'tests/*'],
+        env: {
+            TZ: 'Europe/Oslo'
+        }
     },
     resolve: {
         alias: {
