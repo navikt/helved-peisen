@@ -9,11 +9,14 @@ export const Topics = {
     kvittering: 'helved.kvittering.v1',
     simulering: 'helved.simuleringer.v1',
     utbetalinger: 'helved.utbetalinger.v1',
+    pendingUtbetalinger: 'helved.pending-utbetalinger.v1',
     saker: 'helved.saker.v1',
     aap: 'helved.utbetalinger-aap.v1',
     dpIntern: 'helved.utbetalinger-dp.v1',
     dp: 'teamdagpenger.utbetaling.v1',
     status: 'helved.status.v1',
+    tsIntern: 'helved.utbetalinger-ts.v1',
+    tpIntern: 'helved.utbetalinger-tp.v1',
 } as const
 
 export type TopicName = (typeof Topics)[keyof typeof Topics]

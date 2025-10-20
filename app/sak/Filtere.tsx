@@ -133,6 +133,14 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     <option value="AAP">AAP</option>
                     <option value="TILTPENG">Tiltakspenger</option>
                     <option value="TILLST">Tilleggsstønader</option>
+                    <option value="TILLSTPB">TILLSTPB</option>
+                    <option value="TILLSTLM">TILLSTLM</option>
+                    <option value="TILLSTBO">TILLSTBO</option>
+                    <option value="TILLSTDR">TILLSTDR</option>
+                    <option value="TILLSTRS">TILLSTRS</option>
+                    <option value="TILLSTRO">TILLSTRO</option>
+                    <option value="TILLSTRA">TILLSTRA</option>
+                    <option value="TILLSTFL">TILLSTFL</option>
                 </Select>
                 <FormButton className="h-max mt-7" size="small">
                     Søk

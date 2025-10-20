@@ -262,6 +262,8 @@ export const MessageMetadata: React.FC<Props> = ({ message }) => {
                         return <OppdragMessageMetadata message={message} />
                     case 'helved.utbetalinger.v1':
                         return <UtbetalingMessageMetadata message={message} />
+                    case 'helved.pending-utbetalinger.v1':
+                        return <UtbetalingMessageMetadata message={message} />
                     case 'helved.status.v1':
                         return <StatusMessageMetadata message={message} />
                     case 'teamdagpenger.utbetaling.v1':

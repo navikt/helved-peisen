@@ -31,6 +31,8 @@ const sakUrl = (message: Message) => {
         case 'helved.dryrun-dp.v1':
         case 'helved.saker.v1':
         case 'helved.utbetalinger-aap.v1':
+        case 'helved.utbetalinger-ts.v1':
+        case 'helved.utbetalinger-tp.v1':
         case 'helved.status.v1':
             return null
         case 'helved.simuleringer.v1': {
@@ -56,6 +58,17 @@ const sakUrl = (message: Message) => {
             return `/sak?sakId=${sakId}&fagsystem=DP`
         }
         case 'helved.utbetalinger.v1': {
+            const json = JSON.parse(message.value)
+            const fagsystem = json.fagsystem
+            const sakId = json.sakId
+
+            if (!fagsystem || !sakId) {
+                return null
+            }
+
+            return `/sak?sakId=${sakId}&fagsystem=${tilFagsystem(fagsystem)}`
+        }
+        case 'helved.pending-utbetalinger.v1': {
             const json = JSON.parse(message.value)
             const fagsystem = json.fagsystem
             const sakId = json.sakId

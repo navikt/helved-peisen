@@ -130,7 +130,10 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
         case 'helved.saker.v1':
             break
         case 'helved.utbetalinger.v1':
+        case 'helved.pending-utbetalinger.v1':
         case 'helved.utbetalinger-aap.v1':
+        case 'helved.utbetalinger-ts.v1':
+        case 'helved.utbetalinger-tp.v1':
         case 'helved.utbetalinger-dp.v1':
             return <UtbetalingStatusBadge message={message} />
         case 'teamdagpenger.utbetaling.v1':
