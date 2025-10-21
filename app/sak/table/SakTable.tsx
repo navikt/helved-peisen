@@ -35,7 +35,7 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
                         key={it.key + it.timestamp_ms + i}
                         className={clsx(
                             'transition-[background]',
-                            activeMessage === it && 'bg-(--ax-bg-neutral-moderate-hoverA)'
+                            activeMessage === it && 'bg-(--ax-bg-neutral-moderate-hoverA)',
                         )}
                         content={<MessageTableRowContents message={it} />}
                     >
@@ -61,9 +61,12 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
                                         />
                                     </ActionMenuTrigger>
                                     <ActionMenuContent>
-                                        <AddKvitteringButton messageValue={it.value} messageKey={it.key} />
-                                        <AddOppdragButton messageValue={it.value} messageKey={it.key} />
-                                        <AddDatoKlassifikFomButton messageValue={it.value} messageKey={it.key} />
+                                        {it.topic_name === 'helved.oppdrag.v1' && (
+                                            <>
+                                                <AddKvitteringButton messageValue={it.value} messageKey={it.key} />
+                                                <AddOppdragButton messageValue={it.value} messageKey={it.key} />
+                                                <AddDatoKlassifikFomButton messageValue={it.value} messageKey={it.key} />
+                                            </>)}
                                         <ActionMenuItem>
                                             <GrafanaTraceLink traceId={it.trace_id} />
                                         </ActionMenuItem>
