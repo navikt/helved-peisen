@@ -18,7 +18,6 @@ import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'
 import { AddKvitteringButton } from '@/app/kafka/table/AddKvitteringButton.tsx'
 import { AddOppdragButton } from '@/app/kafka/table/AddOppdragButton.tsx'
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
-import { AddDatoKlassifikFomButton } from '@/app/kafka/table/AddDatoKlassifikFomButton.tsx'
 import { type Message } from '@/app/kafka/types.ts'
 
 type Props = {
@@ -65,7 +64,6 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
                                             <>
                                                 <AddKvitteringButton messageValue={it.value} messageKey={it.key} />
                                                 <AddOppdragButton messageValue={it.value} messageKey={it.key} />
-                                                <AddDatoKlassifikFomButton messageValue={it.value} messageKey={it.key} />
                                             </>)}
                                         <ActionMenuItem>
                                             <GrafanaTraceLink traceId={it.trace_id} />
