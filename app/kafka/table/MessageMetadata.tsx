@@ -165,6 +165,21 @@ const OppdragMessageMetadata: React.FC<Props> = ({ message }) => {
         }
     })()
 
+    const summertSats = (() => {
+        const oppdrag = xmlDoc.querySelector('oppdrag-110')
+        if (!oppdrag) {
+            return 0
+        }
+
+        const linjer = oppdrag.querySelectorAll('oppdrags-linje-150')
+
+        return Array.from(linjer).reduce((sum, linje) => {
+            const satsText = linje.querySelector('sats')?.textContent
+            const sats = satsText ? parseFloat(satsText) : 0
+            return sum + sats
+        }, 0)
+    })()
+
     return (
         <VStack gap="space-32">
             {mmel && (
@@ -187,6 +202,7 @@ const OppdragMessageMetadata: React.FC<Props> = ({ message }) => {
                             <MetadataCard label="Sak-ID" value={oppdrag.fagsystemId} />
                             <MetadataCard label="Fagsystem" value={oppdrag.kodeFagomraade} />
                             <MetadataCard label="Endringskode" value={oppdrag.kodeEndring} />
+                            <MetadataCard label="Sats" value={summertSats} />
                         </HStack>
                     </MetadataCardContainer>
                 </VStack>
