@@ -284,6 +284,8 @@ export const MessageMetadata: React.FC<Props> = ({ message }) => {
                         return <StatusMessageMetadata message={message} />
                     case 'teamdagpenger.utbetaling.v1':
                         return <DagpengerUtbetalingMessageMetadata message={message} />
+                    case 'tilleggsstonader.utbetaling.v1':
+                        return <UtbetalingMessageMetadata message={message} />
                 }
                 return null
             })()}
