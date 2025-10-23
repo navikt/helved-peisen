@@ -57,6 +57,16 @@ const sakUrl = (message: Message) => {
 
             return `/sak?sakId=${sakId}&fagsystem=DP`
         }
+        case 'tilleggsstonader.utbetaling.v1': {
+            const json = JSON.parse(message.value)
+            const sakId = json.sakId
+
+            if (!sakId) {
+                return null
+            }
+
+            return `/sak?sakId=${sakId}&fagsystem=TILLST`
+        }
         case 'helved.utbetalinger.v1': {
             const json = JSON.parse(message.value)
             const fagsystem = json.fagsystem

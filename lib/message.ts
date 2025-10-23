@@ -49,6 +49,7 @@ export const variant = (message: Message): Variant => {
             return 'warning'
         case 'teamdagpenger.utbetaling.v1':
             return 'alt1'
+        case 'tilleggsstonader.utbetaling.v1':
         case 'helved.status.v1':
             return 'alt2'
     }

@@ -103,6 +103,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                             'helved.utbetalinger-ts.v1',
                             'helved.utbetalinger-tp.v1',
                             'teamdagpenger.utbetaling.v1',
+                            'tilleggsstonader.utbetaling.v1',
                             'helved.saker.v1',
                             'helved.status.v1',
                             'helved.simuleringer.v1',

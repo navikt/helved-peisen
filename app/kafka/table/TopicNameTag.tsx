@@ -138,6 +138,8 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
             return <UtbetalingStatusBadge message={message} />
         case 'teamdagpenger.utbetaling.v1':
             break
+        case 'tilleggsstonader.utbetaling.v1':
+            break
         case 'helved.status.v1':
             return <StatusStatusBadge message={message} />
     }

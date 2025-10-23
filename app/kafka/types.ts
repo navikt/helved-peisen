@@ -14,6 +14,7 @@ export const Topics = {
     aap: 'helved.utbetalinger-aap.v1',
     dpIntern: 'helved.utbetalinger-dp.v1',
     dp: 'teamdagpenger.utbetaling.v1',
+    ts: 'tilleggsstonader.utbetaling.v1',
     status: 'helved.status.v1',
     tsIntern: 'helved.utbetalinger-ts.v1',
     tpIntern: 'helved.utbetalinger-tp.v1',
