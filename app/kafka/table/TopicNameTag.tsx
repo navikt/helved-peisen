@@ -121,7 +121,6 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
         case 'helved.oppdrag.v1':
         case 'helved.kvittering.v1':
             return <OppdragStatusBadge message={message} />
-        case 'helved.oppdragsdata.v1':
         case 'helved.dryrun-aap.v1':
         case 'helved.dryrun-tp.v1':
         case 'helved.dryrun-ts.v1':
@@ -135,11 +134,10 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
         case 'helved.utbetalinger-ts.v1':
         case 'helved.utbetalinger-tp.v1':
         case 'helved.utbetalinger-dp.v1':
-            return <UtbetalingStatusBadge message={message} />
         case 'teamdagpenger.utbetaling.v1':
-            break
         case 'tilleggsstonader.utbetaling.v1':
-            break
+        case 'aap.utbetaling.v1':
+            return <UtbetalingStatusBadge message={message} />
         case 'helved.status.v1':
             return <StatusStatusBadge message={message} />
     }

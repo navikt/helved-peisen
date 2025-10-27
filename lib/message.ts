@@ -28,7 +28,6 @@ type Variant =
 
 export const variant = (message: Message): Variant => {
     switch (message.topic_name) {
-        case 'helved.oppdragsdata.v1':
         case 'helved.avstemming.v1':
         case 'helved.kvittering.v1':
         case 'helved.saker.v1':
@@ -39,6 +38,7 @@ export const variant = (message: Message): Variant => {
         case 'helved.dryrun-aap.v1':
         case 'helved.simuleringer.v1':
             return 'neutral'
+        case 'aap.utbetaling.v1':
         case 'helved.utbetalinger-aap.v1':
         case 'helved.utbetalinger-dp.v1':
         case 'helved.utbetalinger-ts.v1':

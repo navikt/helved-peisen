@@ -1,7 +1,7 @@
 export const Topics = {
+    aap: 'aap.utbetaling.v1',
     avstemming: 'helved.avstemming.v1',
     oppdrag: 'helved.oppdrag.v1',
-    oppdragsData: 'helved.oppdragsdata.v1',
     dryrunAap: 'helved.dryrun-aap.v1',
     dryrunTp: 'helved.dryrun-tp.v1',
     dryrunTs: 'helved.dryrun-ts.v1',
@@ -11,7 +11,7 @@ export const Topics = {
     utbetalinger: 'helved.utbetalinger.v1',
     pendingUtbetalinger: 'helved.pending-utbetalinger.v1',
     saker: 'helved.saker.v1',
-    aap: 'helved.utbetalinger-aap.v1',
+    aapIntern: 'helved.utbetalinger-aap.v1',
     dpIntern: 'helved.utbetalinger-dp.v1',
     dp: 'teamdagpenger.utbetaling.v1',
     ts: 'tilleggsstonader.utbetaling.v1',
