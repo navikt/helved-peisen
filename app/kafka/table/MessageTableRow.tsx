@@ -83,8 +83,6 @@ const RowContents: React.FC<Props> = ({ message }) => {
                                     <FlyttTilUtbetalingerButton messageValue={message.value} messageKey={message.key}/>
                                 </>
                             )}
-
-
                             <ActionMenuItem>
                                 <GrafanaTraceLink traceId={message.trace_id} />
                             </ActionMenuItem>
