@@ -5,6 +5,7 @@ export const Routes = {
         kafka: `${kafkaApiBaseUrl}/api`,
         manuellKvittering: `${kafkaApiBaseUrl}/manuell-kvittering`,
         manuellOppdrag: `${kafkaApiBaseUrl}/manuell-oppdrag`,
+        flyttTilUtbetalinger: `${kafkaApiBaseUrl}/pending-til-utbetaling`,
         saker: `${kafkaApiBaseUrl}/api/saker`,
         sak(sakId: string, fagsystem: string) {
             return `${kafkaApiBaseUrl}/api/saker/${sakId}/${fagsystem}`

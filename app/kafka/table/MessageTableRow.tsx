@@ -16,6 +16,7 @@ import { AddOppdragButton } from '@/app/kafka/table/AddOppdragButton.tsx'
 import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
 import { MessageValue } from './MessageValue'
 import { SakLink } from './SakLink'
+import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/FlyttTilUtbetalingerButton.tsx'
 
 type Props = {
     message: Message
@@ -76,6 +77,14 @@ const RowContents: React.FC<Props> = ({ message }) => {
                                     <AddOppdragButton messageValue={message.value} messageKey={message.key} />
                                 </>
                             )}
+
+                            {message.topic_name === 'helved.pending-utbetalinger.v1' && (
+                                <>
+                                    <FlyttTilUtbetalingerButton messageValue={message.value} messageKey={message.key}/>
+                                </>
+                            )}
+
+
                             <ActionMenuItem>
                                 <GrafanaTraceLink traceId={message.trace_id} />
                             </ActionMenuItem>
