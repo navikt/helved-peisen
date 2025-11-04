@@ -17,6 +17,7 @@ import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
 import { MessageValue } from './MessageValue'
 import { SakLink } from './SakLink'
 import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/FlyttTilUtbetalingerButton.tsx'
+import { EditAndSendOppdragButton } from '@/app/kafka/table/EditAndSendOppdragButton.tsx'
 
 type Props = {
     message: Message
@@ -75,6 +76,7 @@ const RowContents: React.FC<Props> = ({ message }) => {
                                 <>
                                     <AddKvitteringButton messageValue={message.value} messageKey={message.key} />
                                     <AddOppdragButton messageValue={message.value} messageKey={message.key} />
+                                    <EditAndSendOppdragButton messageValue={message.value} messageKey={message.key} />
                                 </>
                             )}
 
