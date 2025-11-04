@@ -20,6 +20,7 @@ import { AddOppdragButton } from '@/app/kafka/table/AddOppdragButton.tsx'
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import { type Message } from '@/app/kafka/types.ts'
 import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/FlyttTilUtbetalingerButton.tsx'
+import { EditAndSendOppdragButton } from '@/app/kafka/table/EditAndSendOppdragButton.tsx'
 
 type Props = {
     messages: Message[]
@@ -65,6 +66,7 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
                                             <>
                                                 <AddKvitteringButton messageValue={it.value} messageKey={it.key} />
                                                 <AddOppdragButton messageValue={it.value} messageKey={it.key} />
+                                                <EditAndSendOppdragButton messageValue={it.value} messageKey={it.key} />
                                             </>)}
                                         {it.topic_name === 'helved.pending-utbetalinger.v1' && (
                                             <>
