@@ -94,6 +94,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                             'helved.dryrun-dp.v1',
                             'helved.dryrun-tp.v1',
                             'helved.dryrun-ts.v1',
+                            'helved.fk.v1',
                             'helved.kvittering.v1',
                             'helved.oppdrag.v1',
                             'helved.pending-utbetalinger.v1',

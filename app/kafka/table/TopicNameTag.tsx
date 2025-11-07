@@ -125,6 +125,7 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
         case 'helved.dryrun-tp.v1':
         case 'helved.dryrun-ts.v1':
         case 'helved.dryrun-dp.v1':
+        case 'helved.fk.v1':
         case 'helved.simuleringer.v1':
         case 'helved.saker.v1':
             break

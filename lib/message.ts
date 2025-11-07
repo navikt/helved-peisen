@@ -36,6 +36,7 @@ export const variant = (message: Message): Variant => {
         case 'helved.dryrun-dp.v1':
         case 'helved.dryrun-tp.v1':
         case 'helved.dryrun-aap.v1':
+        case 'helved.fk.v1':
         case 'helved.simuleringer.v1':
             return 'neutral'
         case 'aap.utbetaling.v1':

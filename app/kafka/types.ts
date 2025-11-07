@@ -6,6 +6,7 @@ export const Topics = {
     dryrunTp: 'helved.dryrun-tp.v1',
     dryrunTs: 'helved.dryrun-ts.v1',
     dryrunDp: 'helved.dryrun-dp.v1',
+    fk: 'helved.fk.v1',
     kvittering: 'helved.kvittering.v1',
     simulering: 'helved.simuleringer.v1',
     utbetalinger: 'helved.utbetalinger.v1',

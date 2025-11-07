@@ -28,6 +28,7 @@ const sakUrl = (message: Message) => {
         case 'helved.dryrun-tp.v1':
         case 'helved.dryrun-ts.v1':
         case 'helved.dryrun-dp.v1':
+        case 'helved.fk.v1':
         case 'helved.saker.v1':
         case 'helved.utbetalinger-tp.v1':
         case 'helved.status.v1':
