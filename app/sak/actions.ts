@@ -76,7 +76,7 @@ export const fetchSak = async (sakId: string, fagsystem: string) => {
     await checkToken()
     const token = await fetchApiToken()
 
-    const response = await fetch(Routes.external.sak(sakId, fagsystem), {
+    const response = await fetch(Routes.external.sak(encodeURIComponent(sakId), fagsystem), {
         method: 'GET',
         headers: {
             Authorization: `Bearer ${token}`,
