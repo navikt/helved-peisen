@@ -7,6 +7,8 @@ export const Topics = {
     dryrunTs: 'helved.dryrun-ts.v1',
     dryrunDp: 'helved.dryrun-dp.v1',
     fk: 'helved.fk.v1',
+    historisk: 'historisk.utbetaling.v1',
+    historiskIntern: 'helved.utbetalinger-historisk.v1',
     kvittering: 'helved.kvittering.v1',
     simulering: 'helved.simuleringer.v1',
     utbetalinger: 'helved.utbetalinger.v1',

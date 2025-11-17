@@ -130,6 +130,8 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
         case 'helved.saker.v1':
             break
         case 'helved.utbetalinger.v1':
+        case 'historisk.utbetaling.v1':
+        case 'helved.utbetalinger-historisk.v1':
         case 'helved.pending-utbetalinger.v1':
         case 'helved.utbetalinger-aap.v1':
         case 'helved.utbetalinger-ts.v1':

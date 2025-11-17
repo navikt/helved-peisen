@@ -21,6 +21,8 @@ const fagsystem = (fagsystem: string) => {
             return 'Dagpenger'
         case 'AAP':
             return 'AAP'
+        case 'HELSREF':
+            return 'Historisk'
         default:
             return fagsystem
     }

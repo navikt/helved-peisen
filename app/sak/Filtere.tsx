@@ -131,6 +131,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     <option value="">- Velg fagsystem -</option>
                     <option value="DP">Dagpenger</option>
                     <option value="AAP">AAP</option>
+                    <option value="HELSREF">Historisk</option>
                     <option value="TILTPENG">Tiltakspenger</option>
                     <option value="TILLST,TILLSTPB,TILLSTLM,TILLSTBO,TILLSTDR,TILLSTRS,TILLSTRO,TILLSTRA,TILLSTFL">
                         Tilleggsstønader
