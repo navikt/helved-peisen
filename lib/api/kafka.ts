@@ -5,6 +5,7 @@ import { logger } from '@navikt/next-logger'
 import { Routes } from '@/lib/api/routes.ts'
 import { getApiTokenFromCookie } from '@/lib/auth/apiToken.ts'
 import { Message } from '@/app/kafka/types.ts'
+import { createHash } from 'crypto'
 
 export const fetchMessages = async (
     searchParams: URLSearchParams
@@ -20,8 +21,12 @@ export const fetchMessages = async (
     })
         .then(async (response) => {
             if (response.ok) {
+
+                const res = await response.json()
+                const data = hashSensitiveData(res)
+
                 return {
-                    data: await response.json(),
+                    data: data,
                     error: null,
                 }
             } else {
@@ -51,4 +56,18 @@ export const fetchMessages = async (
                 }
             }
         })
+}
+
+function hashSensitiveData(messages: Message[]): Message[] {
+    if (!Array.isArray(messages)) return []
+
+    return messages.map((msg) => {
+        if (msg.topic_name === 'helved.fk.v1' && msg.key) {
+            msg.key = createHash('sha256')
+                .update(msg.key)
+                .digest('hex')
+        }
+
+        return msg
+    })
 }
