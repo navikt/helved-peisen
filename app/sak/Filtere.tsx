@@ -90,10 +90,15 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
 
     useEffect(() => {
         const searchParams = new URLSearchParams(window.location.search)
-        const sakId = searchParams.get('sakId')
+        let sakId = searchParams.get('sakId')
         const fagsystem = searchParams.get('fagsystem')
 
         if (sakId && fagsystem) {
+            // Unencoded '+' signs in the URL are parsed as spaces by the browser.
+            // TODO: encodeURIComponent for sakLink?
+            if (sakId.includes(' ')) {
+                sakId = sakId.replace(/ /g, '+')
+            }
             const data = new FormData()
             data.set('sakId', sakId)
             data.set('fagsystem', fagsystem)
@@ -112,7 +117,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     name="sakId"
                     size="small"
                     defaultValue={
-                        state.sakId?.error ? undefined : (state.sakId?.value || searchParams.get('sakId')) ?? undefined
+                        state.sakId?.error ? undefined : (state.sakId?.value || searchParams.get('sakId')?.replace(/ /g, '+')) ?? undefined
                     }
                     error={state.sakId?.error}
                 />
