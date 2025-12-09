@@ -18,10 +18,6 @@ const tilFagsystem = (kode: string) => {
     }
 }
 
-const createSakUrl = (sakId: string, fagsystem: string) => {
-    return `/sak?sakId=${encodeURIComponent(sakId)}&fagsystem=${encodeURIComponent(fagsystem)}`
-}
-
 const sakUrl = (message: Message) => {
     if (!message.value) {
         return null
@@ -46,7 +42,7 @@ const sakUrl = (message: Message) => {
                 return null
             }
 
-            return createSakUrl(sakId, tilFagsystem(fagsystem))
+            return `/sak?sakId=${sakId}&fagsystem=${tilFagsystem(fagsystem)}`
         }
         case 'helved.utbetalinger-aap.v1':
         case 'aap.utbetaling.v1': {
@@ -57,7 +53,7 @@ const sakUrl = (message: Message) => {
                 return null
             }
 
-            return createSakUrl(sakId, 'AAP')
+            return `/sak?sakId=${sakId}&fagsystem=AAP`
         }
 
         case 'helved.utbetalinger-dp.v1':
@@ -69,7 +65,7 @@ const sakUrl = (message: Message) => {
                 return null
             }
 
-            return createSakUrl(sakId, 'DP')
+            return `/sak?sakId=${sakId}&fagsystem=DP`
         }
         case 'helved.utbetalinger-ts.v1':
         case 'tilleggsstonader.utbetaling.v1': {
@@ -80,7 +76,7 @@ const sakUrl = (message: Message) => {
                 return null
             }
 
-            return createSakUrl(sakId, 'TILLST')
+            return `/sak?sakId=${sakId}&fagsystem=TILLST`
         }
         case 'helved.utbetalinger-historisk.v1':
         case 'historisk.utbetaling.v1': {
@@ -91,7 +87,7 @@ const sakUrl = (message: Message) => {
                 return null
             }
 
-            return createSakUrl(sakId, 'HELSREF')
+            return `/sak?sakId=${sakId}&fagsystem=HELSREF`
         }
         case 'helved.utbetalinger.v1': {
             const json = JSON.parse(message.value)
@@ -102,7 +98,7 @@ const sakUrl = (message: Message) => {
                 return null
             }
 
-            return createSakUrl(sakId, tilFagsystem(fagsystem))
+            return `/sak?sakId=${sakId}&fagsystem=${tilFagsystem(fagsystem)}`
         }
         case 'helved.pending-utbetalinger.v1': {
             const json = JSON.parse(message.value)
@@ -113,7 +109,7 @@ const sakUrl = (message: Message) => {
                 return null
             }
 
-            return createSakUrl(sakId, tilFagsystem(fagsystem))
+            return `/sak?sakId=${sakId}&fagsystem=${tilFagsystem(fagsystem)}`
         }
         case 'helved.kvittering.v1':
         case 'helved.oppdrag.v1': {
@@ -125,7 +121,7 @@ const sakUrl = (message: Message) => {
                 return null
             }
 
-            return createSakUrl(sakId, tilFagsystem(fagsystem))
+            return `/sak?sakId=${sakId}&fagsystem=${tilFagsystem(fagsystem)}`
         }
     }
 }
