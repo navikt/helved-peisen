@@ -18,6 +18,8 @@ import { MessageValue } from './MessageValue'
 import { SakLink } from './SakLink'
 import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/FlyttTilUtbetalingerButton.tsx'
 import { EditAndSendOppdragButton } from '@/app/kafka/table/EditAndSendOppdragButton.tsx'
+import { TombstoneUtbetalingButton } from '@/app/kafka/table/TombstoneUtbetalingButton.tsx'
+import { ResendDagpengerButton } from '@/app/kafka/table/ResendDagpengerButton.tsx'
 
 type Props = {
     message: Message
@@ -84,6 +86,12 @@ const RowContents: React.FC<Props> = ({ message }) => {
                                 <>
                                     <FlyttTilUtbetalingerButton messageValue={message.value} messageKey={message.key}/>
                                 </>
+                            )}
+                            {message.topic_name === 'helved.utbetalinger.v1' && (
+                                <TombstoneUtbetalingButton messageKey={message.key} />
+                            )}
+                            {(message.topic_name === 'teamdagpenger.utbetaling.v1') && (
+                                <ResendDagpengerButton messageValue={message.value} messageKey={message.key} />
                             )}
                             <ActionMenuItem>
                                 <GrafanaTraceLink traceId={message.trace_id} />

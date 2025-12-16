@@ -34,7 +34,7 @@ export const FlyttTilUtbetalingerButton = ({ messageValue, messageKey }: Props) 
     return (
         <>
             <ActionMenuItem onSelect={handleMenuItemClick}>
-                Flytt til utbetalinger
+                Flytt til helved.utbetalinger.v1
             </ActionMenuItem>
         </>
     )

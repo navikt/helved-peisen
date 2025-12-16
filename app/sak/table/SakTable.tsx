@@ -21,6 +21,8 @@ import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import { type Message } from '@/app/kafka/types.ts'
 import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/FlyttTilUtbetalingerButton.tsx'
 import { EditAndSendOppdragButton } from '@/app/kafka/table/EditAndSendOppdragButton.tsx'
+import { TombstoneUtbetalingButton } from '@/app/kafka/table/TombstoneUtbetalingButton.tsx'
+import { ResendDagpengerButton } from '@/app/kafka/table/ResendDagpengerButton.tsx'
 
 type Props = {
     messages: Message[]
@@ -33,7 +35,7 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
             <TableBody>
                 {messages.map((it, i) => (
                     <TableExpandableRow
-                        key={it.key + it.timestamp_ms + i}
+                        key={it.key + it.timestamp_ms + it.topic_name + i}
                         className={clsx(
                             'transition-[background]',
                             activeMessage === it && 'bg-(--ax-bg-neutral-moderate-hoverA)',
@@ -72,6 +74,12 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
                                             <>
                                                 <FlyttTilUtbetalingerButton messageValue={it.value} messageKey={it.key}/>
                                             </>
+                                        )}
+                                        {it.topic_name === 'helved.utbetalinger.v1' && (
+                                            <TombstoneUtbetalingButton messageKey={it.key} />
+                                        )}
+                                        {(it.topic_name === 'teamdagpenger.utbetaling.v1' || it.topic_name === 'helved.utbetalinger-dp.v1') && (
+                                            <ResendDagpengerButton messageValue={it.value} messageKey={it.key} />
                                         )}
                                         <ActionMenuItem>
                                             <GrafanaTraceLink traceId={it.trace_id} />

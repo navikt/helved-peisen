@@ -78,7 +78,71 @@ export async function movePendingToUtbetaling(
     formData: FormData
 ): Promise<ApiResponse<null>> {
     await checkToken()
-    const response = await fetch(Routes.external.flyttTilUtbetalinger, {
+    const response = await fetch(Routes.external.pendingTilUtbetaling, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${await fetchApiToken()}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(Object.fromEntries(formData)),
+    })
+
+    if (!response.ok) {
+        logger.error(
+            `Server responded with status: ${response.status} - ${response.statusText}`
+        )
+        return {
+            data: null,
+            error: {
+                message: `Server responded with status: ${response.status} - ${response.statusText}`,
+                statusCode: response.status,
+            },
+        }
+    }
+
+    return {
+        data: null,
+        error: null,
+    }
+}
+
+export async function tombstoneUtbetaling(
+    formData: FormData
+): Promise<ApiResponse<null>> {
+    await checkToken()
+    const response = await fetch(Routes.external.tombstoneUtbetaling, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${await fetchApiToken()}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(Object.fromEntries(formData)),
+    })
+
+    if (!response.ok) {
+        logger.error(
+            `Server responded with status: ${response.status} - ${response.statusText}`
+        )
+        return {
+            data: null,
+            error: {
+                message: `Server responded with status: ${response.status} - ${response.statusText}`,
+                statusCode: response.status,
+            },
+        }
+    }
+
+    return {
+        data: null,
+        error: null,
+    }
+}
+
+export async function resendDagpenger(
+    formData: FormData
+): Promise<ApiResponse<null>> {
+    await checkToken()
+    const response = await fetch(Routes.external.resendDagpenger, {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${await fetchApiToken()}`,
