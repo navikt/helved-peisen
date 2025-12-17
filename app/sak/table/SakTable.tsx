@@ -54,6 +54,16 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
                             </div>
                         </TableDataCell>
                         <TableDataCell>
+                            <div className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">
+                                {it.partition}
+                            </div>
+                        </TableDataCell>
+                        <TableDataCell>
+                            <div className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">
+                                {it.offset}
+                            </div>
+                        </TableDataCell>
+                        <TableDataCell>
                             {it.value && (
                                 <ActionMenu>
                                     <ActionMenuTrigger>
@@ -97,6 +107,8 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
                     <TableHeaderCell textSize="small">Topic</TableHeaderCell>
                     <TableHeaderCell textSize="small">Timestamp</TableHeaderCell>
                     <TableHeaderCell textSize="small">Key</TableHeaderCell>
+                    <TableHeaderCell textSize="small">Partition</TableHeaderCell>
+                    <TableHeaderCell textSize="small">Offset</TableHeaderCell>
                     <TableHeaderCell />
                 </TableRow>
             </TableHeader>
@@ -122,6 +134,8 @@ export const SakTableSkeleton = () => {
                     <TableHeaderCell textSize="small">Topic</TableHeaderCell>
                     <TableHeaderCell textSize="small">Timestamp</TableHeaderCell>
                     <TableHeaderCell textSize="small">Key</TableHeaderCell>
+                    <TableHeaderCell textSize="small">Partition</TableHeaderCell>
+                    <TableHeaderCell textSize="small">Offset</TableHeaderCell>
                     <TableHeaderCell />
                 </TableRow>
             </TableHeader>
