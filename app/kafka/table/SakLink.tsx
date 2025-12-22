@@ -139,7 +139,7 @@ export const SakLink: React.FC<Props> = ({ message }) => {
 
     return (
         <ActionMenuItem>
-            <Link className="no-underline text-inherit w-full" href={url}>
+            <Link className="no-underline text-inherit w-full" href={url} target="_blank" rel="noopener noreferrer">
                 Gå til sak
             </Link>
         </ActionMenuItem>
