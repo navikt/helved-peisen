@@ -91,7 +91,12 @@ test('go to sak', async ({ page }) => {
     await expect(loading).toBeHidden()
 
     await page.locator('table tbody tr').first().locator('td').last().getByRole('button').click()
-    await page.getByText('Gå til sak').click()
 
-    await expect(page).toHaveURL(/\/sak\?sakId=AS-TILLST-2510010908&fagsystem=TILLST/)
+    const [newPage] = await Promise.all([
+        page.context().waitForEvent('page'),
+        page.getByText('Gå til sak').click()
+    ])
+
+    await newPage.waitForLoadState()
+    await expect(newPage).toHaveURL(/\/sak\?sakId=AS-TILLST-2510010908&fagsystem=TILLST/)
 })
