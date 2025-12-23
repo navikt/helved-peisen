@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { logger } from '@navikt/next-logger'
 
-import { tombstoneUtbetaling } from '@/app/actions'
+import { tombstoneUtbetaling } from '@/app/actions.ts'
 import { showToast } from '@/components/Toast.tsx'
 
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
@@ -41,12 +41,9 @@ export const TombstoneUtbetalingButton = ({ messageKey }: Props) => {
         }
     }
 
-
     return (
         <>
-            <ActionMenuItem onSelect={handleMenuItemClick}>
-                Tombstone utbetaling
-            </ActionMenuItem>
+            <ActionMenuItem onSelect={handleMenuItemClick}>Tombstone utbetaling</ActionMenuItem>
 
             <ConfirmationModal
                 open={modalOpen}

@@ -52,6 +52,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
             fom: searchParams.get('fom'),
             tom: searchParams.get('tom'),
             topics: searchParams.get('topics'),
+            status: searchParams.get('status'),
             trace_id: searchParams.get('trace_id'),
         }
     }, [searchParams])
@@ -60,7 +61,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
 
     useLayoutEffect(() => {
         // Oppdaterer search parameters med verdiene i state.params
-        if (shouldUpdate(searchParams, state)) {
+        if (shouldUpdate(searchParams, state) || state.status !== filtere.status) {
             setFiltere(state)
             const search = new URLSearchParams(searchParams.toString())
             for (const [key, value] of Object.entries(state)) {
@@ -77,7 +78,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 router.push(pathname + '?' + decodeURIComponent(search.toString()))
             }
         }
-    }, [state, router, pathname, searchParams, setFiltere])
+    }, [state, router, pathname, searchParams, setFiltere, filtere])
 
     return (
         <div className={clsx('flex gap-6 justify-between flex-wrap', className)} {...rest}>
@@ -112,6 +113,13 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                             'tilleggsstonader.utbetaling.v1',
                         ] as const
                     }
+                    isMultiSelect
+                    size="small"
+                />
+                <UrlSearchParamComboBox
+                    label="Status"
+                    searchParamName="status"
+                    initialOptions={['OK', 'FEILET', 'HOS_OPPDRAG', 'MOTTATT']}
                     isMultiSelect
                     size="small"
                 />
@@ -164,6 +172,7 @@ export type Filtere = {
     fom: string | null
     tom: string | null
     topics: string | null
+    status: string | null
     key: string | null
     value: string | null
     trace_id: string | null
@@ -179,6 +188,7 @@ export const FiltereContext = React.createContext<FiltereContextValue>({
     fom: null,
     tom: null,
     topics: null,
+    status: null,
     key: null,
     value: null,
     trace_id: null,
@@ -195,6 +205,7 @@ export const FiltereProvider: React.FC<React.PropsWithChildren> = ({ children })
         fom: null,
         tom: null,
         topics: null,
+        status: searchParams.get('status') || null,
         key: null,
         value: null,
         trace_id: searchParams.get('trace_id') || null,

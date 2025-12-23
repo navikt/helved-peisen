@@ -1,7 +1,7 @@
 import React from 'react'
 import { logger } from '@navikt/next-logger'
 
-import { movePendingToUtbetaling } from '@/app/actions'
+import { movePendingToUtbetaling } from '@/app/actions.ts'
 import { showToast } from '@/components/Toast.tsx'
 
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
@@ -33,9 +33,7 @@ export const FlyttTilUtbetalingerButton = ({ messageValue, messageKey }: Props) 
 
     return (
         <>
-            <ActionMenuItem onSelect={handleMenuItemClick}>
-                Flytt til helved.utbetalinger.v1
-            </ActionMenuItem>
+            <ActionMenuItem onSelect={handleMenuItemClick}>Flytt til helved.utbetalinger.v1</ActionMenuItem>
         </>
     )
 }

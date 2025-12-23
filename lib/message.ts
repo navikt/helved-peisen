@@ -1,4 +1,5 @@
-import type { Message } from '@/app/kafka/types.ts'
+import type { Message, StatusMessageValue } from '@/app/kafka/types.ts'
+import { parsedXML } from '@/lib/xml.ts'
 
 type Variant =
     | 'warning'
@@ -68,4 +69,39 @@ export const keepLatest = (messages: Message[]) => {
         }
     })
     return Array.from(grouped.values())
+}
+
+export const statusForMessage = (message: Message) => {
+    if (message.status) {
+        return message.status
+    }
+
+    if (!message.value) {
+        return null
+    }
+
+    switch (message.topic_name) {
+        case 'helved.oppdrag.v1':
+        case 'helved.kvittering.v1': {
+            const xmlDoc = parsedXML(message.value)
+            const content = xmlDoc.querySelector('mmel > alvorlighetsgrad')?.textContent
+
+            if (!content) {
+                return null
+            }
+
+            return content === '00' ? 'OK' : 'FEILET'
+        }
+        case 'helved.status.v1': {
+            try {
+                const value: StatusMessageValue = JSON.parse(message.value)
+                return value.status
+            } catch (e) {
+                console.error('Klarte ikke utlede status:', e)
+                return null
+            }
+        }
+    }
+
+    return null
 }

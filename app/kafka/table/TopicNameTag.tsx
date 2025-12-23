@@ -4,7 +4,7 @@ import React from 'react'
 import clsx from 'clsx'
 import { Tag } from '@navikt/ds-react'
 
-import type { Message, StatusMessageValue, UtbetalingMessageValue } from '@/app/kafka/types.ts'
+import type { Message, UtbetalingMessageValue } from '@/app/kafka/types.ts'
 
 import { parsedXML } from '@/lib/xml.ts'
 import { variant } from '@/lib/message.ts'
@@ -48,52 +48,6 @@ const AvstemmingStatusBadge: React.FC<Props> = ({ message }) => {
     return <Badge variant={content === 'DATA' ? 'success' : 'neutral'}>{content}</Badge>
 }
 
-const OppdragStatusBadge: React.FC<Props> = ({ message }) => {
-    if (!message.value) {
-        return null
-    }
-
-    const xmlDoc = parsedXML(message.value)
-    const content = xmlDoc.querySelector('mmel > alvorlighetsgrad')?.textContent
-
-    if (!content) {
-        return null
-    }
-
-    return (
-        <Badge variant={content === '00' ? 'success' : 'danger'}>
-            {(() => {
-                switch (content) {
-                    case '00':
-                        return 'OK'
-                    default:
-                        return 'FEILET'
-                }
-            })()}
-        </Badge>
-    )
-}
-
-const StatusStatusBadge: React.FC<Props> = ({ message }) => {
-    if (!message.value) {
-        return null
-    }
-
-    let value: StatusMessageValue
-    try {
-        value = JSON.parse(message.value)
-    } catch (e) {
-        console.error(e)
-        return null
-    }
-
-    return (
-        <Badge variant={value.status === 'OK' ? 'success' : value.status === 'FEILET' ? 'danger' : 'neutral'}>
-            {value.status}
-        </Badge>
-    )
-}
-
 const UtbetalingStatusBadge: React.FC<Props> = ({ message }) => {
     if (!message.value) {
         return null
@@ -118,9 +72,6 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
     switch (message.topic_name) {
         case 'helved.avstemming.v1':
             return <AvstemmingStatusBadge message={message} />
-        case 'helved.oppdrag.v1':
-        case 'helved.kvittering.v1':
-            return <OppdragStatusBadge message={message} />
         case 'helved.dryrun-aap.v1':
         case 'helved.dryrun-tp.v1':
         case 'helved.dryrun-ts.v1':
@@ -141,8 +92,6 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
         case 'tilleggsstonader.utbetaling.v1':
         case 'aap.utbetaling.v1':
             return <UtbetalingStatusBadge message={message} />
-        case 'helved.status.v1':
-            return <StatusStatusBadge message={message} />
     }
 
     return null

@@ -9,6 +9,8 @@ import { FormButton } from '@/components/FormButton'
 import { useSak } from '@/app/sak/SakProvider.tsx'
 import { useSetSearchParams } from '@/hooks/useSetSearchParams'
 import { fetchSak } from './actions'
+import { statusForMessage } from '@/lib/message'
+import { Message } from '@/app/kafka/types.ts'
 
 type FormStateValue = { value: string; error: undefined }
 type FormStateError = { value: undefined; error: string }
@@ -65,7 +67,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 setSak({
                     id: state.sakId.value,
                     fagsystem: state.fagsystem.value,
-                    hendelser: response.data,
+                    hendelser: response.data.map((it: Message) => ({ ...it, status: statusForMessage(it) })),
                 })
                 setSearchParams({
                     sakId: state.sakId.value,
@@ -117,7 +119,9 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     name="sakId"
                     size="small"
                     defaultValue={
-                        state.sakId?.error ? undefined : (state.sakId?.value || searchParams.get('sakId')?.replace(/ /g, '+')) ?? undefined
+                        state.sakId?.error
+                            ? undefined
+                            : (state.sakId?.value || searchParams.get('sakId')?.replace(/ /g, '+')) ?? undefined
                     }
                     error={state.sakId?.error}
                 />

@@ -4,7 +4,7 @@ import React, { useContext, useEffect } from 'react'
 import { Button } from '@navikt/ds-react'
 import { PlayIcon, StopIcon } from '@navikt/aksel-icons'
 
-import { MessagesContext } from './MessagesContext'
+import { MessagesContext } from './context/MessagesContext.tsx'
 
 export const LiveButton = () => {
     const { fetchAdditionalMessages } = useContext(MessagesContext)

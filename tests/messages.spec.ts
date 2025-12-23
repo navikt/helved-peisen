@@ -5,7 +5,7 @@ const getTimestamps = async (page: Page) => {
     const values = await page.locator('table tbody tr').evaluateAll((trs) =>
         trs
             .map((tr) => {
-                return tr.querySelectorAll('td')[3]?.textContent?.trim() || ''
+                return tr.querySelectorAll('td')[4]?.textContent?.trim() || ''
             })
             .filter((it) => it !== '')
     )
@@ -79,7 +79,7 @@ test('filter by value', async ({ page }) => {
     await expect(loading).toBeHidden()
 
     await expect(page.locator('text=Viser meldinger 1 - 100 av 231')).toBeVisible()
-    await page.getByRole('combobox').nth(1).fill('mmel')
+    await page.getByRole('combobox').nth(2).fill('mmel')
     await page.keyboard.press('Enter')
     await expect(page.locator('text=Viser meldinger 1 - 78 av 78')).toBeVisible()
 })
@@ -92,10 +92,7 @@ test('go to sak', async ({ page }) => {
 
     await page.locator('table tbody tr').first().locator('td').last().getByRole('button').click()
 
-    const [newPage] = await Promise.all([
-        page.context().waitForEvent('page'),
-        page.getByText('Gå til sak').click()
-    ])
+    const [newPage] = await Promise.all([page.context().waitForEvent('page'), page.getByText('Gå til sak').click()])
 
     await newPage.waitForLoadState()
     await expect(newPage).toHaveURL(/\/sak\?sakId=AS-TILLST-2510010908&fagsystem=TILLST/)

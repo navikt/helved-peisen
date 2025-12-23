@@ -3,7 +3,7 @@ import { MessagesView } from '@/app/kafka/MessagesView.tsx'
 import { checkToken } from '@/lib/auth/accessToken'
 import { ensureValidApiToken } from '@/lib/auth/apiToken.ts'
 import { SortStateProvider } from './table/SortState'
-import { MessagesProvider } from './MessagesContext'
+import { MessagesProvider } from './context/MessagesContext.tsx'
 
 export default async function KafkaOverview() {
     await checkToken()

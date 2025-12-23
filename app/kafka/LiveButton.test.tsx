@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { LiveButton } from './LiveButton'
-import { MessagesContext } from './MessagesContext'
+import { MessagesContext } from './context/MessagesContext.tsx'
 import { type PropsWithChildren } from 'react'
 
 const FakeMessagesContextProvider: React.FC<PropsWithChildren & { onFetchMessages: () => void }> = ({

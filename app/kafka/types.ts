@@ -36,6 +36,9 @@ export type Message = {
     stream_time_ms: number
     system_time_ms: number
     trace_id: string
+
+    // Kommer ikke fra backend men blir utledet fra value
+    status?: 'OK' | 'HOS_OPPDRAG' | 'MOTTATT' | 'FEILET'
 }
 
 export type DagpengerUtbetalingMessageValue = {

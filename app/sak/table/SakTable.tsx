@@ -15,14 +15,15 @@ import { format } from 'date-fns/format'
 import { ActionMenu, Button, Skeleton } from '@navikt/ds-react'
 import { ActionMenuContent, ActionMenuItem, ActionMenuTrigger } from '@navikt/ds-react/ActionMenu'
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'
-import { AddKvitteringButton } from '@/app/kafka/table/AddKvitteringButton.tsx'
-import { AddOppdragButton } from '@/app/kafka/table/AddOppdragButton.tsx'
+import { AddKvitteringButton } from '@/app/kafka/table/actionMenu/AddKvitteringButton.tsx'
+import { AddOppdragButton } from '@/app/kafka/table/actionMenu/AddOppdragButton.tsx'
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import { type Message } from '@/app/kafka/types.ts'
-import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/FlyttTilUtbetalingerButton.tsx'
-import { EditAndSendOppdragButton } from '@/app/kafka/table/EditAndSendOppdragButton.tsx'
-import { TombstoneUtbetalingButton } from '@/app/kafka/table/TombstoneUtbetalingButton.tsx'
-import { ResendDagpengerButton } from '@/app/kafka/table/ResendDagpengerButton.tsx'
+import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTilUtbetalingerButton.tsx'
+import { EditAndSendOppdragButton } from '@/app/kafka/table/actionMenu/EditAndSendOppdragButton.tsx'
+import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
+import { ResendDagpengerButton } from '@/app/kafka/table/actionMenu/ResendDagpengerButton.tsx'
+import { MessageStatus } from '@/components/MessageStatus'
 
 type Props = {
     messages: Message[]
@@ -38,20 +39,23 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
                         key={it.key + it.timestamp_ms + it.topic_name + i}
                         className={clsx(
                             'transition-[background]',
-                            activeMessage === it && 'bg-(--ax-bg-neutral-moderate-hoverA)',
+                            activeMessage === it && 'bg-(--ax-bg-neutral-moderate-hoverA)'
                         )}
                         content={<MessageTableRowContents message={it} />}
                     >
-                        <TableDataCell>
+                        <TableDataCell style={{ width: 0 }}>
                             <TopicNameTag message={it} />
+                        </TableDataCell>
+                        <TableDataCell style={{ width: 0 }}>
+                            <MessageStatus message={it} />
+                        </TableDataCell>
+                        <TableDataCell style={{ width: 0 }}>
+                            <div className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[600px]">
+                                {it.key}
+                            </div>
                         </TableDataCell>
                         <TableDataCell className="whitespace-nowrap">
                             {format(it.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}
-                        </TableDataCell>
-                        <TableDataCell>
-                            <div className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">
-                                {it.key}
-                            </div>
                         </TableDataCell>
                         <TableDataCell>
                             <div className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">
@@ -79,16 +83,21 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
                                                 <AddKvitteringButton messageValue={it.value} messageKey={it.key} />
                                                 <AddOppdragButton messageValue={it.value} messageKey={it.key} />
                                                 <EditAndSendOppdragButton messageValue={it.value} messageKey={it.key} />
-                                            </>)}
+                                            </>
+                                        )}
                                         {it.topic_name === 'helved.pending-utbetalinger.v1' && (
                                             <>
-                                                <FlyttTilUtbetalingerButton messageValue={it.value} messageKey={it.key}/>
+                                                <FlyttTilUtbetalingerButton
+                                                    messageValue={it.value}
+                                                    messageKey={it.key}
+                                                />
                                             </>
                                         )}
                                         {it.topic_name === 'helved.utbetalinger.v1' && (
                                             <TombstoneUtbetalingButton messageKey={it.key} />
                                         )}
-                                        {(it.topic_name === 'teamdagpenger.utbetaling.v1' || it.topic_name === 'helved.utbetalinger-dp.v1') && (
+                                        {(it.topic_name === 'teamdagpenger.utbetaling.v1' ||
+                                            it.topic_name === 'helved.utbetalinger-dp.v1') && (
                                             <ResendDagpengerButton messageValue={it.value} messageKey={it.key} />
                                         )}
                                         <ActionMenuItem>
@@ -105,8 +114,9 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
                 <TableRow>
                     <TableHeaderCell />
                     <TableHeaderCell textSize="small">Topic</TableHeaderCell>
-                    <TableHeaderCell textSize="small">Timestamp</TableHeaderCell>
+                    <TableHeaderCell textSize="small">Status</TableHeaderCell>
                     <TableHeaderCell textSize="small">Key</TableHeaderCell>
+                    <TableHeaderCell textSize="small">Timestamp</TableHeaderCell>
                     <TableHeaderCell textSize="small">Partition</TableHeaderCell>
                     <TableHeaderCell textSize="small">Offset</TableHeaderCell>
                     <TableHeaderCell />
@@ -122,7 +132,7 @@ export const SakTableSkeleton = () => {
             <TableBody>
                 {new Array(20).fill(null).map((_, i) => (
                     <TableExpandableRow key={i} content={undefined}>
-                        <TableDataCell colSpan={4}>
+                        <TableDataCell colSpan={7}>
                             <Skeleton height={33} />
                         </TableDataCell>
                     </TableExpandableRow>
@@ -132,8 +142,9 @@ export const SakTableSkeleton = () => {
                 <TableRow>
                     <TableHeaderCell />
                     <TableHeaderCell textSize="small">Topic</TableHeaderCell>
-                    <TableHeaderCell textSize="small">Timestamp</TableHeaderCell>
+                    <TableHeaderCell textSize="small">Status</TableHeaderCell>
                     <TableHeaderCell textSize="small">Key</TableHeaderCell>
+                    <TableHeaderCell textSize="small">Timestamp</TableHeaderCell>
                     <TableHeaderCell textSize="small">Partition</TableHeaderCell>
                     <TableHeaderCell textSize="small">Offset</TableHeaderCell>
                     <TableHeaderCell />

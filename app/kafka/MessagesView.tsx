@@ -10,7 +10,7 @@ import { parsedXML } from '@/lib/xml.ts'
 import { FiltereContext } from '@/app/kafka/Filtere.tsx'
 import { SortStateContext } from '@/app/kafka/table/SortState.tsx'
 import { keepLatest } from '@/lib/message.ts'
-import { MessagesContext } from './MessagesContext.tsx'
+import { MessagesContext } from './context/MessagesContext.tsx'
 
 export const MessagesView = () => {
     const { messages } = useContext(MessagesContext)
@@ -38,7 +38,11 @@ export const MessagesView = () => {
         return <NoMessages />
     }
 
-    let filteredMessages = Object.values(messages.data).flat()
+    const status = filtere.status ? filtere.status.split(',') : null
+
+    let filteredMessages = Object.values(messages.data)
+        .flat()
+        .filter((it) => (status ? it.status && status.includes(it.status) : true))
 
     if (filtere.visning === 'siste' || filtere.utenKvittering) {
         filteredMessages = keepLatest(filteredMessages)

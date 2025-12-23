@@ -4,8 +4,8 @@ import React, { useRef, useState } from 'react'
 import { Button, Modal, Select, TextField, VStack } from '@navikt/ds-react'
 import { logger } from '@navikt/next-logger'
 
-import { addKvittering } from '@/app/actions'
-import { FormButton } from '@/components/FormButton'
+import { addKvittering } from '@/app/actions.ts'
+import { FormButton } from '@/components/FormButton.tsx'
 import { showToast } from '@/components/Toast.tsx'
 
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'

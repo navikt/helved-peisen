@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { logger } from '@navikt/next-logger'
-import { resendDagpenger } from '@/app/actions'
+import { resendDagpenger } from '@/app/actions.ts'
 import { showToast } from '@/components/Toast.tsx'
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 import { ConfirmationModal } from '@/components/ConfirmationModal.tsx'
@@ -43,9 +43,7 @@ export const ResendDagpengerButton = ({ messageValue, messageKey }: Props) => {
 
     return (
         <>
-            <ActionMenuItem onSelect={handleMenuItemClick}>
-                Bygg og send oppdrag på nytt
-            </ActionMenuItem>
+            <ActionMenuItem onSelect={handleMenuItemClick}>Bygg og send oppdrag på nytt</ActionMenuItem>
 
             <ConfirmationModal
                 open={modalOpen}

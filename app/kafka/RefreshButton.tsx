@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { Button, Loader } from '@navikt/ds-react'
 import { ArrowsCirclepathIcon } from '@navikt/aksel-icons'
-import { MessagesContext } from './MessagesContext'
+import { MessagesContext } from './context/MessagesContext.tsx'
 
 export const RefreshButton = () => {
     const { loading, fetchAdditionalMessages } = useContext(MessagesContext)

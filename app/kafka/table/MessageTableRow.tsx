@@ -11,15 +11,16 @@ import { formatDate } from 'date-fns'
 import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import { UrlSearchParamLink } from '@/components/UrlSearchParamLink.tsx'
-import { AddKvitteringButton } from '@/app/kafka/table/AddKvitteringButton.tsx'
-import { AddOppdragButton } from '@/app/kafka/table/AddOppdragButton.tsx'
+import { AddKvitteringButton } from '@/app/kafka/table/actionMenu/AddKvitteringButton.tsx'
+import { AddOppdragButton } from '@/app/kafka/table/actionMenu/AddOppdragButton.tsx'
 import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
 import { MessageValue } from './MessageValue'
 import { SakLink } from './SakLink'
-import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/FlyttTilUtbetalingerButton.tsx'
-import { EditAndSendOppdragButton } from '@/app/kafka/table/EditAndSendOppdragButton.tsx'
-import { TombstoneUtbetalingButton } from '@/app/kafka/table/TombstoneUtbetalingButton.tsx'
-import { ResendDagpengerButton } from '@/app/kafka/table/ResendDagpengerButton.tsx'
+import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTilUtbetalingerButton.tsx'
+import { EditAndSendOppdragButton } from '@/app/kafka/table/actionMenu/EditAndSendOppdragButton.tsx'
+import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
+import { ResendDagpengerButton } from '@/app/kafka/table/actionMenu/ResendDagpengerButton.tsx'
+import { MessageStatus } from '../../../components/MessageStatus.tsx'
 
 type Props = {
     message: Message
@@ -44,14 +45,17 @@ export const MessageTableRowContents: React.FC<Props> = ({ message }) => {
 const RowContents: React.FC<Props> = ({ message }) => {
     return (
         <>
-            <TableDataCell>
+            <TableDataCell style={{ width: 0 }}>
                 <TopicNameTag message={message} />
             </TableDataCell>
-            <TableDataCell>
+            <TableDataCell style={{ width: 0 }}>
+                <MessageStatus message={message} />
+            </TableDataCell>
+            <TableDataCell style={{ width: 0 }}>
                 <UrlSearchParamLink
                     searchParamName="key"
                     searchParamValue={message.key}
-                    className="max-w-[380px] text-ellipsis block whitespace-nowrap overflow-hidden"
+                    className="max-w-[600px] text-ellipsis block whitespace-nowrap overflow-hidden"
                 >
                     {message.key}
                 </UrlSearchParamLink>
@@ -84,13 +88,13 @@ const RowContents: React.FC<Props> = ({ message }) => {
 
                             {message.topic_name === 'helved.pending-utbetalinger.v1' && (
                                 <>
-                                    <FlyttTilUtbetalingerButton messageValue={message.value} messageKey={message.key}/>
+                                    <FlyttTilUtbetalingerButton messageValue={message.value} messageKey={message.key} />
                                 </>
                             )}
                             {message.topic_name === 'helved.utbetalinger.v1' && (
                                 <TombstoneUtbetalingButton messageKey={message.key} />
                             )}
-                            {(message.topic_name === 'teamdagpenger.utbetaling.v1') && (
+                            {message.topic_name === 'teamdagpenger.utbetaling.v1' && (
                                 <ResendDagpengerButton messageValue={message.value} messageKey={message.key} />
                             )}
                             <ActionMenuItem>

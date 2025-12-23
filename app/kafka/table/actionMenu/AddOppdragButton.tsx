@@ -1,7 +1,7 @@
 import React from 'react'
 import { logger } from '@navikt/next-logger'
 
-import { addOppdrag } from '@/app/actions'
+import { addOppdrag } from '@/app/actions.ts'
 import { showToast } from '@/components/Toast.tsx'
 
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
@@ -33,9 +33,7 @@ export const AddOppdragButton = ({ messageValue, messageKey }: Props) => {
 
     return (
         <>
-            <ActionMenuItem onSelect={handleMenuItemClick}>
-                Send til oppdrag
-            </ActionMenuItem>
+            <ActionMenuItem onSelect={handleMenuItemClick}>Send til oppdrag</ActionMenuItem>
         </>
     )
 }

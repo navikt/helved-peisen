@@ -70,6 +70,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                         <TableRow>
                             <TableHeaderCell textSize="small" />
                             <TableHeaderCell textSize="small">Topic</TableHeaderCell>
+                            <TableHeaderCell textSize="small">Status</TableHeaderCell>
                             <TableHeaderCell textSize="small">Key</TableHeaderCell>
                             <TableColumnHeader
                                 sortKey="timestamp_ms"
