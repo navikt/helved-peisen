@@ -17,7 +17,7 @@ function LocalUnauthorized() {
             <Alert variant="error">Du må logge inn for å se dette innholdet</Alert>
             <VStack gap="space-12">
                 <BodyShort>Logg inn på nytt ved å kjøre:</BodyShort>
-                <CodeView>npm run fetch-dev-api-token</CodeView>
+                <CodeView>pnpm run fetch-dev-api-token</CodeView>
             </VStack>
         </section>
     )
