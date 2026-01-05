@@ -5,7 +5,7 @@ import { isFaking } from '@/lib/env'
 
 const isLocal = process.env.NODE_ENV !== 'production'
 
-export async function middleware(request: NextRequest): Promise<NextResponse> {
+export async function proxy(request: NextRequest): Promise<NextResponse> {
     const url = new URL(request.url)
 
     if (isFaking || isLocal) {
