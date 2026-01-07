@@ -31,9 +31,9 @@ describe('useMessageMap', () => {
         const [map, increment] = result.current!!
 
         expect(Object.keys(map)).toHaveLength(30)
-        expect(map[fom]).toHaveLength(229)
+        expect(map[fom]).toHaveLength(230)
         expect(map[addDays(fom, 1).toISOString()]).toHaveLength(0)
-        expect(Object.values(map).flat()).toHaveLength(229)
+        expect(Object.values(map).flat()).toHaveLength(230)
         expect(increment).toEqual('days')
     })
 })
