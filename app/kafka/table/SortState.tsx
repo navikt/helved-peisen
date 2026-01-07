@@ -5,7 +5,7 @@ import { type SortState } from '@navikt/ds-react/Table'
 import { useSearchParams } from 'next/navigation'
 
 export const SortStateContext = React.createContext<{ setSortState: Dispatch<SetStateAction<SortState>> } & SortState>({
-    orderBy: 'timestamp_ms',
+    orderBy: 'system_time_ms',
     direction: 'descending',
     setSortState: () => null,
 })
@@ -13,7 +13,7 @@ export const SortStateContext = React.createContext<{ setSortState: Dispatch<Set
 const useDefaultSortState = (): SortState => {
     return useSearchParams().get('topics')
         ? { orderBy: 'offset', direction: 'descending' }
-        : { orderBy: 'timestamp_ms', direction: 'descending' }
+        : { orderBy: 'system_time_ms', direction: 'descending' }
 }
 
 export const SortStateProvider: React.FC<React.PropsWithChildren> = ({ children }) => {

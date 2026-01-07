@@ -36,7 +36,7 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
             <TableBody>
                 {messages.map((it, i) => (
                     <TableExpandableRow
-                        key={it.key + it.timestamp_ms + it.topic_name + i}
+                        key={it.key + it.system_time_ms + it.topic_name + i}
                         className={clsx(
                             'transition-[background]',
                             activeMessage === it && 'bg-(--ax-bg-neutral-moderate-hoverA)'
@@ -55,7 +55,7 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
                             </div>
                         </TableDataCell>
                         <TableDataCell className="whitespace-nowrap">
-                            {format(it.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}
+                            {format(it.system_time_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}
                         </TableDataCell>
                         <TableDataCell>
                             <div className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">

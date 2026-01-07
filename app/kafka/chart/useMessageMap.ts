@@ -51,7 +51,7 @@ const getMessageMap = (start: Date, end: Date, increment: Increment): Record<str
 }
 
 const getKeyForMessage = (message: Message, keys: string[], increment: Increment) => {
-    const timestamp = new Date(message.timestamp_ms)
+    const timestamp = new Date(message.system_time_ms)
     return keys
         .filter((it) =>
             isWithinInterval(it, {
@@ -79,10 +79,10 @@ export const useMessageMap = (
         const increment = getIncrement(start, end)
         const messageMap = getMessageMap(start, end, increment)
         const filteredMessages = messages.filter(
-            ({ timestamp_ms }) =>
-                isEqual(timestamp_ms, end) ||
-                isEqual(timestamp_ms, start) ||
-                (isBefore(timestamp_ms, end) && isAfter(timestamp_ms, start))
+            ({ system_time_ms }) =>
+                isEqual(system_time_ms, end) ||
+                isEqual(system_time_ms, start) ||
+                (isBefore(system_time_ms, end) && isAfter(system_time_ms, start))
         )
 
         for (const message of filteredMessages) {

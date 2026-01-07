@@ -106,14 +106,14 @@ export const SakView = () => {
                                 {messages.map((it, i) => (
                                     <TimelineEvent
                                         key={i}
-                                        date={new Date(it.timestamp_ms)}
+                                        date={new Date(it.system_time_ms)}
                                         variant="info"
                                         content={
                                             <div className="grid grid-cols-[auto_auto] min-w-max gap-4 text-start">
                                                 <div>Key:</div>
                                                 <div>{it.key}</div>
                                                 <div>Timestamp:</div>
-                                                <div>{it.timestamp_ms}</div>
+                                                <div>{it.system_time_ms}</div>
                                             </div>
                                         }
                                         onClick={() => setActiveMessage(it)}

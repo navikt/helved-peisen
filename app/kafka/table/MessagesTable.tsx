@@ -73,7 +73,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                             <TableHeaderCell textSize="small">Status</TableHeaderCell>
                             <TableHeaderCell textSize="small">Key</TableHeaderCell>
                             <TableColumnHeader
-                                sortKey="timestamp_ms"
+                                sortKey="system_time_ms"
                                 sortable
                                 textSize="small"
                                 className="[&_button]:text-(--ax-text-accent-subtle)"

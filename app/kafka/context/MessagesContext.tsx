@@ -45,7 +45,7 @@ export const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
         return Object.values(messages.data)
             .flat()
             .reduce(
-                (latest, current) => (latest < current.timestamp_ms ? current.timestamp_ms : latest),
+                (latest, current) => (latest < current.system_time_ms ? current.system_time_ms : latest),
                 Number.MIN_SAFE_INTEGER
             )
     }, [messages])

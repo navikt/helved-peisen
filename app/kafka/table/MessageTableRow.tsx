@@ -20,7 +20,7 @@ import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTi
 import { EditAndSendOppdragButton } from '@/app/kafka/table/actionMenu/EditAndSendOppdragButton.tsx'
 import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
 import { ResendDagpengerButton } from '@/app/kafka/table/actionMenu/ResendDagpengerButton.tsx'
-import { MessageStatus } from '../../../components/MessageStatus.tsx'
+import { MessageStatus } from '@/components/MessageStatus.tsx'
 
 type Props = {
     message: Message
@@ -62,7 +62,7 @@ const RowContents: React.FC<Props> = ({ message }) => {
             </TableDataCell>
             <TableDataCell>
                 <span className="whitespace-nowrap">
-                    {formatDate(message.timestamp_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}
+                    {formatDate(message.system_time_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}
                 </span>
             </TableDataCell>
             <TableDataCell>{message.partition}</TableDataCell>

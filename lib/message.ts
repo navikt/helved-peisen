@@ -64,7 +64,7 @@ export const keepLatest = (messages: Message[]) => {
     messages.forEach((message) => {
         const key = `${message.topic_name}:${message.key}`
         const existing = grouped.get(key)
-        if (!existing || message.timestamp_ms > existing.timestamp_ms) {
+        if (!existing || message.system_time_ms > existing.system_time_ms) {
             grouped.set(key, message)
         }
     })
