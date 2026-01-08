@@ -1,29 +1,39 @@
 'use client'
 
 import React, { useRef, useState } from 'react'
-import { Button, HStack, Modal, Textarea, VStack } from '@navikt/ds-react'
-import { logger } from '@navikt/next-logger'
-
-import { addOppdrag } from '@/app/actions.ts'
+import { Button, Modal, Textarea } from '@navikt/ds-react'
 import { FormButton } from '@/components/FormButton.tsx'
-import { showToast } from '@/components/Toast.tsx'
 
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 import { DiffViewer } from '@/components/DiffViewer.tsx'
+import { showToast } from '@/components/Toast.tsx'
+import { addOppdrag } from '@/app/actions.ts'
+import { logger } from '@navikt/next-logger'
 
-type Props = {
-    messageValue: string
-    messageKey: string
+function olderThanAnHour(ms: number): boolean {
+    return Date.now() - ms > 60 * 60 * 1000
 }
 
-export const EditAndSendOppdragButton = ({ messageValue, messageKey }: Props) => {
+type Props = {
+    xml: string
+    messageKey: string
+    system_time_ms: number
+}
+
+export const EditAndSendOppdragButton = ({ xml, messageKey, system_time_ms }: Props) => {
     const ref = useRef<HTMLDialogElement>(null)
-    const [editedXml, setEditedXml] = useState(messageValue)
+    const [editedXml, setEditedXml] = useState(xml)
     const [showPreview, setShowPreview] = useState(false)
 
     const showModal = (e: Event) => {
         e.preventDefault()
-        setEditedXml(messageValue)
+
+        if (!olderThanAnHour(system_time_ms)) {
+            showToast('Kan ikke sende inn oppdrag på nytt før det har gått en time', { variant: 'warning' })
+            return
+        }
+
+        setEditedXml(xml)
         setShowPreview(false)
         ref.current?.showModal()
     }
@@ -31,18 +41,10 @@ export const EditAndSendOppdragButton = ({ messageValue, messageKey }: Props) =>
     const closeModal = () => {
         ref.current?.close()
         setShowPreview(false)
+        setEditedXml(xml)
     }
 
-    const handleSendInn = (e: React.FormEvent) => {
-        e.preventDefault()
-        setShowPreview(true)
-    }
-
-    const handleGoBack = () => {
-        setShowPreview(false)
-    }
-
-    const handleConfirm = async () => {
+    const sendTilOppdrag = async () => {
         const formData = new FormData()
         formData.set('oppdragXml', editedXml)
         formData.set('messageKey', messageKey)
@@ -57,55 +59,68 @@ export const EditAndSendOppdragButton = ({ messageValue, messageKey }: Props) =>
                 variant: 'success',
             })
         }
+    }
 
-        closeModal()
+    const onSubmit = (e: React.FormEvent) => {
+        e.preventDefault()
+
+        if (showPreview || editedXml === xml) {
+            sendTilOppdrag()
+            closeModal()
+        } else {
+            setShowPreview(true)
+        }
     }
 
     return (
         <>
-            <ActionMenuItem onSelect={showModal}>Rediger og send til oppdrag</ActionMenuItem>
-            <Modal
-                ref={ref}
-                header={{ heading: showPreview ? 'Forhåndsvisning av endringer' : 'Rediger og send oppdrag' }}
-                width="1200px"
-            >
-                <form onSubmit={handleSendInn}>
-                    <Modal.Body>
-                        {!showPreview ? (
-                            <VStack gap="4">
-                                <Textarea
-                                    label="Oppdrag XML"
-                                    description="Rediger XML før innsending"
-                                    value={editedXml}
-                                    onChange={(e) => setEditedXml(e.target.value)}
-                                />
-                            </VStack>
-                        ) : (
-                            <DiffViewer original={messageValue} edited={editedXml} />
-                        )}
-                    </Modal.Body>
-                    <Modal.Footer>
-                        {!showPreview ? (
-                            <>
-                                <FormButton>Send inn</FormButton>
-                                <Button type="button" variant="secondary" onClick={closeModal}>
-                                    Avbryt
-                                </Button>
-                            </>
-                        ) : (
-                            <HStack gap="4">
-                                <Button type="button" variant="primary" onClick={handleConfirm}>
-                                    Godkjenn endringer
-                                </Button>
-                                <Button type="button" variant="secondary" onClick={handleGoBack}>
+            <ActionMenuItem onSelect={showModal}>Send til oppdrag</ActionMenuItem>
+            <Modal ref={ref} header={{ heading: 'Send inn oppdrag' }} className="w-[150ch] max-w-[90vw] relative">
+                <form onSubmit={onSubmit}>
+                    {showPreview ? (
+                        <>
+                            <Modal.Body>
+                                <DiffViewer original={xml} edited={editedXml} />
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <FormButton>Godkjenn endringer</FormButton>
+                                <Button type="button" variant="secondary" onClick={() => setShowPreview(false)}>
                                     Tilbake
                                 </Button>
                                 <Button type="button" variant="tertiary" onClick={closeModal}>
                                     Avbryt
                                 </Button>
-                            </HStack>
-                        )}
-                    </Modal.Footer>
+                            </Modal.Footer>
+                        </>
+                    ) : (
+                        <>
+                            <Modal.Body>
+                                <Textarea
+                                    className="[&_textarea]:h-[70vh] [&_textarea]:overflow-auto!"
+                                    label="Oppdrag-XML"
+                                    description="Innholdet kan redigeres før innsending eller sendes inn som den er."
+                                    value={editedXml}
+                                    onChange={(e) => setEditedXml(e.target.value)}
+                                />
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <FormButton>
+                                    {xml === editedXml ? 'Send inn uten endringer' : 'Se gjennom endringer'}
+                                </FormButton>
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    onClick={() => setEditedXml(xml)}
+                                    disabled={xml === editedXml}
+                                >
+                                    Nullstill endringer
+                                </Button>
+                                <Button type="button" variant="tertiary" onClick={closeModal}>
+                                    Avbryt
+                                </Button>
+                            </Modal.Footer>
+                        </>
+                    )}
                 </form>
             </Modal>
         </>

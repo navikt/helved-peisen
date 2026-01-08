@@ -16,7 +16,6 @@ import { ActionMenu, Button, Skeleton } from '@navikt/ds-react'
 import { ActionMenuContent, ActionMenuItem, ActionMenuTrigger } from '@navikt/ds-react/ActionMenu'
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'
 import { AddKvitteringButton } from '@/app/kafka/table/actionMenu/AddKvitteringButton.tsx'
-import { AddOppdragButton } from '@/app/kafka/table/actionMenu/AddOppdragButton.tsx'
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import { type Message } from '@/app/kafka/types.ts'
 import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTilUtbetalingerButton.tsx'
@@ -81,8 +80,11 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
                                         {it.topic_name === 'helved.oppdrag.v1' && (
                                             <>
                                                 <AddKvitteringButton messageValue={it.value} messageKey={it.key} />
-                                                <AddOppdragButton messageValue={it.value} messageKey={it.key} />
-                                                <EditAndSendOppdragButton messageValue={it.value} messageKey={it.key} />
+                                                <EditAndSendOppdragButton
+                                                    xml={it.value}
+                                                    messageKey={it.key}
+                                                    system_time_ms={it.system_time_ms}
+                                                />
                                             </>
                                         )}
                                         {it.topic_name === 'helved.pending-utbetalinger.v1' && (

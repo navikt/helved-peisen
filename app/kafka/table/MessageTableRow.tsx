@@ -12,7 +12,6 @@ import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import { UrlSearchParamLink } from '@/components/UrlSearchParamLink.tsx'
 import { AddKvitteringButton } from '@/app/kafka/table/actionMenu/AddKvitteringButton.tsx'
-import { AddOppdragButton } from '@/app/kafka/table/actionMenu/AddOppdragButton.tsx'
 import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
 import { MessageValue } from './MessageValue'
 import { SakLink } from './SakLink'
@@ -81,8 +80,11 @@ const RowContents: React.FC<Props> = ({ message }) => {
                             {message.topic_name === 'helved.oppdrag.v1' && (
                                 <>
                                     <AddKvitteringButton messageValue={message.value} messageKey={message.key} />
-                                    <AddOppdragButton messageValue={message.value} messageKey={message.key} />
-                                    <EditAndSendOppdragButton messageValue={message.value} messageKey={message.key} />
+                                    <EditAndSendOppdragButton
+                                        xml={message.value}
+                                        messageKey={message.key}
+                                        system_time_ms={message.system_time_ms}
+                                    />
                                 </>
                             )}
 
