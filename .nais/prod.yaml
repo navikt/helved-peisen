@@ -15,8 +15,8 @@ spec:
     limits:
       memory: 256Mi
     requests:
-      memory: 150Mi
-      cpu: 20m
+      memory: 256Mi
+      cpu: 30m
   observability:
     autoInstrumentation:
       enabled: true

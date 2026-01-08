@@ -13,10 +13,10 @@ spec:
     max: 1
   resources:
     limits:
-      memory: 150Mi
+      memory: 256Mi
     requests:
-      memory: 150Mi
-      cpu: 20m
+      memory: 256Mi
+      cpu: 30m
   observability:
     autoInstrumentation:
       enabled: true
