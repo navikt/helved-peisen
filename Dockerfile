@@ -3,6 +3,8 @@ WORKDIR /app
 ENV PORT=3000 \
     NODE_ENV=production
 
+RUN apk update && apk upgrade --no-cache
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
