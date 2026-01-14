@@ -16,8 +16,8 @@ export const FlyttTilUtbetalingerButton = ({ messageValue, messageKey }: Props) 
         e.preventDefault()
 
         const formData = new FormData()
-        formData.set('oppdragXml', messageValue)
-        formData.set('messageKey', messageKey)
+        formData.set('value', messageValue)
+        formData.set('key', messageKey)
 
         const response = await movePendingToUtbetaling(formData)
         if (response.error) {
