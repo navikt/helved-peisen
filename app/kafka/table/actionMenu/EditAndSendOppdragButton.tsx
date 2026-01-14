@@ -46,8 +46,8 @@ export const EditAndSendOppdragButton = ({ xml, messageKey, system_time_ms }: Pr
 
     const sendTilOppdrag = async () => {
         const formData = new FormData()
-        formData.set('oppdragXml', editedXml)
-        formData.set('messageKey', messageKey)
+        formData.set('value', editedXml)
+        formData.set('key', messageKey)
 
         const response = await addOppdrag(formData)
         if (response.error) {
