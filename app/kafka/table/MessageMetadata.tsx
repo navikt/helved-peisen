@@ -8,6 +8,7 @@ import {
     Message,
     OppdragMessageValue,
     StatusMessageValue,
+    TsUtbetalingMessageValue,
     UtbetalingMessageValue,
 } from '@/app/kafka/types.ts'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
@@ -106,6 +107,48 @@ const UtbetalingMessageMetadata: React.FC<Props> = ({ message }) => {
                             {!!it.vedtakssats && <MetadataCard label="Vedtakssats" value={it.vedtakssats} />}
                             {!!it.betalendeEnhet && <MetadataCard label="Betalende enhet" value={it.betalendeEnhet} />}
                         </HStack>
+                    </MetadataCardContainer>
+                ))}
+            </VStack>
+        </VStack>
+    )
+}
+
+const TsUtbetalingMessageMetadata: React.FC<Props> = ({ message }) => {
+    if (!message.value) {
+        throw Error('Utbetalingsmelding mangler value')
+    }
+
+    const value: TsUtbetalingMessageValue = JSON.parse(message.value)
+
+    return (
+        <VStack gap="space-32">
+            <VStack gap="space-12">
+                <Label>Utbetaling</Label>
+                <MetadataCardContainer>
+                    <HStack wrap gap="space-12">
+                        <MetadataCard label="Sak-ID" value={value.sakId} />
+                        <MetadataCard label="Behandling-ID" value={value.behandlingId} />
+                    </HStack>
+                </MetadataCardContainer>
+            </VStack>
+            <VStack gap="space-12">
+                <Label>Utbetalinger</Label>
+                {value.utbetalinger.map((utbetaling, i) => (
+                    <MetadataCardContainer key={i}>
+                        <VStack gap="space-12">
+                            {utbetaling.perioder.map((periode, i) => (
+                                <HStack key={i} wrap gap="space-12">
+                                    <MetadataCard label="Fom" value={periode.fom} />
+                                    <MetadataCard label="Tom" value={periode.tom} />
+                                    <MetadataCard label="Beløp" value={periode.beløp} />
+                                    <MetadataCard label="Stønad" value={utbetaling.stønad} />
+                                    {!!periode.betalendeEnhet && (
+                                        <MetadataCard label="Betalende enhet" value={periode.betalendeEnhet} />
+                                    )}
+                                </HStack>
+                            ))}
+                        </VStack>
                     </MetadataCardContainer>
                 ))}
             </VStack>
@@ -285,7 +328,7 @@ export const MessageMetadata: React.FC<Props> = ({ message }) => {
                     case 'teamdagpenger.utbetaling.v1':
                         return <DagpengerUtbetalingMessageMetadata message={message} />
                     case 'tilleggsstonader.utbetaling.v1':
-                        return <UtbetalingMessageMetadata message={message} />
+                        return <TsUtbetalingMessageMetadata message={message} />
                     case 'historisk.utbetaling.v1':
                         return <UtbetalingMessageMetadata message={message} />
                 }

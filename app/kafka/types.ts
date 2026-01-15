@@ -56,6 +56,28 @@ export type DagpengerUtbetalingMessageValue = {
     }[]
 }
 
+export type TsUtbetalingMessageValue = {
+    dryrun?: boolean | null
+    sakId: string
+    behandlingId: string
+    personident: string
+    vedtakstidspunkt: string
+    periodetype: string
+    saksbehandler?: string | null
+    beslutter?: string | null
+    utbetalinger: {
+        id: string
+        stønad: string
+        perioder: {
+            fom: string
+            tom: string
+            beløp: number
+            betalendeEnhet?: string | null
+        }[]
+        brukFagområdeTillst?: boolean | null
+    }[]
+}
+
 export type UtbetalingMessageValue = {
     dryrun: boolean
     originalKey: string
