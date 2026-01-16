@@ -169,3 +169,35 @@ export async function resendDagpenger(
         error: null,
     }
 }
+
+export async function resendTilleggsstonader(
+    formData: FormData
+): Promise<ApiResponse<null>> {
+    await checkToken()
+    const response = await fetch(Routes.external.resendTilleggsstonader, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${await fetchApiToken()}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(Object.fromEntries(formData)),
+    })
+
+    if (!response.ok) {
+        logger.error(
+            `Server responded with status: ${response.status} - ${response.statusText}`
+        )
+        return {
+            data: null,
+            error: {
+                message: `Server responded with status: ${response.status} - ${response.statusText}`,
+                statusCode: response.status,
+            },
+        }
+    }
+
+    return {
+        data: null,
+        error: null,
+    }
+}

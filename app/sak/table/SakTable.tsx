@@ -23,6 +23,7 @@ import { EditAndSendOppdragButton } from '@/app/kafka/table/actionMenu/EditAndSe
 import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
 import { ResendDagpengerButton } from '@/app/kafka/table/actionMenu/ResendDagpengerButton.tsx'
 import { MessageStatus } from '@/components/MessageStatus'
+import { ResendTilleggsstonaderButton } from '@/app/kafka/table/actionMenu/ResendTilleggsstonaderButton.tsx'
 
 type Props = {
     messages: Message[]
@@ -101,6 +102,9 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
                                         {(it.topic_name === 'teamdagpenger.utbetaling.v1' ||
                                             it.topic_name === 'helved.utbetalinger-dp.v1') && (
                                             <ResendDagpengerButton messageValue={it.value} messageKey={it.key} />
+                                        )}
+                                        {it.topic_name === 'tilleggsstonader.utbetaling.v1' && (
+                                            <ResendTilleggsstonaderButton messageValue={it.value} messageKey={it.key} />
                                         )}
                                         <ActionMenuItem>
                                             <GrafanaTraceLink traceId={it.trace_id} />

@@ -20,6 +20,7 @@ import { EditAndSendOppdragButton } from '@/app/kafka/table/actionMenu/EditAndSe
 import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
 import { ResendDagpengerButton } from '@/app/kafka/table/actionMenu/ResendDagpengerButton.tsx'
 import { MessageStatus } from '@/components/MessageStatus.tsx'
+import { ResendTilleggsstonaderButton } from '@/app/kafka/table/actionMenu/ResendTilleggsstonaderButton.tsx'
 
 type Props = {
     message: Message
@@ -98,6 +99,9 @@ const RowContents: React.FC<Props> = ({ message }) => {
                             )}
                             {message.topic_name === 'teamdagpenger.utbetaling.v1' && (
                                 <ResendDagpengerButton messageValue={message.value} messageKey={message.key} />
+                            )}
+                            {message.topic_name === 'tilleggsstonader.utbetaling.v1' && (
+                                <ResendTilleggsstonaderButton messageValue={message.value} messageKey={message.key} />
                             )}
                             <ActionMenuItem>
                                 <GrafanaTraceLink traceId={message.trace_id} />

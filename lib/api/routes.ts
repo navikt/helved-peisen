@@ -8,6 +8,7 @@ export const Routes = {
         pendingTilUtbetaling: `${kafkaApiBaseUrl}/pending-til-utbetaling`,
         tombstoneUtbetaling: `${kafkaApiBaseUrl}/tombstone-utbetaling`,
         resendDagpenger: `${kafkaApiBaseUrl}/resend-dagpenger`,
+        resendTilleggsstonader: `${kafkaApiBaseUrl}/resend-tilleggsstonader`,
         saker: `${kafkaApiBaseUrl}/api/saker`,
         sak(sakId: string, fagsystem: string) {
             return `${kafkaApiBaseUrl}/api/saker/${sakId}/${fagsystem}`
