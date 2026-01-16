@@ -25,8 +25,8 @@ export const ResendTilleggsstonaderButton = ({ messageValue, messageKey }: Props
         setIsLoading(true)
 
         const formData = new FormData()
-        formData.set('value', messageValue)
         formData.set('key', messageKey)
+        formData.set('value', messageValue)
 
         const response = await resendTilleggsstonader(formData)
         if (response.error) {
