@@ -92,11 +92,14 @@ export const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
         setLoading(false)
     }, [searchParams, lastTimestamp, setSearchParam])
 
+    const fom = searchParams.get('fom')
+    const tom = searchParams.get('tom')
+
     useEffect(() => {
-        if (searchParams.get('fom') && searchParams.get('tom')) {
+        if (fom && tom) {
             fetchMessages()
         }
-    }, [searchParams, fetchMessages])
+    }, [fom, tom, fetchMessages])
 
     return (
         <MessagesContext.Provider value={{ loading, messages, fetchAdditionalMessages }}>
