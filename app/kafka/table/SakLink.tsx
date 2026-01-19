@@ -76,7 +76,7 @@ const sakUrl = (message: Message) => {
                 return null
             }
 
-            return `/sak?sakId=${sakId}&fagsystem=TILLST`
+            return `/sak?sakId=${sakId}&fagsystem=TILLST,TILLSTPB,TILLSTLM,TILLSTBO,TILLSTDR,TILLSTRS,TILLSTRO,TILLSTRA,TILLSTFL`
         }
         case 'helved.utbetalinger-historisk.v1':
         case 'historisk.utbetaling.v1': {

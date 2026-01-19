@@ -132,26 +132,28 @@ const TsUtbetalingMessageMetadata: React.FC<Props> = ({ message }) => {
                     </HStack>
                 </MetadataCardContainer>
             </VStack>
-            <VStack gap="space-12">
-                <Label>Utbetalinger</Label>
-                {value.utbetalinger.map((utbetaling, i) => (
-                    <MetadataCardContainer key={i}>
-                        <VStack gap="space-12">
-                            {utbetaling.perioder.map((periode, i) => (
-                                <HStack key={i} wrap gap="space-12">
-                                    <MetadataCard label="Fom" value={periode.fom} />
-                                    <MetadataCard label="Tom" value={periode.tom} />
-                                    <MetadataCard label="Beløp" value={periode.beløp} />
-                                    <MetadataCard label="Stønad" value={utbetaling.stønad} />
-                                    {!!periode.betalendeEnhet && (
-                                        <MetadataCard label="Betalende enhet" value={periode.betalendeEnhet} />
-                                    )}
-                                </HStack>
-                            ))}
-                        </VStack>
-                    </MetadataCardContainer>
-                ))}
-            </VStack>
+            {value.utbetalinger && value.utbetalinger.length > 0 && (
+                <VStack gap="space-12">
+                    <Label>Utbetalinger</Label>
+                    {value.utbetalinger.map((utbetaling, i) => (
+                        <MetadataCardContainer key={i}>
+                            <VStack gap="space-12">
+                                {utbetaling.perioder?.map((periode, j) => (
+                                    <HStack key={j} wrap gap="space-12">
+                                        <MetadataCard label="Fom" value={periode.fom} />
+                                        <MetadataCard label="Tom" value={periode.tom} />
+                                        <MetadataCard label="Beløp" value={periode.beløp} />
+                                        <MetadataCard label="Stønad" value={utbetaling.stønad} />
+                                        {!!periode.betalendeEnhet && (
+                                            <MetadataCard label="Betalende enhet" value={periode.betalendeEnhet} />
+                                        )}
+                                    </HStack>
+                                ))}
+                            </VStack>
+                        </MetadataCardContainer>
+                    ))}
+                </VStack>
+            )}
         </VStack>
     )
 }
