@@ -10,9 +10,7 @@ export async function deleteApiToken() {
     ;(await cookies()).delete('api-token')
 }
 
-export async function addKvittering(
-    formData: FormData
-): Promise<ApiResponse<null>> {
+export async function addKvittering(formData: FormData): Promise<ApiResponse<null>> {
     await checkToken()
     const response = await fetch(Routes.external.manuellKvittering, {
         method: 'POST',
@@ -24,9 +22,7 @@ export async function addKvittering(
     })
 
     if (!response.ok) {
-        logger.error(
-            `Server responded with status: ${response.status} - ${response.statusText}`
-        )
+        logger.error(`Server responded with status: ${response.status} - ${response.statusText}`)
         return {
             data: null,
             error: {
@@ -42,41 +38,7 @@ export async function addKvittering(
     }
 }
 
-export async function addOppdrag(
-    formData: FormData
-): Promise<ApiResponse<null>> {
-    await checkToken()
-    const response = await fetch(Routes.external.manuellOppdrag, {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${await fetchApiToken()}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(Object.fromEntries(formData)),
-    })
-
-    if (!response.ok) {
-        logger.error(
-            `Server responded with status: ${response.status} - ${response.statusText}`
-        )
-        return {
-            data: null,
-            error: {
-                message: `Server responded with status: ${response.status} - ${response.statusText}`,
-                statusCode: response.status,
-            },
-        }
-    }
-
-    return {
-        data: null,
-        error: null,
-    }
-}
-
-export async function movePendingToUtbetaling(
-    formData: FormData
-): Promise<ApiResponse<null>> {
+export async function movePendingToUtbetaling(formData: FormData): Promise<ApiResponse<null>> {
     await checkToken()
     const response = await fetch(Routes.external.pendingTilUtbetaling, {
         method: 'POST',
@@ -88,9 +50,7 @@ export async function movePendingToUtbetaling(
     })
 
     if (!response.ok) {
-        logger.error(
-            `Server responded with status: ${response.status} - ${response.statusText}`
-        )
+        logger.error(`Server responded with status: ${response.status} - ${response.statusText}`)
         return {
             data: null,
             error: {
@@ -106,9 +66,7 @@ export async function movePendingToUtbetaling(
     }
 }
 
-export async function tombstoneUtbetaling(
-    formData: FormData
-): Promise<ApiResponse<null>> {
+export async function tombstoneUtbetaling(formData: FormData): Promise<ApiResponse<null>> {
     await checkToken()
     const response = await fetch(Routes.external.tombstoneUtbetaling, {
         method: 'POST',
@@ -120,73 +78,7 @@ export async function tombstoneUtbetaling(
     })
 
     if (!response.ok) {
-        logger.error(
-            `Server responded with status: ${response.status} - ${response.statusText}`
-        )
-        return {
-            data: null,
-            error: {
-                message: `Server responded with status: ${response.status} - ${response.statusText}`,
-                statusCode: response.status,
-            },
-        }
-    }
-
-    return {
-        data: null,
-        error: null,
-    }
-}
-
-export async function resendDagpenger(
-    formData: FormData
-): Promise<ApiResponse<null>> {
-    await checkToken()
-    const response = await fetch(Routes.external.resendDagpenger, {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${await fetchApiToken()}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(Object.fromEntries(formData)),
-    })
-
-    if (!response.ok) {
-        logger.error(
-            `Server responded with status: ${response.status} - ${response.statusText}`
-        )
-        return {
-            data: null,
-            error: {
-                message: `Server responded with status: ${response.status} - ${response.statusText}`,
-                statusCode: response.status,
-            },
-        }
-    }
-
-    return {
-        data: null,
-        error: null,
-    }
-}
-
-export async function resendTilleggsstonader(
-    formData: FormData
-): Promise<ApiResponse<null>> {
-    await checkToken()
-    const response = await fetch(Routes.external.resendTilleggsstonader, {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${await fetchApiToken()}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(Object.fromEntries(formData)),
-    })
-
-    if (!response.ok) {
-        logger.error(
-            `Server responded with status: ${response.status} - ${response.statusText}`
-        )
+        logger.error(`Server responded with status: ${response.status} - ${response.statusText}`)
         return {
             data: null,
             error: {

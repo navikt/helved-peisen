@@ -1,0 +1,29 @@
+import { Routes } from '@/lib/api/routes.ts'
+import { getApiTokenFromCookie } from '@/lib/auth/apiToken.ts'
+import { sanitizeKey, toMessage } from '@/lib/backend/message'
+import { logger } from '@navikt/next-logger'
+import { NextRequest, NextResponse } from 'next/server'
+import type { RawMessage } from '@/app/kafka/types.ts'
+
+export async function GET(_: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
+    const apiToken = await getApiTokenFromCookie()
+    if (!apiToken) return NextResponse.redirect('/internal/login')
+
+    const { sakId, fagsystem } = await params
+    const res = await fetch(Routes.external.sak(sakId, fagsystem), {
+        headers: { Authorization: `Bearer ${apiToken}` },
+    })
+
+    if (!res.ok) {
+        logger.error(`Klarte ikke hente hendelser for sak: ${res.status} - ${res.statusText}`)
+        return NextResponse.json({
+            data: null,
+            error: { message: `Klarte ikke hente hendelser for sak: ${res.status} - ${res.statusText}` },
+        })
+    }
+
+    const data = await res.json()
+    const sanitized = data.map((it: RawMessage) => sanitizeKey(toMessage(it)))
+
+    return NextResponse.json({ data: sanitized, error: null })
+}

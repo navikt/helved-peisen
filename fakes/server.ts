@@ -16,12 +16,7 @@ app.get('/api', async (req, res) => {
     const key = typeof req.query.key === 'string' ? req.query.key : undefined
     const value = parseStringQueryParam(req.query.value) ?? []
 
-    const filteredMessages = messages.filter(
-        (it) =>
-            topics.includes(it.topic_name) &&
-            (key ? it.key === key : true) &&
-            (value.length > 0 ? value.some((val) => it.value?.includes(val)) : true)
-    )
+    const filteredMessages = messages.filter((it) => topics.includes(it.topic_name) && (key ? it.key === key : true))
 
     res.send(JSON.stringify(filteredMessages)).status(200)
 })

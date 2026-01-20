@@ -4,9 +4,7 @@ import React from 'react'
 import clsx from 'clsx'
 import { Tag } from '@navikt/ds-react'
 
-import type { Message, UtbetalingMessageValue } from '@/app/kafka/types.ts'
-
-import { parsedXML } from '@/lib/xml.ts'
+import type { Message } from '@/app/kafka/types.ts'
 import { variant } from '@/lib/message.ts'
 
 type BadgeProps = {
@@ -34,52 +32,25 @@ type Props = {
 }
 
 const AvstemmingStatusBadge: React.FC<Props> = ({ message }) => {
-    if (!message.value) {
+    if (!message.badge) {
         return null
     }
 
-    const xmlDoc = parsedXML(message.value)
-    const content = xmlDoc.querySelector('aksjon > aksjonType')?.textContent
-
-    if (!content) {
-        return null
-    }
-
-    return <Badge variant={content === 'DATA' ? 'success' : 'neutral'}>{content}</Badge>
+    return <Badge variant={message.badge === 'DATA' ? 'success' : 'neutral'}>{message.badge}</Badge>
 }
 
 const UtbetalingStatusBadge: React.FC<Props> = ({ message }) => {
-    if (!message.value) {
+    if (!message.badge) {
         return null
     }
 
-    let value: UtbetalingMessageValue
-    try {
-        value = JSON.parse(message.value)
-    } catch (e) {
-        console.error(e)
-        return null
-    }
-
-    if (!value.dryrun) {
-        return null
-    }
-
-    return <Badge>DRYRUN</Badge>
+    return <Badge>{message.badge}</Badge>
 }
 
 const StatusBadge: React.FC<Props> = ({ message }) => {
     switch (message.topic_name) {
         case 'helved.avstemming.v1':
             return <AvstemmingStatusBadge message={message} />
-        case 'helved.dryrun-aap.v1':
-        case 'helved.dryrun-tp.v1':
-        case 'helved.dryrun-ts.v1':
-        case 'helved.dryrun-dp.v1':
-        case 'helved.fk.v1':
-        case 'helved.simuleringer.v1':
-        case 'helved.saker.v1':
-            break
         case 'helved.utbetalinger.v1':
         case 'historisk.utbetaling.v1':
         case 'helved.utbetalinger-historisk.v1':

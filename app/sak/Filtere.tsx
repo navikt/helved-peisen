@@ -8,9 +8,7 @@ import { showToast } from '@/components/Toast'
 import { FormButton } from '@/components/FormButton'
 import { useSak } from '@/app/sak/SakProvider.tsx'
 import { useSetSearchParams } from '@/hooks/useSetSearchParams'
-import { fetchSak } from './actions'
-import { statusForMessage } from '@/lib/message'
-import { Message } from '@/app/kafka/types.ts'
+import { fetchHendelserForSak } from '@/lib/io.ts'
 
 type FormStateValue = { value: string; error: undefined }
 type FormStateError = { value: undefined; error: string }
@@ -61,27 +59,24 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 return state
             }
 
-            const response = await fetchSak(state.sakId.value, state.fagsystem.value)
-
-            if (response.data) {
+            try {
+                const hendelser = await fetchHendelserForSak(state.sakId.value, state.fagsystem.value)
                 setSak({
                     id: state.sakId.value,
                     fagsystem: state.fagsystem.value,
-                    hendelser: response.data.map((it: Message) => ({ ...it, status: statusForMessage(it) })),
+                    hendelser: hendelser,
                 })
                 setSearchParams({
                     sakId: state.sakId.value,
                     fagsystem: state.fagsystem.value,
                 })
 
-                if (response.data.length === 0) {
+                if (hendelser.length === 0) {
                     showToast('Fant ingen hendelser for sak')
                     setSearchParams({ sakId: '', fagsystem: '' })
                 }
-            }
-
-            if (response.error) {
-                showToast(response.error.message, { variant: 'error' })
+            } catch (e) {
+                showToast(`Klarte ikke hente hendelser for sak: ${e}`, { variant: 'error' })
             }
 
             setIsLoading(false)

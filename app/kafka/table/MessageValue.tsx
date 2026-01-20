@@ -4,7 +4,7 @@ import React from 'react'
 import { Label, Switch, VStack } from '@navikt/ds-react'
 import { teamLogger } from '@navikt/next-logger/team-log'
 
-import { Message } from '@/app/kafka/types.ts'
+import type { Message, RawMessage } from '@/app/kafka/types.ts'
 import { XMLView } from '@/components/XMLView.tsx'
 import { JsonView } from '@/components/JsonView.tsx'
 import { useUser } from '@/components/UserProvider'
@@ -16,7 +16,7 @@ const showMessagePayload = () => {
 }
 
 type Props = {
-    message: Message
+    message: RawMessage & Message
 }
 
 export const MessageValue: React.FC<Props> = ({ message }) => {

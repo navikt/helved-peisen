@@ -5,7 +5,6 @@ import { type ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
 import { getMessagesByTopic } from '@/app/kafka/table/getMessagesByTopic.ts'
 import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
 import type { Message, TopicName } from '../types.ts'
-import { inferringStatus } from '@/app/kafka/context/util.ts'
 
 const mergeSearchParams = (searchParams: ReadonlyURLSearchParams, overrides?: Record<string, string>) => {
     if (!overrides) return searchParams
@@ -53,7 +52,7 @@ export const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const fetchMessages = useCallback(() => {
         setLoading(true)
         getMessagesByTopic(searchParams.toString()).then((res) => {
-            setMessages(inferringStatus(res))
+            setMessages(res)
             setLoading(false)
         })
     }, [searchParams])
@@ -72,7 +71,7 @@ export const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
         } else {
             setMessages((prev) => {
                 if (!prev || !prev.data) return response
-                return inferringStatus({
+                return {
                     ...prev,
                     data: Object.fromEntries(
                         Object.keys(prev.data).map((key) => {
@@ -81,7 +80,7 @@ export const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
                             return [key, [...messages, ...newMessages]]
                         })
                     ),
-                })
+                }
             })
         }
 

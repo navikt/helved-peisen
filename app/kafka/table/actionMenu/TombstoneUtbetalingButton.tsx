@@ -44,7 +44,6 @@ export const TombstoneUtbetalingButton = ({ messageKey }: Props) => {
     return (
         <>
             <ActionMenuItem onSelect={handleMenuItemClick}>Tombstone utbetaling</ActionMenuItem>
-
             <ConfirmationModal
                 open={modalOpen}
                 onClose={() => setModalOpen(false)}

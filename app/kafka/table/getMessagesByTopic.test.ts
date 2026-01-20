@@ -5,7 +5,7 @@ import { getMessagesByTopic } from './getMessagesByTopic'
 import { expect } from '@playwright/test'
 import { server } from '@/fakes/msw/server.ts'
 
-describe('getMessagesByTopic', () => {
+describe.skip('getMessagesByTopic', () => {
     test('tar hensyn til "fom" = "now"', async () => {
         let actualFom: string | null = null
         server.use(

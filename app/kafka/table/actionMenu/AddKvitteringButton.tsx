@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Button, Modal, Select, TextField, VStack } from '@navikt/ds-react'
 import { logger } from '@navikt/next-logger'
 
@@ -9,13 +9,13 @@ import { FormButton } from '@/components/FormButton.tsx'
 import { showToast } from '@/components/Toast.tsx'
 
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
+import type { Message } from '@/app/kafka/types.ts'
 
 type Props = {
-    messageValue: string
-    messageKey: string
+    message: Message
 }
 
-export const AddKvitteringButton = ({ messageValue, messageKey }: Props) => {
+export const AddKvitteringButton = ({ message }: Props) => {
     const ref = useRef<HTMLDialogElement>(null)
     const [alvorlighetsgrad, setAlvorlighetsgrad] = useState('00')
 
@@ -29,8 +29,9 @@ export const AddKvitteringButton = ({ messageValue, messageKey }: Props) => {
     }
 
     const submitAction = async (formData: FormData) => {
-        formData.set('oppdragXml', messageValue)
-        formData.set('messageKey', messageKey)
+        formData.set('partition', `${message.partition}`)
+        formData.set('offset', `${message.offset}`)
+        formData.set('key', message.key)
 
         const response = await addKvittering(formData)
         if (response.error) {
@@ -38,7 +39,7 @@ export const AddKvitteringButton = ({ messageValue, messageKey }: Props) => {
             logger.error(message)
             showToast(message, { variant: 'error' })
         } else {
-            showToast(`Lagt til ny kvttering for "${messageKey}"`, {
+            showToast(`Lagt til ny kvttering for "${message.key}"`, {
                 variant: 'success',
             })
         }

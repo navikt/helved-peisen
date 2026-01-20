@@ -25,20 +25,37 @@ export const Topics = {
 
 export type TopicName = (typeof Topics)[keyof typeof Topics]
 
-export type Message = {
+// Meldingene slik de ser ut rett fra peisschtappern
+export type RawMessage = {
     version: string
     topic_name: TopicName
     key: string
-    value: string | null
+    value?: string | null
     partition: number
     offset: number
     timestamp_ms: number
     stream_time_ms: number
     system_time_ms: number
     trace_id: string
+    sakId: string | null
+    fagsystem: string | null
+}
 
-    // Kommer ikke fra backend men blir utledet fra value
-    status?: 'OK' | 'HOS_OPPDRAG' | 'MOTTATT' | 'FEILET'
+// Meldingene slik de eksponeres for peisen
+export type Message = {
+    version: string
+    topic_name: TopicName
+    key: string
+    partition: number
+    offset: number
+    timestamp_ms: number
+    stream_time_ms: number
+    system_time_ms: number
+    trace_id: string
+    status: 'OK' | 'HOS_OPPDRAG' | 'MOTTATT' | 'FEILET' | null
+    badge?: string | null
+    sakId: string | null
+    fagsystem: string | null
 }
 
 export type DagpengerUtbetalingMessageValue = {

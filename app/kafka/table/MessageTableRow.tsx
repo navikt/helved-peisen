@@ -1,43 +1,71 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Message } from '@/app/kafka/types.ts'
-import { TableDataCell, TableExpandableRow, TableRow } from '@navikt/ds-react/Table'
-import { ActionMenu, Button, CopyButton, HStack, Label, VStack } from '@navikt/ds-react'
-import { ActionMenuContent, ActionMenuItem, ActionMenuTrigger } from '@navikt/ds-react/ActionMenu'
-import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'
+import React, { useEffect, useState } from 'react'
+import { Message, RawMessage } from '@/app/kafka/types.ts'
+import { TableDataCell, TableExpandableRow } from '@navikt/ds-react/Table'
+import { ActionMenu, Button, CopyButton, HStack, Label, Skeleton, VStack } from '@navikt/ds-react'
 import { formatDate } from 'date-fns'
 
 import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
-import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import { UrlSearchParamLink } from '@/components/UrlSearchParamLink.tsx'
-import { AddKvitteringButton } from '@/app/kafka/table/actionMenu/AddKvitteringButton.tsx'
 import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
 import { MessageValue } from './MessageValue'
-import { SakLink } from './SakLink'
-import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTilUtbetalingerButton.tsx'
-import { EditAndSendOppdragButton } from '@/app/kafka/table/actionMenu/EditAndSendOppdragButton.tsx'
-import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
-import { ResendDagpengerButton } from '@/app/kafka/table/actionMenu/ResendDagpengerButton.tsx'
 import { MessageStatus } from '@/components/MessageStatus.tsx'
-import { ResendTilleggsstonaderButton } from '@/app/kafka/table/actionMenu/ResendTilleggsstonaderButton.tsx'
+import { ActionMenuContent, ActionMenuItem, ActionMenuTrigger } from '@navikt/ds-react/ActionMenu'
+import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'
+import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
+import { SakLink } from '@/app/kafka/table/SakLink.tsx'
+import { AddKvitteringButton } from './actionMenu/AddKvitteringButton'
+import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTilUtbetalingerButton.tsx'
+import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
+import { ResendMessageButton } from './actionMenu/ResendMessageButton'
 
 type Props = {
     message: Message
 }
 
 export const MessageTableRowContents: React.FC<Props> = ({ message }) => {
+    const [rawMessage, setRawMessage] = useState<(Message & RawMessage) | null>(null)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        fetch(`/api/messages/${message.topic_name}/${message.partition}/${message.offset}`)
+            .then(async (response) => {
+                if (!response.ok) {
+                    console.warn('Klarte ikke hente melding', response.statusText, response.status, response.body)
+                    return null
+                }
+                const { data, error } = await response.json()
+
+                if (error) {
+                    console.warn('Klarte ikke hente melding', error.message)
+                    return null
+                }
+
+                setRawMessage({ ...data, status: message.status })
+            })
+            .finally(() => setLoading(false))
+    }, [])
+
+    if (loading) {
+        return <Skeleton width="100%" height="100%" />
+    }
+
     return (
         <VStack gap="space-32">
-            <VStack gap="space-12">
-                <Label>Key</Label>
-                <HStack gap="space-8">
-                    {message.key}
-                    <CopyButton size="xsmall" copyText={message.key} />
-                </HStack>
-            </VStack>
-            <MessageMetadata message={message} />
-            <MessageValue message={message} />
+            {rawMessage && (
+                <>
+                    <VStack gap="space-12">
+                        <Label>Key</Label>
+                        <HStack gap="space-8">
+                            {rawMessage.key}
+                            <CopyButton size="xsmall" copyText={rawMessage.key} />
+                        </HStack>
+                    </VStack>
+                    <MessageMetadata message={rawMessage} />
+                    <MessageValue message={rawMessage} />
+                </>
+            )}
         </VStack>
     )
 }
@@ -68,54 +96,48 @@ const RowContents: React.FC<Props> = ({ message }) => {
             <TableDataCell>{message.partition}</TableDataCell>
             <TableDataCell>{message.offset}</TableDataCell>
             <TableDataCell>
-                {message.value && (
-                    <ActionMenu>
-                        <ActionMenuTrigger>
-                            <Button
-                                variant="tertiary-neutral"
-                                size="small"
-                                icon={<MenuElipsisVerticalIcon title="Kontekstmeny" />}
+                <ActionMenu>
+                    <ActionMenuTrigger>
+                        <Button
+                            variant="tertiary-neutral"
+                            size="small"
+                            icon={<MenuElipsisVerticalIcon title="Kontekstmeny" />}
+                        />
+                    </ActionMenuTrigger>
+                    <ActionMenuContent>
+                        {message.topic_name === 'helved.oppdrag.v1' && (
+                            <>
+                                <AddKvitteringButton message={message} />
+                                <ResendMessageButton message={message} label="Bygg og send oppdrag på nytt" />
+                            </>
+                        )}
+                        {message.topic_name === 'helved.pending-utbetalinger.v1' && (
+                            <FlyttTilUtbetalingerButton message={message} />
+                        )}
+                        {message.topic_name === 'helved.utbetalinger.v1' && (
+                            <TombstoneUtbetalingButton messageKey={message.key} />
+                        )}
+                        {message.topic_name === 'teamdagpenger.utbetaling.v1' && (
+                            <ResendMessageButton message={message} label="Send inn dagpengeutbetaling på nytt" />
+                        )}
+                        {message.topic_name === 'tilleggsstonader.utbetaling.v1' && (
+                            <ResendMessageButton
+                                message={message}
+                                label="Send inn tilleggsstønaderutbetaling på nytt"
                             />
-                        </ActionMenuTrigger>
-                        <ActionMenuContent>
-                            {message.topic_name === 'helved.oppdrag.v1' && (
-                                <>
-                                    <AddKvitteringButton messageValue={message.value} messageKey={message.key} />
-                                    <EditAndSendOppdragButton
-                                        xml={message.value}
-                                        messageKey={message.key}
-                                        system_time_ms={message.system_time_ms}
-                                    />
-                                </>
-                            )}
-
-                            {message.topic_name === 'helved.pending-utbetalinger.v1' && (
-                                <>
-                                    <FlyttTilUtbetalingerButton messageValue={message.value} messageKey={message.key} />
-                                </>
-                            )}
-                            {message.topic_name === 'helved.utbetalinger.v1' && (
-                                <TombstoneUtbetalingButton messageKey={message.key} />
-                            )}
-                            {message.topic_name === 'teamdagpenger.utbetaling.v1' && (
-                                <ResendDagpengerButton messageValue={message.value} messageKey={message.key} />
-                            )}
-                            {message.topic_name === 'tilleggsstonader.utbetaling.v1' && (
-                                <ResendTilleggsstonaderButton messageValue={message.value} messageKey={message.key} />
-                            )}
-                            <ActionMenuItem>
-                                <GrafanaTraceLink traceId={message.trace_id} />
-                            </ActionMenuItem>
-                            <SakLink message={message} />
-                        </ActionMenuContent>
-                    </ActionMenu>
-                )}
+                        )}
+                        <ActionMenuItem>
+                            <GrafanaTraceLink traceId={message.trace_id} />
+                        </ActionMenuItem>
+                        <SakLink message={message} />
+                    </ActionMenuContent>
+                </ActionMenu>
             </TableDataCell>
         </>
     )
 }
 
-const ExpandableMessageTableRow: React.FC<Props> = ({ message }) => {
+export const MessageTableRow: React.FC<Props> = ({ message }) => {
     const [open, setOpen] = useState(false)
     const [didOpen, setDidOpen] = useState(false)
 
@@ -135,19 +157,4 @@ const ExpandableMessageTableRow: React.FC<Props> = ({ message }) => {
             <RowContents message={message} />
         </TableExpandableRow>
     )
-}
-
-export const MessageTableRow: React.FC<Props> = ({ message }) => {
-    if (message.value) {
-        return <ExpandableMessageTableRow message={message} />
-    }
-
-    if (!message.value) {
-        return (
-            <TableRow>
-                <TableDataCell textSize="small" />
-                <RowContents message={message} />
-            </TableRow>
-        )
-    }
 }

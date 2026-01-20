@@ -7,12 +7,26 @@ import {
     DagpengerUtbetalingMessageValue,
     Message,
     OppdragMessageValue,
+    RawMessage,
     StatusMessageValue,
     TsUtbetalingMessageValue,
     UtbetalingMessageValue,
 } from '@/app/kafka/types.ts'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
-import { parsedXML } from '@/lib/xml.ts'
+
+export const parsedXML = (data: string): XMLDocument => {
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(data, 'application/xml')
+    const errorNode = doc.querySelector('parsererror')
+
+    if (errorNode) {
+        console.error(errorNode)
+        console.log(data)
+        throw Error('Failed to parse XML')
+    }
+
+    return doc
+}
 
 type MetadataCardProps = {
     label: string
@@ -46,7 +60,7 @@ const MetadataCardContainer: React.FC<MetadataCardContainerProps> = ({ children 
 }
 
 type Props = {
-    message: Message
+    message: RawMessage & Message
 }
 
 const DagpengerUtbetalingMessageMetadata: React.FC<Props> = ({ message }) => {

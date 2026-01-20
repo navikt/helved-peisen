@@ -6,7 +6,6 @@ import { Alert } from '@navikt/ds-react'
 import { MessagesChart, MessagesChartSkeleton } from '@/app/kafka/chart/MessagesChart.tsx'
 import { MessagesTable, MessagesTableSkeleton } from '@/app/kafka/table/MessagesTable.tsx'
 import { NoMessages } from '@/app/kafka/NoMessages.tsx'
-import { parsedXML } from '@/lib/xml.ts'
 import { FiltereContext } from '@/app/kafka/Filtere.tsx'
 import { SortStateContext } from '@/app/kafka/table/SortState.tsx'
 import { keepLatest } from '@/lib/message.ts'
@@ -49,12 +48,11 @@ export const MessagesView = () => {
     }
 
     if (filtere.utenKvittering) {
-        filteredMessages = filteredMessages.filter((m) => {
-            if (!m.value || m.topic_name !== 'helved.oppdrag.v1') return false
-            const doc = parsedXML(m.value)
-            const alvorlighetsgrad = doc.querySelector('mmel > alvorlighetsgrad')?.textContent
-            return !alvorlighetsgrad
-        })
+        filteredMessages = filteredMessages
+            // Velger ut alle oppdrag uten status
+            .filter((message) => message.topic_name === 'helved.oppdrag.v1' && !message.status)
+            // Sjekker at det ikke finnes flere oppdrag med samme key og satt status
+            .filter((message, _, messages) => !messages.find((it) => it.key === message.key && !!it.status))
     }
 
     filteredMessages = filteredMessages.slice(0).sort((a, b) =>

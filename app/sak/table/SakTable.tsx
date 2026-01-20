@@ -19,11 +19,9 @@ import { AddKvitteringButton } from '@/app/kafka/table/actionMenu/AddKvitteringB
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import { type Message } from '@/app/kafka/types.ts'
 import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTilUtbetalingerButton.tsx'
-import { EditAndSendOppdragButton } from '@/app/kafka/table/actionMenu/EditAndSendOppdragButton.tsx'
 import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
-import { ResendDagpengerButton } from '@/app/kafka/table/actionMenu/ResendDagpengerButton.tsx'
 import { MessageStatus } from '@/components/MessageStatus'
-import { ResendTilleggsstonaderButton } from '@/app/kafka/table/actionMenu/ResendTilleggsstonaderButton.tsx'
+import { ResendMessageButton } from '@/app/kafka/table/actionMenu/ResendMessageButton.tsx'
 
 type Props = {
     messages: Message[]
@@ -34,84 +32,81 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
     return (
         <Table className="overflow-scroll" size="small">
             <TableBody>
-                {messages.map((it, i) => (
+                {messages.map((message, i) => (
                     <TableExpandableRow
-                        key={it.key + it.system_time_ms + it.topic_name + i}
+                        key={message.key + message.system_time_ms + message.topic_name + i}
                         className={clsx(
                             'transition-[background]',
-                            activeMessage === it && 'bg-(--ax-bg-neutral-moderate-hoverA)'
+                            activeMessage === message && 'bg-(--ax-bg-neutral-moderate-hoverA)'
                         )}
-                        content={<MessageTableRowContents message={it} />}
+                        content={<MessageTableRowContents message={message} />}
                     >
                         <TableDataCell style={{ width: 0 }}>
-                            <TopicNameTag message={it} />
+                            <TopicNameTag message={message} />
                         </TableDataCell>
                         <TableDataCell style={{ width: 0 }}>
-                            <MessageStatus message={it} />
+                            <MessageStatus message={message} />
                         </TableDataCell>
                         <TableDataCell style={{ width: 0 }}>
                             <div className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[600px]">
-                                {it.key}
+                                {message.key}
                             </div>
                         </TableDataCell>
                         <TableDataCell className="whitespace-nowrap">
-                            {format(it.system_time_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}
+                            {format(message.system_time_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}
                         </TableDataCell>
                         <TableDataCell>
                             <div className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">
-                                {it.partition}
+                                {message.partition}
                             </div>
                         </TableDataCell>
                         <TableDataCell>
                             <div className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[320px]">
-                                {it.offset}
+                                {message.offset}
                             </div>
                         </TableDataCell>
                         <TableDataCell>
-                            {it.value && (
-                                <ActionMenu>
-                                    <ActionMenuTrigger>
-                                        <Button
-                                            variant="tertiary-neutral"
-                                            size="small"
-                                            icon={<MenuElipsisVerticalIcon title="Kontekstmeny" />}
+                            <ActionMenu>
+                                <ActionMenuTrigger>
+                                    <Button
+                                        variant="tertiary-neutral"
+                                        size="small"
+                                        icon={<MenuElipsisVerticalIcon title="Kontekstmeny" />}
+                                    />
+                                </ActionMenuTrigger>
+                                <ActionMenuContent>
+                                    {message.topic_name === 'helved.oppdrag.v1' && (
+                                        <>
+                                            <AddKvitteringButton message={message} />
+                                            <ResendMessageButton
+                                                message={message}
+                                                label="Bygg og send oppdrag på nytt"
+                                            />
+                                        </>
+                                    )}
+                                    {message.topic_name === 'helved.pending-utbetalinger.v1' && (
+                                        <FlyttTilUtbetalingerButton message={message} />
+                                    )}
+                                    {message.topic_name === 'helved.utbetalinger.v1' && (
+                                        <TombstoneUtbetalingButton messageKey={message.key} />
+                                    )}
+                                    {message.topic_name === 'teamdagpenger.utbetaling.v1' && (
+                                        <ResendMessageButton
+                                            message={message}
+                                            label="Send inn dagpengeutbetaling på nytt"
                                         />
-                                    </ActionMenuTrigger>
-                                    <ActionMenuContent>
-                                        {it.topic_name === 'helved.oppdrag.v1' && (
-                                            <>
-                                                <AddKvitteringButton messageValue={it.value} messageKey={it.key} />
-                                                <EditAndSendOppdragButton
-                                                    xml={it.value}
-                                                    messageKey={it.key}
-                                                    system_time_ms={it.system_time_ms}
-                                                />
-                                            </>
-                                        )}
-                                        {it.topic_name === 'helved.pending-utbetalinger.v1' && (
-                                            <>
-                                                <FlyttTilUtbetalingerButton
-                                                    messageValue={it.value}
-                                                    messageKey={it.key}
-                                                />
-                                            </>
-                                        )}
-                                        {it.topic_name === 'helved.utbetalinger.v1' && (
-                                            <TombstoneUtbetalingButton messageKey={it.key} />
-                                        )}
-                                        {(it.topic_name === 'teamdagpenger.utbetaling.v1' ||
-                                            it.topic_name === 'helved.utbetalinger-dp.v1') && (
-                                            <ResendDagpengerButton messageValue={it.value} messageKey={it.key} />
-                                        )}
-                                        {it.topic_name === 'tilleggsstonader.utbetaling.v1' && (
-                                            <ResendTilleggsstonaderButton messageValue={it.value} messageKey={it.key} />
-                                        )}
-                                        <ActionMenuItem>
-                                            <GrafanaTraceLink traceId={it.trace_id} />
-                                        </ActionMenuItem>
-                                    </ActionMenuContent>
-                                </ActionMenu>
-                            )}
+                                    )}
+                                    {message.topic_name === 'tilleggsstonader.utbetaling.v1' && (
+                                        <ResendMessageButton
+                                            message={message}
+                                            label="Send inn tilleggsstønaderutbetaling på nytt"
+                                        />
+                                    )}
+                                    <ActionMenuItem>
+                                        <GrafanaTraceLink traceId={message.trace_id} />
+                                    </ActionMenuItem>
+                                </ActionMenuContent>
+                            </ActionMenu>
                         </TableDataCell>
                     </TableExpandableRow>
                 ))}
