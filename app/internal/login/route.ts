@@ -24,7 +24,9 @@ export const GET = async (req: NextRequest) => {
     if (isLocal) {
         return handleLocalLogin()
     }
-    const redirectPath = sanitizeRedirect(req.nextUrl.searchParams.get('redirect'))
+    const redirectPath = sanitizeRedirect(
+        req.nextUrl.searchParams.get('redirect') ?? req.headers.get('referer') ?? '/kafka'
+    )
     const host = requireEnv('NEXT_PUBLIC_HOSTNAME')
     const destination = new URL(redirectPath, host)
     const response = NextResponse.redirect(destination)
