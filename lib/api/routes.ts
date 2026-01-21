@@ -23,5 +23,6 @@ export const Routes = {
         sak(sakId: string, fagsystem: string) {
             return `/api/saker/${fagsystem}/${sakId}`
         },
+        apiLogin: `/internal/login`,
     },
 } as const
