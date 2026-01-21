@@ -21,8 +21,12 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
     return (
         <Table className="overflow-scroll" size="small">
             <TableBody>
-                {messages.map((message, i) => (
-                    <SakTableRow key={i} message={message} active={message === activeMessage} />
+                {messages.map((message) => (
+                    <SakTableRow
+                        key={`${message.key}-${message.topic_name}-${message.partition}-${message.offset}`}
+                        message={message}
+                        active={message === activeMessage}
+                    />
                 ))}
             </TableBody>
             <TableHeader>

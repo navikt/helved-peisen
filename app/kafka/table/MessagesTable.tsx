@@ -62,8 +62,11 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
                     size="small"
                 >
                     <TableBody>
-                        {paginatedMessages.map((message, i) => (
-                            <MessageTableRow key={i} message={message} />
+                        {paginatedMessages.map((message) => (
+                            <MessageTableRow
+                                key={`${message.key}-${message.topic_name}-${message.partition}-${message.offset}`}
+                                message={message}
+                            />
                         ))}
                     </TableBody>
                     <TableHeader>
