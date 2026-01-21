@@ -1,14 +1,14 @@
 import { Routes } from '@/lib/api/routes.ts'
 import { getApiTokenFromCookie } from '@/lib/auth/apiToken.ts'
-import { sanitizeKey, toMessage } from '@/lib/backend/message'
+import { sanitizeKey, toMessage } from '@/lib/server/message'
 import { logger } from '@navikt/next-logger'
 import { NextRequest, NextResponse } from 'next/server'
 import type { RawMessage } from '@/app/kafka/types.ts'
-import { aquireApiToken } from '@/lib/backend/auth.ts'
+import { aquireApiToken } from '@/lib/server/auth'
 
 export async function GET(req: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
     const apiToken = await getApiTokenFromCookie()
-    if (!apiToken) return aquireApiToken(req)
+    if (!apiToken) return aquireApiToken(req.headers)
 
     const { sakId, fagsystem } = await params
     const res = await fetch(Routes.external.sak(encodeURIComponent(sakId), fagsystem), {

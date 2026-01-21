@@ -12,23 +12,13 @@ function handleLocalLogin() {
     return response
 }
 
-function sanitizeRedirect(input: string | null): string {
-    if (!input) return '/'
-    if (!input.startsWith('/')) return '/'
-    if (input.startsWith('//')) return '/'
-
-    return input
-}
-
 export const GET = async (req: NextRequest) => {
     if (isLocal) {
         return handleLocalLogin()
     }
-    const redirectPath = sanitizeRedirect(
-        req.nextUrl.searchParams.get('redirect') ?? req.headers.get('referer') ?? '/kafka'
-    )
+    const path = req.nextUrl.searchParams.get('redirect') ?? req.headers.get('referer') ?? '/kafka'
     const host = requireEnv('NEXT_PUBLIC_HOSTNAME')
-    const destination = new URL(redirectPath, host)
+    const destination = new URL(path, host)
     const response = NextResponse.redirect(destination)
 
     response.cookies.set({

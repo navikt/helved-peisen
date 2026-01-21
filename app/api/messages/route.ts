@@ -2,12 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getApiTokenFromCookie } from '@/lib/auth/apiToken.ts'
 import { Routes } from '@/lib/api/routes'
 import { logger } from '@navikt/next-logger'
-import { sanitizeKey, toMessage } from '@/lib/backend/message.ts'
-import { aquireApiToken } from '@/lib/backend/auth'
+import { sanitizeKey, toMessage } from '@/lib/server/message'
+import { aquireApiToken } from '@/lib/server/auth'
 
 export async function GET(req: NextRequest) {
     const apiToken = await getApiTokenFromCookie()
-    if (!apiToken) return aquireApiToken(req)
+    if (!apiToken) return aquireApiToken(req.headers)
 
     const searchParams = req.nextUrl.searchParams
     const response = await fetch(`${Routes.external.kafka}?${searchParams.toString()}`, {

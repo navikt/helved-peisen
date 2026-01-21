@@ -5,6 +5,7 @@ import { cookies, headers } from 'next/headers'
 import { isFaking, isLocal, requireEnv } from '@/lib/env'
 import { logger } from '@navikt/next-logger'
 import { redirect, unauthorized } from 'next/navigation'
+import { aquireApiToken } from '../server/auth'
 
 const API_TOKEN_NAME = 'api-token'
 
@@ -14,7 +15,7 @@ export const ensureValidApiToken = async () => {
     }
     const existing = await getApiTokenFromCookie()
     if (!existing) {
-        return isLocal ? unauthorized() : redirect('/internal/login')
+        return isLocal ? unauthorized() : aquireApiToken(await headers())
     }
 }
 
