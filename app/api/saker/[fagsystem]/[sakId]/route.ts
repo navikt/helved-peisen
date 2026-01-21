@@ -10,16 +10,19 @@ export async function GET(_: NextRequest, { params }: { params: Promise<Record<s
     if (!apiToken) return NextResponse.redirect('/internal/login')
 
     const { sakId, fagsystem } = await params
-    const res = await fetch(Routes.external.sak(sakId, fagsystem), {
+    const res = await fetch(Routes.external.sak(encodeURIComponent(sakId), fagsystem), {
         headers: { Authorization: `Bearer ${apiToken}` },
     })
 
     if (!res.ok) {
         logger.error(`Klarte ikke hente hendelser for sak: ${res.status} - ${res.statusText}`)
-        return NextResponse.json({
-            data: null,
-            error: { message: `Klarte ikke hente hendelser for sak: ${res.status} - ${res.statusText}` },
-        })
+        return NextResponse.json(
+            {
+                data: null,
+                error: { message: `Klarte ikke hente hendelser for sak: ${res.status} - ${res.statusText}` },
+            },
+            { status: res.status }
+        )
     }
 
     const data = await res.json()
