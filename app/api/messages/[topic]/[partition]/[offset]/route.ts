@@ -2,11 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Routes } from '@/lib/api/routes.ts'
 import { getApiTokenFromCookie } from '@/lib/auth/apiToken.ts'
 import { logger } from '@navikt/next-logger'
-import { format } from 'url'
 
-export async function GET(_: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
     const apiToken = await getApiTokenFromCookie()
-    if (!apiToken) return NextResponse.redirect('/internal/login')
+    if (!apiToken) return NextResponse.redirect(`/internal/login?redirect=${req.headers.get('referer') ?? '/'}`)
 
     const { topic, partition, offset } = await params
     const res = await fetch(`${Routes.external.kafka}/${topic}/${partition}/${offset}`, {

@@ -18,9 +18,11 @@ export const checkToken = async () => {
         return checkLocalToken()
     }
 
-    const token = getToken(await headers())
+    const currentHeaders = await headers()
+    const token = getToken(currentHeaders)
     if (!token) {
-        redirect(`/oauth2/login`)
+        const forward = currentHeaders.get('x-forwarded-uri') || '/'
+        redirect(`/oauth2/login?redirect=${encodeURIComponent(forward)}`)
     }
 
     const result = await validateToken(token)

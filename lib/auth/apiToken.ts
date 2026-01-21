@@ -1,10 +1,6 @@
 'use server'
 
-import {
-    expiresIn,
-    getToken,
-    requestAzureClientCredentialsToken,
-} from '@navikt/oasis'
+import { expiresIn, getToken, requestAzureClientCredentialsToken } from '@navikt/oasis'
 import { cookies, headers } from 'next/headers'
 import { isFaking, isLocal, requireEnv } from '@/lib/env'
 import { logger } from '@navikt/next-logger'
@@ -54,9 +50,11 @@ export async function fetchApiToken(): Promise<string> {
 
     logger.info('Henter nytt token')
 
-    const token = getToken(await headers())
+    const currentHeaders = await headers()
+    const token = getToken(currentHeaders)
     if (!token) {
-        redirect("/internal/login")
+        const forward = currentHeaders.get('x-forwarded-uri') || '/'
+        redirect(`/oauth2/login?redirect=${encodeURIComponent(forward)}`)
     }
 
     const scope = requireEnv('API_SCOPE')

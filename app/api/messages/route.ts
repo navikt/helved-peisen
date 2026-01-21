@@ -6,7 +6,7 @@ import { sanitizeKey, toMessage } from '@/lib/backend/message.ts'
 
 export async function GET(req: NextRequest) {
     const apiToken = await getApiTokenFromCookie()
-    if (!apiToken) return NextResponse.redirect('/internal/login')
+    if (!apiToken) return NextResponse.redirect(`/internal/login?redirect=${req.headers.get('referer') ?? '/'}`)
 
     const searchParams = req.nextUrl.searchParams
     const response = await fetch(`${Routes.external.kafka}?${searchParams.toString()}`, {

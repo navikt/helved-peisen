@@ -5,9 +5,9 @@ import { logger } from '@navikt/next-logger'
 import { NextRequest, NextResponse } from 'next/server'
 import type { RawMessage } from '@/app/kafka/types.ts'
 
-export async function GET(_: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
     const apiToken = await getApiTokenFromCookie()
-    if (!apiToken) return NextResponse.redirect('/internal/login')
+    if (!apiToken) return NextResponse.redirect(`/internal/login?redirect=${req.headers.get('referer') ?? '/'}`)
 
     const { sakId, fagsystem } = await params
     const res = await fetch(Routes.external.sak(encodeURIComponent(sakId), fagsystem), {
