@@ -19,6 +19,10 @@ import { AddKvitteringButton } from './actionMenu/AddKvitteringButton'
 import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTilUtbetalingerButton.tsx'
 import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
 import { ResendMessageButton } from './actionMenu/ResendMessageButton'
+import { fetchRawMessage } from '@/lib/io'
+import { showToast } from '@/components/Toast'
+import { useUser } from '@/components/UserProvider.tsx'
+import { teamLogger } from '@navikt/next-logger/team-log'
 
 type Props = {
     message: Message
@@ -27,25 +31,26 @@ type Props = {
 export const MessageTableRowContents: React.FC<Props> = ({ message }) => {
     const [rawMessage, setRawMessage] = useState<(Message & RawMessage) | null>(null)
     const [loading, setLoading] = useState(true)
+    const user = useUser()
 
     useEffect(() => {
-        fetch(`/api/messages/${message.topic_name}/${message.partition}/${message.offset}`)
-            .then(async (response) => {
-                if (!response.ok) {
-                    console.warn('Klarte ikke hente melding', response.statusText, response.status, response.body)
-                    return null
+        setLoading(true)
+        fetchRawMessage(message)
+            .then((rawMessage) => {
+                if (rawMessage) {
+                    setRawMessage({ ...message, ...rawMessage })
                 }
-                const { data, error } = await response.json()
-
-                if (error) {
-                    console.warn('Klarte ikke hente melding', error.message)
-                    return null
-                }
-
-                setRawMessage({ ...data, status: message.status })
             })
-            .finally(() => setLoading(false))
-    }, [])
+            .catch((e) => {
+                showToast(`Klarte ikke hente melding: ${e.message}`, { variant: 'error' })
+            })
+            .finally(() => {
+                teamLogger.info(
+                    `${user?.name} (${user?.ident}) hentet melding fra topic ${message.topic_name} med partition ${message.partition}, offset ${message.offset}, og key ${message.key}`
+                )
+                setLoading(false)
+            })
+    }, [message, user])
 
     if (loading) {
         return <Skeleton width="100%" height="100%" />

@@ -41,7 +41,7 @@ export const MessageValue: React.FC<Props> = ({ message }) => {
                         setShowValue(event.target.checked)
                         if (event.target.checked) {
                             teamLogger.info(
-                                `${user?.name} (${user?.ident}) ser på meldingsinnhold for topic ${message.topic_name} med key ${message.key}`
+                                `${user?.name} (${user?.ident}) ser på melding fra topic ${message.topic_name} med partition ${message.partition}, offset ${message.offset}, og key ${message.key}`
                             )
                         }
                     }}
