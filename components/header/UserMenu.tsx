@@ -1,4 +1,3 @@
-import React from 'react'
 import { InternalHeaderUserButton } from '@navikt/ds-react/InternalHeader'
 import { BodyShort, Detail, Dropdown, Link, Spacer } from '@navikt/ds-react'
 import {

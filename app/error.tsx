@@ -5,8 +5,7 @@ import { Alert } from '@navikt/ds-react'
 import { logger } from '@navikt/next-logger'
 
 type Props = {
-    error: Error & { digest?: string }
-    reset: () => void
+    error: Error
 }
 
 export default function Error({ error }: Props) {
@@ -16,9 +15,7 @@ export default function Error({ error }: Props) {
 
     return (
         <section>
-            <Alert variant="error">
-                Det har skjedd en feil. Prøv igjen senere
-            </Alert>
+            <Alert variant="error">Det har skjedd en feil. Prøv igjen senere</Alert>
         </section>
     )
 }

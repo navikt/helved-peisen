@@ -7,77 +7,37 @@ export async function deleteApiToken() {
     ;(await cookies()).delete('api-token')
 }
 
-export async function addKvittering(formData: FormData): Promise<ApiResponse<null>> {
-    await checkToken()
-    const response = await fetch(Routes.external.manuellKvittering, {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${await fetchApiToken()}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(Object.fromEntries(formData)),
-    })
-
-    if (!response.ok) {
-        logger.error(`Server responded with status: ${response.status} - ${response.statusText}`)
+export async function getUser(): Promise<{
+    name: string
+    email: string
+    ident: string
+}> {
+    if (process.env.NODE_ENV === 'development') {
         return {
-            data: null,
-            error: `Server responded with status: ${response.status} - ${response.statusText}`,
+            name: `Navn Navnesen`,
+            email: 'dev@localhost',
+            ident: 'A12345',
         }
     }
 
-    return {
-        data: null,
-        error: null,
+    const authHeader = (await headers()).get('Authorization')
+    if (!authHeader) {
+        const currentHeaders = await headers()
+        const forward = currentHeaders.get('x-forwarded-uri') || '/'
+        redirect(`/oauth2/login?redirect=${encodeURIComponent(forward)}`)
     }
-}
 
-export async function movePendingToUtbetaling(formData: FormData): Promise<ApiResponse<null>> {
-    await checkToken()
-    const response = await fetch(Routes.external.pendingTilUtbetaling, {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${await fetchApiToken()}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(Object.fromEntries(formData)),
-    })
+    const token = authHeader.replace('Bearer ', '')
+    const jwtPayload = token.split('.')[1]
+    const payload = JSON.parse(Buffer.from(jwtPayload, 'base64').toString())
 
-    if (!response.ok) {
-        logger.error(`Server responded with status: ${response.status} - ${response.statusText}`)
-        return {
-            data: null,
-            error: `Server responded with status: ${response.status} - ${response.statusText}`,
-        }
-    }
+    const name = payload.name
+    const email = payload.preferred_username.toLowerCase()
+    const ident = payload.NAVident
 
     return {
-        data: null,
-        error: null,
-    }
-}
-
-export async function tombstoneUtbetaling(formData: FormData): Promise<ApiResponse<null>> {
-    await checkToken()
-    const response = await fetch(Routes.external.tombstoneUtbetaling, {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${await fetchApiToken()}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(Object.fromEntries(formData)),
-    })
-
-    if (!response.ok) {
-        logger.error(`Server responded with status: ${response.status} - ${response.statusText}`)
-        return {
-            data: null,
-            error: `Server responded with status: ${response.status} - ${response.statusText}`,
-        }
-    }
-
-    return {
-        data: null,
-        error: null,
+        name,
+        email,
+        ident,
     }
 }

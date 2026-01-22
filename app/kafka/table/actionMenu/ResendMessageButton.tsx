@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { logger } from '@navikt/next-logger'
-import { showToast } from '@/components/Toast.tsx'
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
+
+import { showToast } from '@/components/Toast.tsx'
 import { ConfirmationModal } from '@/components/ConfirmationModal.tsx'
-import { Message } from '../../types'
 import { resendMessage } from '@/lib/io'
+import type { Message } from '@/app/kafka/types.ts'
 
 type Props = {
     message: Message

@@ -6,7 +6,7 @@ import { Header } from '@/components/header/Header.tsx'
 import { ThemeProvider } from '@/components/ThemeProvider.tsx'
 import { LoggerProvider } from '@/components/LoggerProvider.tsx'
 import { UserProvider } from '@/components/UserProvider'
-import { getUser } from '@/components/header/getUser'
+import { getUser } from '@/app/actions.ts'
 
 import './globals.css'
 
@@ -15,11 +15,7 @@ export const metadata: Metadata = {
     description: 'Oversikt over meldinger i systemene til Team Hel Ved',
 }
 
-export default async function RootLayout({
-    children,
-}: Readonly<{
-    children: React.ReactNode
-}>) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
     const user = await getUser()
     return (
         <html lang="en">

@@ -5,12 +5,12 @@ import { BodyShort, Heading, Link, VStack } from '@navikt/ds-react'
 
 import noMessages from '@/public/404.png'
 
-export default function NotFound() {
-    const size = 300
+const IMAGE_SIZE = 300
 
+export default function NotFound() {
     return (
         <VStack className="p-6 h-full animate-fade-in" justify="center" align="center">
-            <Image className="mb-8" src={noMessages.src} alt="" width={size} height={size} />
+            <Image className="mb-8" src={noMessages.src} alt="" width={IMAGE_SIZE} height={IMAGE_SIZE} />
             <VStack>
                 <Heading level="2" size="large" className="mb-4">
                     Denne siden finnes ikke

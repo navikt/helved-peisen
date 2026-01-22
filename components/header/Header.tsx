@@ -105,8 +105,22 @@ console.log(
     `color: ${bottom}`
 )
 
+function TabLink({ children, href }: { children: React.ReactNode; href: string }) {
+    const path = usePathname()
+    return (
+        <Link
+            className={clsx(
+                'component px-4 py-0 no-underline text-text-on-neutral',
+                path.startsWith(href) && 'shadow-tab-shadow'
+            )}
+            href={href}
+        >
+            {children}
+        </Link>
+    )
+}
+
 export function Header() {
-    const pathname = usePathname()
     return (
         <InternalHeader>
             <InternalHeaderTitle as="h1">
@@ -116,24 +130,8 @@ export function Header() {
                 </span>
             </InternalHeaderTitle>
             <HStack>
-                <Link
-                    className={clsx(
-                        'component px-4 py-0 no-underline text-text-on-neutral',
-                        pathname.startsWith('/kafka') && 'shadow-tab-shadow'
-                    )}
-                    href="/kafka"
-                >
-                    Kafka
-                </Link>
-                <Link
-                    className={clsx(
-                        'component px-4 py-0 no-underline text-text-on-neutral',
-                        pathname.startsWith('/sak') && 'shadow-tab-shadow'
-                    )}
-                    href="/sak"
-                >
-                    Sak
-                </Link>
+                <TabLink href="/kafka">Kafka</TabLink>
+                <TabLink href="/sak">Sak</TabLink>
             </HStack>
             <Spacer />
             <UserMenu />
