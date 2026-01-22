@@ -1,9 +1,9 @@
 import { Filtere, FiltereProvider } from '@/app/kafka/Filtere.tsx'
 import { MessagesView } from '@/app/kafka/MessagesView.tsx'
-import { checkToken } from '@/lib/auth/accessToken'
-import { ensureValidApiToken } from '@/lib/auth/apiToken.ts'
 import { SortStateProvider } from './table/SortState'
 import { MessagesProvider } from './context/MessagesContext.tsx'
+
+import { checkToken, ensureValidApiToken } from '@/lib/server/auth.ts'
 
 export default async function KafkaOverview() {
     await checkToken()

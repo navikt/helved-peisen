@@ -1,9 +1,7 @@
-import { checkToken } from '@/lib/auth/accessToken'
-import { ensureValidApiToken } from '@/lib/auth/apiToken.ts'
-
 import { Filtere } from './Filtere'
 import { SakProvider } from './SakProvider'
 import { SakView } from './SakView'
+import { checkToken, ensureValidApiToken } from '@/lib/server/auth.ts'
 
 export default async function SakerView() {
     await checkToken()

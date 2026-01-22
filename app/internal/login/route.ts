@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { fetchApiToken } from '@/lib/auth/apiToken.ts'
 import { isLocal, requireEnv } from '@/lib/env'
+import { fetchApiToken } from '@/lib/server/auth.ts'
 
 function handleLocalLogin() {
     const response = NextResponse.redirect(requireEnv('NEXT_PUBLIC_HOSTNAME'))

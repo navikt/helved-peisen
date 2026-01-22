@@ -1,10 +1,10 @@
-import { Routes } from '@/lib/api/routes.ts'
-import { getApiTokenFromCookie } from '@/lib/auth/apiToken.ts'
-import { sanitizeKey, toMessage } from '@/lib/server/message'
-import { logger } from '@navikt/next-logger'
 import { NextRequest, NextResponse } from 'next/server'
+import { logger } from '@navikt/next-logger'
+
+import { Routes } from '@/lib/api/routes.ts'
+import { sanitizeKey, toMessage } from '@/lib/server/message'
+import { aquireApiToken, getApiTokenFromCookie } from '@/lib/server/auth'
 import type { RawMessage } from '@/app/kafka/types.ts'
-import { aquireApiToken } from '@/lib/server/auth'
 
 export async function GET(req: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
     const apiToken = await getApiTokenFromCookie()

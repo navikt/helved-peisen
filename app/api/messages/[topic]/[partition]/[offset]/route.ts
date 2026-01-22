@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Routes } from '@/lib/api/routes.ts'
-import { getApiTokenFromCookie } from '@/lib/auth/apiToken.ts'
 import { logger } from '@navikt/next-logger'
-import { aquireApiToken } from '@/lib/server/auth'
+import { aquireApiToken, getApiTokenFromCookie } from '@/lib/server/auth'
 
 export async function GET(req: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
     const apiToken = await getApiTokenFromCookie()
