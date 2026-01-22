@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import { logger } from '@navikt/next-logger'
-
-import { tombstoneUtbetaling } from '@/app/actions.ts'
-import { showToast } from '@/components/Toast.tsx'
-
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
-import { ConfirmationModal } from '@/components/ConfirmationModal.tsx'
+
+import { showToast } from '@/components/Toast.tsx'
+import { ConfirmationModal } from '@/components/ConfirmationModal'
+import { tombstoneUtbetaling } from '@/app/kafka/table/actionMenu/actions'
 
 type Props = {
     messageKey: string

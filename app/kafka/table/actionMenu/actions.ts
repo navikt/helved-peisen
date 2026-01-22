@@ -1,11 +1,7 @@
-'use server'
-
-import { cookies, headers } from 'next/headers'
-import { redirect } from 'next/navigation'
-
-export async function deleteApiToken() {
-    ;(await cookies()).delete('api-token')
-}
+import { ApiResponse } from '@/lib/api/types.ts'
+import { Routes } from '@/lib/api/routes.ts'
+import { logger } from '@navikt/next-logger'
+import { checkToken, fetchApiToken } from '@/lib/server/auth.ts'
 
 export async function addKvittering(formData: FormData): Promise<ApiResponse<null>> {
     await checkToken()

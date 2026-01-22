@@ -1,10 +1,10 @@
 import { logger } from '@navikt/next-logger'
 
-import { movePendingToUtbetaling } from '@/app/actions.ts'
 import { showToast } from '@/components/Toast.tsx'
 
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
-import { Message } from '../../types'
+import { movePendingToUtbetaling } from './actions'
+import type { Message } from '@/app/kafka/types'
 
 type Props = {
     message: Message
