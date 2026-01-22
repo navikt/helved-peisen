@@ -35,7 +35,7 @@ export const AddKvitteringButton = ({ message }: Props) => {
 
         const response = await addKvittering(formData)
         if (response.error) {
-            const message = `Feil ved lagring av kvittering: ${response.error.message}`
+            const message = `Feil ved lagring av kvittering: ${response.error}`
             logger.error(message)
             showToast(message, { variant: 'error' })
         } else {

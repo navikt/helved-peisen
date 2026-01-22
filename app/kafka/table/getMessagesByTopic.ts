@@ -1,5 +1,6 @@
 import { Message, TopicName, Topics } from '@/app/kafka/types.ts'
-import { fetchMessages } from '@/lib/api/kafka.ts'
+import { fetchMessages } from '@/lib/io.ts'
+import { ApiResponse } from '@/lib/api/types.ts'
 
 const groupMessagesByTopic = (messages: Message[]): Record<TopicName, Message[]> => {
     const entries = Object.values(Topics).map((topic) => [
@@ -21,11 +22,17 @@ export const getMessagesByTopic = async (params: string): Promise<ApiResponse<Re
         searchParams.set('tom', new Date().toISOString())
     }
 
-    const messages = await fetchMessages(searchParams)
+    try {
+        const messages = await fetchMessages(searchParams)
+        return {
+            data: groupMessagesByTopic(messages),
+            error: null,
+        }
+    } catch (e: unknown) {
+        if (e instanceof Error) {
+            return { data: null, error: e.message }
+        }
 
-    if (messages.error) {
-        return messages
+        return { data: null, error: `Klarte ikke hente meldinger: ${e}` }
     }
-
-    return { data: groupMessagesByTopic(messages.data), error: null }
 }

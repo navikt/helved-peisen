@@ -5,10 +5,15 @@ declare type SuccessResponse<T> = {
 
 declare type FailureResponse = {
     data: null
-    error: {
-        message: string
-        statusCode: number
-    }
+    error: string
 }
 
-declare type ApiResponse<T> = SuccessResponse<T> | FailureResponse
+export type ApiResponse<T> = SuccessResponse<T> | FailureResponse
+
+export function isSuccessResponse<T>(response: ApiResponse<T>): response is SuccessResponse<T> {
+    return response.error === null
+}
+
+export function isFailureResponse<T>(response: ApiResponse<T>): response is FailureResponse {
+    return !isSuccessResponse(response)
+}

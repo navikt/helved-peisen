@@ -21,7 +21,7 @@ export const FlyttTilUtbetalingerButton = ({ message }: Props) => {
 
         const response = await movePendingToUtbetaling(formData)
         if (response.error) {
-            const message = `Feil ved manuell flytting av pending utbetaling til utbetalinger: ${response.error.message}`
+            const message = `Feil ved manuell flytting av pending utbetaling til utbetalinger: ${response.error}`
             logger.error(message)
             showToast(message, { variant: 'error' })
         } else {

@@ -5,6 +5,7 @@ import { type ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
 import { getMessagesByTopic } from '@/app/kafka/table/getMessagesByTopic.ts'
 import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
 import type { Message, TopicName } from '../types.ts'
+import { ApiResponse, isFailureResponse } from '@/lib/api/types.ts'
 
 const mergeSearchParams = (searchParams: ReadonlyURLSearchParams, overrides?: Record<string, string>) => {
     if (!overrides) return searchParams
@@ -66,11 +67,11 @@ export const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
             mergeSearchParams(searchParams, { fom: new Date(lastTimestamp).toISOString(), tom: 'now' }).toString()
         )
 
-        if (response.error) {
+        if (isFailureResponse(response)) {
             setMessages(response)
         } else {
             setMessages((prev) => {
-                if (!prev || !prev.data) return response
+                if (!prev || isFailureResponse(prev)) return response
                 return {
                     ...prev,
                     data: Object.fromEntries(

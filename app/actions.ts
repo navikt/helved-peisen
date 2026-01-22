@@ -5,6 +5,7 @@ import { fetchApiToken } from '@/lib/auth/apiToken'
 import { Routes } from '@/lib/api/routes'
 import { logger } from '@navikt/next-logger'
 import { checkToken } from '@/lib/auth/accessToken.ts'
+import { ApiResponse } from '@/lib/api/types.ts'
 
 export async function deleteApiToken() {
     ;(await cookies()).delete('api-token')
@@ -25,10 +26,7 @@ export async function addKvittering(formData: FormData): Promise<ApiResponse<nul
         logger.error(`Server responded with status: ${response.status} - ${response.statusText}`)
         return {
             data: null,
-            error: {
-                message: `Server responded with status: ${response.status} - ${response.statusText}`,
-                statusCode: response.status,
-            },
+            error: `Server responded with status: ${response.status} - ${response.statusText}`,
         }
     }
 
@@ -53,10 +51,7 @@ export async function movePendingToUtbetaling(formData: FormData): Promise<ApiRe
         logger.error(`Server responded with status: ${response.status} - ${response.statusText}`)
         return {
             data: null,
-            error: {
-                message: `Server responded with status: ${response.status} - ${response.statusText}`,
-                statusCode: response.status,
-            },
+            error: `Server responded with status: ${response.status} - ${response.statusText}`,
         }
     }
 
@@ -81,10 +76,7 @@ export async function tombstoneUtbetaling(formData: FormData): Promise<ApiRespon
         logger.error(`Server responded with status: ${response.status} - ${response.statusText}`)
         return {
             data: null,
-            error: {
-                message: `Server responded with status: ${response.status} - ${response.statusText}`,
-                statusCode: response.status,
-            },
+            error: `Server responded with status: ${response.status} - ${response.statusText}`,
         }
     }
 

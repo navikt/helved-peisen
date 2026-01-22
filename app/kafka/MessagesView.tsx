@@ -10,6 +10,7 @@ import { FiltereContext } from '@/app/kafka/Filtere.tsx'
 import { SortStateContext } from '@/app/kafka/table/SortState.tsx'
 import { keepLatest } from '@/lib/message.ts'
 import { MessagesContext } from './context/MessagesContext.tsx'
+import { isFailureResponse } from '@/lib/api/types.ts'
 
 export const MessagesView = () => {
     const { messages } = useContext(MessagesContext)
@@ -25,10 +26,10 @@ export const MessagesView = () => {
         )
     }
 
-    if (messages.error) {
+    if (isFailureResponse(messages)) {
         return (
             <Alert variant="error" role="alert">
-                {messages.error.message}
+                {messages.error}
             </Alert>
         )
     }

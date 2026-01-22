@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { logger } from '@navikt/next-logger'
 
 import { tombstoneUtbetaling } from '@/app/actions.ts'
@@ -31,7 +31,7 @@ export const TombstoneUtbetalingButton = ({ messageKey }: Props) => {
         setIsLoading(false)
 
         if (response.error) {
-            const message = `Feil ved tombstoning av utbetaling: ${response.error.message}`
+            const message = `Feil ved tombstoning av utbetaling: ${response.error}`
             logger.error(message)
             showToast(message, { variant: 'error' })
         } else {
