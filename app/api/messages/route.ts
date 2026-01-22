@@ -16,13 +16,7 @@ export async function GET(req: NextRequest) {
 
     if (!response.ok) {
         logger.error(`Klarte ikke hente meldinger: ${response.status} - ${response.statusText}`)
-        return NextResponse.json({
-            data: null,
-            error: {
-                message: 'Klarte ikke hente meldinger: ${response.status} - ${response.statusText}',
-                statusCode: response.status,
-            },
-        })
+        return response
     }
 
     const data = await response.json()
