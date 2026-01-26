@@ -1,13 +1,11 @@
-import React from 'react'
 import clsx from 'clsx'
 import { ComboboxProps, UNSAFE_Combobox } from '@navikt/ds-react'
 import { useSearchParams } from 'next/navigation'
 
-import { useUpdateSearchParams } from '@/hooks/useUpdateSearchParams.tsx'
-
-type Props<T extends string> = Omit<ComboboxProps, 'options'> & {
+type Props<T extends string> = Omit<ComboboxProps, 'options' | 'onSelect'> & {
     searchParamName: string
     initialOptions: T[]
+    onSelect: (value: string | null) => void
     renderForSearchParam?: (value: string) => string
     renderForCombobox?: (value: string) => string
     size?: 'small' | 'medium'
@@ -17,6 +15,7 @@ type Props<T extends string> = Omit<ComboboxProps, 'options'> & {
 export const UrlSearchParamComboBox = <T extends string>({
     searchParamName,
     initialOptions,
+    onSelect,
     renderForSearchParam = (value) => value,
     renderForCombobox = (value) => value,
     className,
@@ -28,25 +27,23 @@ export const UrlSearchParamComboBox = <T extends string>({
     const searchParams = useSearchParams()
     const selectedOptions = searchParams.get(searchParamName)?.split(',') ?? []
 
-    const updateSearchParams = useUpdateSearchParams(searchParamName)
-
     const onToggleSelected = (option: string, isSelected: boolean) => {
         if (isMultiSelect) {
             if (isSelected) {
                 const query = [...selectedOptions, option as T].map(renderForSearchParam).join(',')
-                updateSearchParams(query)
+                onSelect(query)
             } else {
                 const query = selectedOptions
                     .map(renderForSearchParam)
                     .filter((o) => o !== renderForSearchParam(option))
                     .join(',')
-                updateSearchParams(query)
+                onSelect(query)
             }
         } else {
             if (isSelected) {
-                updateSearchParams(renderForSearchParam(option))
+                onSelect(renderForSearchParam(option))
             } else {
-                updateSearchParams('')
+                onSelect(null)
             }
         }
     }

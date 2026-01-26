@@ -19,10 +19,6 @@ type Props = React.HTMLAttributes<HTMLDivElement>
 export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
     const { setFiltere, ...filtere } = React.useContext(FiltereContext)
 
-    const updateFom = (fom: string) => setFiltere({ fom })
-
-    const updateTom = (tom: string) => setFiltere({ tom })
-
     return (
         <div className={clsx('flex gap-6 justify-between flex-wrap', className)} {...rest}>
             <div className="flex flex-wrap gap-x-8 gap-y-5 items-end">
@@ -31,6 +27,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     label="Topics"
                     searchParamName="topics"
                     initialOptions={Object.values(Topics)}
+                    onSelect={(topics: string | null) => setFiltere({ topics: topics })}
                     isMultiSelect
                     size="small"
                 />
@@ -38,21 +35,38 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     label="Status"
                     searchParamName="status"
                     initialOptions={['OK', 'FEILET', 'HOS_OPPDRAG', 'MOTTATT']}
+                    onSelect={(status) => setFiltere({ status })}
                     isMultiSelect
                     size="small"
                 />
-                <UrlSearchParamInput label="Trace-ID" searchParamName="trace_id" size="small" />
-                <UrlSearchParamInput label="Key" searchParamName="key" size="small" />
+                <UrlSearchParamInput
+                    label="Trace-ID"
+                    searchParamName="trace_id"
+                    size="small"
+                    onSubmit={(trace_id) => setFiltere({ trace_id: trace_id.trim() })}
+                />
+                <UrlSearchParamInput
+                    label="Key"
+                    searchParamName="key"
+                    size="small"
+                    onSubmit={(key) => setFiltere({ key: key.trim() })}
+                />
                 <UrlSearchParamComboBox
                     label="Søk i value"
                     searchParamName="value"
                     allowNewValues
                     initialOptions={[]}
+                    onSelect={(value) => setFiltere({ value })}
                     isMultiSelect
                     size="small"
                     hideDropdown
                 />
-                <DateRangeSelect from={filtere.fom} to={filtere.tom} updateFrom={updateFom} updateTo={updateTom} />
+                <DateRangeSelect
+                    from={filtere.fom}
+                    to={filtere.tom}
+                    updateFrom={(fom: string) => setFiltere({ fom })}
+                    updateTo={(tom: string) => setFiltere({ tom })}
+                />
                 <ToggleGroup
                     className="h-max"
                     defaultValue="alle"

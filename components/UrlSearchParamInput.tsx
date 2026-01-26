@@ -5,14 +5,14 @@ import { Button, TextField, TextFieldProps } from '@navikt/ds-react'
 import { useSearchParams } from 'next/navigation'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
-import { useUpdateSearchParams } from '@/hooks/useUpdateSearchParams.tsx'
 import { XMarkIcon } from '@navikt/aksel-icons'
 
-type Props = Omit<TextFieldProps, 'onSearchClick'> & {
+type Props = Omit<TextFieldProps, 'onSearchClick' | 'onSubmit'> & {
     searchParamName: string
+    onSubmit: (value: string) => void
 }
 
-export function UrlSearchParamInput({ searchParamName, className, ...rest }: Props) {
+export function UrlSearchParamInput({ searchParamName, onSubmit, className, ...rest }: Props) {
     const containerRef = useRef<HTMLDivElement>(null)
     const searchParams = useSearchParams()
     const defaultValue: string = useMemo(
@@ -27,11 +27,9 @@ export function UrlSearchParamInput({ searchParamName, className, ...rest }: Pro
         setValue(value ?? '')
     }, [searchParamName, searchParams, setValue])
 
-    const updateSearchParams = useUpdateSearchParams(searchParamName)
-
     const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            updateSearchParams((event.target as HTMLInputElement).value)
+            onSubmit((event.target as HTMLInputElement).value)
         }
     }
 
@@ -42,7 +40,7 @@ export function UrlSearchParamInput({ searchParamName, className, ...rest }: Pro
     const clearValue = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault()
         setValue('')
-        updateSearchParams('')
+        onSubmit('')
     }
 
     return (
