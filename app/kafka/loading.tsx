@@ -1,6 +1,6 @@
 import { MessagesTableSkeleton } from '@/app/kafka/table/MessagesTable.tsx'
 import { MessagesChartSkeleton } from '@/app/kafka/chart/MessagesChart.tsx'
-import { Filtere } from './Filtere'
+import { Filtere } from './Filtere.tsx'
 
 export default function Loading() {
     return (

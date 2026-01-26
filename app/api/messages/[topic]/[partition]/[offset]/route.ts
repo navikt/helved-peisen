@@ -47,7 +47,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<Recor
     })
 
     if (!res.ok) {
-        console.log(await res.text())
         logger.error(`Klarte ikke resende melding: ${res.status} - ${res.statusText}`)
         return NextResponse.json(
             {

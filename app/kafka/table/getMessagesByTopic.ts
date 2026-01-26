@@ -1,6 +1,7 @@
 import { Message, TopicName, Topics } from '@/app/kafka/types.ts'
 import { fetchMessages } from '@/lib/io.ts'
 import { ApiResponse } from '@/lib/api/types.ts'
+import type { FiltereValue } from '../Filtere'
 
 const groupMessagesByTopic = (messages: Message[]): Record<TopicName, Message[]> => {
     const entries = Object.values(Topics).map((topic) => [
@@ -11,8 +12,16 @@ const groupMessagesByTopic = (messages: Message[]): Record<TopicName, Message[]>
     return Object.fromEntries(entries)
 }
 
-export const getMessagesByTopic = async (params: string): Promise<ApiResponse<Record<TopicName, Message[]>>> => {
-    const searchParams = new URLSearchParams(params)
+function sanitizeSearchParams(obj: Record<string, string | boolean | null>): Record<string, string> {
+    return Object.fromEntries(
+        Object.entries(obj)
+            .filter(([, value]) => !!value)
+            .map(([key, value]) => [key, value!!.toString()])
+    ) as Record<string, string>
+}
+
+export const getMessagesByTopic = async (filtere: FiltereValue): Promise<ApiResponse<Record<TopicName, Message[]>>> => {
+    const searchParams = new URLSearchParams(sanitizeSearchParams({ ...filtere, setFiltere: null }))
 
     if (searchParams.get('fom') === 'now') {
         searchParams.set('fom', new Date().toISOString())

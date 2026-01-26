@@ -11,14 +11,14 @@ export default async function KafkaOverview() {
 
     return (
         <section className="flex flex-col p-4">
-            <MessagesProvider>
-                <FiltereProvider>
+            <FiltereProvider>
+                <MessagesProvider>
                     <SortStateProvider>
                         <Filtere className="mb-8" />
                         <MessagesView />
                     </SortStateProvider>
-                </FiltereProvider>
-            </MessagesProvider>
+                </MessagesProvider>
+            </FiltereProvider>
         </section>
     )
 }

@@ -1,6 +1,4 @@
-'use client'
-
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { format } from 'date-fns/format'
 import { formatDistanceStrict } from 'date-fns/formatDistanceStrict'
@@ -9,7 +7,6 @@ import { parse } from 'date-fns/parse'
 import { sub } from 'date-fns/sub'
 import { differenceInSeconds } from 'date-fns'
 import { subDays } from 'date-fns/subDays'
-import { useSearchParams } from 'next/navigation'
 import { BodyShort, Button, Dropdown, HStack, Select, Tabs, TextField, VStack } from '@navikt/ds-react'
 import { DropdownMenu } from '@navikt/ds-react/Dropdown'
 import { TabsList, TabsPanel, TabsTab } from '@navikt/ds-react/Tabs'
@@ -17,9 +14,8 @@ import { ArrowRightIcon, CalendarIcon } from '@navikt/aksel-icons'
 import { DatePickerStandalone } from '@navikt/ds-react/DatePicker'
 
 import { CompactTextField } from '@/components/CompactTextField.tsx'
-import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
 import { useElementHeight } from '@/hooks/useElementHeight.ts'
-import { parseSearchParamDate } from '@/lib/date.ts'
+import { parseDateValue } from '@/lib/date.ts'
 
 const times = new Array(24)
     .fill(0)
@@ -311,25 +307,14 @@ const DateSelectDropdown: React.FC<DateSelectDropdownProps> = ({ time, onSelectT
     )
 }
 
-export const DateRangeSelect = () => {
-    const searchParams = useSearchParams()
-    const setSearchParams = useSetSearchParams()
+type Props = {
+    from: string
+    to: string
+    updateFrom: (from: string) => void
+    updateTo: (to: string) => void
+}
 
-    const state: Record<string, string> = useMemo(() => {
-        const today = new Date()
-        const isMonday = today.getDay() === 1
-        const daysToSubtract = isMonday ? 3 : 1
-
-        return {
-            fom: parseSearchParamDate(searchParams, 'fom') ?? subDays(today, daysToSubtract).toISOString(),
-            tom: parseSearchParamDate(searchParams, 'tom') ?? today.toISOString(),
-        }
-    }, [searchParams])
-
-    const updateFom = useCallback((value: string) => setSearchParams({ fom: value }), [setSearchParams])
-
-    const updateTom = useCallback((value: string) => setSearchParams({ tom: value }), [setSearchParams])
-
+export const DateRangeSelect: FC<Props> = ({ from, to, updateFrom, updateTo }) => {
     return (
         <div className="flex flex-col gap-2">
             <div className="text-base/(--ax-font-line-height-medium) font-semibold">Tidsrom</div>
@@ -339,15 +324,15 @@ export const DateRangeSelect = () => {
             >
                 <DateSelectDropdown
                     data-testid="date-range-fom"
-                    time={new Date(state.fom)}
-                    onSelectTime={updateFom}
+                    time={new Date(from)}
+                    onSelectTime={updateFrom}
                     className="border-none bg-transparent text-inherit h-full py-0 px-3"
                 />
                 <ArrowRightIcon />
                 <DateSelectDropdown
                     data-testid="date-range-tom"
-                    time={new Date(state.tom)}
-                    onSelectTime={updateTom}
+                    time={new Date(parseDateValue(to))}
+                    onSelectTime={updateTo}
                     className="border-none bg-transparent text-inherit h-full py-0 px-3"
                 />
                 <div className="h-full py-0 px-2 flex items-center rounded-l-none">

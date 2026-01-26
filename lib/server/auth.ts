@@ -17,21 +17,24 @@ export async function aquireApiToken(headers: Headers) {
     return NextResponse.redirect(url)
 }
 
-const checkLocalToken = async () => {
-    let token = (await cookies()).get('api-token')
+const checkLocalToken = async (headers: Headers) => {
+    let token = (await cookies()).get(API_TOKEN_NAME)
     if (!token) {
-        redirect(Routes.internal.apiLogin)
+        const destination = encodeURIComponent(headers.get('x-forwarded-uri') ?? headers.get('referer') ?? '/kafka')
+        const url = new URL(`${Routes.internal.apiLogin}?redirect=${destination}`, process.env.NEXT_PUBLIC_HOSTNAME)
+        redirect(url.toString())
     }
 }
 
 export const checkToken = async () => {
     if (isFaking) return
 
+    const currentHeaders = await headers()
+
     if (isLocal) {
-        return checkLocalToken()
+        return checkLocalToken(currentHeaders)
     }
 
-    const currentHeaders = await headers()
     const token = getToken(currentHeaders)
     if (!token) {
         const forward = currentHeaders.get('x-forwarded-uri') || '/'
@@ -49,6 +52,11 @@ export const ensureValidApiToken = async () => {
     if (isFaking) {
         return
     }
+
+    if (isLocal) {
+        return checkLocalToken(await headers())
+    }
+
     const existing = await getApiTokenFromCookie()
     if (!existing) {
         return isLocal ? unauthorized() : aquireApiToken(await headers())

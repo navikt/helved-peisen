@@ -1,26 +1,11 @@
 'use client'
 
 import { createContext, type PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react'
-import { type ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
+
 import { getMessagesByTopic } from '@/app/kafka/table/getMessagesByTopic.ts'
-import { useSetSearchParams } from '@/hooks/useSetSearchParams.ts'
-import type { Message, TopicName } from '../types.ts'
-import { ApiResponse, isFailureResponse } from '@/lib/api/types.ts'
-
-const mergeSearchParams = (searchParams: ReadonlyURLSearchParams, overrides?: Record<string, string>) => {
-    if (!overrides) return searchParams
-
-    const params = new URLSearchParams(searchParams)
-    for (const [key, value] of Object.entries(overrides)) {
-        if (value === undefined) {
-            params.delete(key)
-        } else {
-            params.set(key, value)
-        }
-    }
-
-    return params
-}
+import { type ApiResponse, isFailureResponse } from '@/lib/api/types.ts'
+import type { Message, TopicName } from '@/app/kafka/types.ts'
+import { useFiltere } from '../Filtere'
 
 type MessagesContextValue = {
     loading: boolean
@@ -35,10 +20,9 @@ export const MessagesContext = createContext<MessagesContextValue>({
 })
 
 export const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
-    const searchParams = useSearchParams()
-    const setSearchParam = useSetSearchParams()
     const [messages, setMessages] = useState<ApiResponse<Record<string, Message[]>> | null>(null)
     const [loading, setLoading] = useState(true)
+    const filtere = useFiltere()
 
     const lastTimestamp = useMemo(() => {
         if (!messages?.data) return null
@@ -52,20 +36,22 @@ export const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
     const fetchMessages = useCallback(() => {
         setLoading(true)
-        getMessagesByTopic(searchParams.toString()).then((res) => {
+        getMessagesByTopic(filtere).then((res) => {
             setMessages(res)
             setLoading(false)
         })
-    }, [searchParams])
+    }, [filtere])
 
     const fetchAdditionalMessages = useCallback(async () => {
         if (!lastTimestamp) return
 
         setLoading(true)
 
-        const response = await getMessagesByTopic(
-            mergeSearchParams(searchParams, { fom: new Date(lastTimestamp).toISOString(), tom: 'now' }).toString()
-        )
+        const response = await getMessagesByTopic({
+            ...filtere,
+            fom: new Date(lastTimestamp).toISOString(),
+            tom: 'now',
+        })
 
         if (isFailureResponse(response)) {
             setMessages(response)
@@ -85,21 +71,17 @@ export const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
             })
         }
 
-        if (searchParams.get('tom') !== 'now') {
-            setSearchParam({ tom: 'now' })
-        }
-
         setLoading(false)
-    }, [searchParams, lastTimestamp, setSearchParam])
+    }, [filtere, lastTimestamp])
 
-    const fom = searchParams.get('fom')
-    const tom = searchParams.get('tom')
-
-    useEffect(() => {
-        if (fom && tom) {
-            fetchMessages()
-        }
-    }, [fom, tom, fetchMessages])
+    useEffect(
+        function updateMessages() {
+            if (filtere.fom && filtere.tom) {
+                fetchMessages()
+            }
+        },
+        [filtere]
+    )
 
     return (
         <MessagesContext.Provider value={{ loading, messages, fetchAdditionalMessages }}>

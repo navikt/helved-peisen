@@ -51,7 +51,6 @@ const statusForMessage = (message: RawMessage) => {
         case 'helved.kvittering.v1': {
             try {
                 const xmlDoc = parsedXML(message.value)
-
                 const mmel = xmlDoc.getElementsByTagName('mmel')?.[0]
                 const alvorlighetsgrad = mmel?.getElementsByTagName('alvorlighetsgrad')?.[0]
                 const content = alvorlighetsgrad?.textContent?.trim() ?? null
