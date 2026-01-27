@@ -5,7 +5,7 @@ import { checkToken, fetchApiToken } from '@/lib/server/auth.ts'
 
 export async function addKvittering(formData: FormData): Promise<ApiResponse<null>> {
     await checkToken()
-    const response = await fetch(Routes.external.manuellKvittering, {
+    const response = await fetch(`${process.env.API_BASE_URL}/manuell-kvittering`, { // TODO: API_BASE_URL blir noen ganger undefined?
         method: 'POST',
         headers: {
             Authorization: `Bearer ${await fetchApiToken()}`,
