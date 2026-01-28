@@ -2,11 +2,11 @@
 
 import clsx from 'clsx'
 import React, { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
 import { subDays } from 'date-fns'
 
 import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox'
-import { UrlSearchParamInput } from '@/components/UrlSearchParamInput.tsx'
+import { FilterInput } from '@/components/FilterInput'
 import { DateRangeSelect } from '@/app/kafka/DateRangeSelect.tsx'
 import { Switch, ToggleGroup } from '@navikt/ds-react'
 import { ToggleGroupItem } from '@navikt/ds-react/ToggleGroup'
@@ -39,18 +39,8 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     isMultiSelect
                     size="small"
                 />
-                <UrlSearchParamInput
-                    label="Trace-ID"
-                    searchParamName="trace_id"
-                    size="small"
-                    onSubmit={(trace_id) => setFiltere({ trace_id: trace_id.trim() })}
-                />
-                <UrlSearchParamInput
-                    label="Key"
-                    searchParamName="key"
-                    size="small"
-                    onSubmit={(key) => setFiltere({ key: key.trim() })}
-                />
+                <FilterInput label="Trace-ID" filter="trace_id" size="small" />
+                <FilterInput label="Key" filter="key" size="small" />
                 <UrlSearchParamComboBox
                     label="Søk i value"
                     searchParamName="value"
@@ -116,34 +106,28 @@ type FiltereContextValue = FiltereValue & {
     setFiltere: (filtere: Partial<FiltereValue>) => void
 }
 
+function defaultFiltereValue(searchParams?: ReadonlyURLSearchParams): FiltereValue {
+    return {
+        fom: searchParams?.get('fom') ?? subDays(new Date(), 3).toISOString(),
+        tom: searchParams?.get('tom') ?? 'now',
+        topics: searchParams?.get('topics') ?? null,
+        status: searchParams?.get('status') ?? null,
+        key: searchParams?.get('key') ?? null,
+        value: searchParams?.get('value') ?? null,
+        trace_id: searchParams?.get('trace_id') ?? null,
+        utenKvittering: false,
+        visning: 'alle',
+    }
+}
+
 export const FiltereContext = React.createContext<FiltereContextValue>({
-    fom: subDays(new Date(), 3).toISOString(),
-    tom: 'now',
-    topics: null,
-    status: null,
-    key: null,
-    value: null,
-    trace_id: null,
-    utenKvittering: false,
-    visning: 'alle',
-    setFiltere: () => {
-        throw new Error('setFilter is not implemented')
-    },
+    ...defaultFiltereValue(),
+    setFiltere: () => null,
 })
 
 export const FiltereProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const searchParams = useSearchParams()
-    const [filtere, setFiltere] = useState<FiltereValue>({
-        fom: subDays(new Date(), 3).toISOString(),
-        tom: 'now',
-        topics: null,
-        status: searchParams.get('status') || null,
-        key: null,
-        value: null,
-        trace_id: searchParams.get('trace_id') || null,
-        utenKvittering: false,
-        visning: 'alle',
-    })
+    const [filtere, setFiltere] = useState<FiltereValue>(defaultFiltereValue(searchParams))
 
     useEffect(
         function setDefaultRange() {

@@ -7,7 +7,6 @@ import { ActionMenu, Button, CopyButton, HStack, Label, Skeleton, VStack } from 
 import { formatDate } from 'date-fns'
 
 import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
-import { UrlSearchParamLink } from '@/components/UrlSearchParamLink.tsx'
 import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
 import { MessageValue } from './MessageValue'
 import { MessageStatus } from '@/components/MessageStatus.tsx'
@@ -23,6 +22,7 @@ import { fetchRawMessage } from '@/lib/io'
 import { showToast } from '@/components/Toast'
 import { useUser } from '@/components/UserProvider.tsx'
 import { teamLogger } from '@navikt/next-logger/team-log'
+import { FilterLink } from '@/components/FilterLink'
 
 type Props = {
     message: Message
@@ -85,13 +85,13 @@ const RowContents: React.FC<Props> = ({ message }) => {
                 <MessageStatus message={message} />
             </TableDataCell>
             <TableDataCell style={{ width: 0 }}>
-                <UrlSearchParamLink
-                    searchParamName="key"
-                    searchParamValue={message.key}
-                    className="max-w-[600px] text-ellipsis block whitespace-nowrap overflow-hidden"
+                <FilterLink
+                    filter="key"
+                    value={message.key}
+                    className="max-w-[600px] text-ellipsis block whitespace-nowrap overflow-hidden cursor-pointer"
                 >
                     {message.key}
-                </UrlSearchParamLink>
+                </FilterLink>
             </TableDataCell>
             <TableDataCell>
                 <span className="whitespace-nowrap">

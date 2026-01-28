@@ -2,34 +2,34 @@
 
 import clsx from 'clsx'
 import { Button, TextField, TextFieldProps } from '@navikt/ds-react'
-import { useSearchParams } from 'next/navigation'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-
 import { XMarkIcon } from '@navikt/aksel-icons'
+import React, { useEffect, useRef, useState } from 'react'
+
+import { FiltereValue, useFiltere } from '@/app/kafka/Filtere'
 
 type Props = Omit<TextFieldProps, 'onSearchClick' | 'onSubmit'> & {
-    searchParamName: string
-    onSubmit: (value: string) => void
+    filter: keyof FiltereValue
 }
 
-export function UrlSearchParamInput({ searchParamName, onSubmit, className, ...rest }: Props) {
+export function FilterInput({ filter, className, ...rest }: Props) {
+    const { setFiltere, ...filtere } = useFiltere()
     const containerRef = useRef<HTMLDivElement>(null)
-    const searchParams = useSearchParams()
-    const defaultValue: string = useMemo(
-        () => (searchParams.get(searchParamName) ?? '') as string,
-        [searchParams, searchParamName]
+
+    const [value, setValue] = useState<string>((filtere[filter] as string) ?? '')
+
+    useEffect(
+        function updateValueWhenFilterChanges() {
+            if (filtere[filter] && value !== filtere[filter]) {
+                setValue(filtere[filter] as string)
+            }
+        },
+        [value, filtere[filter]]
     )
-
-    const [value, setValue] = useState(defaultValue)
-
-    useEffect(() => {
-        const value = searchParams.get(searchParamName)
-        setValue(value ?? '')
-    }, [searchParamName, searchParams, setValue])
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            onSubmit((event.target as HTMLInputElement).value)
+            const value = (event.target as HTMLInputElement).value
+            setFiltere({ [filter]: value })
         }
     }
 
@@ -40,7 +40,7 @@ export function UrlSearchParamInput({ searchParamName, onSubmit, className, ...r
     const clearValue = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault()
         setValue('')
-        onSubmit('')
+        setFiltere({ [filter]: '' })
     }
 
     return (
@@ -50,7 +50,7 @@ export function UrlSearchParamInput({ searchParamName, onSubmit, className, ...r
                 value={value}
                 onChange={onChange}
                 onKeyDown={onKeyDown}
-                name={searchParamName}
+                name={filter}
                 {...rest}
             />
             {value.length > 0 && (
