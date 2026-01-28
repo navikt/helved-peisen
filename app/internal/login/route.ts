@@ -4,7 +4,9 @@ import { fetchApiToken } from '@/lib/server/auth.ts'
 
 export const GET = async (req: NextRequest) => {
     const path = req.nextUrl.searchParams.get('redirect') ?? req.headers.get('referer') ?? '/kafka'
-    const response = NextResponse.redirect(path)
+    const host = requireEnv('NEXT_PUBLIC_HOSTNAME')
+    const destination = new URL(path, host)
+    const response = NextResponse.redirect(destination)
     const apiToken = isLocal ? requireEnv('API_TOKEN') : await fetchApiToken()
 
     const isHttps = req.nextUrl.protocol === 'https:'
