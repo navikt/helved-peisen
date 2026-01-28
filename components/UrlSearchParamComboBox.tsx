@@ -27,7 +27,7 @@ export const UrlSearchParamComboBox = <T extends string>({
                 setFiltere({ [filter]: query })
             } else {
                 const query = selectedOptions.filter((o) => o !== option).join(',')
-                setFiltere({ [filter]: query })
+                setFiltere({ [filter]: query.length > 0 ? query : null })
             }
         } else {
             if (isSelected) {
