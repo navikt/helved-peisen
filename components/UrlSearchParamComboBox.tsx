@@ -1,49 +1,39 @@
 import clsx from 'clsx'
 import { ComboboxProps, UNSAFE_Combobox } from '@navikt/ds-react'
-import { useSearchParams } from 'next/navigation'
+import { type FiltereValue, useFiltere } from '@/app/kafka/Filtere'
 
 type Props<T extends string> = Omit<ComboboxProps, 'options' | 'onSelect'> & {
-    searchParamName: string
+    filter: keyof FiltereValue
     initialOptions: T[]
-    onSelect: (value: string | null) => void
-    renderForSearchParam?: (value: string) => string
-    renderForCombobox?: (value: string) => string
-    size?: 'small' | 'medium'
     hideDropdown?: boolean
 }
 
 export const UrlSearchParamComboBox = <T extends string>({
-    searchParamName,
+    filter,
     initialOptions,
-    onSelect,
-    renderForSearchParam = (value) => value,
-    renderForCombobox = (value) => value,
     className,
     isMultiSelect,
-    size = 'medium',
     hideDropdown = false,
     ...rest
 }: Props<T>) => {
-    const searchParams = useSearchParams()
-    const selectedOptions = searchParams.get(searchParamName)?.split(',') ?? []
+    const { setFiltere, ...filtere } = useFiltere()
+    const value = filtere[filter] as string | null
+    const selectedOptions = value?.split(',') ?? []
 
     const onToggleSelected = (option: string, isSelected: boolean) => {
         if (isMultiSelect) {
             if (isSelected) {
-                const query = [...selectedOptions, option as T].map(renderForSearchParam).join(',')
-                onSelect(query)
+                const query = [...selectedOptions, option].join(',')
+                setFiltere({ [filter]: query })
             } else {
-                const query = selectedOptions
-                    .map(renderForSearchParam)
-                    .filter((o) => o !== renderForSearchParam(option))
-                    .join(',')
-                onSelect(query)
+                const query = selectedOptions.filter((o) => o !== option).join(',')
+                setFiltere({ [filter]: query })
             }
         } else {
             if (isSelected) {
-                onSelect(renderForSearchParam(option))
+                setFiltere({ [filter]: option })
             } else {
-                onSelect(null)
+                setFiltere({ [filter]: null })
             }
         }
     }
@@ -52,10 +42,10 @@ export const UrlSearchParamComboBox = <T extends string>({
         <UNSAFE_Combobox
             className={clsx(className, hideDropdown && '[&_*]:aria-hidden:hidden')}
             isMultiSelect={isMultiSelect}
-            options={initialOptions.map(renderForCombobox)}
+            options={initialOptions}
             onToggleSelected={onToggleSelected}
-            selectedOptions={selectedOptions.map(renderForCombobox)}
-            size={size}
+            selectedOptions={selectedOptions}
+            size="small"
             {...rest}
         />
     )

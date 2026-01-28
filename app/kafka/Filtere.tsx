@@ -25,30 +25,24 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 <UrlSearchParamComboBox
                     className="min-w-[15rem]"
                     label="Topics"
-                    searchParamName="topics"
+                    filter="topics"
                     initialOptions={Object.values(Topics)}
-                    onSelect={(topics: string | null) => setFiltere({ topics: topics })}
                     isMultiSelect
-                    size="small"
                 />
                 <UrlSearchParamComboBox
                     label="Status"
-                    searchParamName="status"
+                    filter="status"
                     initialOptions={['OK', 'FEILET', 'HOS_OPPDRAG', 'MOTTATT']}
-                    onSelect={(status) => setFiltere({ status })}
                     isMultiSelect
-                    size="small"
                 />
                 <FilterInput label="Trace-ID" filter="trace_id" size="small" />
                 <FilterInput label="Key" filter="key" size="small" />
                 <UrlSearchParamComboBox
                     label="Søk i value"
-                    searchParamName="value"
+                    filter="value"
                     allowNewValues
                     initialOptions={[]}
-                    onSelect={(value) => setFiltere({ value })}
                     isMultiSelect
-                    size="small"
                     hideDropdown
                 />
                 <DateRangeSelect
@@ -144,6 +138,7 @@ export const FiltereProvider: React.FC<React.PropsWithChildren> = ({ children })
     )
 
     const setFilter = (delta: Partial<FiltereValue>) => {
+        console.log('setting filter: ', delta)
         const newFilters = { ...filtere, ...delta }
         const params = new URLSearchParams(window.location.search)
 
