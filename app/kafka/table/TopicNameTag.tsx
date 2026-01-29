@@ -47,6 +47,14 @@ const UtbetalingStatusBadge: React.FC<Props> = ({ message }) => {
     return <Badge>{message.badge}</Badge>
 }
 
+const OpphørStatusBadge: React.FC<Props> = ({ message }) => {
+    if (!message.badge) {
+        return null
+    }
+
+    return <Badge>{message.badge}</Badge>
+}
+
 const StatusBadge: React.FC<Props> = ({ message }) => {
     switch (message.topic_name) {
         case 'helved.avstemming.v1':
@@ -63,6 +71,8 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
         case 'tilleggsstonader.utbetaling.v1':
         case 'aap.utbetaling.v1':
             return <UtbetalingStatusBadge message={message} />
+        case 'helved.status.v1':
+            return <OpphørStatusBadge message={message} />
     }
 
     return null
