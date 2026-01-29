@@ -1,11 +1,11 @@
 'use client'
 
 import clsx from 'clsx'
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
 import { subDays } from 'date-fns'
 
-import { UrlSearchParamComboBox } from '@/components/UrlSearchParamComboBox'
+import { FilterCombobox } from '@/components/FilterCombobox'
 import { FilterInput } from '@/components/FilterInput'
 import { DateRangeSelect } from '@/app/kafka/DateRangeSelect.tsx'
 import { Switch, ToggleGroup } from '@navikt/ds-react'
@@ -22,14 +22,14 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
     return (
         <div className={clsx('flex gap-6 justify-between flex-wrap', className)} {...rest}>
             <div className="flex flex-wrap gap-x-8 gap-y-5 items-end">
-                <UrlSearchParamComboBox
-                    className="min-w-[15rem]"
+                <FilterCombobox
+                    className="min-w-60"
                     label="Topics"
                     filter="topics"
                     initialOptions={Object.values(Topics)}
                     isMultiSelect
                 />
-                <UrlSearchParamComboBox
+                <FilterCombobox
                     label="Status"
                     filter="status"
                     initialOptions={['OK', 'FEILET', 'HOS_OPPDRAG', 'MOTTATT']}
@@ -37,7 +37,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 />
                 <FilterInput label="Trace-ID" filter="trace_id" size="small" />
                 <FilterInput label="Key" filter="key" size="small" />
-                <UrlSearchParamComboBox
+                <FilterCombobox
                     label="Søk i value"
                     filter="value"
                     allowNewValues
@@ -55,7 +55,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     className="h-max"
                     defaultValue="alle"
                     size="small"
-                    onChange={(value) => setFiltere({ visning: value as 'alle' | 'siste' })}
+                    onChange={(value: string) => setFiltere({ visning: value as 'alle' | 'siste' })}
                     value={filtere.visning}
                 >
                     <ToggleGroupItem value="alle" label="Alle" />
@@ -65,7 +65,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     className="h-max whitespace-nowrap"
                     value="utenKvittering"
                     size="small"
-                    onChange={(event) => {
+                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
                         if (event.target.checked) {
                             setFiltere({ utenKvittering: true, visning: 'siste' })
                         } else {

@@ -13,7 +13,7 @@ export const CompactTextField: React.FC<Props> = ({ className, containerClass, l
             <div className="flex items-center relative">
                 <label
                     className={clsx(
-                        'h-[2rem] bg-(--ax-bg-sunken) flex items-center py-0 px-2 rounded-l-lg border-(--ax-border-neutral) border-r-0 text-sm whitespace-nowrap',
+                        'h-8 bg-(--ax-bg-sunken) flex items-center py-0 px-2 rounded-l-lg border border-(--ax-border-neutral) border-r-0 text-sm whitespace-nowrap',
                         error && 'border-2 border-(--ax-border-danger)'
                     )}
                     htmlFor={id}

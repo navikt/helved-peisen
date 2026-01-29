@@ -8,7 +8,7 @@ type Props<T extends string> = Omit<ComboboxProps, 'options' | 'onSelect'> & {
     hideDropdown?: boolean
 }
 
-export const UrlSearchParamComboBox = <T extends string>({
+export const FilterCombobox = <T extends string>({
     filter,
     initialOptions,
     className,
@@ -38,9 +38,11 @@ export const UrlSearchParamComboBox = <T extends string>({
         }
     }
 
+    console.log(value)
+
     return (
         <UNSAFE_Combobox
-            className={clsx(className, hideDropdown && '[&_*]:aria-hidden:hidden')}
+            className={clsx(className, hideDropdown && '[&_div[aria-hidden]]:hidden')}
             isMultiSelect={isMultiSelect}
             options={initialOptions}
             onToggleSelected={onToggleSelected}

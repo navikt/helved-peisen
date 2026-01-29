@@ -11,8 +11,7 @@ const buildGrafanaTraceUrl = (traceId: string): string => {
         panes: JSON.stringify({
             trace: {
                 datasource:
-                    window.location.host.includes('dev') ||
-                    window.location.host.includes('localhost')
+                    window.location.host.includes('dev') || window.location.host.includes('localhost')
                         ? 'P95CC91DC09CABFC8'
                         : 'P8A28344D07741F8D',
                 queries: [
@@ -36,13 +35,7 @@ export const GrafanaTraceLink: React.FC<Props> = ({ traceId }) => {
         <Link
             href={buildGrafanaTraceUrl(traceId)}
             target="_blank"
-            style={{
-                textDecoration: 'none',
-                color: 'inherit',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-            }}
+            className="flex text-inherit no-underline items-center gap-2"
         >
             Vis trace i Grafana
         </Link>

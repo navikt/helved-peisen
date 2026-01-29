@@ -54,17 +54,19 @@ export const AddKvitteringButton = ({ message }: Props) => {
             <Modal ref={ref} header={{ heading: 'Legg til kvittering' }} width={600}>
                 <form action={submitAction}>
                     <Modal.Body>
-                        <VStack gap="4">
+                        <VStack gap="space-16">
                             <Select
                                 name="alvorlighetsgrad"
                                 label="Alvorlighetsgrad"
-                                onChange={(e) => setAlvorlighetsgrad(e.target.value)}
+                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                                    setAlvorlighetsgrad(e.target.value)
+                                }
                             >
                                 <option value="00">00 - Ok</option>
                                 <option value="04">04 - Akseptert men noe er feil</option>
                             </Select>
                             {alvorlighetsgrad === '04' && (
-                                <VStack gap="4">
+                                <VStack gap="space-16">
                                     <TextField
                                         name="beskrMelding"
                                         label="Beskrivelse"

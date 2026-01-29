@@ -57,7 +57,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 name="sakId"
                 size="small"
                 defaultValue={sakId}
-                onChange={(e) => setSakId(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSakId(e.target.value)}
             />
             <Select
                 className="h-max"
@@ -65,7 +65,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 name="fagsystem"
                 size="small"
                 defaultValue={fagsystem}
-                onChange={(e) => setFagsystem(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFagsystem(e.target.value)}
             >
                 <option value="">- Velg fagsystem -</option>
                 <option value="DP">Dagpenger</option>

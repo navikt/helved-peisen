@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useMemo, useState } from 'react'
-import { BodyShort, BoxNew, HStack, Label, Skeleton, Switch, ToggleGroup, VStack } from '@navikt/ds-react'
+import { ChangeEvent, useMemo, useState } from 'react'
+import { BodyShort, Box, HStack, Label, Skeleton, Switch, ToggleGroup, VStack } from '@navikt/ds-react'
 import { Message } from '@/app/kafka/types.ts'
 import { useSak } from './SakProvider'
 import { Timeline, TimelineEvent, TimelineRow } from './timeline'
@@ -84,22 +84,22 @@ export const SakView = () => {
     return (
         <VStack gap="space-32">
             <HStack gap="space-24">
-                <BoxNew padding="4" background="neutral-soft" borderRadius="large">
+                <Box padding="space-16" background="neutral-soft" borderRadius="8">
                     <VStack gap="space-12">
                         <Label>Sak-ID</Label>
                         <BodyShort>{sak.id}</BodyShort>
                     </VStack>
-                </BoxNew>
-                <BoxNew padding="4" background="neutral-soft" borderRadius="large">
+                </Box>
+                <Box padding="space-16" background="neutral-soft" borderRadius="8">
                     <VStack gap="space-12">
                         <Label>Fagsystem</Label>
                         <BodyShort>{fagsystem(sak.fagsystem)}</BodyShort>
                     </VStack>
-                </BoxNew>
+                </Box>
             </HStack>
             <VStack gap="space-12">
                 <Label>Tidslinje</Label>
-                <BoxNew padding="4" background="neutral-soft" borderRadius="large">
+                <Box padding="space-16" background="neutral-soft" borderRadius="8">
                     <Timeline>
                         {Object.entries(groupHendelserOnTopic(messages)).map(([topic, messages]) => (
                             <TimelineRow key={topic} label={topic}>
@@ -122,7 +122,7 @@ export const SakView = () => {
                             </TimelineRow>
                         ))}
                     </Timeline>
-                </BoxNew>
+                </Box>
             </VStack>
             <VStack gap="space-12">
                 <HStack gap="space-16" justify="space-between">
@@ -131,7 +131,7 @@ export const SakView = () => {
                         <ToggleGroup
                             defaultValue="Alle"
                             size="small"
-                            onChange={(value) => setVisning(value as 'alle' | 'siste')}
+                            onChange={(value: string) => setVisning(value as 'alle' | 'siste')}
                             value={visning}
                         >
                             <ToggleGroupItem value="alle" label="Alle" />
@@ -140,7 +140,7 @@ export const SakView = () => {
                         <Switch
                             size="small"
                             checked={hideDuplicates}
-                            onChange={(event) => {
+                            onChange={(event: ChangeEvent<HTMLInputElement>) => {
                                 setHideDuplicates(event.target.checked)
                             }}
                         >
@@ -148,14 +148,14 @@ export const SakView = () => {
                         </Switch>
                     </HStack>
                 </HStack>
-                <BoxNew
-                    borderRadius="large"
+                <Box
+                    borderRadius="8"
                     background="neutral-soft"
-                    padding="4"
+                    padding="space-16"
                     className="max-w-[100vw] flex overflow-x-auto scrollbar-gutter-stable"
                 >
                     <SakTable messages={messages} activeMessage={activeMessage} />
-                </BoxNew>
+                </Box>
             </VStack>
         </VStack>
     )
@@ -165,28 +165,28 @@ export const SakViewSkeleton = () => {
     return (
         <VStack gap="space-32" className="animate-fade-in">
             <HStack gap="space-24">
-                <BoxNew padding="4" background="neutral-soft" borderRadius="large">
+                <Box padding="space-16" background="neutral-soft" borderRadius="8">
                     <VStack gap="space-12">
                         <Label>Sak-ID</Label>
                         <Skeleton width="100%" />
                     </VStack>
-                </BoxNew>
-                <BoxNew padding="4" background="neutral-soft" borderRadius="large">
+                </Box>
+                <Box padding="space-16" background="neutral-soft" borderRadius="8">
                     <VStack gap="space-12">
                         <Label>Fagsystem</Label>
                         <Skeleton width="100%" />
                     </VStack>
-                </BoxNew>
+                </Box>
             </HStack>
             <VStack gap="space-12">
                 <Label>Tidslinje</Label>
-                <BoxNew padding="4" background="neutral-soft" borderRadius="large">
+                <Box padding="space-16" background="neutral-soft" borderRadius="8">
                     <TimelineSkeleton>
                         {new Array(3).fill(null).map((_, i) => (
                             <TimelineRowSkeleton key={i} />
                         ))}
                     </TimelineSkeleton>
-                </BoxNew>
+                </Box>
             </VStack>
             <VStack gap="space-12">
                 <HStack gap="space-16" justify="space-between">
@@ -199,14 +199,14 @@ export const SakViewSkeleton = () => {
                         <Switch size="small">Skjul duplikater</Switch>
                     </HStack>
                 </HStack>
-                <BoxNew
-                    borderRadius="large"
+                <Box
+                    borderRadius="8"
                     background="neutral-soft"
-                    padding="4"
+                    padding="space-16"
                     className="max-w-[100vw] flex overflow-x-auto scrollbar-gutter-stable"
                 >
                     <SakTableSkeleton />
-                </BoxNew>
+                </Box>
             </VStack>
         </VStack>
     )

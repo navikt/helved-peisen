@@ -110,7 +110,7 @@ function TabLink({ children, href }: { children: React.ReactNode; href: string }
     return (
         <Link
             className={clsx(
-                'component px-4 py-0 no-underline text-text-on-neutral',
+                'px-4 py-0 no-underline text-ax-text-neutral',
                 path.startsWith(href) && 'shadow-tab-shadow'
             )}
             href={href}

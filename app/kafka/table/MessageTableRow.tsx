@@ -88,7 +88,7 @@ const RowContents: React.FC<Props> = ({ message }) => {
                 <FilterLink
                     filter="key"
                     value={message.key}
-                    className="max-w-[600px] text-ellipsis block whitespace-nowrap overflow-hidden cursor-pointer"
+                    className="max-w-150 text-ellipsis block whitespace-nowrap overflow-hidden cursor-pointer"
                 >
                     {message.key}
                 </FilterLink>

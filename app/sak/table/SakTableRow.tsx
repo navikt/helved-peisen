@@ -46,7 +46,7 @@ export const SakTableRow: React.FC<Props> = ({ message, active }) => {
                 <MessageStatus message={message} />
             </TableDataCell>
             <TableDataCell style={{ width: 0 }}>
-                <div className="whitespace-nowrap overflow-hidden text-ellipsis max-w-[600px]">{message.key}</div>
+                <div className="whitespace-nowrap overflow-hidden text-ellipsis max-w-150">{message.key}</div>
             </TableDataCell>
             <TableDataCell className="whitespace-nowrap">
                 {format(message.system_time_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { ChangeEvent } from 'react'
 import { Label, Switch, VStack } from '@navikt/ds-react'
 import { teamLogger } from '@navikt/next-logger/team-log'
 
@@ -37,7 +37,7 @@ export const MessageValue: React.FC<Props> = ({ message }) => {
                 <Switch
                     size="small"
                     checked={showValue}
-                    onChange={(event) => {
+                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
                         setShowValue(event.target.checked)
                         if (event.target.checked) {
                             teamLogger.info(

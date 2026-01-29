@@ -15,7 +15,7 @@ type BadgeProps = {
 const Badge: React.FC<BadgeProps> = ({ variant = 'neutral', children }) => (
     <div
         className={clsx(
-            'absolute right-0 top-0 text-xs pt-[1px] px-1 pb-0 border rounded-lg translate-x-[50%] -translate-y-[50%] leading-none',
+            'absolute right-0 top-0 text-xs pt-px px-1 pb-0 border rounded-lg translate-x-[50%] -translate-y-[50%] leading-none',
             variant === 'neutral' && 'bg-(--ax-bg-neutral-soft) border-(--ax-border-neutral) text-(--ax-text-neutral)',
             variant === 'success' &&
                 'bg-(--ax-bg-success-moderate) border-(--ax-border-success) text-(--ax-text-success)',

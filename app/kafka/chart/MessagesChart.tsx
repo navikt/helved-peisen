@@ -144,10 +144,10 @@ export const MessagesChart: React.FC<Props> = ({ className, messages, ...rest })
             <div
                 className={clsx(
                     'relative overflow-hidden h-0 transition-[height] flex-1 cursor-crosshair',
-                    open && 'h-[100px]'
+                    open && 'h-25'
                 )}
             >
-                <div className="h-[100px]">
+                <div className="h-25">
                     <Bar ref={chartRef} options={options} data={data} />
                 </div>
             </div>

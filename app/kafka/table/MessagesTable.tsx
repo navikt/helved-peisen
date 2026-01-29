@@ -29,7 +29,7 @@ export const MessagesTable: React.FC<Props> = ({ messages }) => {
     const { setSortState, ...sortState } = useContext(SortStateContext)
 
     const updateSortState = (key: keyof Message) => {
-        setSortState((sort) => {
+        setSortState((sort: SortState) => {
             if (sort.orderBy !== key) {
                 return { orderBy: key, direction: 'descending' }
             }

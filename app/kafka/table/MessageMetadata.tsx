@@ -1,7 +1,7 @@
 'use client'
 
 import React, { ReactNode } from 'react'
-import { BodyShort, BoxNew, HStack, Label, VStack } from '@navikt/ds-react'
+import { BodyShort, Box, HStack, Label, VStack } from '@navikt/ds-react'
 
 import {
     DagpengerUtbetalingMessageValue,
@@ -38,12 +38,12 @@ const MetadataCard: React.FC<MetadataCardProps> = ({ label, value }) => {
         return null
     }
     return (
-        <BoxNew background="neutral-soft" padding="4" borderRadius="large">
+        <Box background="neutral-soft" padding="space-16" borderRadius="8">
             <VStack gap="space-12">
                 <Label size="small">{label}</Label>
                 <BodyShort>{value}</BodyShort>
             </VStack>
-        </BoxNew>
+        </Box>
     )
 }
 
@@ -53,9 +53,9 @@ type MetadataCardContainerProps = {
 
 const MetadataCardContainer: React.FC<MetadataCardContainerProps> = ({ children }) => {
     return (
-        <BoxNew background="neutral-moderate" padding="3" borderRadius="large" maxWidth="max-content">
+        <Box background="neutral-moderate" padding="space-12" borderRadius="8" maxWidth="max-content">
             {children}
-        </BoxNew>
+        </Box>
     )
 }
 

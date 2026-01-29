@@ -285,7 +285,7 @@ const DateSelectDropdown: React.FC<DateSelectDropdownProps> = ({ time, onSelectT
             <Button as={Dropdown.Toggle} {...rest}>
                 {capitalize(label)}
             </Button>
-            <DropdownMenu placement="bottom" className="w-[500px]">
+            <DropdownMenu placement="bottom" className="w-125">
                 <Tabs defaultValue={label === 'Nå' ? 'now' : 'relative'} size="small" fill>
                     <TabsList>
                         <TabsTab value="absolute" label="Absolutt" data-testid="date-range-absolute-tab" />
@@ -319,7 +319,7 @@ export const DateRangeSelect: FC<Props> = ({ from, to, updateFrom, updateTo }) =
         <div className="flex flex-col gap-2">
             <div className="text-base/(--ax-font-line-height-medium) font-semibold">Tidsrom</div>
             <HStack
-                className="relative max-w-max h-[32px] flex items-center gap-0 bg-(--ax-bg-input) rounded-lg border border-(--ax-border-neutral) hover:border-(--ax-border-accent)"
+                className="relative max-w-max h-8 flex items-center gap-0 bg-(--ax-bg-input) rounded-lg border border-(--ax-border-neutral) hover:border-(--ax-border-accent)"
                 gap="space-16"
             >
                 <DateSelectDropdown

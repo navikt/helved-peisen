@@ -1,7 +1,7 @@
-import { FiltereValue, useFiltere } from '@/app/kafka/Filtere'
-import { Link } from '@navikt/ds-react'
+import { type FiltereValue, useFiltere } from '@/app/kafka/Filtere'
+import { Link, type LinkProps } from '@navikt/ds-react'
 
-type Props = Omit<React.HTMLAttributes<HTMLAnchorElement>, 'href' | 'onClick'> & {
+type Props = Omit<LinkProps, 'href' | 'onClick'> & {
     filter: keyof FiltereValue
     value: FiltereValue[keyof FiltereValue]
     children: React.ReactNode
