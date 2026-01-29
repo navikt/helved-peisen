@@ -138,7 +138,6 @@ export const FiltereProvider: React.FC<React.PropsWithChildren> = ({ children })
     )
 
     const setFilter = (delta: Partial<FiltereValue>) => {
-        console.log('setting filter: ', delta)
         const newFilters = { ...filtere, ...delta }
         const params = new URLSearchParams(window.location.search)
 

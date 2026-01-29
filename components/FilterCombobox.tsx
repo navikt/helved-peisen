@@ -38,8 +38,6 @@ export const FilterCombobox = <T extends string>({
         }
     }
 
-    console.log(value)
-
     return (
         <UNSAFE_Combobox
             className={clsx(className, hideDropdown && '[&_div[aria-hidden]]:hidden')}
