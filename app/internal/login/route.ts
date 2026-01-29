@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { isLocal, requireEnv } from '@/lib/env'
 import { fetchApiToken } from '@/lib/server/auth.ts'
 
+export const dynamic = 'force-static'
+
 export const GET = async (req: NextRequest) => {
     const path = req.nextUrl.searchParams.get('redirect') ?? req.headers.get('referer') ?? '/kafka'
     const host = requireEnv('NEXT_PUBLIC_HOSTNAME')
