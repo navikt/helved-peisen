@@ -19,11 +19,11 @@ export function FilterInput({ filter, className, ...rest }: Props) {
 
     useEffect(
         function updateValueWhenFilterChanges() {
-            if (filtere[filter] && value !== filtere[filter]) {
+            if (filtere[filter]) {
                 setValue(filtere[filter] as string)
             }
         },
-        [value, filtere[filter]]
+        [filtere[filter]]
     )
 
     const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {

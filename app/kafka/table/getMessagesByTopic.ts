@@ -12,7 +12,7 @@ const groupMessagesByTopic = (messages: Message[]): Record<TopicName, Message[]>
     return Object.fromEntries(entries)
 }
 
-function sanitizeSearchParams(obj: Record<string, string | boolean | null>): Record<string, string> {
+function sanitizeFilters(obj: Record<string, string | boolean | null>): Record<string, string> {
     return Object.fromEntries(
         Object.entries(obj)
             .filter(([, value]) => !!value)
@@ -21,7 +21,7 @@ function sanitizeSearchParams(obj: Record<string, string | boolean | null>): Rec
 }
 
 export const getMessagesByTopic = async (filtere: FiltereValue): Promise<ApiResponse<Record<TopicName, Message[]>>> => {
-    const searchParams = new URLSearchParams(sanitizeSearchParams({ ...filtere, setFiltere: null }))
+    const searchParams = new URLSearchParams(sanitizeFilters({ ...filtere, setFiltere: null }))
 
     if (searchParams.get('fom') === 'now') {
         searchParams.set('fom', new Date().toISOString())

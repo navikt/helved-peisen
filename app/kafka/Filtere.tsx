@@ -37,6 +37,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 />
                 <FilterInput label="Trace-ID" filter="trace_id" size="small" />
                 <FilterInput label="Key" filter="key" size="small" />
+                <FilterInput label="Limit" filter="limit" size="small" type="number" required />
                 <FilterCombobox
                     label="Søk i value"
                     filter="value"
@@ -92,6 +93,7 @@ export type FiltereValue = {
     key: string | null
     value: string | null
     trace_id: string | null
+    limit: string
     utenKvittering: boolean
     visning: 'alle' | 'siste'
 }
@@ -109,6 +111,7 @@ function defaultFiltereValue(searchParams?: ReadonlyURLSearchParams): FiltereVal
         key: searchParams?.get('key') ?? null,
         value: searchParams?.get('value') ?? null,
         trace_id: searchParams?.get('trace_id') ?? null,
+        limit: searchParams?.get('limit') ?? '1000',
         utenKvittering: false,
         visning: 'alle',
     }
@@ -124,7 +127,7 @@ export const FiltereProvider: React.FC<React.PropsWithChildren> = ({ children })
     const [filtere, setFiltere] = useState<FiltereValue>(defaultFiltereValue(searchParams))
 
     useEffect(
-        function setDefaultRange() {
+        function setDefaults() {
             const params = new URLSearchParams(window.location.search)
             if (!params.get('fom')) {
                 params.set('fom', filtere.fom)
@@ -132,6 +135,10 @@ export const FiltereProvider: React.FC<React.PropsWithChildren> = ({ children })
             if (!params.get('tom')) {
                 params.set('tom', filtere.tom)
             }
+            if (!params.get('limit')) {
+                params.set('limit', filtere.limit)
+            }
+
             window.history.replaceState({}, '', `?${params.toString()}`)
         },
         [filtere]
