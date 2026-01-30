@@ -7,7 +7,7 @@ type Props = Omit<TextFieldProps, 'size'> & {
 }
 
 export const CompactTextField: React.FC<Props> = ({ className, containerClass, label, error, ...props }) => {
-    const id = new Date().getDate().toString()
+    const id = crypto.randomUUID()
     return (
         <div className={clsx('flex flex-col gap-2', containerClass)}>
             <div className="flex items-center relative">
