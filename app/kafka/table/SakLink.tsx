@@ -45,7 +45,7 @@ const sakUrl = (message: Message) => {
         return null
     }
 
-    return `/sak?sakId=${message.sakId}&fagsystem=${tilFagsystem(fagsystem)}`
+    return `/sak?sakId=${encodeURIComponent(message.sakId)}&fagsystem=${tilFagsystem(fagsystem)}`
 }
 
 type Props = {
