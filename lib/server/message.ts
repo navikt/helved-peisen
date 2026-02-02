@@ -55,24 +55,6 @@ const statusForMessage = (message: RawMessage) => {
 
     switch (message.topic_name) {
         case 'helved.oppdrag.v1':
-        case 'helved.kvittering.v1': {
-            try {
-                const xmlDoc = parsedXML(message.value)
-                const mmel = xmlDoc.getElementsByTagName('mmel')?.[0]
-                const alvorlighetsgrad = mmel?.getElementsByTagName('alvorlighetsgrad')?.[0]
-                const content = alvorlighetsgrad?.textContent?.trim() ?? null
-
-                if (!content) {
-                    return null
-                }
-
-                return content === '00' ? 'OK' : 'FEILET'
-            } catch (e: any) {
-                logger.warn(`Klarte ikke parse XML for status:`, e)
-                return null
-            }
-        }
-
         case 'helved.status.v1': {
             try {
                 const value: StatusMessageValue = JSON.parse(message.value)

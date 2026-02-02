@@ -29,7 +29,6 @@ type Variant =
 export const variant = (message: Message): Variant => {
     switch (message.topic_name) {
         case 'helved.avstemming.v1':
-        case 'helved.kvittering.v1':
         case 'helved.saker.v1':
             return 'info'
         case 'helved.dryrun-ts.v1':

@@ -9,7 +9,6 @@ export const Topics = {
     fk: 'helved.fk.v1',
     historisk: 'historisk.utbetaling.v1',
     historiskIntern: 'helved.utbetalinger-historisk.v1',
-    kvittering: 'helved.kvittering.v1',
     simulering: 'helved.simuleringer.v1',
     utbetalinger: 'helved.utbetalinger.v1',
     pendingUtbetalinger: 'helved.pending-utbetalinger.v1',
