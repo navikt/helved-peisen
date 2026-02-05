@@ -40,7 +40,6 @@ export async function resendMessage(message: Message) {
 
     if (res.redirected) {
         window.location.reload()
-        return
     }
 
     if (!res.ok) {
@@ -53,7 +52,6 @@ export async function fetchHendelserForSak(sakId: string, fagsystem: string): Pr
 
     if (res.redirected) {
         window.location.reload()
-        return []
     }
 
     if (!res.ok) {
