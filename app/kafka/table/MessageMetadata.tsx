@@ -277,6 +277,22 @@ const StatusMessageMetadata: React.FC<Props> = ({ message }) => {
 
     const value = JSON.parse(message.value) as StatusMessageValue
 
+    const linjer = value.detaljer?.linjer ?? [];
+    const opphørsLinjer = linjer.filter(l =>
+        l.beløp === 0 && (l.vedtakssats == null || l.vedtakssats >= 0)
+    );
+
+    const opphør = opphørsLinjer.length === 0 ? null : (() => {
+        const datoerFom = opphørsLinjer.map(l => l.fom).filter(Boolean).sort();
+        const datoerTom = opphørsLinjer.map(l => l.tom).filter(Boolean).sort();
+
+        return {
+            antallLinjer: opphørsLinjer.length,
+            fom: datoerFom.at(0),
+            tom: datoerTom.at(-1)
+        };
+    })();
+
     return (
         <VStack gap="space-32">
             <HStack gap="space-40">
@@ -317,6 +333,18 @@ const StatusMessageMetadata: React.FC<Props> = ({ message }) => {
                         <HStack wrap gap="space-12">
                             <MetadataCard label="Statuskode" value={value.error.statusCode} />
                             <MetadataCard label="Melding" value={value.error.msg} />
+                        </HStack>
+                    </MetadataCardContainer>
+                </VStack>
+            )}
+            {opphør && (
+                <VStack gap="space-12">
+                    <Label>Opphør</Label>
+                    <MetadataCardContainer>
+                        <HStack wrap gap="space-12">
+                            <MetadataCard label="Opphør fra og med" value={opphør.fom} />
+                            <MetadataCard label="Opphør til og med" value={opphør.tom} />
+                            <MetadataCard label="Antall linjer opphørt" value={opphør.antallLinjer} />
                         </HStack>
                     </MetadataCardContainer>
                 </VStack>
