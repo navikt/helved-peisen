@@ -1,4 +1,4 @@
-FROM node:23-alpine3.23
+FROM node:24-alpine3.23
 WORKDIR /app
 ENV PORT=3000 \
     NODE_ENV=production
