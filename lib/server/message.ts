@@ -1,7 +1,7 @@
 import type { Message, RawMessage, StatusMessageValue } from '@/app/kafka/types.ts'
 import { logger } from '@navikt/next-logger'
 import { createHash } from 'crypto'
-import { parsedXML } from '@/lib/xml.ts'
+import { parsedXML } from '@/lib/server/xml'
 
 export function toMessage(raw: RawMessage): Message {
     const status = statusForMessage(raw)

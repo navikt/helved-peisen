@@ -1,4 +1,5 @@
 const kafkaApiBaseUrl = process.env.API_BASE_URL
+const utsjekkBaseUrl = process.env.UTSJEKK_BASE_URL
 
 export const Routes = {
     external: {
@@ -11,6 +12,8 @@ export const Routes = {
         sak(sakId: string, fagsystem: string) {
             return `${kafkaApiBaseUrl}/api/saker/${sakId}/${fagsystem}`
         },
+        remigrer: `${utsjekkBaseUrl}/api/iverksetting/v2/migrate`,
+        remigrerDryrun: `${utsjekkBaseUrl}/api/iverksetting/v2/migrate/dryrun`,
     },
     internal: {
         messages: `/api/messages`,

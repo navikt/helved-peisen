@@ -23,6 +23,7 @@ import { showToast } from '@/components/Toast'
 import { useUser } from '@/components/UserProvider.tsx'
 import { teamLogger } from '@navikt/next-logger/team-log'
 import { FilterLink } from '@/components/FilterLink'
+import { RemigrateButton } from './actionMenu/remigrate/RemigrateButton.tsx'
 
 type Props = {
     message: Message
@@ -120,7 +121,10 @@ const RowContents: React.FC<Props> = ({ message }) => {
                             <FlyttTilUtbetalingerButton message={message} />
                         )}
                         {message.topic_name === 'helved.utbetalinger.v1' && (
-                            <TombstoneUtbetalingButton messageKey={message.key} />
+                            <>
+                                <TombstoneUtbetalingButton messageKey={message.key} />
+                                <RemigrateButton message={message} />
+                            </>
                         )}
                         {message.topic_name === 'teamdagpenger.utbetaling.v1' && (
                             <ResendMessageButton message={message} label="Send inn dagpengeutbetaling på nytt" />

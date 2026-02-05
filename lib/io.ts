@@ -22,7 +22,6 @@ export async function fetchRawMessage(message: Message): Promise<RawMessage | un
     const res = await fetch(Routes.internal.message(message.topic_name, message.partition, message.offset))
 
     if (res.redirected) {
-        window.location.reload()
         return null
     }
 

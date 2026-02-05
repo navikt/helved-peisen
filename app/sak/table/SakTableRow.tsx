@@ -15,6 +15,7 @@ import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTi
 import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import type { Message } from '@/app/kafka/types.ts'
+import { RemigrateButton } from '@/app/kafka/table/actionMenu/remigrate/RemigrateButton'
 
 type Props = {
     message: Message
@@ -77,7 +78,10 @@ export const SakTableRow: React.FC<Props> = ({ message, active }) => {
                             <FlyttTilUtbetalingerButton message={message} />
                         )}
                         {message.topic_name === 'helved.utbetalinger.v1' && (
-                            <TombstoneUtbetalingButton messageKey={message.key} />
+                            <>
+                                <TombstoneUtbetalingButton messageKey={message.key} />
+                                <RemigrateButton message={message} />
+                            </>
                         )}
                         {message.topic_name === 'teamdagpenger.utbetaling.v1' && (
                             <ResendMessageButton message={message} label="Send inn dagpengeutbetaling på nytt" />

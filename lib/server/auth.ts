@@ -99,3 +99,46 @@ export async function fetchApiToken(): Promise<string> {
 
     return result.token
 }
+
+export const getUtsjekkApiTokenFromCookie = async () => {
+    const cookieStore = await cookies()
+    const existing = cookieStore.get('utsjekk-api-token')
+
+    try {
+        if (existing && expiresIn(existing.value) > 0) {
+            return existing.value
+        }
+    } catch {}
+    return null
+}
+
+export async function fetchUtsjekkApiToken(): Promise<string> {
+    if (isLocal) {
+        const token = process.env.UTSJEKK_API_TOKEN
+        if (!token) {
+            unauthorized()
+        }
+        return token
+    }
+
+    const existing = await getUtsjekkApiTokenFromCookie()
+    if (existing) {
+        return existing
+    }
+
+    const currentHeaders = await headers()
+    const token = getToken(currentHeaders)
+    if (!token) {
+        const forward = currentHeaders.get('x-forwarded-uri') || '/'
+        return redirect(`/oauth2/login?redirect=${encodeURIComponent(forward)}`)
+    }
+
+    const scope = requireEnv('UTSJEKK_API_SCOPE')
+    const result = await requestAzureClientCredentialsToken(scope)
+    if (!result.ok) {
+        logger.error(`Henting av api-token feilet: ${result.error.message}`)
+        throw Error(`Henting av api-token feilet: ${result.error.message}`)
+    }
+
+    return result.token
+}
