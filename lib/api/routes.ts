@@ -1,5 +1,6 @@
 const kafkaApiBaseUrl = process.env.API_BASE_URL
 const utsjekkBaseUrl = process.env.UTSJEKK_BASE_URL
+const vedskivaBaseUrl = process.env.VEDSKIVA_BASE_URL
 
 export const Routes = {
     external: {
@@ -14,6 +15,8 @@ export const Routes = {
         },
         remigrer: `${utsjekkBaseUrl}/api/iverksetting/v2/migrate`,
         remigrerDryrun: `${utsjekkBaseUrl}/api/iverksetting/v2/migrate/dryrun`,
+        avstemmingDryrun: `${vedskivaBaseUrl}/api/avstem/dryrun`,
+        avstemmingNextRange: `${vedskivaBaseUrl}/api/next_range`,
     },
     internal: {
         messages: `/api/messages`,

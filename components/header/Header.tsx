@@ -132,6 +132,7 @@ export function Header() {
             <HStack>
                 <TabLink href="/kafka">Kafka</TabLink>
                 <TabLink href="/sak">Sak</TabLink>
+                <TabLink href="/avstemming">Avstemming</TabLink>
             </HStack>
             <Spacer />
             <UserMenu />

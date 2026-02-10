@@ -142,3 +142,50 @@ export async function fetchUtsjekkApiToken(): Promise<string> {
 
     return result.token
 }
+
+export const getVedskivaApiTokenFromCookie = async () => {
+    const cookieStore = await cookies()
+    const existing = cookieStore.get('vedskiva-api-token')
+
+    try {
+        if (existing && expiresIn(existing.value) > 0) {
+            return existing.value
+        }
+    } catch {}
+    return null
+}
+
+export async function fetchVedskivaApiToken(): Promise<string> {
+    if (isFaking) {
+        return Promise.resolve('')
+    }
+
+    if (isLocal) {
+        const token = process.env.VEDSKIVA_API_TOKEN
+        if (!token) {
+            unauthorized()
+        }
+        return token
+    }
+
+    const existing = await getVedskivaApiTokenFromCookie()
+    if (existing) {
+        return existing
+    }
+
+    const currentHeaders = await headers()
+    const token = getToken(currentHeaders)
+    if (!token) {
+        const forward = currentHeaders.get('x-forwarded-uri') || '/'
+        return redirect(`/oauth2/login?redirect=${encodeURIComponent(forward)}`)
+    }
+
+    const scope = requireEnv('VEDSKIVA_API_SCOPE')
+    const result = await requestAzureClientCredentialsToken(scope)
+    if (!result.ok) {
+        logger.error(`Henting av vedskiva api-token feilet: ${result.error.message}`)
+        throw Error(`Henting av vedskiva api-token feilet: ${result.error.message}`)
+    }
+
+    return result.token
+}
