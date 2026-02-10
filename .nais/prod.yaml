@@ -41,6 +41,7 @@ spec:
       rules:
         - application: utsjekk
         - application: peisschtappern
+        - application: vedskiva
         - application: logging
           namespace: nais-system
   env:
@@ -54,6 +55,10 @@ spec:
       value: "api://prod-gcp.helved.utsjekk/.default"
     - name: UTSJEKK_BASE_URL
       value: "http://utsjekk"
+    - name: VEDSKIVA_API_SCOPE
+      value: "api://dev-gcp.helved.vedskiva/.default"
+    - name: VEDSKIVA_BASE_URL
+      value: "http://vedskiva"
   liveness:
     path: /internal/is-alive
     initialDelay: 10
