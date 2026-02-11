@@ -38,6 +38,7 @@ export type RawMessage = {
     trace_id: string
     sakId: string | null
     fagsystem: string | null
+    status: 'OK' | 'HOS_OPPDRAG' | 'MOTTATT' | 'FEILET' | null
 }
 
 // Meldingene slik de eksponeres for peisen
