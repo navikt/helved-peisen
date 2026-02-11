@@ -1,6 +1,6 @@
 import { Message, TopicName, Topics } from '@/app/kafka/types.ts'
 import { fetchMessages } from '@/lib/io.ts'
-import { ApiResponse } from '@/lib/api/types.ts'
+import { ApiResponse, PaginatedResponse } from '@/lib/api/types.ts'
 import type { FiltereValue } from '../Filtere'
 
 const groupMessagesByTopic = (messages: Message[]): Record<TopicName, Message[]> => {
@@ -12,7 +12,7 @@ const groupMessagesByTopic = (messages: Message[]): Record<TopicName, Message[]>
     return Object.fromEntries(entries)
 }
 
-function sanitizeFilters(obj: Record<string, string | boolean | null>): Record<string, string> {
+function sanitizeFilters(obj: Record<string, string | number | boolean | null>): Record<string, string> {
     return Object.fromEntries(
         Object.entries(obj)
             .filter(([, value]) => !!value)
@@ -20,7 +20,7 @@ function sanitizeFilters(obj: Record<string, string | boolean | null>): Record<s
     ) as Record<string, string>
 }
 
-export const getMessagesByTopic = async (filtere: FiltereValue): Promise<ApiResponse<Record<TopicName, Message[]>>> => {
+export const getMessagesByTopic = async (filtere: FiltereValue): Promise<ApiResponse<PaginatedResponse<Message>>> => {
     const searchParams = new URLSearchParams(sanitizeFilters({ ...filtere, setFiltere: null }))
 
     if (searchParams.get('fom') === 'now') {
@@ -32,9 +32,9 @@ export const getMessagesByTopic = async (filtere: FiltereValue): Promise<ApiResp
     }
 
     try {
-        const messages = await fetchMessages(searchParams)
+        const page = await fetchMessages(searchParams)
         return {
-            data: groupMessagesByTopic(messages),
+            data: page,
             error: null,
         }
     } catch (e: unknown) {

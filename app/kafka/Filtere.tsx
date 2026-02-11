@@ -37,7 +37,6 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 />
                 <FilterInput label="Trace-ID" filter="trace_id" size="small" />
                 <FilterInput label="Key" filter="key" size="small" />
-                <FilterInput label="Limit" filter="limit" size="small" type="number" required />
                 <FilterCombobox
                     label="Søk i value"
                     filter="value"
@@ -93,9 +92,10 @@ export type FiltereValue = {
     key: string | null
     value: string | null
     trace_id: string | null
-    limit: string
     utenKvittering: boolean
     visning: 'alle' | 'siste'
+    page: number
+    pageSize: number
 }
 
 type FiltereContextValue = FiltereValue & {
@@ -111,9 +111,10 @@ function defaultFiltereValue(searchParams?: ReadonlyURLSearchParams): FiltereVal
         key: searchParams?.get('key') ?? null,
         value: searchParams?.get('value') ?? null,
         trace_id: searchParams?.get('trace_id') ?? null,
-        limit: searchParams?.get('limit') ?? '1000',
         utenKvittering: false,
         visning: 'alle',
+        page: 1,
+        pageSize: 100,
     }
 }
 
@@ -135,8 +136,11 @@ export const FiltereProvider: React.FC<React.PropsWithChildren> = ({ children })
             if (!params.get('tom')) {
                 params.set('tom', filtere.tom)
             }
-            if (!params.get('limit')) {
-                params.set('limit', filtere.limit)
+            if (!params.get('page')) {
+                params.set('page', filtere.page.toString())
+            }
+            if (!params.get('pageSize')) {
+                params.set('pageSize', filtere.pageSize.toString())
             }
 
             window.history.replaceState({}, '', `?${params.toString()}`)

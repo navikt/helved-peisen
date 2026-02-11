@@ -3,7 +3,6 @@
 import { useContext } from 'react'
 import { Alert } from '@navikt/ds-react'
 
-import { MessagesChart, MessagesChartSkeleton } from '@/app/kafka/chart/MessagesChart.tsx'
 import { MessagesTable, MessagesTableSkeleton } from '@/app/kafka/table/MessagesTable.tsx'
 import { NoMessages } from '@/app/kafka/NoMessages.tsx'
 import { FiltereContext } from '@/app/kafka/Filtere.tsx'
@@ -18,12 +17,7 @@ export const MessagesView = () => {
     const filtere = useContext(FiltereContext)
 
     if (!messages) {
-        return (
-            <>
-                <MessagesChartSkeleton />
-                <MessagesTableSkeleton />
-            </>
-        )
+        return <MessagesTableSkeleton />
     }
 
     if (isFailureResponse(messages)) {
@@ -34,15 +28,11 @@ export const MessagesView = () => {
         )
     }
 
-    if (Object.values(messages.data).flat().length === 0) {
+    if (messages.data.items.length === 0) {
         return <NoMessages />
     }
 
-    const status = filtere.status ? filtere.status.split(',') : null
-
-    let filteredMessages = Object.values(messages.data)
-        .flat()
-        .filter((it) => (status ? it.status && status.includes(it.status) : true))
+    let filteredMessages = messages.data.items
 
     if (filtere.visning === 'siste' || filtere.utenKvittering) {
         filteredMessages = keepLatest(filteredMessages)
@@ -66,10 +56,5 @@ export const MessagesView = () => {
                 +b[sortState.orderBy]! - +a[sortState.orderBy]!
     )
 
-    return (
-        <>
-            <MessagesChart messages={filteredMessages} />
-            <MessagesTable messages={filteredMessages} />
-        </>
-    )
+    return <MessagesTable messages={filteredMessages} totalMessages={messages.data.total} />
 }

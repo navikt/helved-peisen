@@ -17,3 +17,5 @@ export function isSuccessResponse<T>(response: ApiResponse<T>): response is Succ
 export function isFailureResponse<T>(response: ApiResponse<T>): response is FailureResponse {
     return !isSuccessResponse(response)
 }
+
+export type PaginatedResponse<T> = { items: T[]; total: number }

@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     if (!apiToken) return aquireApiToken(req.headers)
 
     const searchParams = req.nextUrl.searchParams
-    const response = await fetch(`${Routes.external.kafka}?${searchParams.toString()}`, {
+    const response = await fetch(`${Routes.external.kafka}/messages?${searchParams.toString()}`, {
         headers: { Authorization: `Bearer ${apiToken}` },
     })
 
@@ -18,8 +18,8 @@ export async function GET(req: NextRequest) {
         return response
     }
 
-    const data = await response.json()
-    const sanitized = data.map(toMessage).map(sanitizeKey)
+    const page = await response.json()
+    const sanitized = { items: page.items.map(toMessage).map(sanitizeKey), total: page.total }
 
     return NextResponse.json({ data: sanitized, error: null })
 }

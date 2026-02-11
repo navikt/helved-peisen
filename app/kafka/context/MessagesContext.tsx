@@ -3,13 +3,13 @@
 import { createContext, type PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { getMessagesByTopic } from '@/app/kafka/table/getMessagesByTopic.ts'
-import { type ApiResponse, isFailureResponse } from '@/lib/api/types.ts'
+import { type ApiResponse, isFailureResponse, PaginatedResponse } from '@/lib/api/types.ts'
 import type { Message, TopicName } from '@/app/kafka/types.ts'
 import { useFiltere } from '../Filtere'
 
 type MessagesContextValue = {
     loading: boolean
-    messages: ApiResponse<Record<string, Message[]>> | null
+    messages: ApiResponse<PaginatedResponse<Message>> | null
     fetchAdditionalMessages: () => void
 }
 
@@ -20,18 +20,16 @@ export const MessagesContext = createContext<MessagesContextValue>({
 })
 
 export const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
-    const [messages, setMessages] = useState<ApiResponse<Record<string, Message[]>> | null>(null)
+    const [messages, setMessages] = useState<ApiResponse<PaginatedResponse<Message>> | null>(null)
     const [loading, setLoading] = useState(true)
     const filtere = useFiltere()
 
     const lastTimestamp = useMemo(() => {
         if (!messages?.data) return null
-        return Object.values(messages.data)
-            .flat()
-            .reduce(
-                (latest, current) => (latest < current.system_time_ms ? current.system_time_ms : latest),
-                Number.MIN_SAFE_INTEGER
-            )
+        return messages.data.items.reduce(
+            (latest, current) => (latest < current.system_time_ms ? current.system_time_ms : latest),
+            Number.MIN_SAFE_INTEGER
+        )
     }, [messages])
 
     const fetchMessages = useCallback(() => {
@@ -60,13 +58,10 @@ export const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
                 if (!prev || isFailureResponse(prev)) return response
                 return {
                     ...prev,
-                    data: Object.fromEntries(
-                        Object.keys(prev.data).map((key) => {
-                            const messages = prev.data[key]
-                            const newMessages = response.data[key as TopicName] ?? []
-                            return [key, [...messages, ...newMessages]]
-                        })
-                    ),
+                    data: {
+                        items: response.data.items,
+                        total: response.data.total,
+                    },
                 }
             })
         }

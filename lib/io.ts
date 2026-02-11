@@ -1,14 +1,15 @@
 import type { Message, RawMessage } from '@/app/kafka/types.ts'
 import { Routes } from '@/lib/api/routes.ts'
 import { AvstemmingRequest } from '@/app/avstemming/types.ts'
+import { PaginatedResponse } from './api/types'
 
-export async function fetchMessages(searchParams: URLSearchParams): Promise<Message[]> {
+export async function fetchMessages(searchParams: URLSearchParams): Promise<PaginatedResponse<Message>> {
     const signal = AbortSignal.timeout(20_000)
     const res = await fetch(`${Routes.internal.messages}?${searchParams.toString()}`, { signal })
 
     if (res.redirected) {
         window.location.reload()
-        return []
+        return { items: [], total: 0 }
     }
 
     if (!res.ok) {
