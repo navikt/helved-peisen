@@ -15,12 +15,10 @@ import {
 import type { Message } from '@/app/kafka/types.ts'
 import { MessageTableRow } from '@/app/kafka/table/MessageTableRow.tsx'
 import { NoMessages } from '../NoMessages'
-import { SortStateContext } from './SortState'
-import { useFiltere } from '../Filtere'
+import { FiltereValue, useFiltere } from '../Filtere'
 
-const getNextDirection = (direction: SortState['direction']): SortState['direction'] => {
-    return direction === 'descending' ? 'ascending' : direction === 'ascending' ? 'none' : 'descending'
-}
+const getNextDirection = (direction: FiltereValue['direction']): FiltereValue['direction'] =>
+    direction === 'DESC' ? 'ASC' : direction === 'ASC' ? null : 'DESC'
 
 type Props = {
     messages: Message[]
@@ -65,17 +63,43 @@ const MessagesPagination: React.FC<Props> = ({ messages, totalMessages }) => {
     )
 }
 
-export const MessagesTable: React.FC<Props> = ({ messages, totalMessages }) => {
-    const { setSortState, ...sortState } = useContext(SortStateContext)
+const nextSortState = (
+    key: 'timestamp' | 'offset',
+    orderBy: FiltereValue['orderBy'],
+    direction: FiltereValue['direction']
+): Pick<FiltereValue, 'orderBy' | 'direction'> => {
+    if (orderBy !== key) {
+        return { orderBy: key, direction: 'DESC' }
+    }
+    const dir = getNextDirection(direction)
+    return { orderBy: !dir ? null : key, direction: dir }
+}
 
-    const updateSortState = (key: keyof Message) => {
-        setSortState((sort: SortState) => {
-            if (sort.orderBy !== key) {
-                return { orderBy: key, direction: 'descending' }
+const toSortState = (direction: FiltereValue['direction'], orderBy: FiltereValue['orderBy']) => {
+    if (!orderBy) {
+        return undefined
+    }
+    return {
+        orderBy: orderBy,
+        direction: (() => {
+            switch (direction) {
+                case 'ASC':
+                    return 'ascending'
+                case 'DESC':
+                    return 'descending'
+                default:
+                    return 'none'
             }
-            const direction = getNextDirection(sort.direction)
-            return { orderBy: direction === 'none' ? '' : key, direction: direction }
-        })
+        })() as 'ascending' | 'descending' | 'none',
+    }
+}
+
+export const MessagesTable: React.FC<Props> = ({ messages, totalMessages }) => {
+    const { setFiltere, direction, orderBy } = useFiltere()
+
+    const updateSortState = (key: 'timestamp' | 'offset') => {
+        const sort = nextSortState(key, orderBy, direction)
+        setFiltere(sort)
     }
 
     return (
@@ -84,7 +108,7 @@ export const MessagesTable: React.FC<Props> = ({ messages, totalMessages }) => {
                 <MessagesPagination messages={messages} totalMessages={totalMessages} />
                 <Table
                     className="h-max overflow-scroll"
-                    sort={sortState}
+                    sort={toSortState(direction, orderBy)}
                     onSortChange={updateSortState as (key: string) => void}
                     size="small"
                 >
@@ -103,7 +127,7 @@ export const MessagesTable: React.FC<Props> = ({ messages, totalMessages }) => {
                             <TableHeaderCell textSize="small">Status</TableHeaderCell>
                             <TableHeaderCell textSize="small">Key</TableHeaderCell>
                             <TableColumnHeader
-                                sortKey="system_time_ms"
+                                sortKey="timestamp"
                                 sortable
                                 textSize="small"
                                 className="[&_button]:text-(--ax-text-accent-subtle)"

@@ -1,18 +1,17 @@
 'use client'
 
 import clsx from 'clsx'
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
 import { subDays } from 'date-fns'
 
 import { FilterCombobox } from '@/components/FilterCombobox'
 import { FilterInput } from '@/components/FilterInput'
 import { DateRangeSelect } from '@/app/kafka/DateRangeSelect.tsx'
-import { Switch, ToggleGroup } from '@navikt/ds-react'
-import { ToggleGroupItem } from '@navikt/ds-react/ToggleGroup'
+import { Topics } from '@/app/kafka/types.ts'
+
 import { LiveButton } from './LiveButton'
 import { RefreshButton } from './RefreshButton'
-import { Topics } from '@/app/kafka/types.ts'
 
 type Props = React.HTMLAttributes<HTMLDivElement>
 
@@ -51,30 +50,6 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     updateFrom={(fom: string) => setFiltere({ fom })}
                     updateTo={(tom: string) => setFiltere({ tom })}
                 />
-                <ToggleGroup
-                    className="h-max"
-                    defaultValue="alle"
-                    size="small"
-                    onChange={(value: string) => setFiltere({ visning: value as 'alle' | 'siste' })}
-                    value={filtere.visning}
-                >
-                    <ToggleGroupItem value="alle" label="Alle" />
-                    <ToggleGroupItem value="siste" label="Siste" />
-                </ToggleGroup>
-                <Switch
-                    className="h-max whitespace-nowrap"
-                    value="utenKvittering"
-                    size="small"
-                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                        if (event.target.checked) {
-                            setFiltere({ utenKvittering: true, visning: 'siste' })
-                        } else {
-                            setFiltere({ utenKvittering: false })
-                        }
-                    }}
-                >
-                    Oppdrag uten kvittering
-                </Switch>
             </div>
             <div className="self-end flex gap-2">
                 <LiveButton />
@@ -92,10 +67,10 @@ export type FiltereValue = {
     key: string | null
     value: string | null
     trace_id: string | null
-    utenKvittering: boolean
-    visning: 'alle' | 'siste'
     page: number
     pageSize: number
+    orderBy: 'offset' | 'timestamp' | null
+    direction: 'ASC' | 'DESC' | null
 }
 
 type FiltereContextValue = FiltereValue & {
@@ -111,10 +86,10 @@ function defaultFiltereValue(searchParams?: ReadonlyURLSearchParams): FiltereVal
         key: searchParams?.get('key') ?? null,
         value: searchParams?.get('value') ?? null,
         trace_id: searchParams?.get('trace_id') ?? null,
-        utenKvittering: false,
-        visning: 'alle',
         page: 1,
         pageSize: 100,
+        orderBy: 'timestamp',
+        direction: 'DESC',
     }
 }
 
@@ -130,17 +105,11 @@ export const FiltereProvider: React.FC<React.PropsWithChildren> = ({ children })
     useEffect(
         function setDefaults() {
             const params = new URLSearchParams(window.location.search)
-            if (!params.get('fom')) {
-                params.set('fom', filtere.fom)
-            }
-            if (!params.get('tom')) {
-                params.set('tom', filtere.tom)
-            }
-            if (!params.get('page')) {
-                params.set('page', filtere.page.toString())
-            }
-            if (!params.get('pageSize')) {
-                params.set('pageSize', filtere.pageSize.toString())
+            const keys: (keyof FiltereValue)[] = ['fom', 'tom', 'page', 'pageSize', 'orderBy', 'direction']
+            for (const key of keys) {
+                if (!params.get(key) && !!filtere[key]) {
+                    params.set(key, filtere[key].toString())
+                }
             }
 
             window.history.replaceState({}, '', `?${params.toString()}`)
