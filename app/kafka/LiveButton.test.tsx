@@ -13,7 +13,7 @@ const FakeMessagesContextProvider: React.FC<PropsWithChildren & { onFetchMessage
             value={{
                 loading: false,
                 messages: null,
-                fetchAdditionalMessages: onFetchMessages,
+                fetchMessages: onFetchMessages,
             }}
         >
             {children}

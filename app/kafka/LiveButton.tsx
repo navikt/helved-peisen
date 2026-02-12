@@ -7,7 +7,7 @@ import { PlayIcon, StopIcon } from '@navikt/aksel-icons'
 import { MessagesContext } from './context/MessagesContext.tsx'
 
 export const LiveButton = () => {
-    const { fetchAdditionalMessages } = useContext(MessagesContext)
+    const { fetchMessages } = useContext(MessagesContext)
     const [isLive, setIsLive] = React.useState(false)
 
     const onClick = () => {
@@ -17,14 +17,14 @@ export const LiveButton = () => {
     useEffect(() => {
         if (isLive) {
             const onFetch = () => {
-                fetchAdditionalMessages()
+                fetchMessages()
             }
             const id = setInterval(onFetch, 2500)
             return () => {
                 clearInterval(id)
             }
         }
-    }, [isLive, fetchAdditionalMessages])
+    }, [isLive, fetchMessages])
 
     return (
         <Button

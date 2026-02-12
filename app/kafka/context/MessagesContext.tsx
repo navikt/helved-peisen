@@ -10,27 +10,19 @@ import { useFiltere } from '../Filtere'
 type MessagesContextValue = {
     loading: boolean
     messages: ApiResponse<PaginatedResponse<Message>> | null
-    fetchAdditionalMessages: () => void
+    fetchMessages: () => void
 }
 
 export const MessagesContext = createContext<MessagesContextValue>({
     loading: false,
     messages: null,
-    fetchAdditionalMessages: () => null,
+    fetchMessages: () => null,
 })
 
 export const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const [messages, setMessages] = useState<ApiResponse<PaginatedResponse<Message>> | null>(null)
     const [loading, setLoading] = useState(true)
     const filtere = useFiltere()
-
-    const lastTimestamp = useMemo(() => {
-        if (!messages?.data) return null
-        return messages.data.items.reduce(
-            (latest, current) => (latest < current.system_time_ms ? current.system_time_ms : latest),
-            Number.MIN_SAFE_INTEGER
-        )
-    }, [messages])
 
     const fetchMessages = useCallback(() => {
         setLoading(true)
@@ -39,35 +31,6 @@ export const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
             setLoading(false)
         })
     }, [filtere])
-
-    const fetchAdditionalMessages = useCallback(async () => {
-        if (!lastTimestamp) return
-
-        setLoading(true)
-
-        const response = await getMessagesByTopic({
-            ...filtere,
-            fom: new Date(lastTimestamp).toISOString(),
-            tom: 'now',
-        })
-
-        if (isFailureResponse(response)) {
-            setMessages(response)
-        } else {
-            setMessages((prev) => {
-                if (!prev || isFailureResponse(prev)) return response
-                return {
-                    ...prev,
-                    data: {
-                        items: response.data.items,
-                        total: response.data.total,
-                    },
-                }
-            })
-        }
-
-        setLoading(false)
-    }, [filtere, lastTimestamp])
 
     useEffect(
         function updateMessages() {
@@ -78,9 +41,5 @@ export const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
         [filtere]
     )
 
-    return (
-        <MessagesContext.Provider value={{ loading, messages, fetchAdditionalMessages }}>
-            {children}
-        </MessagesContext.Provider>
-    )
+    return <MessagesContext.Provider value={{ loading, messages, fetchMessages }}>{children}</MessagesContext.Provider>
 }
