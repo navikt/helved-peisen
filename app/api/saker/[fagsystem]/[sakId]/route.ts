@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { logger } from '@navikt/next-logger'
+import { unauthorized } from 'next/navigation'
 
 import { Routes } from '@/lib/api/routes.ts'
 import { sanitizeKey, toMessage } from '@/lib/server/message'
-import { aquireApiToken, getApiTokenFromCookie } from '@/lib/server/auth'
+import { getApiTokenFromCookie } from '@/lib/server/auth'
 import type { RawMessage } from '@/app/kafka/types.ts'
 
-export async function GET(req: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
+export async function GET(_: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
     const apiToken = await getApiTokenFromCookie()
-    if (!apiToken) return aquireApiToken(req.headers)
+    if (!apiToken) return unauthorized()
 
     const { sakId, fagsystem } = await params
     const res = await fetch(Routes.external.sak(encodeURIComponent(sakId), fagsystem), {

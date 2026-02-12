@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Routes } from '@/lib/api/routes.ts'
 import { logger } from '@navikt/next-logger'
-import { aquireApiToken, getApiTokenFromCookie } from '@/lib/server/auth'
+import { getApiTokenFromCookie } from '@/lib/server/auth'
+import { unauthorized } from 'next/navigation'
 
-export async function GET(req: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
+export async function GET(_: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
     const apiToken = await getApiTokenFromCookie()
-    if (!apiToken) return aquireApiToken(req.headers)
+    if (!apiToken) return unauthorized()
 
     const { topic, partition, offset } = await params
     const res = await fetch(`${Routes.external.kafka}/${topic}/${partition}/${offset}`, {
@@ -28,9 +29,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<Record
     return NextResponse.json({ data, error: null })
 }
 
-export async function POST(req: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
+export async function POST(_: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
     const apiToken = await getApiTokenFromCookie()
-    if (!apiToken) return aquireApiToken(req.headers)
+    if (!apiToken) return unauthorized()
 
     const { topic, partition, offset } = await params
     const formData = new FormData()

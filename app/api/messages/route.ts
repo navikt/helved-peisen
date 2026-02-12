@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Routes } from '@/lib/api/routes'
 import { logger } from '@navikt/next-logger'
 import { sanitizeKey, toMessage } from '@/lib/server/message'
-import { aquireApiToken, getApiTokenFromCookie } from '@/lib/server/auth'
+import { getApiTokenFromCookie } from '@/lib/server/auth'
+import { unauthorized } from 'next/navigation'
 
 export async function GET(req: NextRequest) {
     const apiToken = await getApiTokenFromCookie()
-    if (!apiToken) return aquireApiToken(req.headers)
+    if (!apiToken) return unauthorized()
 
     const searchParams = req.nextUrl.searchParams
     const response = await fetch(`${Routes.external.kafka}/messages?${searchParams.toString()}`, {

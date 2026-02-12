@@ -3,11 +3,10 @@ import { MessagesView } from '@/app/kafka/MessagesView.tsx'
 import { SortStateProvider } from './table/SortState'
 import { MessagesProvider } from './context/MessagesContext.tsx'
 
-import { checkToken, ensureValidApiToken } from '@/lib/server/auth.ts'
+import { checkToken } from '@/lib/server/auth.ts'
 
 export default async function KafkaOverview() {
     await checkToken()
-    await ensureValidApiToken()
 
     return (
         <section className="flex flex-col p-4">

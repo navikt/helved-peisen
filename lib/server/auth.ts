@@ -1,21 +1,13 @@
 'use server'
 
-import { NextResponse } from 'next/server'
 import { cookies, headers } from 'next/headers'
 import { redirect, unauthorized } from 'next/navigation'
 import { logger } from '@navikt/next-logger'
 import { expiresIn, getToken, requestAzureClientCredentialsToken, validateToken } from '@navikt/oasis'
 
-import { Routes } from '@/lib/api/routes.ts'
 import { isFaking, isLocal, requireEnv } from '@/lib/env.ts'
 
 const API_TOKEN_NAME = 'api-token'
-
-export async function aquireApiToken(headers: Headers) {
-    const redirect = encodeURIComponent(headers.get('x-forwarded-uri') ?? headers.get('referer') ?? '/kafka')
-    const url = new URL(`${Routes.internal.apiLogin}?redirect=${redirect}`, process.env.NEXT_PUBLIC_HOSTNAME)
-    return NextResponse.redirect(url)
-}
 
 export const checkToken = async () => {
     if (isFaking || isLocal) return
@@ -31,25 +23,6 @@ export const checkToken = async () => {
     if (!result.ok) {
         logger.warn(`Tokenvalidering gikk galt: ${result.error.message}`)
         unauthorized()
-    }
-}
-
-export const ensureValidApiToken = async () => {
-    if (isFaking) {
-        return
-    }
-
-    if (isLocal) {
-        const existing = process.env.API_TOKEN
-        if (!existing) {
-            unauthorized()
-        }
-        return
-    }
-
-    const existing = await getApiTokenFromCookie()
-    if (!existing) {
-        return aquireApiToken(await headers())
     }
 }
 
