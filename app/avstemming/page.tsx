@@ -1,30 +1,22 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Alert, Button, TextField } from '@navikt/ds-react'
-import { fetchAvstemmingDryrun, fetchAvstemmingNextRange } from '@/lib/io.ts'
+import { useState } from 'react'
+import { subDays, format } from 'date-fns'
+import { Alert, Button, HStack, Label, TextField } from '@navikt/ds-react'
+import { fetchAvstemmingDryrun } from '@/lib/io.ts'
 import { AvstemmingRequest } from '@/app/avstemming/types.ts'
-import { JsonView } from '@/components/JsonView.tsx'
-
+import { ResultTable } from '@/app/avstemming/ResultTable.tsx'
 export default function AvstemmingPage() {
-    const [range, setRange] = useState<AvstemmingRequest>({ today: '', fom: '', tom: '' })
     const [result, setResult] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
     const [loadingDryrun, setLoadingDryrun] = useState(false)
+    const today = new Date()
 
-    useEffect(() => {
-        const fetchRange = async () => {
-            setError(null)
-            setResult(null)
-            try {
-                const today = new Date().toISOString().split('T')[0]
-                setRange(await fetchAvstemmingNextRange(today))
-            } catch (e) {
-                setError(`${e}`)
-            }
-        }
-        fetchRange()
-    }, [])
+    const [range, setRange] = useState<AvstemmingRequest>({
+        today: format(today, 'yyyy-MM-dd'),
+        fom: format(subDays(today, 2), "yyyy-MM-dd'T'00:00:00"),
+        tom: format(subDays(today, 1), "yyyy-MM-dd'T'23:59:59"),
+    })
 
     const handleDryrun = async () => {
         setLoadingDryrun(true)
@@ -39,20 +31,15 @@ export default function AvstemmingPage() {
         }
     }
 
-
     return (
-        <div className="flex flex-col gap-6 max-w-4xl p-8">
+        <div className="flex flex-col gap-6 p-8">
             <div className="flex flex-col gap-4">
+                <HStack gap="space-16" justify="space-between">
+                    <Label>Dryrun</Label>
+                </HStack>
                 <div className="flex flex-wrap gap-4 items-end">
                     <TextField
-                        label="Dato"
-                        type="text"
-                        size="small"
-                        value={range.today}
-                        onChange={(e) => setRange({ ...range, today: e.target.value })}
-                    />
-                    <TextField
-                        label="Fra (fom)"
+                        label="Fra"
                         type="text"
                         size="small"
                         step="1"
@@ -60,15 +47,13 @@ export default function AvstemmingPage() {
                         onChange={(e) => setRange({ ...range, fom: e.target.value })}
                     />
                     <TextField
-                        label="Til (tom)"
+                        label="Til"
                         type="text"
                         size="small"
                         step="1"
                         value={range.tom.slice(0, 19)}
                         onChange={(e) => setRange({ ...range, tom: e.target.value })}
                     />
-                </div>
-                <div>
                     <Button variant="primary" size="small" onClick={handleDryrun} loading={loadingDryrun}>
                         Kjør dryrun
                     </Button>
@@ -81,8 +66,7 @@ export default function AvstemmingPage() {
                 </Alert>
             )}
 
-            {result && <JsonView json={result} />}
-
+            {result && <ResultTable json={result} />}
         </div>
     )
 }
