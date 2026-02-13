@@ -23,13 +23,9 @@ pnpm i
 ```
 NEXT_PUBLIC_HOSTNAME=http://localhost:3000
 API_BASE_URL=https://peisschtappern.intern.dev.nav.no
-TEST_USER_USERNAME=<epost til testbrukeren din>
-TEST_USER_PASSWORD=<passordet til testbrukeren din>
 ```
 
-2. Kjør `pnpm run fetch-dev-api-token`. Denne kommandoen åpner et nytt nettleservindu som automatisk logger inn testbrukeren din og limer inn access-tokenet i `.env.local`.
-
-3. Kjør `pnpm run dev`. 
+2. Kjør `pnpm run dev`. 
 
 Appen kjører nå på [http://localhost:3000](http://localhost:3000)
 

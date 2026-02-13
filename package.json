@@ -10,7 +10,6 @@
         "lint": "next lint",
         "test": "vitest run",
         "test:e2e": "pnpm exec playwright test",
-        "fetch-dev-api-token": "pnpm exec ts-node scripts/fetch-dev-api-token.ts",
         "fake": "node --watch --experimental-strip-types fakes/server.ts",
         "preinstall": "npx only-allow pnpm"
     },
