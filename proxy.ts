@@ -17,10 +17,13 @@ export async function proxy(req: NextRequest): Promise<NextResponse> {
         return NextResponse.next()
     }
 
-    const apiToken = req.cookies.get('api-token')
-    const utsjekkToken = req.cookies.get('utsjekk-api-token')
+    const tokens = [
+        req.cookies.get('api-token'),
+        req.cookies.get('utsjekk-api-token'),
+        req.cookies.get('vedskiva-api-token'),
+    ]
 
-    if (!apiToken || isExpired(apiToken.value) || !utsjekkToken || isExpired(utsjekkToken.value)) {
+    if (!tokens.every((it) => !!it && !isExpired(it.value))) {
         return isLocal ? setDevTokens() : setTokens()
     }
 

@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { logger } from '@navikt/next-logger'
 import { Routes } from '@/lib/api/routes'
-import {
-    fetchVedskivaApiToken,
-} from '@/lib/server/auth'
+import { getVedskivaApiTokenFromCookie } from '@/lib/server/auth'
 
 export async function POST(req: NextRequest) {
-    const apiToken = await fetchVedskivaApiToken()
+    const apiToken = await getVedskivaApiTokenFromCookie()
 
     const body = await req.json()
 

@@ -5,7 +5,7 @@ import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 import { showToast } from '@/components/Toast.tsx'
 import { remigrerUtbetaling, remigrerUtbetalingDryrun } from '@/app/kafka/table/actionMenu/actions.ts'
 import { fetchRawMessage } from '@/lib/io.ts'
-import { Message } from '../../../types.ts'
+import { Message } from '../../types.ts'
 import { Button, Modal } from '@navikt/ds-react'
 import { JsonView } from '@/components/JsonView.tsx'
 

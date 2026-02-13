@@ -3,14 +3,14 @@
 import { ApiResponse } from '@/lib/api/types.ts'
 import { Routes } from '@/lib/api/routes.ts'
 import { logger } from '@navikt/next-logger'
-import { checkToken, fetchApiToken, fetchUtsjekkApiToken } from '@/lib/server/auth.ts'
+import { checkToken, getApiTokenFromCookie, getUtsjekkApiTokenFromCookie } from '@/lib/server/auth.ts'
 
 export async function addKvittering(formData: FormData): Promise<ApiResponse<null>> {
     await checkToken()
     const response = await fetch(Routes.external.manuellKvittering, {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${await fetchApiToken()}`,
+            Authorization: `Bearer ${await getApiTokenFromCookie()}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(Object.fromEntries(formData)),
@@ -35,7 +35,7 @@ export async function movePendingToUtbetaling(formData: FormData): Promise<ApiRe
     const response = await fetch(Routes.external.pendingTilUtbetaling, {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${await fetchApiToken()}`,
+            Authorization: `Bearer ${await getApiTokenFromCookie()}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(Object.fromEntries(formData)),
@@ -60,7 +60,7 @@ export async function tombstoneUtbetaling(formData: FormData): Promise<ApiRespon
     const response = await fetch(Routes.external.tombstoneUtbetaling, {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${await fetchApiToken()}`,
+            Authorization: `Bearer ${await getApiTokenFromCookie()}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(Object.fromEntries(formData)),
@@ -85,7 +85,7 @@ export async function remigrerUtbetaling(data: object): Promise<ApiResponse<null
     const response = await fetch(Routes.external.remigrer, {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${await fetchUtsjekkApiToken()}`,
+            Authorization: `Bearer ${await getUtsjekkApiTokenFromCookie()}`,
             'Content-Type': 'application/json',
             Fagsystem: 'TILLEGGSSTØNADER',
         },
@@ -111,7 +111,7 @@ export async function remigrerUtbetalingDryrun(data: object): Promise<ApiRespons
     const response = await fetch(Routes.external.remigrerDryrun, {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${await fetchUtsjekkApiToken()}`,
+            Authorization: `Bearer ${await getUtsjekkApiTokenFromCookie()}`,
             'Content-Type': 'application/json',
             Fagsystem: 'TILLEGGSSTØNADER',
         },

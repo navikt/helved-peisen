@@ -23,7 +23,7 @@ import { showToast } from '@/components/Toast'
 import { useUser } from '@/components/UserProvider.tsx'
 import { teamLogger } from '@navikt/next-logger/team-log'
 import { FilterLink } from '@/components/FilterLink'
-import { RemigrateButton } from './actionMenu/remigrate/RemigrateButton.tsx'
+import { RemigrateButton } from './actionMenu/RemigrateButton.tsx'
 
 type Props = {
     message: Message

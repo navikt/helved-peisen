@@ -15,7 +15,7 @@ import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTi
 import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import type { Message } from '@/app/kafka/types.ts'
-import { RemigrateButton } from '@/app/kafka/table/actionMenu/remigrate/RemigrateButton'
+import { RemigrateButton } from '@/app/kafka/table/actionMenu/RemigrateButton.tsx'
 
 type Props = {
     message: Message
