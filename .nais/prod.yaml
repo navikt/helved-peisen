@@ -5,6 +5,8 @@ metadata:
   namespace: helved
   labels:
     team: helved
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "8k"
 spec:
   image: {{ image }}
   port: 3000
