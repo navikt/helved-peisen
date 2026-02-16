@@ -56,7 +56,7 @@ spec:
     - name: UTSJEKK_BASE_URL
       value: "http://utsjekk"
     - name: VEDSKIVA_API_SCOPE
-      value: "api://dev-gcp.helved.vedskiva/.default"
+      value: "api://prod-gcp.helved.vedskiva/.default"
     - name: VEDSKIVA_BASE_URL
       value: "http://vedskiva"
   liveness:
