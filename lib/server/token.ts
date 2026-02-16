@@ -30,6 +30,6 @@ export async function setTokens() {
     const response = NextResponse.next()
     response.cookies.set(await getTokenCookie('api-token', requireEnv('API_SCOPE')))
     response.cookies.set(await getTokenCookie('utsjekk-api-token', requireEnv('UTSJEKK_API_SCOPE')))
-    // response.cookies.set(await getTokenCookie('vedskiva-api-token', requireEnv('VEDSKIVA_API_SCOPE')))
+    response.cookies.set(await getTokenCookie('vedskiva-api-token', requireEnv('VEDSKIVA_API_SCOPE')))
     return response
 }
