@@ -31,6 +31,6 @@ export async function setDevTokens() {
     const response = NextResponse.next()
     response.cookies.set(await getDevTokenCookie('api-token', 'dev-gcp.helved.peisschtappern'))
     response.cookies.set(await getDevTokenCookie('utsjekk-api-token', 'dev-gcp.helved.utsjekk'))
-    response.cookies.set(await getDevTokenCookie('vedskiva-api-token', 'dev-gcp.helved.vedskiva'))
+    // response.cookies.set(await getDevTokenCookie('vedskiva-api-token', 'dev-gcp.helved.vedskiva'))
     return response
 }
