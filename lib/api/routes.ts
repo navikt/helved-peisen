@@ -17,6 +17,7 @@ export const Routes = {
         remigrerDryrun: `${utsjekkBaseUrl}/api/iverksetting/v2/migrate/dryrun`,
         avstemmingDryrun: `${vedskivaBaseUrl}/api/avstem/dryrun`,
         avstemmingNextRange: `${vedskivaBaseUrl}/api/next_range`,
+        avstemminger: `${kafkaApiBaseUrl}/api/avstemminger`,
     },
     internal: {
         messages: `/api/messages`,

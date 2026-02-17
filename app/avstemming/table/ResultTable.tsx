@@ -16,7 +16,7 @@ import {
     TableRow,
 } from '@navikt/ds-react/Table'
 import { AvstemmingResponse, Grunnlag } from '@/app/avstemming/types.ts'
-import ResultTableRow from '@/app/avstemming/ResultTableRow.tsx'
+import ResultTableRow from '@/app/avstemming/table/ResultTableRow.tsx'
 import { JsonView } from '@/components/JsonView.tsx'
 
 function StatusTag({ grunnlag }: { grunnlag: Grunnlag }) {

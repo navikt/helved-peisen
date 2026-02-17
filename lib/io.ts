@@ -1,7 +1,10 @@
 import type { Message, RawMessage } from '@/app/kafka/types.ts'
 import { Routes } from '@/lib/api/routes.ts'
-import { AvstemmingRequest } from '@/app/avstemming/types.ts'
+import { AvstemmingRequest, RawAvstemmingMessage } from '@/app/avstemming/types.ts'
 import { PaginatedResponse } from './api/types'
+import { subDays } from 'date-fns'
+import { getApiTokenFromCookie } from '@/lib/server/auth.ts'
+import { logger } from '@navikt/next-logger'
 
 export async function fetchMessages(searchParams: URLSearchParams): Promise<PaginatedResponse<Message>> {
     const signal = AbortSignal.timeout(20_000)
@@ -102,4 +105,28 @@ export async function fetchAvstemmingDryrun(range: AvstemmingRequest): Promise<s
 
     const json = await res.json()
     return json.data
+}
+
+export async function fetchAvstemminger(dager: number = 14): Promise<string[]> {
+    const apiToken = await getApiTokenFromCookie()
+    if (!apiToken) return []
+
+    const tom = new Date().toISOString()
+    const fom = subDays(new Date(), dager).toISOString()
+
+    const url = `${Routes.external.avstemminger}?fom=${encodeURIComponent(fom)}&tom=${encodeURIComponent(tom)}`
+
+    const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${apiToken}` },
+        cache: 'no-store',
+    })
+
+    if (!res.ok) {
+        logger.error(`Klarte ikke hente avstemminger: ${res.status} - ${res.statusText}`)
+        return []
+    }
+
+    const data: RawAvstemmingMessage[] = await res.json()
+
+    return data.map((message) => message.value)
 }

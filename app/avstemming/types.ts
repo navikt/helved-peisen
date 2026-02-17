@@ -4,6 +4,20 @@ export interface AvstemmingRequest {
     tom: string
 }
 
+export interface RawAvstemmingMessage {
+    value: string
+}
+
+export type Avstemming = {
+    fagsystem: string
+    dato: Date
+    fom: Date;
+    tom: Date;
+    totalAntall: number
+    totalBelop: number
+    grunnlag: Grunnlag
+}
+
 export interface Aksjon {
     aksjonType: 'START' | 'DATA' | 'AVSL'
     kildeType: string
