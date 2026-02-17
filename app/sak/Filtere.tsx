@@ -23,7 +23,8 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
         return fetchHendelserForSak(sakId, fagsystem)
             .then((hendelser) => {
                 if (hendelser.length === 0) {
-                    showToast('Fant ingen hendelser for sak')
+                    showToast(`Fant ingen hendelser for sak ${sakId}`)
+                    setSak(null)
                 } else {
                     setSak({ id: sakId, fagsystem, hendelser })
                 }

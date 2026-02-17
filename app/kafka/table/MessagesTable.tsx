@@ -1,9 +1,7 @@
 'use client'
 
-import { useContext } from 'react'
 import { HStack, Pagination, Skeleton, Table, TextField } from '@navikt/ds-react'
 import {
-    type SortState,
     TableBody,
     TableColumnHeader,
     TableDataCell,
@@ -12,10 +10,10 @@ import {
     TableRow,
 } from '@navikt/ds-react/Table'
 
+import { NoMessages } from '@/components/NoMessages.tsx'
 import type { Message } from '@/app/kafka/types.ts'
 import { MessageTableRow } from '@/app/kafka/table/MessageTableRow.tsx'
-import { NoMessages } from '../NoMessages'
-import { FiltereValue, useFiltere } from '../Filtere'
+import { FiltereValue, useFiltere } from '@/app/kafka/Filtere.tsx'
 
 const getNextDirection = (direction: FiltereValue['direction']): FiltereValue['direction'] =>
     direction === 'DESC' ? 'ASC' : direction === 'ASC' ? null : 'DESC'
@@ -147,7 +145,7 @@ export const MessagesTable: React.FC<Props> = ({ messages, totalMessages }) => {
                         </TableRow>
                     </TableHeader>
                 </Table>
-                {messages.length === 0 && <NoMessages />}
+                {messages.length === 0 && <NoMessages title="Fant ingen meldinger" />}
                 <MessagesPagination messages={messages} totalMessages={totalMessages} />
             </div>
         </>

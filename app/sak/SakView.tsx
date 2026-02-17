@@ -10,6 +10,7 @@ import { TimelineRowSkeleton } from './timeline/TimelineRow'
 import { TimelineSkeleton } from './timeline/Timeline'
 import { ToggleGroupItem } from '@navikt/ds-react/ToggleGroup'
 import { keepLatest } from '@/lib/message'
+import { NoMessages } from '@/components/NoMessages'
 
 const fagsystem = (fagsystem: string) => {
     switch (fagsystem) {
@@ -60,7 +61,7 @@ const groupHendelserOnTopic = (hendelser: Message[]): Record<string, Message[]> 
 }
 
 export const SakView = () => {
-    const { sak, isLoading } = useSak()
+    const { sak, isLoading, didSearch } = useSak()
     const [hideDuplicates, setHideDuplicates] = useState(true)
     const [visning, setVisning] = useState<'alle' | 'siste'>('alle')
     const [activeMessage, setActiveMessage] = useState<Message | null>()
@@ -75,6 +76,10 @@ export const SakView = () => {
 
     if (isLoading) {
         return <SakViewSkeleton />
+    }
+
+    if (didSearch && messages.length === 0) {
+        return <NoMessages title="Fant ingen sak" />
     }
 
     if (!sak || sak.hendelser.length === 0) {
