@@ -1,10 +1,10 @@
 'use client'
 
-import { createContext, type PropsWithChildren, useCallback, useEffect, useMemo, useState } from 'react'
+import { createContext, type PropsWithChildren, useCallback, useEffect, useState } from 'react'
 
 import { getMessagesByTopic } from '@/app/kafka/table/getMessagesByTopic.ts'
-import { type ApiResponse, isFailureResponse, PaginatedResponse } from '@/lib/api/types.ts'
-import type { Message, TopicName } from '@/app/kafka/types.ts'
+import { type ApiResponse, PaginatedResponse } from '@/lib/api/types.ts'
+import type { Message } from '@/app/kafka/types.ts'
 import { useFiltere } from '../Filtere'
 
 type MessagesContextValue = {

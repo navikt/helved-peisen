@@ -29,15 +29,17 @@ export async function GET(_: NextRequest, { params }: { params: Promise<Record<s
     return NextResponse.json({ data, error: null })
 }
 
-export async function POST(_: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<Record<string, string>> }) {
     const apiToken = await getApiTokenFromCookie()
     if (!apiToken) return unauthorized()
 
     const { topic, partition, offset } = await params
+    const reason = await req.text()
     const formData = new FormData()
     formData.set('topic', encodeURIComponent(topic))
     formData.set('partition', partition)
     formData.set('offset', offset)
+    formData.set('reason', reason)
     const res = await fetch(`${Routes.external.resend}`, {
         method: 'POST',
         body: JSON.stringify(Object.fromEntries(formData)),

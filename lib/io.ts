@@ -38,9 +38,10 @@ export async function fetchRawMessage(message: Message): Promise<RawMessage | un
     return json.data
 }
 
-export async function resendMessage(message: Message) {
+export async function resendMessage(message: Message, reason: string) {
     const res = await fetch(Routes.internal.message(message.topic_name, message.partition, message.offset), {
         method: 'POST',
+        body: JSON.stringify(reason),
     })
 
     if (res.redirected) {
