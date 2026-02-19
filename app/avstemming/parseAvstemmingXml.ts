@@ -1,4 +1,4 @@
-import { Avstemming } from '@/app/avstemming/types.ts'
+import { Avstemming, Detaljs } from '@/app/avstemming/types.ts'
 
 const fraFagsystem = (kode: string) => {
     switch (kode) {
@@ -39,6 +39,17 @@ export const parseAvstemmingXml = (xml: string): Avstemming | null => {
 
     if (!fagsystem || !nokkelFom) return null
 
+    const detaljElements = doc.getElementsByTagName('detalj')
+    const detaljs: Detaljs[] = Array.from(detaljElements).map((xml) => ({
+        detaljType: xml.querySelector('detaljType')?.textContent ?? '',
+        offnr: xml.querySelector('offnr')?.textContent ?? '',
+        avleverendeTransaksjonNokkel: xml.querySelector('avleverendeTransaksjonNokkel')?.textContent ?? '',
+        meldingKode: xml.querySelector('meldingKode')?.textContent ?? '',
+        alvorlighetsgrad: xml.querySelector('alvorlighetsgrad')?.textContent ?? '',
+        tekstMelding: xml.querySelector('tekstMelding')?.textContent ?? '',
+        tidspunkt: xml.querySelector('tidspunkt')?.textContent ?? '',
+    }))
+
     return {
         fagsystem: fraFagsystem(fagsystem),
         dato: new Date(nokkelFom.substring(0, 10)),
@@ -56,5 +67,6 @@ export const parseAvstemmingXml = (xml: string): Avstemming | null => {
             manglerAntall: num('manglerAntall'),
             manglerBelop: num('manglerBelop'),
         },
+        detaljs,
     }
 }

@@ -119,7 +119,6 @@ export async function fetchAvstemminger(dager: number = 14): Promise<string[]> {
 
     const res = await fetch(url, {
         headers: { Authorization: `Bearer ${apiToken}` },
-        cache: 'no-store',
     })
 
     if (!res.ok) {

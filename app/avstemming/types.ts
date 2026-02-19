@@ -16,6 +16,7 @@ export type Avstemming = {
     totalAntall: number
     totalBelop: number
     grunnlag: Grunnlag
+    detaljs: Detaljs[]
 }
 
 export interface Aksjon {
