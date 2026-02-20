@@ -1,57 +1,65 @@
-import { useState } from 'react'
-import { logger } from '@navikt/next-logger'
+import { useActionState, useEffect, useRef } from 'react'
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
-
-import { showToast } from '@/components/Toast.tsx'
-import { ConfirmationModal } from '@/components/ConfirmationModal'
-import { tombstoneUtbetaling } from '@/app/kafka/table/actionMenu/actions'
+import { Button, Modal, Textarea } from '@navikt/ds-react'
+import { tombstoneUtbetaling } from '@/app/kafka/table/actionMenu/actions.ts'
+import { showToast } from '@/components/Toast'
 
 type Props = {
     messageKey: string
 }
 
 export const TombstoneUtbetalingButton = ({ messageKey }: Props) => {
-    const [modalOpen, setModalOpen] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
+    const ref = useRef<HTMLDialogElement>(null)
+    const tombstoneUtbetalingWithKey = tombstoneUtbetaling.bind(null, messageKey)
+    const [state, formAction, pending] = useActionState(tombstoneUtbetalingWithKey, { status: 'initial' })
 
-    const handleMenuItemClick = (e: Event) => {
+    const openModal = (e: Event) => {
         e.preventDefault()
-        setModalOpen(true)
+        ref.current?.showModal()
     }
 
-    const handleConfirm = async () => {
-        setIsLoading(true)
+    const closeModal = () => {
+        ref.current?.close()
+    }
 
-        const formData = new FormData()
-        formData.set('key', messageKey)
-
-        const response = await tombstoneUtbetaling(formData)
-
-        setIsLoading(false)
-
-        if (response.error) {
-            const message = `Feil ved tombstoning av utbetaling: ${response.error}`
-            logger.error(message)
-            showToast(message, { variant: 'error' })
-        } else {
-            showToast(`Tombstonet utbetaling for key "${messageKey}"`, {
-                variant: 'success',
-            })
+    useEffect(() => {
+        if (state.status === 'success') {
+            showToast(`Tombstonet melding ${messageKey}`)
         }
-    }
+        if (state.status === 'error') {
+            showToast(state.message ?? 'Klarte ikke tombstone melding', { variant: 'error' })
+        }
+    }, [state, messageKey])
 
     return (
         <>
-            <ActionMenuItem onSelect={handleMenuItemClick}>Tombstone utbetaling</ActionMenuItem>
-            <ConfirmationModal
-                open={modalOpen}
-                onClose={() => setModalOpen(false)}
-                onConfirm={handleConfirm}
-                heading="Tombstone utbetaling"
-                body={`Er du sikker på at du vil tombstone utbetaling for key: ${messageKey}?`}
-                confirmText="Ja, tombstone"
-                isLoading={isLoading}
-            />
+            <ActionMenuItem onSelect={openModal}>Tombstone utbetaling</ActionMenuItem>
+            <Modal
+                ref={ref}
+                header={{
+                    heading: 'Tombstone utbetaling',
+                    size: 'small',
+                }}
+            >
+                <form action={formAction}>
+                    <Modal.Body>
+                        <Textarea
+                            name="reason"
+                            label="Oppgi grunn"
+                            description="Grunnen du oppgir vil være synlig i audit-loggen"
+                            error={state?.validation?.reason}
+                        />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button type="submit" loading={pending} disabled={pending}>
+                            Tombstone utbetaling
+                        </Button>
+                        <Button type="button" variant="secondary" onClick={closeModal} disabled={pending}>
+                            Avbryt
+                        </Button>
+                    </Modal.Footer>
+                </form>
+            </Modal>
         </>
     )
 }

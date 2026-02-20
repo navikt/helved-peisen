@@ -1,5 +1,3 @@
-import { logger } from '@navikt/next-logger'
-
 import { showToast } from '@/components/Toast.tsx'
 
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
@@ -20,10 +18,10 @@ export const FlyttTilUtbetalingerButton = ({ message }: Props) => {
         formData.set('offset', `${message.offset}`)
 
         const response = await movePendingToUtbetaling(formData)
-        if (response.error) {
-            const message = `Feil ved manuell flytting av pending utbetaling til utbetalinger: ${response.error}`
-            logger.error(message)
-            showToast(message, { variant: 'error' })
+        if (response.status === 'error') {
+            showToast(response.message ?? `Feil ved manuell flytting av pending utbetaling til utbetalinger`, {
+                variant: 'error',
+            })
         } else {
             showToast(`Flyttet pending utbetaling til utbetalinger for "${message.key}"`, {
                 variant: 'success',

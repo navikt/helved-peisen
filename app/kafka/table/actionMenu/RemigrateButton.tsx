@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { logger } from '@navikt/next-logger'
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 
 import { showToast } from '@/components/Toast.tsx'
@@ -65,12 +64,11 @@ export const RemigrateButton = ({ message }: Props) => {
             setRequest(request)
 
             const preview = await remigrerUtbetalingDryrun(request).finally(() => setIsLoading(false))
-            if (preview.error) {
-                showToast(`Klarte ikke re-migrere utbetaling: ${preview.error}`, { variant: 'error' })
-                return
+            if (preview.status === 'error') {
+                showToast(preview.message ?? `Klarte ikke hente preview av remigrering}`, { variant: 'error' })
+            } else if (preview.status === 'success' && preview.data) {
+                setPreview(preview.data)
             }
-
-            setPreview(preview.data)
         } catch (e) {
             showToast(`Klarte ikke parse JSON: ${raw.value}`, { variant: 'error' })
             setIsLoading(false)
@@ -86,14 +84,10 @@ export const RemigrateButton = ({ message }: Props) => {
 
         const response = await remigrerUtbetaling(request).finally(() => setIsLoading(false))
 
-        if (response.error) {
-            const message = `Feil ved re-migrering av utbetaling: ${response.error}`
-            logger.error(message)
-            showToast(message, { variant: 'error' })
+        if (response.status === 'error') {
+            showToast(response.message ?? `Feil ved remigrering av utbetaling`, { variant: 'error' })
         } else {
-            showToast(`Re-migrerte utbetaling for key "${message.key}"`, {
-                variant: 'success',
-            })
+            showToast(`Remigrerte utbetaling "${message.key}"`, { variant: 'success' })
             setOpen(false)
         }
     }

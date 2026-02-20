@@ -15,9 +15,7 @@ type Props = {
 export const ResendMessageButton = ({ message, label }: Props) => {
     const [open, setOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-
     const [reason, setReason] = useState('')
-
     const [validationError, setValidationError] = useState(false)
 
     const resend = async () => {
