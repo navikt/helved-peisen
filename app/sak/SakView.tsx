@@ -32,7 +32,9 @@ const fagsystem = (fagsystem: string) => {
 const removeDuplicateMessages = (messages: Message[]) => {
     const messageMap: Record<string, Message> = {}
 
-    for (const message of messages) {
+    const sorted = [...messages].sort((a, b) => b.system_time_ms - a.system_time_ms) // nyeste først
+
+    for (const message of sorted) {
         const key = JSON.stringify({
             ...message,
             offset: null, // Offset vil alltid være forskjellig
@@ -40,7 +42,9 @@ const removeDuplicateMessages = (messages: Message[]) => {
             stream_time_ms: null, // eller denne,
             trace_id: null, // eller denne,
         })
-        messageMap[key] = message
+        if (!messageMap[key]) {
+            messageMap[key] = message
+        }
     }
 
     return Object.values(messageMap)
