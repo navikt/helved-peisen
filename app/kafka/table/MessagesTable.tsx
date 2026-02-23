@@ -123,6 +123,7 @@ export const MessagesTable: React.FC<Props> = ({ messages, totalMessages }) => {
                             <TableHeaderCell textSize="small" />
                             <TableHeaderCell textSize="small">Topic</TableHeaderCell>
                             <TableHeaderCell textSize="small">Status</TableHeaderCell>
+                            <TableHeaderCell textSize="small">Fagsystem</TableHeaderCell>
                             <TableHeaderCell textSize="small">Key</TableHeaderCell>
                             <TableColumnHeader
                                 sortKey="timestamp"

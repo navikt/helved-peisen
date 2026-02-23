@@ -85,6 +85,7 @@ const RowContents: React.FC<Props> = ({ message }) => {
             <TableDataCell style={{ width: 0 }}>
                 <MessageStatus message={message} />
             </TableDataCell>
+            <TableDataCell>{message.fagsystem}</TableDataCell>
             <TableDataCell style={{ width: 0 }}>
                 <FilterLink
                     filter="key"
