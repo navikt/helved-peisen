@@ -111,6 +111,7 @@ const RowContents: React.FC<Props> = ({ message }) => {
                         />
                     </ActionMenuTrigger>
                     <ActionMenuContent>
+                        <SakLink message={message} />
                         {message.topic_name === 'helved.oppdrag.v1' && (
                             <>
                                 <AddKvitteringButton message={message} />
@@ -138,7 +139,6 @@ const RowContents: React.FC<Props> = ({ message }) => {
                         <ActionMenuItem>
                             <GrafanaTraceLink traceId={message.trace_id} />
                         </ActionMenuItem>
-                        <SakLink message={message} />
                     </ActionMenuContent>
                 </ActionMenu>
             </TableDataCell>
