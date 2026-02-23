@@ -9,7 +9,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<Record<s
     if (!apiToken) return unauthorized()
 
     const { topic, partition, offset } = await params
-    const res = await fetch(`${Routes.external.kafka}/${topic}/${partition}/${offset}`, {
+    const res = await fetch(`${Routes.external.kafka}/messages/${topic}/${partition}/${offset}`, {
         headers: { Authorization: `Bearer ${apiToken}` },
     })
 

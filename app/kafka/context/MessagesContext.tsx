@@ -2,10 +2,19 @@
 
 import { createContext, type PropsWithChildren, useCallback, useEffect, useState } from 'react'
 
-import { getMessagesByTopic } from '@/app/kafka/table/getMessagesByTopic.ts'
+import { getMessages } from '@/app/kafka/table/getMessages'
 import { type ApiResponse, PaginatedResponse } from '@/lib/api/types.ts'
 import type { Message } from '@/app/kafka/types.ts'
 import { useFiltere } from '../Filtere'
+
+function sanitizeFilters(obj: Record<string, string | number | boolean | null>): Record<string, string> {
+    return Object.fromEntries(
+        Object.entries(obj)
+            .filter(([, value]) => !!value)
+            .map(([key, value]) => [key, value!!.toString()])
+            .map(([key, value]) => [key, value === 'now' ? new Date().toISOString() : value])
+    ) as Record<string, string>
+}
 
 type MessagesContextValue = {
     loading: boolean
@@ -26,7 +35,7 @@ export const MessagesProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
     const fetchMessages = useCallback(() => {
         setLoading(true)
-        getMessagesByTopic(filtere).then((res) => {
+        getMessages(sanitizeFilters({ ...filtere, setFiltere: null })).then((res) => {
             setMessages(res)
             setLoading(false)
         })
