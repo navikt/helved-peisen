@@ -66,7 +66,8 @@ export function LatestAvstemminger({ xmlMessages }: Props) {
                             <TableHeaderCell>Status</TableHeaderCell>
                             <TableHeaderCell>Antall</TableHeaderCell>
                             <TableHeaderCell>Beløp</TableHeaderCell>
-                            <TableHeaderCell>Dato</TableHeaderCell>
+                            <TableHeaderCell>Fom</TableHeaderCell>
+                            <TableHeaderCell>Tom</TableHeaderCell>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -90,7 +91,8 @@ export function LatestAvstemminger({ xmlMessages }: Props) {
                                 </TableDataCell>
                                 <TableDataCell>{avstemming.totalAntall}</TableDataCell>
                                 <TableDataCell>{avstemming.totalBelop.toLocaleString('nb-NO')}</TableDataCell>
-                                <TableDataCell>{format(avstemming.dato, 'yyyy-MM-dd')}</TableDataCell>
+                                <TableDataCell>{format(avstemming.fom, 'yyyy-MM-dd')}</TableDataCell>
+                                <TableDataCell>{format(avstemming.tom, 'yyyy-MM-dd')}</TableDataCell>
                             </TableExpandableRow>
                         ))}
                     </TableBody>

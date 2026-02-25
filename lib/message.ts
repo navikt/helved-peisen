@@ -38,11 +38,6 @@ export const variant = (message: Message): Variant => {
         case 'helved.fk.v1':
         case 'helved.simuleringer.v1':
             return 'neutral'
-        case 'helved.utbetalinger-aap.v1':
-        case 'helved.utbetalinger-historisk.v1':
-        case 'helved.utbetalinger-dp.v1':
-        case 'helved.utbetalinger-ts.v1':
-        case 'helved.utbetalinger-tp.v1':
         case 'helved.utbetalinger.v1':
         case 'helved.pending-utbetalinger.v1':
         case 'helved.oppdrag.v1':
@@ -51,6 +46,11 @@ export const variant = (message: Message): Variant => {
         case 'historisk.utbetaling.v1':
         case 'tilleggsstonader.utbetaling.v1':
         case 'teamdagpenger.utbetaling.v1':
+        case 'helved.utbetalinger-aap.v1':
+        case 'helved.utbetalinger-historisk.v1':
+        case 'helved.utbetalinger-dp.v1':
+        case 'helved.utbetalinger-ts.v1':
+        case 'helved.utbetalinger-tp.v1':
             return 'alt1'
         case 'helved.status.v1':
             return 'alt2'
