@@ -35,13 +35,6 @@ function deriveStatusLabel(avstemming: Avstemming): string {
     }
 }
 
-function periodEnd(dato: Date): Date {
-    const end = new Date(dato)
-    end.setDate(end.getDate() + 1)
-    end.setHours(23, 59, 59, 999)
-    return end
-}
-
 export const AvstemmingTimeline = ({ xmlMessages }: TestTimelineProps) => {
     const parsed = xmlMessages.flatMap((xml) => {
         const a = parseAvstemmingXml(xml)
@@ -69,8 +62,8 @@ export const AvstemmingTimeline = ({ xmlMessages }: TestTimelineProps) => {
                             {items.map((avstemming, i) => (
                                 <Timeline.Period
                                     key={`ok-${i}`}
-                                    start={avstemming.dato}
-                                    end={periodEnd(avstemming.dato)}
+                                    start={avstemming.fom}
+                                    end={avstemming.tom}
                                     status={deriveStatus(avstemming)}
                                     statusLabel={deriveStatusLabel(avstemming)}
                                 >
