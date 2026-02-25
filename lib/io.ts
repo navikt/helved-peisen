@@ -90,6 +90,26 @@ export async function fetchAvstemmingDryrun(range: AvstemmingRequest): Promise<s
     return json.data
 }
 
+export async function fetchAvstemmingDryrunV2(range: AvstemmingRequest): Promise<string> {
+    const res = await fetch('/api/avstemming/dryrun/v2', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(range),
+    })
+
+    if (res.redirected) {
+        window.location.reload()
+        return ''
+    }
+
+    if (!res.ok) {
+        throw Error(`Klarte ikke kjøre dryrun: ${res.statusText}`)
+    }
+
+    const json = await res.json()
+    return json.data
+}
+
 export async function fetchAvstemminger(dager: number = 14): Promise<string[]> {
     const apiToken = await getApiTokenFromCookie()
     if (!apiToken) return []
