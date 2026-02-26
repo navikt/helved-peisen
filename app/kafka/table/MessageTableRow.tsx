@@ -24,6 +24,7 @@ import { useUser } from '@/components/UserProvider.tsx'
 import { teamLogger } from '@navikt/next-logger/team-log'
 import { FilterLink } from '@/components/FilterLink'
 import { RemigrateButton } from './actionMenu/RemigrateButton.tsx'
+import MessageHeaders from '@/app/kafka/table/MessageHeaders.tsx'
 
 type Props = {
     message: Message
@@ -68,6 +69,7 @@ export const MessageTableRowContents: React.FC<Props> = ({ message }) => {
                             <CopyButton size="xsmall" copyText={rawMessage.key} />
                         </HStack>
                     </VStack>
+                    <MessageHeaders message={message} />
                     <MessageMetadata message={rawMessage} />
                     <MessageValue message={rawMessage} />
                 </>
@@ -77,6 +79,8 @@ export const MessageTableRowContents: React.FC<Props> = ({ message }) => {
 }
 
 const RowContents: React.FC<Props> = ({ message }) => {
+    const fagsystemHeader = message.headers?.find((header) => header.key === 'fagsystem')?.value
+
     return (
         <>
             <TableDataCell style={{ width: 0 }}>
@@ -85,7 +89,7 @@ const RowContents: React.FC<Props> = ({ message }) => {
             <TableDataCell style={{ width: 0 }}>
                 <MessageStatus message={message} />
             </TableDataCell>
-            <TableDataCell>{message.fagsystem}</TableDataCell>
+            <TableDataCell>{message.fagsystem ?? fagsystemHeader}</TableDataCell>
             <TableDataCell style={{ width: 0 }}>
                 <FilterLink
                     filter="key"

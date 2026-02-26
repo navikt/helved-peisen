@@ -39,6 +39,7 @@ export type RawMessage = {
     sakId: string | null
     fagsystem: string | null
     status: 'OK' | 'HOS_OPPDRAG' | 'MOTTATT' | 'FEILET' | null
+    headers: Header[]
 }
 
 // Meldingene slik de eksponeres for peisen
@@ -56,6 +57,12 @@ export type Message = {
     badge?: string | null
     sakId: string | null
     fagsystem: string | null
+    headers: Header[]
+}
+
+export type Header = {
+    key: string
+    value: string | null
 }
 
 export type DagpengerUtbetalingMessageValue = {
