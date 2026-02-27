@@ -1,6 +1,5 @@
 import { Message, RawMessage } from '@/app/kafka/types.ts'
 import { BodyShort, Box, Label, VStack } from '@navikt/ds-react'
-import React, { ReactNode } from 'react'
 
 type Props = {
     message: RawMessage & Message
@@ -18,34 +17,23 @@ const HeaderCard = ({ label, value }: { label: string; value?: string | number |
     )
 }
 
-const HeaderCardContainer = ({ children }: { children: ReactNode }) => (
-    <Box background="neutral-moderate" padding="space-12" borderRadius="8" maxWidth="max-content">
-        {children}
-    </Box>
-)
-
-const HeadersLayout = ({ children }: { children: ReactNode }) => (
-    <VStack gap="space-12">
-        <Label>Headers</Label>
-        <HeaderCardContainer>
-            {children}
-        </HeaderCardContainer>
-    </VStack>
-)
-
-const FagsystemHeaders = ({ message }: Props) => {
-    const fagsystem = message.headers?.find((header) => header.key === 'fagsystem')?.value
-    if (!fagsystem) return null
-
-    return (
-        <HeadersLayout>
-            <HeaderCard label="Fagsystem" value={fagsystem} />
-        </HeadersLayout>
-    )
-}
+// Disse er ikke så interesante
+const EXCLUDED_HEADERS = new Set(['x-ts', 'x-st', 'x-sy', 'traceparent'])
 
 const MessageHeaders = ({ message }: Props) => {
-    return <FagsystemHeaders message={message} />
+    const headers = message.headers?.filter((header) => !EXCLUDED_HEADERS.has(header.key))
+    if (!headers?.length) return null
+
+    return (
+        <VStack gap="space-12">
+            <Label>Headers</Label>
+            <Box background="neutral-moderate" padding="space-12" borderRadius="8" maxWidth="max-content">
+                {headers.map((header) => (
+                    <HeaderCard key={header.key} label={header.key} value={header.value} />
+                ))}
+            </Box>
+        </VStack>
+    )
 }
 
 export default MessageHeaders
