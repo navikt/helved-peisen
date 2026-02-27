@@ -11,7 +11,7 @@ declare type FailureResponse = {
 export type ApiResponse<T> = SuccessResponse<T> | FailureResponse
 
 export function isSuccessResponse<T>(response: ApiResponse<T>): response is SuccessResponse<T> {
-    return response.error === null
+    return !response.error
 }
 
 export function isFailureResponse<T>(response: ApiResponse<T>): response is FailureResponse {

@@ -32,18 +32,10 @@ export default defineConfig({
     ],
     webServer: [
         {
-            command: 'npm run fake',
-            port: 8080,
-            env: testEnv,
-            // reuseExistingServer: !process.env.CI,
-            timeout: 10 * 1000, // 10 sec
-        },
-        {
-            command: 'npm run dev',
+            command: 'pnpm run dev',
             port: 3000,
             env: testEnv,
-            // reuseExistingServer: !process.env.CI,
-            timeout: 10 * 1000, // 10 sec
+            timeout: 10 * 1000,
         },
     ],
 })

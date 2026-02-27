@@ -3,8 +3,9 @@ const utsjekkBaseUrl = process.env.UTSJEKK_BASE_URL
 const vedskivaBaseUrl = process.env.VEDSKIVA_BASE_URL
 
 export const Routes = {
+    // Eksterne tjenester (peisschtappern, vedskiva, o.l.)
     external: {
-        kafka: `${kafkaApiBaseUrl}/api`,
+        messages: `${kafkaApiBaseUrl}/api/messages`,
         resend: `${kafkaApiBaseUrl}/api/resend`,
         manuellKvittering: `${kafkaApiBaseUrl}/manuell-kvittering`,
         pendingTilUtbetaling: `${kafkaApiBaseUrl}/pending-til-utbetaling`,
@@ -20,6 +21,7 @@ export const Routes = {
         avstemmingNextRange: `${vedskivaBaseUrl}/api/next_range`,
         avstemminger: `${kafkaApiBaseUrl}/api/avstemminger`,
     },
+    // Route-handlere i app/api-mappen
     internal: {
         messages: `/api/messages`,
         message(topic: string, partition: number, offset: number) {
