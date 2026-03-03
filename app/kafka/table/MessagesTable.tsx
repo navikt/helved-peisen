@@ -102,8 +102,8 @@ export const MessagesTable: React.FC<Props> = ({ messages, totalMessages }) => {
 
     return (
         <>
+            <MessagesPagination messages={messages} totalMessages={totalMessages} />
             <div className="animate-fade-in max-w-[100vw] overflow-y-auto scrollbar-gutter-stable">
-                <MessagesPagination messages={messages} totalMessages={totalMessages} />
                 <Table
                     className="h-max overflow-scroll"
                     sort={toSortState(direction, orderBy)}
@@ -147,8 +147,8 @@ export const MessagesTable: React.FC<Props> = ({ messages, totalMessages }) => {
                     </TableHeader>
                 </Table>
                 {messages.length === 0 && <NoMessages title="Fant ingen meldinger" />}
-                <MessagesPagination messages={messages} totalMessages={totalMessages} />
             </div>
+            <MessagesPagination messages={messages} totalMessages={totalMessages} />
         </>
     )
 }
