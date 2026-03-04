@@ -5,7 +5,7 @@ import { Alert } from '@navikt/ds-react'
 
 import { MessagesTable, MessagesTableSkeleton } from '@/app/kafka/table/MessagesTable.tsx'
 import { NoMessages } from '@/components/NoMessages.tsx'
-import { MessagesContext } from './context/MessagesContext.tsx'
+import { MessagesContext } from './MessagesContext.tsx'
 import { isFailureResponse } from '@/lib/api/types.ts'
 
 export const MessagesView = () => {

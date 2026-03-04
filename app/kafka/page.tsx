@@ -1,7 +1,7 @@
 import { Filtere, FiltereProvider } from '@/app/kafka/Filtere.tsx'
 import { MessagesView } from '@/app/kafka/MessagesView.tsx'
 import { SortStateProvider } from './table/SortState'
-import { MessagesProvider } from './context/MessagesContext.tsx'
+import { MessagesProvider } from './MessagesContext.tsx'
 
 import { checkToken } from '@/lib/server/auth.ts'
 

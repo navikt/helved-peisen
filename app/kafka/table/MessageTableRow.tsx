@@ -18,13 +18,14 @@ import { AddKvitteringButton } from './actionMenu/AddKvitteringButton'
 import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTilUtbetalingerButton.tsx'
 import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
 import { ResendMessageButton } from './actionMenu/ResendMessageButton'
-import { fetchRawMessage } from '@/lib/io'
 import { showToast } from '@/components/Toast'
 import { useUser } from '@/components/UserProvider.tsx'
 import { teamLogger } from '@navikt/next-logger/team-log'
 import { FilterLink } from '@/components/FilterLink'
 import { RemigrateButton } from './actionMenu/RemigrateButton.tsx'
 import MessageHeaders from '@/app/kafka/table/MessageHeaders.tsx'
+import { fetchRawMessage } from '@/app/kafka/actions.ts'
+import { isSuccessResponse } from '@/lib/api/types.ts'
 
 type Props = {
     message: Message
@@ -38,9 +39,11 @@ export const MessageTableRowContents: React.FC<Props> = ({ message }) => {
     useEffect(() => {
         setLoading(true)
         fetchRawMessage(message)
-            .then((rawMessage) => {
-                if (rawMessage) {
-                    setRawMessage({ ...message, ...rawMessage })
+            .then((res) => {
+                if (isSuccessResponse(res)) {
+                    setRawMessage({ ...message, ...res.data })
+                } else {
+                    showToast(res.error, { variant: 'error' })
                 }
             })
             .catch((e) => {

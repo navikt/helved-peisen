@@ -4,8 +4,9 @@ import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 import { Button, Modal, Textarea } from '@navikt/ds-react'
 
 import { showToast } from '@/components/Toast.tsx'
-import { resendMessage } from '@/lib/io'
 import type { Message } from '@/app/kafka/types.ts'
+import { resendMessage } from '@/app/kafka/actions.ts'
+import { isSuccessResponse } from '@/lib/api/types'
 
 type Props = {
     message: Message
@@ -29,18 +30,17 @@ export const ResendMessageButton = ({ message, label }: Props) => {
             setValidationError(false)
         }
 
-        try {
-            await resendMessage(message, reason)
-            showToast(`Resendte melding med nøkkel ${message.key} på nytt`, {
-                variant: 'success',
-            })
-        } catch (e) {
-            logger.error(e)
-            showToast(`Klarte ikke resende melding ${message.key}`, { variant: 'error' })
-        } finally {
-            setIsLoading(false)
-            setOpen(false)
+        const res = await resendMessage(message, reason)
+
+        if (!isSuccessResponse(res)) {
+            logger.error(res.error)
+            showToast(res.error, { variant: 'error' })
+        } else {
+            showToast(`Resendte melding med nøkkel ${message.key} på nytt`, { variant: 'success' })
         }
+
+        setIsLoading(false)
+        setOpen(false)
     }
 
     const openModal = (e: Event) => {

@@ -7,7 +7,8 @@ import { Button, Select, TextField } from '@navikt/ds-react'
 import { showToast } from '@/components/Toast'
 import { useSak } from '@/app/sak/SakProvider.tsx'
 import { useSetSearchParams } from '@/hooks/useSetSearchParams'
-import { fetchHendelserForSak } from '@/lib/io.ts'
+import { fetchHendelserForSak } from '@/app/sak/actions.ts'
+import { isSuccessResponse } from '@/lib/api/types'
 
 type Props = React.HTMLAttributes<HTMLDivElement>
 
@@ -21,15 +22,16 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
     const fetchSak = async (sakId: string, fagsystem: string) => {
         setIsLoading(true)
         return fetchHendelserForSak(sakId, fagsystem)
-            .then((hendelser) => {
-                if (hendelser.length === 0) {
+            .then((res) => {
+                if (!isSuccessResponse(res)) {
+                    showToast(res.error, { variant: 'error' })
+                } else if (res.data.length === 0) {
                     showToast(`Fant ingen hendelser for sak ${sakId}`)
                     setSak(null)
                 } else {
-                    setSak({ id: sakId, fagsystem, hendelser })
+                    setSak({ id: sakId, fagsystem, hendelser: res.data })
                 }
             })
-            .catch((e) => showToast(`Klarte ikke hente hendelser for sak: ${e}`, { variant: 'error' }))
             .finally(() => setIsLoading(false))
     }
 

@@ -3,6 +3,7 @@ const nextConfig = {
     experimental: {
         optimizePackageImports: ['@navikt/ds-react', '@navikt/aksel-icons'],
         authInterrupts: true,
+        testProxy: true,
     },
     images: {
         unoptimized: true,

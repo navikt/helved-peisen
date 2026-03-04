@@ -3,10 +3,11 @@ import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 
 import { showToast } from '@/components/Toast.tsx'
 import { remigrerUtbetaling, remigrerUtbetalingDryrun } from '@/app/kafka/table/actionMenu/actions.ts'
-import { fetchRawMessage } from '@/lib/io.ts'
 import { Message } from '../../types.ts'
 import { Button, Modal } from '@navikt/ds-react'
 import { JsonView } from '@/components/JsonView.tsx'
+import { fetchRawMessage } from '@/app/kafka/actions.ts'
+import { isSuccessResponse } from '@/lib/api/types.ts'
 
 type Request = {
     sakId: string
@@ -36,22 +37,22 @@ export const RemigrateButton = ({ message }: Props) => {
     const fetchPreview = async () => {
         setIsLoading(true)
 
-        const raw = await fetchRawMessage(message)
+        const res = await fetchRawMessage(message)
 
-        if (!raw) {
+        if (!isSuccessResponse(res)) {
             showToast(`Klarte ikke hente melding med key ${message.key}`, { variant: 'error' })
             setIsLoading(false)
             return
         }
 
-        if (!raw.value) {
+        if (!res.data.value) {
             showToast(`Meldingen med key ${message.key} inneholder ikke value`, { variant: 'error' })
             setIsLoading(false)
             return
         }
 
         try {
-            const data = JSON.parse(raw.value)
+            const data = JSON.parse(res.data.value)
             const request = {
                 sakId: data.sakId,
                 behandlingId: data.behandlingId,
@@ -70,7 +71,7 @@ export const RemigrateButton = ({ message }: Props) => {
                 setPreview(preview.data)
             }
         } catch (e) {
-            showToast(`Klarte ikke parse JSON: ${raw.value}`, { variant: 'error' })
+            showToast(`Klarte ikke parse JSON: ${res.data.value}`, { variant: 'error' })
             setIsLoading(false)
         }
     }

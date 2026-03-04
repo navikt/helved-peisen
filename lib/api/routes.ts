@@ -24,15 +24,8 @@ export const Routes = {
     // Route-handlere i app/api-mappen
     internal: {
         messages: `/api/messages`,
-        message(topic: string, partition: number, offset: number) {
-            return `${Routes.internal.messages}/${topic}/${partition}/${offset}`
-        },
-        resend(topic: string, partition: number, offset: number) {
-            return `${Routes.internal.message(topic, partition, offset)}/resend`
-        },
         sak(sakId: string, fagsystem: string) {
             return `/api/saker/${fagsystem}/${sakId}`
         },
-        apiLogin: `/internal/login`,
     },
 } as const

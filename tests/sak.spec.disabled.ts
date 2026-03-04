@@ -1,6 +1,5 @@
 import test, { expect } from '@playwright/test'
 import messages from '@/tests/data/messages.json' assert { type: 'json' }
-import { sleep } from '@/fakes/util.ts'
 
 test.beforeEach(async ({ page }) => {
     await page.route(

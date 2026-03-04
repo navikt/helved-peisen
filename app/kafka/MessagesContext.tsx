@@ -2,10 +2,10 @@
 
 import { createContext, type PropsWithChildren, useCallback, useEffect, useState } from 'react'
 
-import { getMessages } from '@/app/kafka/table/getMessages'
 import { type ApiResponse, PaginatedResponse } from '@/lib/api/types.ts'
 import type { Message } from '@/app/kafka/types.ts'
-import { useFiltere } from '../Filtere'
+import { useFiltere } from './Filtere.tsx'
+import { getMessages } from '@/app/kafka/actions.ts'
 
 function sanitizeFilters(obj: Record<string, string | number | boolean | null>): Record<string, string> {
     return Object.fromEntries(
