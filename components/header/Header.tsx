@@ -133,6 +133,7 @@ export function Header() {
                 <TabLink href="/kafka">Kafka</TabLink>
                 <TabLink href="/sak">Sak</TabLink>
                 <TabLink href="/avstemming">Avstemming</TabLink>
+                <TabLink href="/stats">Stats</TabLink>
             </HStack>
             <Spacer />
             <UserMenu />
