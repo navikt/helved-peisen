@@ -125,7 +125,7 @@ export function Header() {
         <InternalHeader>
             <InternalHeaderTitle as="h1">
                 <span className="flex gap-2">
-                    <Image src={logo.src} alt="" width={24} height={24} />
+                    <Image src={logo.src} alt="" height={0} width={0} style={{ width: 'auto', height: '24px' }} />
                     <span>Peisen</span>
                 </span>
             </InternalHeaderTitle>
