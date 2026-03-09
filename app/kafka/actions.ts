@@ -13,7 +13,7 @@ export async function getMessages(params: Record<string, string>): Promise<ApiRe
 
     const searchParams = new URLSearchParams(params)
 
-    const response = await fetch(`${Routes.external.messages}?${searchParams.toString()}`, {
+    const response = await fetch(`${Routes.messages}?${searchParams.toString()}`, {
         headers: { Authorization: `Bearer ${apiToken}` },
     })
 
@@ -39,12 +39,9 @@ export async function fetchRawMessage(message: Message): Promise<ApiResponse<Raw
     const apiToken = await getApiTokenFromCookie()
     if (!apiToken) return unauthorized()
 
-    const res = await fetch(
-        `${Routes.external.messages}/${message.topic_name}/${message.partition}/${message.offset}`,
-        {
-            headers: { Authorization: `Bearer ${apiToken}` },
-        }
-    )
+    const res = await fetch(`${Routes.messages}/${message.topic_name}/${message.partition}/${message.offset}`, {
+        headers: { Authorization: `Bearer ${apiToken}` },
+    })
 
     if (!res.ok) {
         return {
@@ -69,7 +66,7 @@ export async function resendMessage(message: Message, reason: string): Promise<A
     formData.set('offset', `${message.offset}`)
     formData.set('reason', reason)
 
-    const res = await fetch(`${Routes.external.resend}`, {
+    const res = await fetch(`${Routes.resend}`, {
         method: 'POST',
         body: JSON.stringify(Object.fromEntries(formData)),
         headers: {

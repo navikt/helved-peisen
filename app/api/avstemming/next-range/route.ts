@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     const apiToken = await getVedskivaApiTokenFromCookie()
     const { today } = await req.json()
 
-    const res = await fetch(Routes.external.avstemmingNextRange, {
+    const res = await fetch(Routes.avstemmingNextRange, {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${apiToken}`,

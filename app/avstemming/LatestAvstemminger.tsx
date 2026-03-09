@@ -13,7 +13,6 @@ import { Avstemming } from '@/app/avstemming/types'
 import { parseAvstemmingXml } from '@/app/avstemming/parseAvstemmingXml'
 import { XMLView } from '@/components/XMLView'
 import { format } from 'date-fns'
-import React from 'react'
 import ResultTableRow from '@/app/avstemming/table/ResultTableRow.tsx'
 
 interface ParsedXml {
@@ -23,18 +22,35 @@ interface ParsedXml {
 
 function StatusTag({ avstemming }: { avstemming: Avstemming }) {
     const { avvistAntall, varselAntall, manglerAntall } = avstemming.grunnlag
-    if (avvistAntall > 0) return <Tag variant="error" size="small">{avvistAntall} avvist</Tag>
-    if (varselAntall > 0 || manglerAntall > 0) return <Tag variant="warning" size="small">{varselAntall + manglerAntall} varsler/mangler</Tag>
-    if (avstemming.totalAntall === 0) return <Tag variant="neutral" size="small">Ingen</Tag>
-    return <Tag variant="success" size="small">OK</Tag>
+    if (avvistAntall > 0)
+        return (
+            <Tag variant="error" size="small">
+                {avvistAntall} avvist
+            </Tag>
+        )
+    if (varselAntall > 0 || manglerAntall > 0)
+        return (
+            <Tag variant="warning" size="small">
+                {varselAntall + manglerAntall} varsler/mangler
+            </Tag>
+        )
+    if (avstemming.totalAntall === 0)
+        return (
+            <Tag variant="neutral" size="small">
+                Ingen
+            </Tag>
+        )
+    return (
+        <Tag variant="success" size="small">
+            OK
+        </Tag>
+    )
 }
 
 function getLatestPerFagsystem(items: ParsedXml[]): ParsedXml[] {
     const grouped = Map.groupBy(items, (i) => i.avstemming.fagsystem)
     return [...grouped.values()].map((group) =>
-        group.reduce((latest, current) =>
-            current.avstemming.dato > latest.avstemming.dato ? current : latest
-        )
+        group.reduce((latest, current) => (current.avstemming.dato > latest.avstemming.dato ? current : latest))
     )
 }
 
@@ -78,10 +94,10 @@ export function LatestAvstemminger({ xmlMessages }: Props) {
                                     <VStack gap="space-32">
                                         <ResultTableRow grunnlag={avstemming.grunnlag} detaljs={avstemming.detaljs} />
 
-                                    <VStack gap="space-12">
-                                        <Label>XML</Label>
-                                        <XMLView data={xml} />
-                                    </VStack>
+                                        <VStack gap="space-12">
+                                            <Label>XML</Label>
+                                            <XMLView data={xml} />
+                                        </VStack>
                                     </VStack>
                                 }
                             >

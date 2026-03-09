@@ -11,7 +11,7 @@ export async function fetchHendelserForSak(sakId: string, fagsystem: string): Pr
     const apiToken = await getApiTokenFromCookie()
     if (!apiToken) return unauthorized()
 
-    const res = await fetch(Routes.external.sak(encodeURIComponent(sakId), fagsystem), {
+    const res = await fetch(Routes.sak(encodeURIComponent(sakId), fagsystem), {
         headers: { Authorization: `Bearer ${apiToken}` },
     })
 

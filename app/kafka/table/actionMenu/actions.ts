@@ -27,7 +27,7 @@ export async function addKvittering(
         }
     }
 
-    const response = await fetch(Routes.external.manuellKvittering, {
+    const response = await fetch(Routes.manuellKvittering, {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${await getApiTokenFromCookie()}`,
@@ -49,7 +49,7 @@ export async function addKvittering(
 
 export async function movePendingToUtbetaling(formData: FormData): Promise<ServerActionResponse<void>> {
     await checkToken()
-    const response = await fetch(Routes.external.pendingTilUtbetaling, {
+    const response = await fetch(Routes.pendingTilUtbetaling, {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${await getApiTokenFromCookie()}`,
@@ -88,7 +88,7 @@ export async function tombstoneUtbetaling(
         }
     }
 
-    const response = await fetch(Routes.external.tombstoneUtbetaling, {
+    const response = await fetch(Routes.tombstoneUtbetaling, {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${await getApiTokenFromCookie()}`,
@@ -110,7 +110,7 @@ export async function tombstoneUtbetaling(
 
 export async function remigrerUtbetaling(data: any): Promise<ServerActionResponse<void>> {
     await checkToken()
-    const response = await fetch(Routes.external.remigrer, {
+    const response = await fetch(Routes.remigrer, {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${await getUtsjekkApiTokenFromCookie()}`,
@@ -133,7 +133,7 @@ export async function remigrerUtbetalingDryrun(
     fagsystem: string = 'TILLEGGSSTØNADER'
 ): Promise<ServerActionResponse<ReturnType<typeof Response.json>>> {
     await checkToken()
-    const response = await fetch(Routes.external.remigrerDryrun, {
+    const response = await fetch(Routes.remigrerDryrun, {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${await getUtsjekkApiTokenFromCookie()}`,

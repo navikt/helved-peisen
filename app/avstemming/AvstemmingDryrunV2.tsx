@@ -1,11 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { subDays, format } from 'date-fns'
+import { format, subDays } from 'date-fns'
 import { Alert, Button, Label, TextField } from '@navikt/ds-react'
-import { fetchAvstemmingDryrunV2 } from '@/lib/io.ts'
 import { AvstemmingRequest } from '@/app/avstemming/types.ts'
 import { ResultTable } from '@/app/avstemming/table/ResultTable.tsx'
+import { fetchAvstemmingDryrunV2 } from './actions'
+import { isSuccessResponse } from '@/lib/api/types'
 
 export function AvstemmingDryrunV2() {
     const [result, setResult] = useState<string | null>(null)
@@ -23,14 +24,14 @@ export function AvstemmingDryrunV2() {
     const handleDryrun = async () => {
         setLoading(true)
         setError(null)
-        try {
-            const data = await fetchAvstemmingDryrunV2(range)
-            setResult(data)
-        } catch (e) {
-            setError(`${e}`)
-        } finally {
-            setLoading(false)
+
+        const res = await fetchAvstemmingDryrunV2(range)
+        if (isSuccessResponse(res)) {
+            setResult(res.data)
+        } else {
+            setError(res.error)
         }
+        setLoading(false)
     }
 
     return (
@@ -66,7 +67,11 @@ export function AvstemmingDryrunV2() {
                 </Alert>
             )}
 
-           {result && <div style={{ marginTop: '2rem' }}><ResultTable json={result} /></div>}
+            {result && (
+                <div style={{ marginTop: '2rem' }}>
+                    <ResultTable json={result} />
+                </div>
+            )}
         </div>
     )
 }
