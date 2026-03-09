@@ -33,6 +33,14 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     filter="status"
                     initialOptions={['OK', 'FEILET', 'HOS_OPPDRAG', 'MOTTATT']}
                     isMultiSelect
+                    size="small"
+                />
+                <FilterCombobox
+                    label="Fagsystem"
+                    filter="fagsystem"
+                    initialOptions={['AAP', 'DAGPENGER', 'TILLEGGSSTØNADER', 'TILTAKSPENGER', 'HISTORISK']}
+                    isMultiSelect
+                    size="small"
                 />
                 <FilterInput label="Trace-ID" filter="trace_id" size="small" />
                 <FilterInput label="Key" filter="key" size="small" />
@@ -66,6 +74,7 @@ export type FiltereValue = {
     status: string | null
     key: string | null
     value: string | null
+    fagsystem: string | null
     trace_id: string | null
     page: number
     pageSize: number
@@ -85,6 +94,7 @@ function defaultFiltereValue(searchParams?: ReadonlyURLSearchParams): FiltereVal
         status: searchParams?.get('status') ?? null,
         key: searchParams?.get('key') ?? null,
         value: searchParams?.get('value') ?? null,
+        fagsystem: searchParams?.get('fagsystem') ?? null,
         trace_id: searchParams?.get('trace_id') ?? null,
         page: 1,
         pageSize: 100,

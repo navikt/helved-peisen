@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { Message, RawMessage } from '@/app/kafka/types.ts'
 import { TableDataCell, TableExpandableRow } from '@navikt/ds-react/Table'
-import { ActionMenu, Button, CopyButton, HStack, Label, Skeleton, VStack } from '@navikt/ds-react'
+import { ActionMenu, Alert, Button, CopyButton, HStack, Label, Skeleton, VStack } from '@navikt/ds-react'
 import { formatDate } from 'date-fns'
 
 import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
@@ -26,6 +26,36 @@ import { RemigrateButton } from './actionMenu/RemigrateButton.tsx'
 import MessageHeaders from '@/app/kafka/table/MessageHeaders.tsx'
 import { fetchRawMessage } from '@/app/kafka/actions.ts'
 import { isSuccessResponse } from '@/lib/api/types.ts'
+
+const formatFagsystem = (fagsystem?: string | null) => {
+    if (!fagsystem) {
+        return null
+    }
+
+    switch (fagsystem) {
+        case 'DP':
+        case 'DAGPENGER':
+            return 'DAGPENGER'
+        case 'TILTPENG':
+        case 'TILTAKSPENGER':
+            return 'TILTAKSPENGER'
+        case 'TILLEGGSSTØNADER':
+        case 'TILLST':
+            return 'TILLEGGSSTØNADER'
+        case 'HISTORISK':
+        case 'HELSREF':
+            return 'HISTORISK'
+        case 'AAP':
+            return 'AAP'
+        default: {
+            if (fagsystem?.startsWith('TILLST')) {
+                return 'TILLEGGSSTØNADER'
+            } else {
+                return <Alert variant="error">Klarte ikke formatere fagsystem: {fagsystem}</Alert>
+            }
+        }
+    }
+}
 
 type Props = {
     message: Message
@@ -92,7 +122,7 @@ const RowContents: React.FC<Props> = ({ message }) => {
             <TableDataCell style={{ width: 0 }}>
                 <MessageStatus message={message} />
             </TableDataCell>
-            <TableDataCell>{message.fagsystem ?? fagsystemHeader}</TableDataCell>
+            <TableDataCell>{formatFagsystem(message.fagsystem ?? fagsystemHeader)}</TableDataCell>
             <TableDataCell style={{ width: 0 }}>
                 <FilterLink
                     filter="key"
