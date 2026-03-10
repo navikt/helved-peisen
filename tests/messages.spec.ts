@@ -75,7 +75,7 @@ test('filter by value', async ({ page }) => {
     await expect(loading).toBeHidden()
     await expect(page).toHaveURL(/direction=DESC/)
 
-    await page.getByRole('combobox').nth(2).fill('mmel')
+    await page.getByRole('combobox').nth(3).fill('mmel')
     await page.keyboard.press('Enter')
     await expect(page).toHaveURL(/value=mmel/g)
 
