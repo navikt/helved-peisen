@@ -3,7 +3,7 @@ import { logger } from '@navikt/next-logger'
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 import { Button, Modal, Textarea } from '@navikt/ds-react'
 
-import { showToast } from '@/components/Toast.tsx'
+import { showToast } from '@/lib/browser/toast.tsx'
 import type { Message } from '@/app/kafka/types.ts'
 import { resendMessage } from '@/app/kafka/actions.ts'
 import { isSuccessResponse } from '@/lib/api/types'

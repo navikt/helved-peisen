@@ -1,4 +1,4 @@
-import { showToast } from '@/components/Toast.tsx'
+import { showToast } from '@/lib/browser/toast.tsx'
 
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 import { movePendingToUtbetaling } from './actions'

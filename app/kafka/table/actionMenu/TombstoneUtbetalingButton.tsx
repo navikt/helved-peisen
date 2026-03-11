@@ -2,7 +2,7 @@ import { useActionState, useEffect, useRef } from 'react'
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 import { Button, Modal, Textarea } from '@navikt/ds-react'
 import { tombstoneUtbetaling } from '@/app/kafka/table/actionMenu/actions.ts'
-import { showToast } from '@/components/Toast'
+import { showToast } from '@/lib/browser/toast.tsx'
 
 type Props = {
     messageKey: string

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button, Select, TextField } from '@navikt/ds-react'
 
-import { showToast } from '@/components/Toast'
+import { showToast } from '@/lib/browser/toast.tsx'
 import { useSak } from '@/app/sak/SakProvider.tsx'
 import { useSetSearchParams } from '@/hooks/useSetSearchParams'
 import { fetchHendelserForSak } from '@/app/sak/actions.ts'

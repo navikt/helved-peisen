@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 
-import { showToast } from '@/components/Toast.tsx'
+import { showToast } from '@/lib/browser/toast.tsx'
 import { remigrerUtbetaling, remigrerUtbetalingDryrun } from '@/app/kafka/table/actionMenu/actions.ts'
 import { Message } from '../../types.ts'
 import { Button, Modal } from '@navikt/ds-react'

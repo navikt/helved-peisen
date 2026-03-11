@@ -1,7 +1,7 @@
 'use client'
 
 import { Theme } from '@navikt/ds-react'
-import { useTheme } from '@/hooks/useTheme'
+import { useTheme } from '@/hooks/useTheme.tsx'
 
 type Props = {
     children: React.ReactNode

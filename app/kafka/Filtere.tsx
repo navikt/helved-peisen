@@ -7,7 +7,7 @@ import { subDays } from 'date-fns'
 
 import { FilterCombobox } from '@/components/FilterCombobox'
 import { FilterInput } from '@/components/FilterInput'
-import { DateRangeSelect } from '@/app/kafka/DateRangeSelect.tsx'
+import { DateRangeSelect } from '@/components/DateRangeSelect'
 import { Topics } from '@/app/kafka/types.ts'
 import { HStack } from '@navikt/ds-react'
 import { LiveButton } from '@/app/kafka/LiveButton.tsx'

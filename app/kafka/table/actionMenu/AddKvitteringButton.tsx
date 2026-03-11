@@ -6,7 +6,7 @@ import { Button, Modal, Select, Textarea, TextField, VStack } from '@navikt/ds-r
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 import { addKvittering } from './actions'
 import type { Message } from '@/app/kafka/types.ts'
-import { showToast } from '@/components/Toast'
+import { showToast } from '@/lib/browser/toast.tsx'
 
 type Props = {
     message: Message
