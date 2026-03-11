@@ -2,11 +2,11 @@ import React from 'react'
 import type { Metadata } from 'next'
 import { Toaster } from 'react-hot-toast'
 
-import { Header } from '@/components/header/Header.tsx'
 import { ThemeProvider } from '@/components/ThemeProvider.tsx'
 import { LoggerProvider } from '@/components/LoggerProvider.tsx'
-import { UserProvider } from '@/components/UserProvider'
+import { UserProvider } from '@/app/UserProvider'
 import { getUser } from '@/app/actions.ts'
+import { Header } from '@/app/Header.tsx'
 
 import './globals.css'
 

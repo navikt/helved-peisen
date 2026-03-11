@@ -9,9 +9,9 @@ import { FilterCombobox } from '@/components/FilterCombobox'
 import { FilterInput } from '@/components/FilterInput'
 import { DateRangeSelect } from '@/app/kafka/DateRangeSelect.tsx'
 import { Topics } from '@/app/kafka/types.ts'
-
-import { LiveButton } from './LiveButton'
-import { RefreshButton } from './RefreshButton'
+import { HStack } from '@navikt/ds-react'
+import { LiveButton } from '@/app/kafka/LiveButton.tsx'
+import { RefreshButton } from '@/app/kafka/RefreshButton.tsx'
 
 type Props = React.HTMLAttributes<HTMLDivElement>
 
@@ -19,10 +19,10 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
     const { setFiltere, ...filtere } = React.useContext(FiltereContext)
 
     return (
-        <div className={clsx('flex gap-6 justify-between flex-wrap', className)} {...rest}>
-            <div className="flex flex-wrap gap-x-8 gap-y-5 items-end">
+        <div className={clsx('flex flex-col gap-6 justify-between', className)} {...rest}>
+            <div className="grid grid-cols-2 ax-md:grid-cols-3 ax-lg:grid-cols-4 ax-xl:flex ax-xl:flex-wrap gap-x-8 gap-y-5 items-end">
                 <FilterCombobox
-                    className="min-w-60"
+                    className="ax-xl:min-w-60"
                     label="Topics"
                     filter="topics"
                     initialOptions={Object.values(Topics)}
@@ -58,10 +58,10 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     updateFrom={(fom: string) => setFiltere({ fom })}
                     updateTo={(tom: string) => setFiltere({ tom })}
                 />
-            </div>
-            <div className="self-end flex gap-2">
-                <LiveButton />
-                <RefreshButton />
+                <HStack align="center" gap="space-8">
+                    <LiveButton />
+                    <RefreshButton />
+                </HStack>
             </div>
         </div>
     )

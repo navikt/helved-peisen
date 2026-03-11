@@ -1,12 +1,12 @@
 'use client'
 
-import React from 'react'
+import { type ReactNode } from 'react'
 import Image from 'next/image'
 import clsx from 'clsx'
 import { usePathname } from 'next/navigation'
-import { HStack, InternalHeader, Link, Spacer } from '@navikt/ds-react'
+import { InternalHeader, Link } from '@navikt/ds-react'
 import { InternalHeaderTitle } from '@navikt/ds-react/InternalHeader'
-import { UserMenu } from '@/components/header/UserMenu.tsx'
+import { UserMenu } from '@/app/UserMenu.tsx'
 
 import logo from '@/public/logo.png'
 
@@ -105,7 +105,7 @@ console.log(
     `color: ${bottom}`
 )
 
-function TabLink({ children, href }: { children: React.ReactNode; href: string }) {
+function TabLink({ children, href }: { children: ReactNode; href: string }) {
     const path = usePathname()
     return (
         <Link
@@ -129,13 +129,16 @@ export function Header() {
                     <span>Peisen</span>
                 </span>
             </InternalHeaderTitle>
-            <HStack>
-                <TabLink href="/kafka">Kafka</TabLink>
-                <TabLink href="/sak">Sak</TabLink>
-                <TabLink href="/avstemming">Avstemming</TabLink>
-                <TabLink href="/stats">Stats</TabLink>
-            </HStack>
-            <Spacer />
+            <div className="relative min-w-0 flex-1">
+                <div className="flex h-full overflow-x-auto [scrollbar-width:none]">
+                    <div className="flex w-max flex-nowrap gap-2">
+                        <TabLink href="/kafka">Kafka</TabLink>
+                        <TabLink href="/sak">Sak</TabLink>
+                        <TabLink href="/avstemming">Avstemming</TabLink>
+                        <TabLink href="/stats">Stats</TabLink>
+                    </div>
+                </div>
+            </div>
             <UserMenu />
         </InternalHeader>
     )

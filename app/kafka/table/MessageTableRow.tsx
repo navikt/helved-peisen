@@ -19,7 +19,7 @@ import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTi
 import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
 import { ResendMessageButton } from './actionMenu/ResendMessageButton'
 import { showToast } from '@/components/Toast'
-import { useUser } from '@/components/UserProvider.tsx'
+import { useUser } from '@/app/UserProvider.tsx'
 import { teamLogger } from '@navikt/next-logger/team-log'
 import { FilterLink } from '@/components/FilterLink'
 import { RemigrateButton } from './actionMenu/RemigrateButton.tsx'

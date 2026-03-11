@@ -7,7 +7,7 @@ import { parse } from 'date-fns/parse'
 import { sub } from 'date-fns/sub'
 import { differenceInSeconds } from 'date-fns'
 import { subDays } from 'date-fns/subDays'
-import { BodyShort, Button, Dropdown, HStack, Select, Tabs, TextField, VStack } from '@navikt/ds-react'
+import { BodyShort, Button, Dropdown, HStack, Select, Spacer, Tabs, TextField, VStack } from '@navikt/ds-react'
 import { DropdownMenu } from '@navikt/ds-react/Dropdown'
 import { TabsList, TabsPanel, TabsTab } from '@navikt/ds-react/Tabs'
 import { ArrowRightIcon, CalendarIcon } from '@navikt/aksel-icons'
@@ -282,8 +282,8 @@ const DateSelectDropdown: React.FC<DateSelectDropdownProps> = ({ time, onSelectT
 
     return (
         <Dropdown>
-            <Button as={Dropdown.Toggle} {...rest}>
-                {capitalize(label)}
+            <Button size="xsmall" as={Dropdown.Toggle} {...rest}>
+                <span className="whitespace-nowrap">{capitalize(label)}</span>
             </Button>
             <DropdownMenu placement="bottom" className="w-125">
                 <Tabs defaultValue={label === 'Nå' ? 'now' : 'relative'} size="small" fill>
@@ -319,7 +319,7 @@ export const DateRangeSelect: FC<Props> = ({ from, to, updateFrom, updateTo }) =
         <div className="flex flex-col gap-2">
             <div className="text-base/(--ax-font-line-height-medium) font-semibold">Tidsrom</div>
             <HStack
-                className="relative max-w-max h-8 flex items-center gap-0 bg-(--ax-bg-input) rounded-lg border border-(--ax-border-neutral) hover:border-(--ax-border-accent)"
+                className="relative  h-8 flex flex-nowrap items-center gap-0 bg-(--ax-bg-input) rounded-lg border border-(--ax-border-neutral) hover:border-(--ax-border-accent)"
                 gap="space-16"
             >
                 <DateSelectDropdown
@@ -335,6 +335,7 @@ export const DateRangeSelect: FC<Props> = ({ from, to, updateFrom, updateTo }) =
                     onSelectTime={updateTo}
                     className="border-none bg-transparent text-inherit h-full py-0 px-3"
                 />
+                <Spacer />
                 <div className="h-full py-0 px-2 flex items-center rounded-l-none">
                     <CalendarIcon fontSize={24} />
                 </div>

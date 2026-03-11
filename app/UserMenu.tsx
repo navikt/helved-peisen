@@ -8,7 +8,7 @@ import {
     DropdownToggle,
 } from '@navikt/ds-react/Dropdown'
 import { LeaveIcon } from '@navikt/aksel-icons'
-import { useUser } from '../UserProvider'
+import { useUser } from '@/app/UserProvider'
 
 export const UserMenu: React.FC = () => {
     const user = useUser()
