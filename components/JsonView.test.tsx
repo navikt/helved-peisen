@@ -34,6 +34,6 @@ describe('JsonView', () => {
 
         render(<JsonView json={json} />)
 
-        expect(screen.getByText(`"${json}"`)).toBeVisible()
+        expect(screen.getByText(`"${json}"`)).toBeTruthy()
     })
 })

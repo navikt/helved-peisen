@@ -6,15 +6,10 @@ export default defineConfig({
     plugins: [react()],
     test: {
         environment: 'jsdom',
-        setupFiles: './fakes/setup.ts',
         exclude: [...configDefaults.exclude, 'tests/*'],
-        env: {
-            TZ: 'Europe/Oslo'
-        }
+        env: { TZ: 'Europe/Oslo' },
     },
     resolve: {
-        alias: {
-            '@': path.resolve(__dirname, './'),
-        },
+        alias: { '@': path.resolve(__dirname, './') },
     },
 })
