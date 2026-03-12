@@ -9,9 +9,9 @@ import { MessagesContext } from './MessagesContext.tsx'
 import { isFailureResponse } from '@/lib/api/types.ts'
 
 export const MessagesView = () => {
-    const { messages } = useContext(MessagesContext)
+    const { loading, messages } = useContext(MessagesContext)
 
-    if (!messages) {
+    if (!messages || loading) {
         return <MessagesTableSkeleton />
     }
 
