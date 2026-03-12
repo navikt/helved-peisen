@@ -24,7 +24,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 24.13.0
+          node-version: 25.8.1
           registry-url: https://npm.pkg.github.com
           cache: 'pnpm'
           cache-dependency-path: pnpm-lock.yaml
