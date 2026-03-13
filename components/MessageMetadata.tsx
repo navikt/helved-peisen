@@ -276,12 +276,12 @@ const StatusMessageMetadata: React.FC<Props> = ({ message }) => {
                         </TableBody>
                         <TableHeader>
                             <TableRow>
-                                <TableHeaderCell>Behandling-ID</TableHeaderCell>
-                                <TableHeaderCell>Fom</TableHeaderCell>
-                                <TableHeaderCell>Tom</TableHeaderCell>
-                                <TableHeaderCell>Beløp</TableHeaderCell>
-                                <TableHeaderCell>Vedtakssats</TableHeaderCell>
-                                <TableHeaderCell>Klassekode</TableHeaderCell>
+                                <TableHeaderCell textSize="small">Behandling-ID</TableHeaderCell>
+                                <TableHeaderCell textSize="small">Fom</TableHeaderCell>
+                                <TableHeaderCell textSize="small">Tom</TableHeaderCell>
+                                <TableHeaderCell textSize="small">Beløp</TableHeaderCell>
+                                <TableHeaderCell textSize="small">Vedtakssats</TableHeaderCell>
+                                <TableHeaderCell textSize="small">Klassekode</TableHeaderCell>
                             </TableRow>
                         </TableHeader>
                     </Table>
