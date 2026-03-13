@@ -1,14 +1,12 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import { Message, RawMessage } from '@/app/kafka/types.ts'
+import React, { useState } from 'react'
+import { Message } from '@/app/kafka/types.ts'
 import { TableDataCell, TableExpandableRow } from '@navikt/ds-react/Table'
-import { ActionMenu, Alert, Button, CopyButton, HStack, Label, Skeleton, VStack } from '@navikt/ds-react'
+import { ActionMenu, Alert, Button } from '@navikt/ds-react'
 import { formatDate } from 'date-fns'
 
 import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
-import { MessageMetadata } from '@/app/kafka/table/MessageMetadata.tsx'
-import { MessageValue } from './MessageValue'
 import { MessageStatus } from '@/components/MessageStatus.tsx'
 import { ActionMenuContent, ActionMenuItem, ActionMenuTrigger } from '@navikt/ds-react/ActionMenu'
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'
@@ -18,14 +16,9 @@ import { AddKvitteringButton } from './actionMenu/AddKvitteringButton'
 import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTilUtbetalingerButton.tsx'
 import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
 import { ResendMessageButton } from './actionMenu/ResendMessageButton'
-import { showToast } from '@/lib/browser/toast.tsx'
-import { useUser } from '@/app/UserProvider.tsx'
-import { teamLogger } from '@navikt/next-logger/team-log'
 import { FilterLink } from '@/components/FilterLink'
 import { RemigrateButton } from './actionMenu/RemigrateButton.tsx'
-import MessageHeaders from '@/app/kafka/table/MessageHeaders.tsx'
-import { fetchRawMessage } from '@/app/kafka/actions.ts'
-import { isSuccessResponse } from '@/lib/api/types.ts'
+import { MessageView } from '@/components/MessageView.tsx'
 
 const formatFagsystem = (fagsystem?: string | null) => {
     if (!fagsystem) {
@@ -59,56 +52,6 @@ const formatFagsystem = (fagsystem?: string | null) => {
 
 type Props = {
     message: Message
-}
-
-export const MessageTableRowContents: React.FC<Props> = ({ message }) => {
-    const [rawMessage, setRawMessage] = useState<(Message & RawMessage) | null>(null)
-    const [loading, setLoading] = useState(true)
-    const user = useUser()
-
-    useEffect(() => {
-        setLoading(true)
-        fetchRawMessage(message)
-            .then((res) => {
-                if (isSuccessResponse(res)) {
-                    setRawMessage({ ...message, ...res.data })
-                } else {
-                    showToast(res.error, { variant: 'error' })
-                }
-            })
-            .catch((e) => {
-                showToast(`Klarte ikke hente melding: ${e.message}`, { variant: 'error' })
-            })
-            .finally(() => {
-                teamLogger.info(
-                    `${user?.name} (${user?.ident}) hentet melding fra topic ${message.topic_name} med partition ${message.partition}, offset ${message.offset}, og key ${message.key}`
-                )
-                setLoading(false)
-            })
-    }, [message, user])
-
-    if (loading) {
-        return <Skeleton width="100%" height="100%" />
-    }
-
-    return (
-        <VStack gap="space-32">
-            {rawMessage && (
-                <>
-                    <VStack gap="space-12">
-                        <Label>Key</Label>
-                        <HStack gap="space-8">
-                            {rawMessage.key}
-                            <CopyButton size="xsmall" copyText={rawMessage.key} />
-                        </HStack>
-                    </VStack>
-                    <MessageHeaders message={message} />
-                    <MessageMetadata message={rawMessage} />
-                    <MessageValue message={rawMessage} />
-                </>
-            )}
-        </VStack>
-    )
 }
 
 const RowContents: React.FC<Props> = ({ message }) => {
@@ -199,7 +142,7 @@ export const MessageTableRow: React.FC<Props> = ({ message }) => {
         <TableExpandableRow
             open={open}
             onOpenChange={toggleOpen}
-            content={didOpen && <MessageTableRowContents message={message} />}
+            content={didOpen && <MessageView message={message} />}
         >
             <RowContents message={message} />
         </TableExpandableRow>

@@ -1,13 +1,14 @@
 'use client'
 
 import { ChangeEvent, useMemo, useState } from 'react'
-import { BodyShort, Box, HStack, Label, Skeleton, Switch, ToggleGroup, VStack } from '@navikt/ds-react'
+import { BodyShort, HStack, Skeleton, Switch, ToggleGroup, VStack } from '@navikt/ds-react'
 import { Message } from '@/app/kafka/types.ts'
 import { useSak } from './SakProvider'
 import { SakTable, SakTableSkeleton } from './table/SakTable'
 import { ToggleGroupItem } from '@navikt/ds-react/ToggleGroup'
 import { keepLatest } from '@/lib/message'
 import { NoMessages } from '@/components/NoMessages'
+import { Card } from '@/components/Card'
 
 const fagsystem = (fagsystem: string) => {
     switch (fagsystem) {
@@ -75,22 +76,15 @@ export const SakView = () => {
     return (
         <VStack gap="space-32">
             <HStack gap="space-24">
-                <Box padding="space-16" background="neutral-soft" borderRadius="8">
-                    <VStack gap="space-12">
-                        <Label>Sak-ID</Label>
-                        <BodyShort>{sak.id}</BodyShort>
-                    </VStack>
-                </Box>
-                <Box padding="space-16" background="neutral-soft" borderRadius="8">
-                    <VStack gap="space-12">
-                        <Label>Fagsystem</Label>
-                        <BodyShort>{fagsystem(sak.fagsystem)}</BodyShort>
-                    </VStack>
-                </Box>
+                <Card label="Sak-ID">
+                    <BodyShort>{sak.id}</BodyShort>
+                </Card>
+                <Card label="Fagsystem">
+                    <BodyShort>{fagsystem(sak.fagsystem)}</BodyShort>
+                </Card>
             </HStack>
             <VStack gap="space-12">
-                <HStack gap="space-16" justify="space-between">
-                    <Label>Hendelser</Label>
+                <HStack gap="space-16" justify="end">
                     <HStack gap="space-16">
                         <ToggleGroup
                             defaultValue="Alle"
@@ -112,14 +106,7 @@ export const SakView = () => {
                         </Switch>
                     </HStack>
                 </HStack>
-                <Box
-                    borderRadius="8"
-                    background="neutral-soft"
-                    padding="space-16"
-                    className="max-w-[100vw] flex overflow-x-auto scrollbar-gutter-stable"
-                >
-                    <SakTable messages={messages} />
-                </Box>
+                <SakTable messages={messages} />
             </VStack>
         </VStack>
     )
@@ -129,22 +116,15 @@ export const SakViewSkeleton = () => {
     return (
         <VStack gap="space-32" className="animate-fade-in">
             <HStack gap="space-24">
-                <Box padding="space-16" background="neutral-soft" borderRadius="8">
-                    <VStack gap="space-12">
-                        <Label>Sak-ID</Label>
-                        <Skeleton width="100%" />
-                    </VStack>
-                </Box>
-                <Box padding="space-16" background="neutral-soft" borderRadius="8">
-                    <VStack gap="space-12">
-                        <Label>Fagsystem</Label>
-                        <Skeleton width="100%" />
-                    </VStack>
-                </Box>
+                <Card label="Sak-ID">
+                    <Skeleton width="100%" />
+                </Card>
+                <Card label="Fagsystem">
+                    <Skeleton width="100%" />
+                </Card>
             </HStack>
             <VStack gap="space-12">
-                <HStack gap="space-16" justify="space-between">
-                    <Label>Hendelser</Label>
+                <HStack gap="space-16" justify="end">
                     <HStack gap="space-16">
                         <ToggleGroup defaultValue="Alle" size="small" onChange={() => null}>
                             <ToggleGroupItem value="alle" label="Alle" />
@@ -153,14 +133,7 @@ export const SakViewSkeleton = () => {
                         <Switch size="small">Skjul duplikater</Switch>
                     </HStack>
                 </HStack>
-                <Box
-                    borderRadius="8"
-                    background="neutral-soft"
-                    padding="space-16"
-                    className="max-w-[100vw] flex overflow-x-auto scrollbar-gutter-stable"
-                >
-                    <SakTableSkeleton />
-                </Box>
+                <SakTableSkeleton />
             </VStack>
         </VStack>
     )

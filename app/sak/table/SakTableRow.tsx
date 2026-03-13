@@ -4,8 +4,6 @@ import { ActionMenu, Button } from '@navikt/ds-react'
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'
 import { TableDataCell, TableExpandableRow } from '@navikt/ds-react/Table'
 import { ActionMenuContent, ActionMenuItem, ActionMenuTrigger } from '@navikt/ds-react/ActionMenu'
-
-import { MessageTableRowContents } from '@/app/kafka/table/MessageTableRow'
 import { TopicNameTag } from '@/app/kafka/table/TopicNameTag'
 import { MessageStatus } from '@/components/MessageStatus'
 import { AddKvitteringButton } from '@/app/kafka/table/actionMenu/AddKvitteringButton.tsx'
@@ -15,6 +13,7 @@ import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/Tombston
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import type { Message } from '@/app/kafka/types.ts'
 import { RemigrateButton } from '@/app/kafka/table/actionMenu/RemigrateButton.tsx'
+import { MessageView } from '@/components/MessageView.tsx'
 
 type Props = {
     message: Message
@@ -36,7 +35,7 @@ export const SakTableRow: React.FC<Props> = ({ message }) => {
             className="transition-[background]"
             open={open}
             onOpenChange={toggleOpen}
-            content={didOpen && <MessageTableRowContents message={message} />}
+            content={didOpen && <MessageView message={message} />}
         >
             <TableDataCell style={{ width: 0 }}>
                 <TopicNameTag message={message} />

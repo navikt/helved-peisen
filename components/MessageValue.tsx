@@ -7,7 +7,7 @@ import { teamLogger } from '@navikt/next-logger/team-log'
 import type { Message, RawMessage } from '@/app/kafka/types.ts'
 import { XMLView } from '@/components/XMLView.tsx'
 import { JsonView } from '@/components/JsonView.tsx'
-import { useUser } from '@/app/UserProvider'
+import { useUser } from '@/app/UserProvider.tsx'
 
 const showMessagePayload = () => {
     const isLocal = window.location.host.includes('localhost')
