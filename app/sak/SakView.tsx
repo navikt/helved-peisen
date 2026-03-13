@@ -9,7 +9,7 @@ import { ToggleGroupItem } from '@navikt/ds-react/ToggleGroup'
 import { keepLatest } from '@/lib/message'
 import { NoMessages } from '@/components/NoMessages'
 import { Card } from '@/components/Card'
-import { SakTimeline } from '@/app/sak/SakTimeline.tsx'
+import { SakTimeline, SakTimelineSkeleton } from '@/app/sak/SakTimeline.tsx'
 
 const fagsystem = (fagsystem: string) => {
     switch (fagsystem) {
@@ -124,6 +124,7 @@ export const SakViewSkeleton = () => {
                     <Skeleton width="100%" />
                 </Card>
             </HStack>
+            <SakTimelineSkeleton />
             <VStack gap="space-12">
                 <HStack gap="space-16" justify="end">
                     <HStack gap="space-16">

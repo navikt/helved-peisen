@@ -1,6 +1,6 @@
 import React from 'react'
 import { Message } from '@/app/kafka/types'
-import { Timeline } from '@navikt/ds-react'
+import { Skeleton, Timeline, VStack } from '@navikt/ds-react'
 import { TimelinePeriod, TimelineRow } from '@navikt/ds-react/Timeline'
 import { endOfDay, format, startOfDay } from 'date-fns'
 
@@ -60,3 +60,28 @@ export const SakTimeline: React.FC<Props> = React.memo(({ messages, onSelect }) 
         </Timeline>
     )
 })
+
+export const SakTimelineSkeleton = () => {
+    return (
+        <VStack className="grid grid-cols-[auto_minmax(0,1fr)] items-center w-full min-w-fit relative">
+            <div className="min-w-50 mr-4">
+                <Skeleton />
+            </div>
+            <div className="my-4 min-h-4">
+                <Skeleton />
+            </div>
+            <div className="min-w-50 mr-4">
+                <Skeleton />
+            </div>
+            <div className="my-4 min-h-4">
+                <Skeleton />
+            </div>
+            <div className="min-w-50 mr-4">
+                <Skeleton />
+            </div>
+            <div className="my-4 min-h-4">
+                <Skeleton />
+            </div>
+        </VStack>
+    )
+}
