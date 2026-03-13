@@ -9,6 +9,7 @@ import { ToggleGroupItem } from '@navikt/ds-react/ToggleGroup'
 import { keepLatest } from '@/lib/message'
 import { NoMessages } from '@/components/NoMessages'
 import { Card } from '@/components/Card'
+import { SakTimeline } from '@/app/sak/SakTimeline.tsx'
 
 const fagsystem = (fagsystem: string) => {
     switch (fagsystem) {
@@ -52,6 +53,7 @@ export const SakView = () => {
     const { sak, isLoading, didSearch } = useSak()
     const [hideDuplicates, setHideDuplicates] = useState(true)
     const [visning, setVisning] = useState<'alle' | 'siste'>('alle')
+    const [active, setActive] = useState<Message[]>([])
 
     const messages = useMemo(() => {
         if (!sak || sak.hendelser.length === 0) return []
@@ -83,30 +85,29 @@ export const SakView = () => {
                     <BodyShort>{fagsystem(sak.fagsystem)}</BodyShort>
                 </Card>
             </HStack>
+            <SakTimeline messages={sak.hendelser} onSelect={setActive} />
             <VStack gap="space-12">
-                <HStack gap="space-16" justify="end">
-                    <HStack gap="space-16">
-                        <ToggleGroup
-                            defaultValue="Alle"
-                            size="small"
-                            onChange={(value: string) => setVisning(value as 'alle' | 'siste')}
-                            value={visning}
-                        >
-                            <ToggleGroupItem value="alle" label="Alle" />
-                            <ToggleGroupItem value="siste" label="Siste" />
-                        </ToggleGroup>
-                        <Switch
-                            size="small"
-                            checked={hideDuplicates}
-                            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                                setHideDuplicates(event.target.checked)
-                            }}
-                        >
-                            Skjul duplikater
-                        </Switch>
-                    </HStack>
+                <HStack justify="end" gap="space-16">
+                    <ToggleGroup
+                        defaultValue="Alle"
+                        size="small"
+                        onChange={(value: string) => setVisning(value as 'alle' | 'siste')}
+                        value={visning}
+                    >
+                        <ToggleGroupItem value="alle" label="Alle" />
+                        <ToggleGroupItem value="siste" label="Siste" />
+                    </ToggleGroup>
+                    <Switch
+                        size="small"
+                        checked={hideDuplicates}
+                        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                            setHideDuplicates(event.target.checked)
+                        }}
+                    >
+                        Skjul duplikater
+                    </Switch>
                 </HStack>
-                <SakTable messages={messages} />
+                <SakTable messages={messages} active={active} />
             </VStack>
         </VStack>
     )

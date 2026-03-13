@@ -14,12 +14,14 @@ import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import type { Message } from '@/app/kafka/types.ts'
 import { RemigrateButton } from '@/app/kafka/table/actionMenu/RemigrateButton.tsx'
 import { MessageView } from '@/components/MessageView.tsx'
+import clsx from 'clsx'
 
 type Props = {
     message: Message
+    active: boolean
 }
 
-export const SakTableRow: React.FC<Props> = ({ message }) => {
+export const SakTableRow: React.FC<Props> = ({ message, active }) => {
     const [open, setOpen] = useState(false)
     const [didOpen, setDidOpen] = useState(false)
 
@@ -32,7 +34,7 @@ export const SakTableRow: React.FC<Props> = ({ message }) => {
 
     return (
         <TableExpandableRow
-            className="transition-[background]"
+            className={clsx('transition-[background]', active && 'not-hover:bg-(--ax-bg-info-soft)')}
             open={open}
             onOpenChange={toggleOpen}
             content={didOpen && <MessageView message={message} />}
