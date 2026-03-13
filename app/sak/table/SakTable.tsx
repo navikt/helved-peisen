@@ -14,10 +14,9 @@ import { SakTableRow } from '@/app/sak/table/SakTableRow.tsx'
 
 type Props = {
     messages: Message[]
-    activeMessage?: Message | null
 }
 
-export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
+export const SakTable: React.FC<Props> = ({ messages }) => {
     return (
         <Table className="overflow-scroll" size="small">
             <TableBody>
@@ -25,7 +24,6 @@ export const SakTable: React.FC<Props> = ({ messages, activeMessage }) => {
                     <SakTableRow
                         key={`${message.key}-${message.topic_name}-${message.partition}-${message.offset}-${index}`}
                         message={message}
-                        active={message === activeMessage}
                     />
                 ))}
             </TableBody>

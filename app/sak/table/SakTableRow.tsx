@@ -1,4 +1,3 @@
-import clsx from 'clsx'
 import { useState } from 'react'
 import { format } from 'date-fns'
 import { ActionMenu, Button } from '@navikt/ds-react'
@@ -19,10 +18,9 @@ import { RemigrateButton } from '@/app/kafka/table/actionMenu/RemigrateButton.ts
 
 type Props = {
     message: Message
-    active: boolean
 }
 
-export const SakTableRow: React.FC<Props> = ({ message, active }) => {
+export const SakTableRow: React.FC<Props> = ({ message }) => {
     const [open, setOpen] = useState(false)
     const [didOpen, setDidOpen] = useState(false)
 
@@ -35,7 +33,7 @@ export const SakTableRow: React.FC<Props> = ({ message, active }) => {
 
     return (
         <TableExpandableRow
-            className={clsx('transition-[background]', active && 'bg-(--ax-bg-neutral-moderate-hoverA)')}
+            className="transition-[background]"
             open={open}
             onOpenChange={toggleOpen}
             content={didOpen && <MessageTableRowContents message={message} />}
