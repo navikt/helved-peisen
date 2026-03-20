@@ -36,6 +36,8 @@ const badgeForMessage = (message: RawMessage) => {
         }
         case 'helved.status.v1': {
             const value = JSON.parse(message.value)
+            if (value.simulering) return 'DRYRUN'
+
             const linjer = value.detaljer?.linjer ?? []
             // TODO: Gir denne falskt positive OPPH?
             const opphør = linjer.some(
