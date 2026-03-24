@@ -114,7 +114,9 @@ export const XMLView: React.FC<Props> = ({ data }) => {
     if (typeof parsedData === 'string') {
         return (
             <>
-                <Alert variant="warning">Klarte ikke parse XML. Viser rå melding nedenfor.</Alert>
+                <Alert variant="error" size="small">
+                    Klarte ikke parse meldingsverdien. Viser rå melding nedenfor.
+                </Alert>
                 <pre className="relative bg-(--ax-bg-sunken) p-4 text-sm text-(--ax-warning-1000)">{parsedData}</pre>
             </>
         )
