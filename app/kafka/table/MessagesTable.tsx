@@ -111,9 +111,9 @@ export const MessagesTable: React.FC<Props> = ({ messages, totalMessages }) => {
                     size="small"
                 >
                     <TableBody>
-                        {messages.map((message) => (
+                        {messages.map((message, i) => (
                             <MessageTableRow
-                                key={`${message.key}-${message.topic_name}-${message.partition}-${message.offset}`}
+                                key={`${message.key}-${message.topic_name}-${message.partition}-${message.offset}-${i}`}
                                 message={message}
                             />
                         ))}

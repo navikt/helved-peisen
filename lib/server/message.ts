@@ -31,8 +31,12 @@ const badgeForMessage = (message: RawMessage) => {
         case 'teamdagpenger.utbetaling.v1':
         case 'tilleggsstonader.utbetaling.v1':
         case 'aap.utbetaling.v1': {
-            const value = JSON.parse(message.value)
-            return value.dryrun ? 'DRYRUN' : null
+            try {
+                const value = JSON.parse(message.value)
+                return value.dryrun ? 'DRYRUN' : null
+            } catch (_) {
+                return null
+            }
         }
         case 'helved.status.v1': {
             const value = JSON.parse(message.value)
