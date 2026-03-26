@@ -55,7 +55,14 @@ const OpphørStatusBadge: React.FC<Props> = ({ message }) => {
     return <Badge>{message.badge}</Badge>
 }
 
+const MigratedBadge: React.FC = () => <Badge>MIGRERT</Badge>
+
 const StatusBadge: React.FC<Props> = ({ message }) => {
+    const isMigrated = message.headers?.some(
+        (header) => header.key === 'migrated' && header.value != null
+    )
+    if (isMigrated) return <MigratedBadge />
+
     switch (message.topic_name) {
         case 'helved.avstemming.v1':
             return <AvstemmingStatusBadge message={message} />
