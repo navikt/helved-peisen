@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server'
-import { requestAzureClientCredentialsToken } from '@navikt/oasis'
+import { getToken, requestAzureOboToken } from '@navikt/oasis'
 import { logger } from '@navikt/next-logger'
 import { requireEnv } from '@/lib/env.ts'
 import type { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
+import { headers } from 'next/headers'
 
 async function fetchToken(scope: string) {
-    const result = await requestAzureClientCredentialsToken(scope)
+    const token = getToken(await headers())
+    if (!token) return
+
+    const result = await requestAzureOboToken(token, scope)
     if (!result.ok) {
         logger.error(`Henting av token feilet: ${result.error.message}`)
         throw Error(`Henting av token feilet: ${result.error.message}`)
@@ -14,8 +18,9 @@ async function fetchToken(scope: string) {
     return result.token
 }
 
-async function getTokenCookie(name: string, scope: string): Promise<ResponseCookie> {
+async function getTokenCookie(name: string, scope: string): Promise<ResponseCookie | undefined> {
     const token = await fetchToken(scope)
+    if (!token) return
     return {
         name,
         value: token,
@@ -28,8 +33,17 @@ async function getTokenCookie(name: string, scope: string): Promise<ResponseCook
 
 export async function setTokens() {
     const response = NextResponse.next()
-    response.cookies.set(await getTokenCookie('api-token', requireEnv('API_SCOPE')))
-    response.cookies.set(await getTokenCookie('utsjekk-api-token', requireEnv('UTSJEKK_API_SCOPE')))
-    response.cookies.set(await getTokenCookie('vedskiva-api-token', requireEnv('VEDSKIVA_API_SCOPE')))
+    const apiToken = await getTokenCookie('api-token', requireEnv('API_SCOPE'))
+    const utsjekkToken = await getTokenCookie('utsjekk-api-token', requireEnv('UTSJEKK_API_SCOPE'))
+    const vedskivaToken = await getTokenCookie('vedskiva-api-token', requireEnv('VEDSKIVA_API_SCOPE'))
+    if (!!apiToken) {
+        response.cookies.set(apiToken)
+    }
+    if (!!utsjekkToken) {
+        response.cookies.set(utsjekkToken)
+    }
+    if (!!vedskivaToken) {
+        response.cookies.set(vedskivaToken)
+    }
     return response
 }
