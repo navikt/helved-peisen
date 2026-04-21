@@ -6,7 +6,7 @@ import { MessagesContext } from './MessagesContext.tsx'
 export const RefreshButton = () => {
     const { loading, fetchMessages } = useContext(MessagesContext)
     return (
-        <Button size="small" variant={loading ? 'secondary' : 'secondary-neutral'} onClick={fetchMessages}>
+        <Button size="small" variant={loading ? 'secondary' : 'secondary-neutral'} onClick={() => fetchMessages()}>
             {loading ? <Loader size="xsmall" /> : <ArrowsCirclepathIcon />}
         </Button>
     )
