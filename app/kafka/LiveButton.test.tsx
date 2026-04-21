@@ -4,7 +4,7 @@ import { LiveButton } from './LiveButton'
 import { MessagesContext } from './MessagesContext.tsx'
 import { type PropsWithChildren } from 'react'
 
-const FakeMessagesContextProvider: React.FC<PropsWithChildren & { onFetchMessages: () => void }> = ({
+const FakeMessagesContextProvider: React.FC<PropsWithChildren & { onFetchMessages: () => Promise<void> }> = ({
     children,
     onFetchMessages,
 }) => {
@@ -28,7 +28,11 @@ describe('LiveButton', () => {
         let fetches = 0
 
         render(
-            <FakeMessagesContextProvider onFetchMessages={() => (fetches = fetches + 1)}>
+            <FakeMessagesContextProvider
+                onFetchMessages={async () => {
+                    fetches = fetches + 1
+                }}
+            >
                 <LiveButton />
             </FakeMessagesContextProvider>
         )

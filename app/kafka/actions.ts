@@ -4,36 +4,7 @@ import type { Message, RawMessage } from '@/app/kafka/types.ts'
 import { Routes } from '@/lib/api/routes.ts'
 import { getApiTokenFromCookie } from '@/lib/server/auth.ts'
 import { unauthorized } from 'next/navigation'
-import { ApiResponse, PaginatedResponse } from '@/lib/api/types'
-import { sanitizeKey, toMessage } from '@/lib/server/message.ts'
-
-export async function getMessages(params: Record<string, string>): Promise<ApiResponse<PaginatedResponse<Message>>> {
-    const apiToken = await getApiTokenFromCookie()
-    if (!apiToken) return unauthorized()
-
-    const searchParams = new URLSearchParams(params)
-
-    const response = await fetch(`${Routes.messages}?${searchParams.toString()}`, {
-        headers: { Authorization: `Bearer ${apiToken}` },
-    })
-
-    if (!response.ok) {
-        return {
-            data: null,
-            error: `Klarte ikke hente meldinger, backend svarte med ${response.status} - ${response.statusText}`,
-        }
-    }
-
-    const page = await response.json()
-
-    return {
-        data: {
-            items: page.items.map(toMessage).map(sanitizeKey),
-            total: page.total,
-        },
-        error: null,
-    }
-}
+import { ApiResponse } from '@/lib/api/types'
 
 export async function fetchRawMessage(message: Message): Promise<ApiResponse<RawMessage>> {
     const apiToken = await getApiTokenFromCookie()
