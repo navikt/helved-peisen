@@ -36,6 +36,10 @@ export async function setTokens() {
     const apiToken = await getTokenCookie('api-token', requireEnv('API_SCOPE'))
     const utsjekkToken = await getTokenCookie('utsjekk-api-token', requireEnv('UTSJEKK_API_SCOPE'))
     const vedskivaToken = await getTokenCookie('vedskiva-api-token', requireEnv('VEDSKIVA_API_SCOPE'))
+    const speiderhyttaScope = process.env.SPEIDERHYTTA_API_SCOPE
+    const speiderhyttaToken = speiderhyttaScope
+        ? await getTokenCookie('speiderhytta-api-token', speiderhyttaScope)
+        : undefined
     if (!!apiToken) {
         response.cookies.set(apiToken)
     }
@@ -44,6 +48,9 @@ export async function setTokens() {
     }
     if (!!vedskivaToken) {
         response.cookies.set(vedskivaToken)
+    }
+    if (!!speiderhyttaToken) {
+        response.cookies.set(speiderhyttaToken)
     }
     return response
 }

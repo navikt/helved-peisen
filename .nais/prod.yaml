@@ -44,6 +44,7 @@ spec:
         - application: utsjekk
         - application: peisschtappern
         - application: vedskiva
+        - application: speiderhytta
         - application: logging
           namespace: nais-system
   env:
@@ -61,6 +62,10 @@ spec:
       value: "api://prod-gcp.helved.vedskiva/.default"
     - name: VEDSKIVA_BASE_URL
       value: "http://vedskiva"
+    - name: SPEIDERHYTTA_API_SCOPE
+      value: "api://prod-gcp.helved.speiderhytta/.default"
+    - name: SPEIDERHYTTA_BASE_URL
+      value: "http://speiderhytta"
   liveness:
     path: /internal/is-alive
     initialDelay: 10

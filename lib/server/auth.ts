@@ -29,3 +29,5 @@ export const getApiTokenFromCookie = async () => (await cookies()).get('api-toke
 export const getUtsjekkApiTokenFromCookie = async () => (await cookies()).get('utsjekk-api-token')?.value
 
 export const getVedskivaApiTokenFromCookie = async () => (await cookies()).get('vedskiva-api-token')?.value
+
+export const getSpeiderhyttaApiTokenFromCookie = async () => (await cookies()).get('speiderhytta-api-token')?.value
