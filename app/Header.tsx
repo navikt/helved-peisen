@@ -136,6 +136,7 @@ export function Header() {
                         <TabLink href="/sak">Sak</TabLink>
                         <TabLink href="/avstemming">Avstemming</TabLink>
                         <TabLink href="/stats">Stats</TabLink>
+                        <TabLink href="/slo">SLO</TabLink>
                     </div>
                 </div>
             </div>
