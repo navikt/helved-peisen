@@ -21,6 +21,7 @@ export async function proxy(req: NextRequest): Promise<NextResponse> {
         req.cookies.get('api-token'),
         req.cookies.get('utsjekk-api-token'),
         req.cookies.get('vedskiva-api-token'),
+        req.cookies.get('speiderhytta-api-token')
     ]
 
     if (!tokens.every((it) => !!it && !isExpired(it.value))) {
