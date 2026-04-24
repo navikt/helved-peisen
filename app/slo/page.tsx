@@ -74,7 +74,7 @@ export default async function SLOPage() {
                         <TableHeaderCell>Lead time median seconds</TableHeaderCell>
                         <TableHeaderCell>Lead time P90 seconds</TableHeaderCell>
                         <TableHeaderCell>Change failure rate</TableHeaderCell>
-                        <TableHeaderCell>MTTR median seconds</TableHeaderCell>
+                        <TableHeaderCell>Mean Time to Repair seconds</TableHeaderCell>
                         <TableHeaderCell>Deploy count</TableHeaderCell>
                         <TableHeaderCell>Incident count</TableHeaderCell>
                     </TableRow>
