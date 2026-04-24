@@ -6,12 +6,13 @@ import { logger } from '@navikt/next-logger'
 import { getSpeiderhyttaApiTokenFromCookie } from '@/lib/server/auth.ts'
 import { Routes } from '@/lib/api/routes.ts'
 import { ApiResponse } from '@/lib/api/types.ts'
+import { DoraResponse } from './types'
 
 export async function isSpeiderhyttaAvailable(): Promise<boolean> {
     return !!process.env.SPEIDERHYTTA_BASE_URL
 }
 
-async function speiderhyttaFetch(url: string, label: string): Promise<ApiResponse<unknown>> {
+async function speiderhyttaFetch(url: string, label: string): Promise<ApiResponse<DoraResponse[]>> {
     if (!process.env.SPEIDERHYTTA_BASE_URL) {
         return {
             data: null,
