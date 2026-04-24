@@ -2,7 +2,13 @@ import { Alert, Heading, Table, VStack } from '@navikt/ds-react'
 import { isSuccessResponse } from '@/lib/api/types.ts'
 import { TableBody, TableDataCell, TableHeader, TableHeaderCell, TableRow } from '@navikt/ds-react/Table'
 import { format } from 'date-fns'
-import { fetchDoraAll, isSpeiderhyttaAvailable } from '@/app/slo/actions.ts'
+import {
+    fetchDoraAll,
+    fetchDoraApp,
+    fetchDoraDeployments,
+    fetchDoraIncidents,
+    isSpeiderhyttaAvailable,
+} from '@/app/slo/actions.ts'
 import { checkToken } from '@/lib/server/auth.ts'
 
 export default async function SLOPage() {
@@ -26,6 +32,18 @@ export default async function SLOPage() {
 
     const start = doraRes.data[0]?.window.from
     const end = doraRes.data[0]?.window.to
+
+    const apps = doraRes.data.map((d) => d.app)
+    const detailedResults = await Promise.all(
+        apps.map(async (app) => {
+            const [appRes, deploymentsRes, incidentsRes] = await Promise.all([
+                fetchDoraApp(app),
+                fetchDoraDeployments(app),
+                fetchDoraIncidents(app),
+            ])
+            return { app, appRes, deploymentsRes, incidentsRes }
+        })
+    )
 
     return (
         <VStack gap="space-12" className="p-4">
@@ -62,6 +80,35 @@ export default async function SLOPage() {
                     </TableRow>
                 </TableHeader>
             </Table>
+            {detailedResults.map(({ app, appRes, deploymentsRes, incidentsRes }) => (
+                <VStack key={app} gap="space-8">
+                    <Heading level="2" size="medium">
+                        {app}
+                    </Heading>
+                    <Heading level="3" size="small">
+                        /dora/{app}
+                    </Heading>
+                    <pre className="overflow-auto rounded bg-gray-100 p-2 text-xs">
+                        {isSuccessResponse(appRes) ? JSON.stringify(appRes.data, null, 2) : appRes.error}
+                    </pre>
+                    <Heading level="3" size="small">
+                        /dora/{app}/deployments
+                    </Heading>
+                    <pre className="overflow-auto rounded bg-gray-100 p-2 text-xs">
+                        {isSuccessResponse(deploymentsRes)
+                            ? JSON.stringify(deploymentsRes.data, null, 2)
+                            : deploymentsRes.error}
+                    </pre>
+                    <Heading level="3" size="small">
+                        /dora/{app}/incidents
+                    </Heading>
+                    <pre className="overflow-auto rounded bg-gray-100 p-2 text-xs">
+                        {isSuccessResponse(incidentsRes)
+                            ? JSON.stringify(incidentsRes.data, null, 2)
+                            : incidentsRes.error}
+                    </pre>
+                </VStack>
+            ))}
         </VStack>
     )
 }
