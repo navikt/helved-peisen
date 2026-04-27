@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Message, RawMessage } from '@/app/kafka/types'
 import { useUser } from '@/app/UserProvider'
-import { fetchRawMessage } from '@/app/kafka/actions'
-import { isSuccessResponse } from '@/lib/api/types.ts'
+import { ApiResponse, isSuccessResponse } from '@/lib/api/types.ts'
 import { showToast } from '@/lib/browser/toast.tsx'
 import { teamLogger } from '@navikt/next-logger/team-log'
 import { CopyButton, HStack, Skeleton, VStack } from '@navikt/ds-react'
@@ -22,7 +21,11 @@ export const MessageView: React.FC<Props> = ({ message }) => {
 
     useEffect(() => {
         setLoading(true)
-        fetchRawMessage(message)
+        fetch(`/api/messages/${message.topic_name}/${message.partition}/${message.offset}`)
+            .then(async (response) => {
+                const res = await response.json()
+                return res as ApiResponse<Message>
+            })
             .then((res) => {
                 if (isSuccessResponse(res)) {
                     setRawMessage({ ...message, ...res.data })
