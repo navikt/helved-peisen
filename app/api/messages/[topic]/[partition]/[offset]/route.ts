@@ -8,7 +8,7 @@ type PathParams = {
     offset: string
 }
 
-export async function GET(_: NextRequest, { params }: { params: PathParams }) {
+export async function GET(_: NextRequest, { params }: { params: Promise<PathParams> }) {
     const apiToken = await getApiTokenFromCookie()
     if (!apiToken) {
         return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
