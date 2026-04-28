@@ -1,19 +1,14 @@
-import { BodyShort, Heading, VStack } from '@navikt/ds-react'
+'use client'
+
+import { Heading, VStack, DatePicker, useRangeDatepicker } from '@navikt/ds-react'
 import StatCard from '@/app/slo/stat-card.tsx'
-import { format } from 'date-fns'
+import { subDays } from 'date-fns'
 
 export type DoraTotals = {
     activeApps: number
     totalDeploys: number
     totalIncidents: number
     avgLead: number | null
-}
-
-function formatDate(value?: string): string {
-    if (!value) {
-        return '-'
-    }
-    return format(new Date(value), 'yyyy-MM-dd, HH:mm:ss')
 }
 
 export function formatDuration(seconds: number): string {
@@ -42,15 +37,26 @@ export default function DoraSummary({
     appCount: number
     totals: DoraTotals
 }) {
+    const today = new Date()
+    const defaultFrom = windowFrom ? new Date(windowFrom) : subDays(today, 30)
+    const defaultTo = windowTo ? new Date(windowTo) : today
+
+    const { datepickerProps, toInputProps, fromInputProps } = useRangeDatepicker({
+        defaultSelected: { from: defaultFrom, to: defaultTo },
+    })
+
     return (
         <VStack gap="space-16" className="mb-8">
-            <header>
+            <header className="mb-8">
                 <Heading level="2" size="large" spacing>
                     DORA Metrics
                 </Heading>
-                <BodyShort size="small">
-                    {formatDate(windowFrom)} {'\u2192'} {formatDate(windowTo)} · 30-day window
-                </BodyShort>
+                <DatePicker {...datepickerProps}>
+                    <div className="flex gap-4">
+                        <DatePicker.Input {...fromInputProps} label="Fra" size="small" />
+                        <DatePicker.Input {...toInputProps} label="Til" size="small" />
+                    </div>
+                </DatePicker>
             </header>
             <section className="grid grid-cols-2 gap-4 sm:grid-cols-4">
                 <StatCard label="Apps tracked" value={String(appCount)} hint={`${totals.activeApps} active`} />
