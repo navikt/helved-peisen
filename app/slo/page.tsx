@@ -44,15 +44,11 @@ export default async function SLOPage() {
         return <Alert variant="error">{doraRes.error}</Alert>
     }
 
-    const windowFrom = doraRes.data[0]?.window.from
-    const windowTo = doraRes.data[0]?.window.to
     const totals = calculateTotals(doraRes.data)
 
     return (
         <VStack gap="space-12" className="p-4">
             <DoraSummary
-                windowFrom={windowFrom}
-                windowTo={windowTo}
                 appCount={doraRes.data.length}
                 totals={totals}
             />
