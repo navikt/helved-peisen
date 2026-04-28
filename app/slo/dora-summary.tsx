@@ -35,7 +35,7 @@ export default function DoraSummary({
 }) {
     return (
         <VStack gap="space-16" className="mb-8">
-            <header className="mb-8">
+            <header>
                 <Heading level="2" size="large" spacing>
                     DORA Metrics
                 </Heading>

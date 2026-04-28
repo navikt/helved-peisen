@@ -1,3 +1,19 @@
+export type DeploymentOutcome = 'success' | 'failure' | 'cancelled'
+
+export type Deployment = {
+    id: number
+    app: string
+    sha: string
+    env: string
+    commitTs: string
+    deployStartedTs: string
+    deployFinishedTs: string
+    leadTimeSeconds: number
+    outcome: DeploymentOutcome
+    runId: number
+    runUrl: string | null
+}
+
 export type DoraResponse = {
     app: string
     window: {
