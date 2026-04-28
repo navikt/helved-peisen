@@ -6,7 +6,7 @@ import { logger } from '@navikt/next-logger'
 import { getSpeiderhyttaApiTokenFromCookie } from '@/lib/server/auth.ts'
 import { Routes } from '@/lib/api/routes.ts'
 import { ApiResponse } from '@/lib/api/types.ts'
-import { DoraResponse } from './types'
+import { Deployment, DoraResponse } from './types'
 
 export async function isSpeiderhyttaAvailable(): Promise<boolean> {
     return !!process.env.SPEIDERHYTTA_BASE_URL
@@ -43,11 +43,11 @@ export async function fetchDoraAll(): Promise<ApiResponse<DoraResponse[]>> {
     return speiderhyttaFetch<DoraResponse[]>(Routes.dora, 'DORA-metrikker')
 }
 
-export async function fetchDoraApplication(app: string, window?: string) {
+export async function fetchDoraApplication(app: string, window?: string): Promise<ApiResponse<DoraResponse>> {
     return speiderhyttaFetch(Routes.doraApp(app, window), `DORA-metrikker for ${app}`)
 }
 
-export async function fetchDoraDeployments(app: string, limit: number = 50) {
+export async function fetchDoraDeployments(app: string, limit: number = 50): Promise<ApiResponse<Deployment[]>> {
     return speiderhyttaFetch(Routes.doraDeployments(app, limit), `deploys for ${app}`)
 }
 
