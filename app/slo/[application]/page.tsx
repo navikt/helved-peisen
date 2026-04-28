@@ -14,7 +14,7 @@ type PathParams = {
     application: string
 }
 
-export default async function SLOapplicationPage({ params }: { params: Promise<PathParams> }) {
+export default async function SLOApplicationPage({ params }: { params: Promise<PathParams> }) {
     await checkToken()
     const { application } = await params
 

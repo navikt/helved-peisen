@@ -43,7 +43,7 @@ export async function fetchDoraAll(): Promise<ApiResponse<DoraResponse[]>> {
     return speiderhyttaFetch<DoraResponse[]>(Routes.dora, 'DORA-metrikker')
 }
 
-export async function fetchDoraApp(app: string, window?: string) {
+export async function fetchDoraApplication(app: string, window?: string) {
     return speiderhyttaFetch(Routes.doraApp(app, window), `DORA-metrikker for ${app}`)
 }
 
