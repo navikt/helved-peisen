@@ -14,6 +14,18 @@ export type Deployment = {
     runUrl: string | null
 }
 
+export type Incident = {
+    id: number | null
+    githubIssue: number
+    app: string
+    title: string
+    openedAt: string
+    resolvedAt: string | null
+    mttrSeconds: number | null
+    causedBySha: string | null
+    causedByDeploymentId: number | null
+}
+
 export type DoraResponse = {
     app: string
     window: {

@@ -10,6 +10,7 @@ import {
 import { checkToken } from '@/lib/server/auth.ts'
 import { ArrowLeftIcon } from '@navikt/aksel-icons'
 import DeploymentsTable from '@/app/slo/[application]/deployments-table.tsx'
+import IncidentsTable from '@/app/slo/[application]/incidents-table.tsx'
 
 type PathParams = {
     application: string
@@ -66,13 +67,13 @@ export default async function SLOApplicationPage({ params }: { params: Promise<P
 
             <VStack gap="space-8">
                 <Heading level="2" size="small">
-                    /dora/{application}/incidents
+                    Incidents
                 </Heading>
-                <pre className="overflow-auto rounded bg-gray-100 p-2 text-xs">
-                    {isSuccessResponse(incidentsRes)
-                        ? JSON.stringify(incidentsRes.data, null, 2)
-                        : incidentsRes.error}
-                </pre>
+                {isSuccessResponse(incidentsRes) ? (
+                    <IncidentsTable rows={incidentsRes.data} repo="navikt/helved-utbetaling" />
+                ) : (
+                    <Alert variant="error">{incidentsRes.error}</Alert>
+                )}
             </VStack>
         </VStack>
     )
