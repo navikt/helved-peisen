@@ -12,7 +12,7 @@ export async function isSpeiderhyttaAvailable(): Promise<boolean> {
     return !!process.env.SPEIDERHYTTA_BASE_URL
 }
 
-async function speiderhyttaFetch(url: string, label: string): Promise<ApiResponse<DoraResponse[]>> {
+async function speiderhyttaFetch<T>(url: string, label: string): Promise<ApiResponse<T>> {
     if (!process.env.SPEIDERHYTTA_BASE_URL) {
         return {
             data: null,
@@ -39,8 +39,8 @@ async function speiderhyttaFetch(url: string, label: string): Promise<ApiRespons
     return { data: await res.json(), error: null }
 }
 
-export async function fetchDoraAll() {
-    return speiderhyttaFetch(Routes.dora, 'DORA-metrikker')
+export async function fetchDoraAll(): Promise<ApiResponse<DoraResponse[]>> {
+    return speiderhyttaFetch<DoraResponse[]>(Routes.dora, 'DORA-metrikker')
 }
 
 export async function fetchDoraApp(app: string, window?: string) {
