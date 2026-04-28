@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Table } from '@navikt/ds-react'
+import { Table, Link } from '@navikt/ds-react'
 import {
     TableBody,
     TableColumnHeader,
@@ -109,7 +109,9 @@ export default function DoraTable({ rows }: Props) {
             <TableBody>
                 {sortedRows.map((dora) => (
                     <TableRow key={dora.app}>
-                        <TableDataCell>{dora.app}</TableDataCell>
+                        <TableDataCell>
+                            <Link href={`/slo/${dora.app}`}>{dora.app}</Link>
+                        </TableDataCell>
                         <LevelCell level={deployFrequencyLevel(dora.deployFrequencyPerDay)}>
                             {formatDeployFrequencyPerDay(dora.deployFrequencyPerDay)}
                         </LevelCell>
