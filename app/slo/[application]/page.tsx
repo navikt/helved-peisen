@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Alert, Heading, HStack, VStack } from '@navikt/ds-react'
+import { Alert, Heading, HStack, Link as DsLink, VStack } from '@navikt/ds-react'
 import { isSuccessResponse } from '@/lib/api/types.ts'
 import {
     fetchDoraApplication,
@@ -19,6 +19,8 @@ type PathParams = {
 export default async function SLOApplicationPage({ params }: { params: Promise<PathParams> }) {
     await checkToken()
     const { application } = await params
+
+    const grafanaApmUrl = `https://grafana.nav.cloud.nais.io/a/nais-apm-app/services/helved/${application}?namespace=helved&sort=errorRate&dir=desc&environment=prod`
 
     if (!(await isSpeiderhyttaAvailable())) {
         return (
@@ -44,6 +46,25 @@ export default async function SLOApplicationPage({ params }: { params: Promise<P
             <Heading level="1" size="large">
                 {application}
             </Heading>
+
+            <VStack gap="space-8">
+                <Heading level="2" size="medium">
+                    APM (Grafana)
+                </Heading>
+                <Alert variant="info" size="small">
+                    Grafana krever innlogging og blokkerer som regel iframe-embed (X-Frame-Options).
+                    Hvis dashboardet under er tomt, åpne det direkte:{' '}
+                    <DsLink href={grafanaApmUrl} target="_blank" rel="noreferrer">
+                        Åpne i Grafana
+                    </DsLink>
+                </Alert>
+                <iframe
+                    src={`${grafanaApmUrl}&kiosk=true`}
+                    title={`NAIS APM – ${application}`}
+                    className="h-[800px] w-full rounded border border-ax-border-neutral-subtle"
+                    referrerPolicy="no-referrer-when-downgrade"
+                />
+            </VStack>
 
             <VStack gap="space-8">
                 <Heading level="2" size="small">
