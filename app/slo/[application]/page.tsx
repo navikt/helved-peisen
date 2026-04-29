@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Alert, Heading, HStack, Link as DsLink, VStack } from '@navikt/ds-react'
+import { Alert, Heading, HStack, VStack } from '@navikt/ds-react'
 import { isSuccessResponse } from '@/lib/api/types.ts'
 import {
     fetchDoraApplication,
@@ -48,16 +48,13 @@ export default async function SLOApplicationPage({ params }: { params: Promise<P
             </Heading>
 
             <VStack gap="space-8">
-                <Heading level="2" size="medium">
-                    APM (Grafana)
-                </Heading>
-                <Alert variant="info" size="small">
+                { /*<Alert variant="info" size="small">
                     Grafana krever innlogging og blokkerer som regel iframe-embed (X-Frame-Options).
                     Hvis dashboardet under er tomt, åpne det direkte:{' '}
                     <DsLink href={grafanaApmUrl} target="_blank" rel="noreferrer">
                         Åpne i Grafana
                     </DsLink>
-                </Alert>
+                </Alert> */}
                 <iframe
                     src={`${grafanaApmUrl}&kiosk=true`}
                     title={`NAIS APM – ${application}`}
