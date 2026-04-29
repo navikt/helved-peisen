@@ -43,9 +43,6 @@ export default async function SLOApplicationPage({ params }: { params: Promise<P
             <Link href="/slo" className="text-ax-text-link">
                 <HStack><ArrowLeftIcon title="a11y-title" fontSize="1.5rem" /> Tilbake til SLO</HStack>
             </Link>
-            <Heading level="1" size="large">
-                {application}
-            </Heading>
 
             <VStack gap="space-8">
                 { /*<Alert variant="info" size="small">
