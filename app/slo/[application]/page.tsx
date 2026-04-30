@@ -45,29 +45,9 @@ export default async function SLOApplicationPage({ params }: { params: Promise<P
             <Link href="/slo" className="text-ax-text-link">
                 <HStack><ArrowLeftIcon title="a11y-title" fontSize="1.5rem" /> Tilbake til SLO</HStack>
             </Link>
-
-            <VStack gap="space-8">
-                <Alert variant="info" size="small" className="mb-4">
-                    <BodyShort size="small">
-                        Hvis dashboardet ikke laster,{' '}
-                        <Link href={grafanaApmUrl} target="_blank" rel="noopener noreferrer">
-                            åpne i Grafana
-                        </Link>{' '}
-                        og last siden på nytt.
-                    </BodyShort>
-                </Alert>
-
-                <iframe
-                    src={`${grafanaApmUrl}&kiosk=true`}
-                    title={`NAIS APM – ${application}`}
-                    className="h-[800px] w-full rounded border border-ax-border-neutral-subtle"
-                    referrerPolicy="no-referrer-when-downgrade"
-                />
-            </VStack>
-
-            <VStack gap="space-8">
+            <VStack gap="space-8" className="mb-16">
                 <Heading level="2" size="small">
-                    DORA-metrikker
+                    DORA
                 </Heading>
                 {isSuccessResponse(applicationRes) ? (
                     <section className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
@@ -112,7 +92,26 @@ export default async function SLOApplicationPage({ params }: { params: Promise<P
                 )}
             </VStack>
 
-            <VStack gap="space-8">
+            <VStack gap="space-8" className="mb-16">
+                <Alert variant="info" size="small" className="mb-4">
+                    <BodyShort size="small">
+                        Hvis dashboardet ikke laster,{' '}
+                        <Link href={grafanaApmUrl} target="_blank" rel="noopener noreferrer">
+                            åpne i Grafana
+                        </Link>{' '}
+                        og last siden på nytt.
+                    </BodyShort>
+                </Alert>
+
+                <iframe
+                    src={`${grafanaApmUrl}&kiosk=true`}
+                    title={`NAIS APM – ${application}`}
+                    className="h-[800px] w-full rounded border border-ax-border-neutral-subtle"
+                    referrerPolicy="no-referrer-when-downgrade"
+                />
+            </VStack>
+
+            <VStack gap="space-8" className="mb-16">
                 <Heading level="2" size="small">
                     Deployments
                 </Heading>
