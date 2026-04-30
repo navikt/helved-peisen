@@ -11,7 +11,7 @@ import {
 } from '@navikt/ds-react/Table'
 import { format } from 'date-fns'
 import type { Incident } from '@/app/slo/types.ts'
-import { formatDuration } from '@/app/slo/dora-summary.tsx'
+import { formatDuration, formatMetric } from '@/app/slo/dora-summary.tsx'
 
 type SortKey = 'openedAt' | 'resolvedAt' | 'mttrSeconds' | 'title'
 type SortDirection = 'ascending' | 'descending'
@@ -81,7 +81,7 @@ export default function IncidentsTable({ rows, repo }: Props) {
                                 {incident.resolvedAt ? formatTs(incident.resolvedAt) : '—'}
                             </TableDataCell>
                             <TableDataCell>
-                                {incident.mttrSeconds === null ? '—' : formatDuration(incident.mttrSeconds)}
+                                {formatMetric(incident.mttrSeconds, formatDuration)}
                             </TableDataCell>
                             <TableDataCell>{incident.title}</TableDataCell>
                             <TableDataCell>

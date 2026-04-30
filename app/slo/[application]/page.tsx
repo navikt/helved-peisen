@@ -11,6 +11,8 @@ import { checkToken } from '@/lib/server/auth.ts'
 import { ArrowLeftIcon } from '@navikt/aksel-icons'
 import DeploymentsTable from '@/app/slo/[application]/deployments-table.tsx'
 import IncidentsTable from '@/app/slo/[application]/incidents-table.tsx'
+import StatCard from '@/app/slo/stat-card.tsx'
+import { formatDuration, formatMetric } from '@/app/slo/dora-summary.tsx'
 
 type PathParams = {
     application: string
@@ -37,6 +39,8 @@ export default async function SLOApplicationPage({ params }: { params: Promise<P
         fetchDoraDeployments(application),
         fetchDoraIncidents(application),
     ])
+
+    const dora = isSuccessResponse(applicationRes) ? applicationRes.data : null
 
     return (
         <VStack gap="space-12" className="p-4">
@@ -65,11 +69,49 @@ export default async function SLOApplicationPage({ params }: { params: Promise<P
 
             <VStack gap="space-8">
                 <Heading level="2" size="small">
-                    /dora/{application}
+                    DORA-metrikker
                 </Heading>
-                <pre className="overflow-auto rounded bg-gray-100 p-2 text-xs">
-                    {isSuccessResponse(applicationRes) ? JSON.stringify(applicationRes.data, null, 2) : applicationRes.error}
-                </pre>
+                {isSuccessResponse(applicationRes) ? (
+                    <section className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+                        <StatCard
+                            label="Deploy freq."
+                            value={formatMetric(applicationRes.data.deployFrequencyPerDay, (v) => v.toFixed(2), '/day')}
+                            hint="last 30 days"
+                        />
+                        <StatCard
+                            label="Lead time (median)"
+                            value={formatMetric(applicationRes.data.leadTimeMedianSeconds, formatDuration)}
+                            hint="commit → deploy"
+                        />
+                        <StatCard
+                            label="Lead time (P90)"
+                            value={formatMetric(applicationRes.data.leadTimeP90Seconds, formatDuration)}
+                            hint="commit → deploy"
+                        />
+                        <StatCard
+                            label="Change failure"
+                            value={formatMetric(applicationRes.data.changeFailureRate, (v) => (v * 100).toFixed(1), '%')}
+                            hint="failed deploys"
+                        />
+                        <StatCard
+                            label="MTTR"
+                            value={formatMetric(applicationRes.data.mttrMedianSeconds, formatDuration)}
+                            hint="median recovery"
+                        />
+                        <StatCard
+                            label="Deployments"
+                            value={formatMetric(applicationRes.data.deploymentCount)}
+                            hint="last 30 days"
+                        />
+                        <StatCard
+                            label="Incidents"
+                            value={formatMetric(applicationRes.data.incidentCount)}
+                            hint="last 30 days"
+                        />
+                    </section>
+                ) : (
+                    <Alert variant="error">{applicationRes.error}</Alert>
+                )}
             </VStack>
 
             <VStack gap="space-8">

@@ -10,6 +10,14 @@ export type DoraTotals = {
     avgLead: number | null
 }
 
+export function formatMetric<T>(
+    value: T | null,
+    formatter: (v: T) => string = (v) => String(v),
+    suffix = ''
+): string {
+    return value === null ? '—' : `${formatter(value)}${suffix}`
+}
+
 export function formatDuration(seconds: number): string {
     if (seconds < 60) {
         return `${Math.round(seconds)}s`
@@ -46,7 +54,7 @@ export default function DoraSummary({
                 <StatCard label="Incidents" value={String(totals.totalIncidents)} hint="last 30 days" />
                 <StatCard
                     label="Avg. lead time"
-                    value={totals.avgLead === null ? '—' : formatDuration(totals.avgLead)}
+                    value={formatMetric(totals.avgLead, formatDuration)}
                     hint="median across apps"
                 />
             </section>
