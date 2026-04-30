@@ -40,8 +40,6 @@ export default async function SLOApplicationPage({ params }: { params: Promise<P
         fetchDoraIncidents(application),
     ])
 
-    const dora = isSuccessResponse(applicationRes) ? applicationRes.data : null
-
     return (
         <VStack gap="space-12" className="p-4">
             <Link href="/slo" className="text-ax-text-link">
