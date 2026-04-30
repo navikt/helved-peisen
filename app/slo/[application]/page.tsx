@@ -45,13 +45,13 @@ export default async function SLOApplicationPage({ params }: { params: Promise<P
             </Link>
 
             <VStack gap="space-8">
-                { /*<Alert variant="info" size="small">
-                    Grafana krever innlogging og blokkerer som regel iframe-embed (X-Frame-Options).
-                    Hvis dashboardet under er tomt, åpne det direkte:{' '}
-                    <DsLink href={grafanaApmUrl} target="_blank" rel="noreferrer">
+                <Alert variant="info" size="small" className="mb-8">
+                    Grafana krever innlogging,{' '}
+                    <Link href={grafanaApmUrl} target="_blank" rel="noreferrer">
                         Åpne i Grafana
-                    </DsLink>
-                </Alert> */}
+                    </Link>
+                    og last siden på nytt.
+                </Alert>
                 <iframe
                     src={`${grafanaApmUrl}&kiosk=true`}
                     title={`NAIS APM – ${application}`}
