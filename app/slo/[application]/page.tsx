@@ -12,7 +12,7 @@ import { ArrowLeftIcon } from '@navikt/aksel-icons'
 import DeploymentsTable from '@/app/slo/[application]/deployments-table.tsx'
 import IncidentsTable from '@/app/slo/[application]/incidents-table.tsx'
 import StatCard from '@/app/slo/stat-card.tsx'
-import { formatDuration, formatMetric } from '@/app/slo/dora-summary.tsx'
+import { formatDuration, formatMetric } from '@/app/slo/format.ts'
 
 type PathParams = {
     application: string

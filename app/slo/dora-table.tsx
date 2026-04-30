@@ -10,7 +10,7 @@ import {
     TableRow,
 } from '@navikt/ds-react/Table'
 import type { DoraResponse } from '@/app/slo/types.ts'
-import { formatDuration } from '@/app/slo/dora-summary.tsx'
+import { formatDuration } from '@/app/slo/format.ts'
 import {
     changeFailureLevel,
     deployFrequencyLevel,

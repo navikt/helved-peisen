@@ -11,7 +11,7 @@ import {
 } from '@navikt/ds-react/Table'
 import { format } from 'date-fns'
 import type { Incident } from '@/app/slo/types.ts'
-import { formatDuration, formatMetric } from '@/app/slo/dora-summary.tsx'
+import { formatDuration, formatMetric } from '@/app/slo/format.ts'
 
 type SortKey = 'openedAt' | 'resolvedAt' | 'mttrSeconds' | 'title'
 type SortDirection = 'ascending' | 'descending'

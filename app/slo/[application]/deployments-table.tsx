@@ -11,7 +11,7 @@ import {
 } from '@navikt/ds-react/Table'
 import { format } from 'date-fns'
 import type { Deployment, DeploymentOutcome } from '@/app/slo/types.ts'
-import { formatDuration } from '@/app/slo/dora-summary.tsx'
+import { formatDuration } from '@/app/slo/format.ts'
 
 type SortKey = 'deployFinishedTs' | 'leadTimeSeconds' | 'outcome' | 'sha'
 type SortDirection = 'ascending' | 'descending'
