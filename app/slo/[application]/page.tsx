@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Alert, Heading, HStack, VStack } from '@navikt/ds-react'
+import { Alert, BodyShort, Heading, HStack, VStack } from '@navikt/ds-react'
 import { isSuccessResponse } from '@/lib/api/types.ts'
 import {
     fetchDoraApplication,
@@ -45,13 +45,16 @@ export default async function SLOApplicationPage({ params }: { params: Promise<P
             </Link>
 
             <VStack gap="space-8">
-                <Alert variant="info" size="small" className="mb-8">
-                    Grafana krever innlogging,{' '}
-                    <Link href={grafanaApmUrl} target="_blank" rel="noreferrer">
-                        Åpne i Grafana
-                    </Link>
-                    og last siden på nytt.
+                <Alert variant="info" size="small" className="mb-4">
+                    <BodyShort size="small">
+                        Hvis dashboardet ikke laster,{' '}
+                        <Link href={grafanaApmUrl} target="_blank" rel="noopener noreferrer">
+                            åpne i Grafana
+                        </Link>{' '}
+                        og last siden på nytt.
+                    </BodyShort>
                 </Alert>
+
                 <iframe
                     src={`${grafanaApmUrl}&kiosk=true`}
                     title={`NAIS APM – ${application}`}
