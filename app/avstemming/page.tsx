@@ -2,6 +2,7 @@ import { AvstemmingTimeline } from '@/app/avstemming/AvstemmingTimeline.tsx'
 import { LatestAvstemminger } from '@/app/avstemming/LatestAvstemminger'
 import { AvstemmingDryrun } from '@/app/avstemming/AvstemmingDryrun.tsx'
 import { AvstemmingDryrunV2 } from '@/app/avstemming/AvstemmingDryrunV2.tsx'
+import { AuditTestButton } from '@/app/avstemming/AuditTestButton.tsx'
 import { fetchAvstemminger } from '@/app/avstemming/actions.ts'
 import { checkToken } from '@/lib/server/auth'
 import { isSuccessResponse } from '@/lib/api/types'
@@ -25,6 +26,7 @@ export default async function AvstemmingPage() {
             <LatestAvstemminger xmlMessages={res.data} />
             <AvstemmingDryrun />
             <AvstemmingDryrunV2 />
+            <AuditTestButton />
         </div>
     )
 }
