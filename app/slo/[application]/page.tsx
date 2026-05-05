@@ -1,5 +1,4 @@
-import Link from 'next/link'
-import { Alert, BodyShort, Heading, HStack, VStack } from '@navikt/ds-react'
+import { Alert, BodyShort, Heading, HStack, Link, VStack } from '@navikt/ds-react'
 import { isSuccessResponse } from '@/lib/api/types.ts'
 import {
     fetchDoraApplication,
