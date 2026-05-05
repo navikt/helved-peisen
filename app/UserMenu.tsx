@@ -9,6 +9,7 @@ import {
 } from '@navikt/ds-react/Dropdown'
 import { LeaveIcon } from '@navikt/aksel-icons'
 import { useUser } from '@/app/UserProvider'
+import { AuditTestMenuItem } from '@/app/AuditTestMenuItem.tsx'
 
 export const UserMenu: React.FC = () => {
     const user = useUser()
@@ -29,6 +30,7 @@ export const UserMenu: React.FC = () => {
                 </dl>
                 <DropdownMenuDivider />
                 <DropdownMenuList>
+                    <AuditTestMenuItem />
                     <DropdownMenuListItem as={Link} href="/oauth2/logout">
                         Logg ut <Spacer /> <LeaveIcon aria-hidden fontSize="1.5rem" />
                     </DropdownMenuListItem>
