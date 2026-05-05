@@ -1,34 +1,7 @@
 'use server'
 
 import { cookies, headers } from 'next/headers'
-import { redirect, unauthorized } from 'next/navigation'
-
-import { Routes } from '@/lib/api/routes.ts'
-import { getApiTokenFromCookie } from '@/lib/server/auth.ts'
-import { ApiResponse } from '@/lib/api/types'
-
-export async function auditTest(reason: string): Promise<ApiResponse<string>> {
-    const apiToken = await getApiTokenFromCookie()
-    if (!apiToken) return unauthorized()
-
-    const res = await fetch(Routes.auditTest, {
-        method: 'POST',
-        body: JSON.stringify({ reason }),
-        headers: {
-            Authorization: `Bearer ${apiToken}`,
-            'Content-Type': 'application/json',
-        },
-    })
-
-    if (!res.ok) {
-        return {
-            data: null,
-            error: `Klarte ikke kalle audit-test: ${res.status} - ${res.statusText}`,
-        }
-    }
-
-    return { data: await res.text(), error: null }
-}
+import { redirect } from 'next/navigation'
 
 export async function deleteApiToken() {
     ;(await cookies()).delete('api-token')
