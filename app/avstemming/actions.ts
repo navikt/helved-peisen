@@ -85,3 +85,27 @@ export async function fetchAvstemmingDryrunV2(range: AvstemmingRequest): Promise
     const data = await res.json()
     return { data, error: null }
 }
+
+export async function auditTest(reason: string): Promise<ApiResponse<string>> {
+    const apiToken = await getApiTokenFromCookie()
+    if (!apiToken) return unauthorized()
+
+    const res = await fetch(Routes.auditTest, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${apiToken}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reason }),
+    })
+
+    if (!res.ok) {
+        logger.error(`Klarte ikke kalle audit-test: ${res.status} - ${res.statusText}`)
+        return {
+            data: null,
+            error: `Klarte ikke kalle audit-test: ${res.status} - ${res.statusText}`,
+        }
+    }
+
+    return { data: await res.text(), error: null }
+}

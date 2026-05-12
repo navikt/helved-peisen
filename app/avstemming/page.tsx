@@ -6,6 +6,7 @@ import { fetchAvstemminger } from '@/app/avstemming/actions.ts'
 import { checkToken } from '@/lib/server/auth'
 import { isSuccessResponse } from '@/lib/api/types'
 import { Alert } from '@navikt/ds-react'
+import { AuditTestButton } from '@/app/avstemming/AuditTestButton.tsx'
 
 export default async function AvstemmingPage() {
     await checkToken()
@@ -25,6 +26,7 @@ export default async function AvstemmingPage() {
             <LatestAvstemminger xmlMessages={res.data} />
             <AvstemmingDryrun />
             <AvstemmingDryrunV2 />
+            <AuditTestButton />
         </div>
     )
 }
