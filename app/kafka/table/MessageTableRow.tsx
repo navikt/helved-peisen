@@ -38,13 +38,20 @@ const formatFagsystem = (fagsystem?: string | null) => {
         case 'HISTORISK':
         case 'HELSREF':
             return 'HISTORISK'
+        case 'TILLSOPP':
+        case 'VALP':
+            return 'VALP'
         case 'AAP':
             return 'AAP'
         default: {
             if (fagsystem?.startsWith('TILLST')) {
                 return 'TILLEGGSSTØNADER'
             } else {
-                return <Alert variant="error">Klarte ikke formatere fagsystem: {fagsystem}</Alert>
+                return (
+                    <Alert className="whitespace-nowrap" size="small" variant="error">
+                        Klarte ikke formatere fagsystem: {fagsystem}
+                    </Alert>
+                )
             }
         }
     }

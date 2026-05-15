@@ -44,10 +44,12 @@ export const variant = (message: Message): Variant => {
             return 'warning'
         case 'aap.utbetaling.v1':
         case 'historisk.utbetaling.v1':
+        case 'team-mulighetsrommet.tilskudd.utbetaling-v1':
         case 'tilleggsstonader.utbetaling.v1':
         case 'teamdagpenger.utbetaling.v1':
         case 'helved.utbetalinger-aap.v1':
         case 'helved.utbetalinger-historisk.v1':
+        case 'helved.utbetalinger-valp.v1':
         case 'helved.utbetalinger-dp.v1':
         case 'helved.utbetalinger-ts.v1':
         case 'helved.utbetalinger-tp.v1':

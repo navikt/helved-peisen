@@ -58,9 +58,7 @@ const OpphørStatusBadge: React.FC<Props> = ({ message }) => {
 const MigratedBadge: React.FC = () => <Badge>MIGRERT</Badge>
 
 const StatusBadge: React.FC<Props> = ({ message }) => {
-    const isMigrated = message.headers?.some(
-        (header) => header.key === 'migrated' && header.value != null
-    )
+    const isMigrated = message.headers?.some((header) => header.key === 'migrated' && header.value != null)
     if (isMigrated) return <MigratedBadge />
 
     switch (message.topic_name) {
@@ -68,11 +66,13 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
             return <AvstemmingStatusBadge message={message} />
         case 'helved.utbetalinger.v1':
         case 'historisk.utbetaling.v1':
+        case 'team-mulighetsrommet.tilskudd.utbetaling-v1':
         case 'helved.utbetalinger-historisk.v1':
         case 'helved.pending-utbetalinger.v1':
         case 'helved.utbetalinger-aap.v1':
         case 'helved.utbetalinger-ts.v1':
         case 'helved.utbetalinger-tp.v1':
+        case 'helved.utbetalinger-valp.v1':
         case 'helved.utbetalinger-dp.v1':
         case 'teamdagpenger.utbetaling.v1':
         case 'tilleggsstonader.utbetaling.v1':

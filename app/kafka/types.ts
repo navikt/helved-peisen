@@ -20,6 +20,8 @@ export const Topics = {
     status: 'helved.status.v1',
     tsIntern: 'helved.utbetalinger-ts.v1',
     tpIntern: 'helved.utbetalinger-tp.v1',
+    valp: 'team-mulighetsrommet.tilskudd.utbetaling-v1',
+    valpIntern: 'helved.utbetalinger-valp.v1',
 } as const
 
 export type TopicName = (typeof Topics)[keyof typeof Topics]
