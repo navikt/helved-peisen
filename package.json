@@ -21,15 +21,15 @@
         "@navikt/next-logger": "^4.5.1",
         "@navikt/oasis": "^4.1.4",
         "@tailwindcss/postcss": "^4.2.1",
-        "@xmldom/xmldom": "^0.8.12",
+        "@xmldom/xmldom": "^0.8.13",
         "autoprefixer": "^10.4.27",
         "clsx": "^2.1.1",
         "date-fns": "^4.1.0",
-        "next": "16.1.7",
+        "next": "16.2.6",
         "pino": "^10.3.1",
         "pino-roll": "^4.0.0",
         "pino-socket": "^8.0.0",
-        "postcss": "^8.5.8",
+        "postcss": "^8.5.10",
         "react": "^19.2.4",
         "react-dom": "^19.2.4",
         "react-hot-toast": "^2.6.0",
@@ -72,7 +72,8 @@
             "flatted": "^3.4.2",
             "vite": "^7.3.2",
             "picomatch": "^4.0.4",
-            "brace-expansion": "^5.0.5"
+            "brace-expansion": "^5.0.5",
+            "postcss": "^8.5.10"
         }
     }
 }
