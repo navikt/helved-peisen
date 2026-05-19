@@ -2,17 +2,23 @@ import type { Message } from '@/app/kafka/types.ts'
 import { Link } from '@navikt/ds-react'
 import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 
+const TILLEGGSSTONADER =
+    'TILLST,TILLSTPB,TILLSTLM,TILLSTBO,TILLSTDR,TILLSTRS,TILLSTRO,TILLSTRA,TILLSTFL'
+
 const tilFagsystem = (kode: string) => {
     switch (kode) {
         case 'TILTAKSPENGER':
             return 'TILTPENG'
         case 'TILLEGGSSTØNADER':
-            return 'TILLST'
+            return TILLEGGSSTONADER
         case 'DAGPENGER':
             return 'DP'
         case 'HISTORISK':
             return 'HELSREF'
         default:
+            if (kode.startsWith('TILLST')) {
+                return TILLEGGSSTONADER
+            }
             return kode
     }
 }
@@ -31,7 +37,7 @@ const sakUrl = (message: Message) => {
                 case 'helved.dryrun-ts.v1':
                 case 'helved.utbetalinger-ts.v1':
                 case 'tilleggsstonader.utbetaling.v1':
-                    return 'TILLST,TILLSTPB,TILLSTLM,TILLSTBO,TILLSTDR,TILLSTRS,TILLSTRO,TILLSTRA,TILLSTFL'
+                    return 'TILLEGGSSTØNADER'
                 case 'helved.dryrun-dp.v1':
                 case 'teamdagpenger.utbetaling.v1':
                     return 'DP'
