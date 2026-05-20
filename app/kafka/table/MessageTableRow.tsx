@@ -39,7 +39,7 @@ const formatFagsystem = (fagsystem?: string | null) => {
         case 'HISTORISK':
         case 'HELSREF':
             return 'HISTORISK'
-        case 'TILLSOPP':
+        case 'TILSOPP':
         case 'VALP':
             return 'VALP'
         case 'AAP':
