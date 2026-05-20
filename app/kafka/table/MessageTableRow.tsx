@@ -16,6 +16,7 @@ import { AddKvitteringButton } from './actionMenu/AddKvitteringButton'
 import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTilUtbetalingerButton.tsx'
 import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
 import { ResendMessageButton } from './actionMenu/ResendMessageButton'
+import { SendOKStatusButton } from './actionMenu/SendOKStatusButton.tsx'
 import { FilterLink } from '@/components/FilterLink'
 import { RemigrateButton } from './actionMenu/RemigrateButton.tsx'
 import { MessageView } from '@/components/MessageView.tsx'
@@ -123,6 +124,9 @@ const RowContents: React.FC<Props> = ({ message }) => {
                                 message={message}
                                 label="Send inn tilleggsstønaderutbetaling på nytt"
                             />
+                        )}
+                        {message.topic_name === 'helved.status.v1' && message.status === 'FEILET' && (
+                            <SendOKStatusButton messageKey={message.key} />
                         )}
                         <ActionMenuItem>
                             <GrafanaTraceLink traceId={message.trace_id} />

@@ -9,6 +9,7 @@ export const Routes = {
     manuellKvittering: `${kafkaApiBaseUrl}/manuell-kvittering`,
     pendingTilUtbetaling: `${kafkaApiBaseUrl}/pending-til-utbetaling`,
     tombstoneUtbetaling: `${kafkaApiBaseUrl}/tombstone-utbetaling`,
+    okStatus: `${kafkaApiBaseUrl}/ok-status`,
     saker: `${kafkaApiBaseUrl}/api/saker`,
     auditTest: `${kafkaApiBaseUrl}/audit-test`,
     sak(sakId: string, fagsystem: string) {

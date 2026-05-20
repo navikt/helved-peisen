@@ -8,6 +8,7 @@ import { TopicNameTag } from '@/app/kafka/table/TopicNameTag'
 import { MessageStatus } from '@/components/MessageStatus'
 import { AddKvitteringButton } from '@/app/kafka/table/actionMenu/AddKvitteringButton.tsx'
 import { ResendMessageButton } from '@/app/kafka/table/actionMenu/ResendMessageButton.tsx'
+import { SendOKStatusButton } from '@/app/kafka/table/actionMenu/SendOKStatusButton.tsx'
 import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTilUtbetalingerButton.tsx'
 import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
@@ -90,6 +91,9 @@ export const SakTableRow: React.FC<Props> = ({ message, active }) => {
                                 message={message}
                                 label="Send inn tilleggsstønaderutbetaling på nytt"
                             />
+                        )}
+                        {message.topic_name === 'helved.status.v1' && message.status === 'FEILET' && (
+                            <SendOKStatusButton messageKey={message.key} />
                         )}
                         <ActionMenuItem>
                             <GrafanaTraceLink traceId={message.trace_id} />

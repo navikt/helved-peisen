@@ -108,6 +108,43 @@ export async function tombstoneUtbetaling(
     return { status: 'success' }
 }
 
+export async function sendOkStatus(
+    key: string,
+    _initialState: any,
+    formData: FormData
+): Promise<ServerActionResponse<void>> {
+    await checkToken()
+
+    const reason = formData.get('reason') as string | null
+    if (!reason || reason.length === 0) {
+        return {
+            status: 'invalid',
+            validation: {
+                reason: 'Grunn må oppgis',
+            },
+        }
+    }
+
+    const response = await fetch(Routes.okStatus, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${await getApiTokenFromCookie()}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ key, reason }),
+    })
+
+    if (!response.ok) {
+        logger.error(`Server responded with status: ${response.status} - ${response.statusText}`)
+        return {
+            status: 'error',
+            message: `Klarte ikke sende OK status. Server svarte med ${response.status}`,
+        }
+    }
+
+    return { status: 'success' }
+}
+
 export async function remigrerUtbetaling(data: any): Promise<ServerActionResponse<void>> {
     await checkToken()
     const response = await fetch(Routes.remigrer, {
