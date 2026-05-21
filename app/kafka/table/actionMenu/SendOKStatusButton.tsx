@@ -3,14 +3,18 @@ import { ActionMenuItem } from '@navikt/ds-react/ActionMenu'
 import { Button, Modal, Textarea } from '@navikt/ds-react'
 import { sendOkStatus } from '@/app/kafka/table/actionMenu/actions.ts'
 import { showToast } from '@/lib/browser/toast.tsx'
+import type { Message } from '@/app/kafka/types.ts'
 
 type Props = {
-    messageKey: string
+    message: Message
 }
 
-export const SendOKStatusButton = ({ messageKey }: Props) => {
+
+export const SendOKStatusButton = ({ message }: Props) => {
     const ref = useRef<HTMLDialogElement>(null)
-    const sendOkStatusWithKey = sendOkStatus.bind(null, messageKey)
+    const fagsystem = message.headers?.find((header) => header.key === 'fagsystem')?.value
+
+    const sendOkStatusWithKey = sendOkStatus.bind(null, message.key, fagsystem)
     const [state, formAction, pending] = useActionState(sendOkStatusWithKey, { status: 'initial' })
 
     const openModal = (e: Event) => {
@@ -24,13 +28,13 @@ export const SendOKStatusButton = ({ messageKey }: Props) => {
 
     useEffect(() => {
         if (state.status === 'success') {
-            showToast(`Sendte OK status for ${messageKey}`, { variant: 'success' })
+            showToast(`Sendte OK status for ${message.key}`, { variant: 'success' })
             ref.current?.close()
         }
         if (state.status === 'error') {
             showToast(state.message ?? 'Klarte ikke sende OK status', { variant: 'error' })
         }
-    }, [state, messageKey])
+    }, [state, message.key])
 
     return (
         <>

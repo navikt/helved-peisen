@@ -93,7 +93,7 @@ export const SakTableRow: React.FC<Props> = ({ message, active }) => {
                             />
                         )}
                         {message.topic_name === 'helved.status.v1' && message.status === 'FEILET' && (
-                            <SendOKStatusButton messageKey={message.key} />
+                            <SendOKStatusButton message={message} />
                         )}
                         <ActionMenuItem>
                             <GrafanaTraceLink traceId={message.trace_id} />

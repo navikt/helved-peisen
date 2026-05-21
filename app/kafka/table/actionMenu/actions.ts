@@ -110,6 +110,7 @@ export async function tombstoneUtbetaling(
 
 export async function sendOkStatus(
     key: string,
+    fagsystem: string | null | undefined,
     _initialState: any,
     formData: FormData
 ): Promise<ServerActionResponse<void>> {
@@ -131,7 +132,7 @@ export async function sendOkStatus(
             Authorization: `Bearer ${await getApiTokenFromCookie()}`,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ key, reason }),
+        body: JSON.stringify({ key, fagsystem, reason }),
     })
 
     if (!response.ok) {
