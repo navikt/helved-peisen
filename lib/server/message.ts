@@ -22,7 +22,12 @@ type UtbetalingPeriode = {
 
 type AnnotatedRawMessage = RawMessage & Pick<Message, 'pendingMismatch'>
 
-const normalizePerioder = (message: RawMessage): UtbetalingPeriode[] | null => {
+type UtbetalingInfo = {
+    uid: string
+    perioder: UtbetalingPeriode[]
+}
+
+const utbetalingInfo = (message: RawMessage): UtbetalingInfo | null => {
     if (!message.value) {
         return null
     }
@@ -31,16 +36,22 @@ const normalizePerioder = (message: RawMessage): UtbetalingPeriode[] | null => {
         case 'helved.utbetalinger.v1':
         case 'helved.pending-utbetalinger.v1': {
             try {
-                const { perioder = [] } = JSON.parse(message.value) as UtbetalingMessageValue
-                return perioder
-                    .map((periode) => ({
-                        fom: periode.fom,
-                        tom: periode.tom,
-                        beløp: periode.beløp,
-                        vedtakssats: periode.vedtakssats ?? null,
-                        betalendeEnhet: periode.betalendeEnhet ?? null,
-                    }))
-                    .sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)))
+                const { uid, perioder = [] } = JSON.parse(message.value) as UtbetalingMessageValue
+                if (!uid) {
+                    return null
+                }
+                return {
+                    uid,
+                    perioder: perioder
+                        .map((periode) => ({
+                            fom: periode.fom,
+                            tom: periode.tom,
+                            beløp: periode.beløp,
+                            vedtakssats: periode.vedtakssats ?? null,
+                            betalendeEnhet: periode.betalendeEnhet ?? null,
+                        }))
+                        .sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b))),
+                }
             } catch (_) {
                 return null
             }
@@ -61,29 +72,34 @@ const equalPerioder = (a: UtbetalingPeriode[], b: UtbetalingPeriode[]) =>
             periode.betalendeEnhet === b[index].betalendeEnhet
     )
 
-const latestPerioderByMessageKey = (messages: RawMessage[], topic: RawMessage['topic_name']) => {
+const latestPerioderByUid = (messages: RawMessage[], topic: RawMessage['topic_name']) => {
     const latest = new Map<string, { message: RawMessage; perioder: UtbetalingPeriode[] }>()
     for (const message of messages) {
         if (message.topic_name !== topic) continue
 
-        const perioder = normalizePerioder(message)
-        if (!perioder) continue
+        const info = utbetalingInfo(message)
+        if (!info) continue
 
-        const existing = latest.get(message.key)
+        const existing = latest.get(info.uid)
         if (!existing || message.system_time_ms > existing.message.system_time_ms) {
-            latest.set(message.key, { message, perioder })
+            latest.set(info.uid, { message, perioder: info.perioder })
         }
     }
-    return new Map([...latest].map(([key, value]) => [key, value.perioder]))
+    return new Map([...latest].map(([uid, value]) => [uid, value.perioder]))
 }
 
 export const annotatePendingMismatch = (messages: RawMessage[]): AnnotatedRawMessage[] => {
-    const pending = latestPerioderByMessageKey(messages, 'helved.pending-utbetalinger.v1')
-    const utbetaling = latestPerioderByMessageKey(messages, 'helved.utbetalinger.v1')
+    const pending = latestPerioderByUid(messages, 'helved.pending-utbetalinger.v1')
+    const utbetaling = latestPerioderByUid(messages, 'helved.utbetalinger.v1')
 
     return messages.map((message) => {
-        const pendingPerioder = pending.get(message.key)
-        const utbetalingPerioder = utbetaling.get(message.key)
+        const info = utbetalingInfo(message)
+        if (!info) {
+            return message
+        }
+
+        const pendingPerioder = pending.get(info.uid)
+        const utbetalingPerioder = utbetaling.get(info.uid)
         return pendingPerioder && utbetalingPerioder && !equalPerioder(pendingPerioder, utbetalingPerioder)
             ? { ...message, pendingMismatch: true }
             : message
