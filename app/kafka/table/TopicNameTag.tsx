@@ -6,6 +6,7 @@ import { Tag } from '@navikt/ds-react'
 
 import type { Message } from '@/app/kafka/types.ts'
 import { variant } from '@/lib/message.ts'
+import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons'
 
 type BadgeProps = {
     variant?: 'success' | 'danger' | 'warning' | 'info' | 'neutral'
@@ -20,6 +21,8 @@ const Badge: React.FC<BadgeProps> = ({ variant = 'neutral', children }) => (
             variant === 'success' &&
                 'bg-(--ax-bg-success-moderate) border-(--ax-border-success) text-(--ax-text-success)',
             variant === 'danger' && 'bg-(--ax-bg-danger-moderate) border-(--ax-border-danger) text-(--ax-text-danger)',
+            variant === 'warning' &&
+                'bg-(--ax-bg-warning-moderate) border-(--ax-border-warning) text-(--ax-text-warning)',
             variant === 'info' && 'bg-(--ax-bg-info-moderate) border-(--ax-border-info) text-(--ax-text-info)'
         )}
     >
@@ -55,6 +58,20 @@ const OpphørStatusBadge: React.FC<Props> = ({ message }) => {
     return <Badge>{message.badge}</Badge>
 }
 
+const PendingMatcherIkkeUtbetalingBadge: React.FC<Props> = ({ message }) => {
+    if (!message.pendingMismatch) {
+        return null
+    }
+    return (
+        <Badge variant="warning">
+            <ExclamationmarkTriangleIcon
+                title="Pending-utbetaling matcher ikke utbetaling"
+                fontSize="1rem"
+            />
+        </Badge>
+    )
+}
+
 const MigratedBadge: React.FC = () => <Badge>MIGRERT</Badge>
 
 const StatusBadge: React.FC<Props> = ({ message }) => {
@@ -65,10 +82,11 @@ const StatusBadge: React.FC<Props> = ({ message }) => {
         case 'helved.avstemming.v1':
             return <AvstemmingStatusBadge message={message} />
         case 'helved.utbetalinger.v1':
+        case 'helved.pending-utbetalinger.v1':
+            return <PendingMatcherIkkeUtbetalingBadge message={message} />
         case 'historisk.utbetaling.v1':
         case 'team-mulighetsrommet.tilskudd.utbetaling-v1':
         case 'helved.utbetalinger-historisk.v1':
-        case 'helved.pending-utbetalinger.v1':
         case 'helved.utbetalinger-aap.v1':
         case 'helved.utbetalinger-ts.v1':
         case 'helved.utbetalinger-tp.v1':

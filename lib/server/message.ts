@@ -1,4 +1,4 @@
-import type { Message, RawMessage } from '@/app/kafka/types.ts'
+import type { Message, RawMessage, UtbetalingMessageValue } from '@/app/kafka/types.ts'
 import { createHash } from 'crypto'
 import { parsedXML } from '@/lib/server/xml'
 
@@ -6,6 +6,88 @@ export function toMessage(raw: RawMessage): Message {
     const badge = badgeForMessage(raw)
     delete raw['value']
     return { ...raw, badge }
+}
+
+export function toMessages(rawMessages: RawMessage[]): Message[] {
+    return annotatePendingMismatch(rawMessages).map(toMessage).map(sanitizeKey)
+}
+
+type UtbetalingPeriode = {
+    fom: string
+    tom: string
+    beløp: number
+    vedtakssats: number | null
+    betalendeEnhet: string | null
+}
+
+type AnnotatedRawMessage = RawMessage & Pick<Message, 'pendingMismatch'>
+
+const normalizePerioder = (message: RawMessage): UtbetalingPeriode[] | null => {
+    if (!message.value) {
+        return null
+    }
+
+    switch (message.topic_name) {
+        case 'helved.utbetalinger.v1':
+        case 'helved.pending-utbetalinger.v1': {
+            try {
+                const { perioder = [] } = JSON.parse(message.value) as UtbetalingMessageValue
+                return perioder
+                    .map((periode) => ({
+                        fom: periode.fom,
+                        tom: periode.tom,
+                        beløp: periode.beløp,
+                        vedtakssats: periode.vedtakssats ?? null,
+                        betalendeEnhet: periode.betalendeEnhet ?? null,
+                    }))
+                    .sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)))
+            } catch (_) {
+                return null
+            }
+        }
+        default:
+            return null
+    }
+}
+
+const equalPerioder = (a: UtbetalingPeriode[], b: UtbetalingPeriode[]) =>
+    a.length === b.length &&
+    a.every(
+        (periode, index) =>
+            periode.fom === b[index].fom &&
+            periode.tom === b[index].tom &&
+            periode.beløp === b[index].beløp &&
+            periode.vedtakssats === b[index].vedtakssats &&
+            periode.betalendeEnhet === b[index].betalendeEnhet
+    )
+
+const latestPerioderByMessageKey = (messages: RawMessage[], topic: RawMessage['topic_name']) => {
+    const latest = new Map<string, { message: RawMessage; perioder: UtbetalingPeriode[] }>()
+    for (const message of messages) {
+        if (message.topic_name !== topic) continue
+
+        const perioder = normalizePerioder(message)
+        if (!perioder) continue
+
+        const existing = latest.get(message.key)
+        if (!existing || message.system_time_ms > existing.message.system_time_ms) {
+            latest.set(message.key, { message, perioder })
+        }
+    }
+    return new Map([...latest].map(([key, value]) => [key, value.perioder]))
+}
+
+export const annotatePendingMismatch = (messages: RawMessage[]): AnnotatedRawMessage[] => {
+    const pending = latestPerioderByMessageKey(messages, 'helved.pending-utbetalinger.v1')
+    const utbetaling = latestPerioderByMessageKey(messages, 'helved.utbetalinger.v1')
+
+    return messages.map((message) => {
+        const pendingPerioder = pending.get(message.key)
+        const utbetalingPerioder = utbetaling.get(message.key)
+        return pendingPerioder && utbetalingPerioder && !equalPerioder(pendingPerioder, utbetalingPerioder)
+            ? { ...message, pendingMismatch: true }
+            : message
+    })
 }
 
 const badgeForMessage = (message: RawMessage) => {

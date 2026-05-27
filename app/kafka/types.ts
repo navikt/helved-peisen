@@ -60,6 +60,7 @@ export type Message = {
     sakId: string | null
     fagsystem: string | null
     headers?: Header[]
+    pendingMismatch?: boolean
 }
 
 export type Header = {

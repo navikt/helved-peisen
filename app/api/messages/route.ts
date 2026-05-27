@@ -1,7 +1,7 @@
-import type { Message } from '@/app/kafka/types'
+import type { RawMessage } from '@/app/kafka/types'
 import { Routes } from '@/lib/api/routes'
 import { getApiTokenFromCookie } from '@/lib/server/auth'
-import { sanitizeKey, toMessage } from '@/lib/server/message'
+import { toMessages } from '@/lib/server/message'
 import { NextResponse } from 'next/server'
 import type { PaginatedResponse } from '@/lib/api/types.ts'
 
@@ -32,11 +32,11 @@ export async function GET(request: Request) {
             )
         }
 
-        const page: PaginatedResponse<Message> = await response.json()
+        const page: PaginatedResponse<RawMessage> = await response.json()
 
         return NextResponse.json({
             data: {
-                items: page.items.map(toMessage).map(sanitizeKey),
+                items: toMessages(page.items),
                 total: page.total,
             },
             error: null,
