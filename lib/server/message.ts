@@ -72,38 +72,40 @@ const equalPerioder = (a: UtbetalingPeriode[], b: UtbetalingPeriode[]) =>
             periode.betalendeEnhet === b[index].betalendeEnhet
     )
 
-const latestPerioderByUid = (messages: RawMessage[], topic: RawMessage['topic_name']) => {
-    const latest = new Map<string, { message: RawMessage; perioder: UtbetalingPeriode[] }>()
-    for (const message of messages) {
-        if (message.topic_name !== topic) continue
+export const annotatePendingMismatch = (messages: RawMessage[]): AnnotatedRawMessage[] => {
+    type Utbetaling = { message: RawMessage; uid: string; perioder: UtbetalingPeriode[] }
 
+    const utbetalinger: Utbetaling[] = []
+    const pendingByUid = new Map<string, Utbetaling[]>()
+
+    for (const message of messages) {
         const info = utbetalingInfo(message)
         if (!info) continue
-
-        const existing = latest.get(info.uid)
-        if (!existing || message.system_time_ms > existing.message.system_time_ms) {
-            latest.set(info.uid, { message, perioder: info.perioder })
+        const utbetaling: Utbetaling = { message, uid: info.uid, perioder: info.perioder }
+        if (message.topic_name === 'helved.utbetalinger.v1') {
+            utbetalinger.push(utbetaling)
+        } else if (message.topic_name === 'helved.pending-utbetalinger.v1') {
+            pendingByUid.set(info.uid, [...(pendingByUid.get(info.uid) ?? []), utbetaling])
         }
     }
-    return new Map([...latest].map(([uid, value]) => [uid, value.perioder]))
-}
 
-export const annotatePendingMismatch = (messages: RawMessage[]): AnnotatedRawMessage[] => {
-    const pending = latestPerioderByUid(messages, 'helved.pending-utbetalinger.v1')
-    const utbetaling = latestPerioderByUid(messages, 'helved.utbetalinger.v1')
+    const mismatchedMessages = new Set<RawMessage>()
 
-    return messages.map((message) => {
-        const info = utbetalingInfo(message)
-        if (!info) {
-            return message
+    for (const utbetaling of utbetalinger) {
+        // Find the latest pending that arrived before this utbetaling
+        const precedingPending = (pendingByUid.get(utbetaling.uid) ?? [])
+            .filter((p) => p.message.system_time_ms < utbetaling.message.system_time_ms)
+            .sort((a, b) => b.message.system_time_ms - a.message.system_time_ms)[0]
+
+        if (precedingPending && !equalPerioder(utbetaling.perioder, precedingPending.perioder)) {
+            mismatchedMessages.add(utbetaling.message)
+            mismatchedMessages.add(precedingPending.message)
         }
+    }
 
-        const pendingPerioder = pending.get(info.uid)
-        const utbetalingPerioder = utbetaling.get(info.uid)
-        return pendingPerioder && utbetalingPerioder && !equalPerioder(pendingPerioder, utbetalingPerioder)
-            ? { ...message, pendingMismatch: true }
-            : message
-    })
+    return messages.map((message) =>
+        mismatchedMessages.has(message) ? { ...message, pendingMismatch: true } : message
+    )
 }
 
 const badgeForMessage = (message: RawMessage) => {
