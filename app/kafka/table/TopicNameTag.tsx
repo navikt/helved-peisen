@@ -2,7 +2,7 @@
 
 import React from 'react'
 import clsx from 'clsx'
-import { Tag } from '@navikt/ds-react'
+import { Tag, Tooltip } from '@navikt/ds-react'
 
 import type { Message } from '@/app/kafka/types.ts'
 import { variant } from '@/lib/message.ts'
@@ -64,10 +64,14 @@ const PendingMatcherIkkeUtbetalingBadge: React.FC<Props> = ({ message }) => {
     }
     return (
         <Badge variant="warning">
-            <ExclamationmarkTriangleIcon
-                title="Pending-utbetaling matcher ikke utbetaling"
-                fontSize="1rem"
-            />
+            <Tooltip content={'Pending-utbetaling matcher ikke utbetaling'}>
+                <span className="inline-flex" tabIndex={0}>
+                    <ExclamationmarkTriangleIcon
+                        title={'Pending-utbetaling matcher ikke utbetaling'}
+                        fontSize="1.25rem"
+                    />
+                </span>
+            </Tooltip>
         </Badge>
     )
 }

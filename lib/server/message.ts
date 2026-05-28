@@ -2,10 +2,10 @@ import type { Message, RawMessage, UtbetalingMessageValue } from '@/app/kafka/ty
 import { createHash } from 'crypto'
 import { parsedXML } from '@/lib/server/xml'
 
-export function toMessage(raw: RawMessage): Message {
+export function toMessage(raw: RawMessage & Partial<Pick<Message, 'pendingMismatch'>>): Message {
     const badge = badgeForMessage(raw)
-    delete raw['value']
-    return { ...raw, badge }
+    const { value: _sensitiveValue, ...message } = raw
+    return { ...message, badge }
 }
 
 export function toMessages(rawMessages: RawMessage[]): Message[] {
