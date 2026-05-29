@@ -15,6 +15,8 @@ const tilFagsystem = (kode: string) => {
             return 'DP'
         case 'HISTORISK':
             return 'HELSREF'
+        case 'VALP':
+            return 'TILSOPP'
         default:
             if (kode.startsWith('TILLST')) {
                 return TILLEGGSSTONADER
