@@ -7,9 +7,11 @@ import { MessagesTable, MessagesTableSkeleton } from '@/app/kafka/table/Messages
 import { NoMessages } from '@/components/NoMessages.tsx'
 import { MessagesContext } from './MessagesContext.tsx'
 import { isFailureResponse } from '@/lib/api/types.ts'
+import { useFiltere } from '@/app/kafka/Filtere.tsx'
 
 export const MessagesView = () => {
     const { loading, messages } = useContext(MessagesContext)
+    const { pendingMismatch } = useFiltere()
 
     if (!messages || loading) {
         return <MessagesTableSkeleton />
@@ -27,7 +29,9 @@ export const MessagesView = () => {
         return <NoMessages title="Fant ingen meldinger" />
     }
 
-    let filteredMessages = messages.data.items
+    let filteredMessages = pendingMismatch
+        ? messages.data.items.filter((m) => m.pendingMismatch)
+        : messages.data.items
 
     return <MessagesTable messages={filteredMessages} totalMessages={messages.data.total} />
 }

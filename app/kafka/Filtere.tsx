@@ -9,7 +9,7 @@ import { FilterCombobox } from '@/components/FilterCombobox'
 import { FilterInput } from '@/components/FilterInput'
 import { DateRangeSelect } from '@/components/DateRangeSelect'
 import { Topics } from '@/app/kafka/types.ts'
-import { HStack } from '@navikt/ds-react'
+import { HStack, Switch } from '@navikt/ds-react'
 import { LiveButton } from '@/app/kafka/LiveButton.tsx'
 import { RefreshButton } from '@/app/kafka/RefreshButton.tsx'
 
@@ -58,6 +58,13 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     updateFrom={(fom: string) => setFiltere({ fom })}
                     updateTo={(tom: string) => setFiltere({ tom })}
                 />
+                <Switch
+                    size="small"
+                    checked={!!filtere.pendingMismatch}
+                    onChange={(e) => setFiltere({ pendingMismatch: e.target.checked ? true : null })}
+                >
+                    Pending mismatch
+                </Switch>
                 <HStack align="center" gap="space-8">
                     <LiveButton />
                     <RefreshButton />
@@ -76,6 +83,7 @@ export type FiltereValue = {
     value: string | null
     fagsystem: string | null
     trace_id: string | null
+    pendingMismatch: boolean | null
     page: number
     pageSize: number
     orderBy: 'offset' | 'timestamp' | null
@@ -96,6 +104,7 @@ function defaultFiltereValue(searchParams?: ReadonlyURLSearchParams): FiltereVal
         value: searchParams?.get('value') ?? null,
         fagsystem: searchParams?.get('fagsystem') ?? null,
         trace_id: searchParams?.get('trace_id') ?? null,
+        pendingMismatch: searchParams?.get('pendingMismatch') === 'true' ? true : null,
         page: 1,
         pageSize: 100,
         orderBy: 'timestamp',
