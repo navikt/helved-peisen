@@ -78,6 +78,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 <option value="TILLST,TILLSTPB,TILLSTLM,TILLSTBO,TILLSTDR,TILLSTRS,TILLSTRO,TILLSTRA,TILLSTFL">
                     Tilleggsstønader
                 </option>
+                <option value="TILSOPP">VALP</option>
             </Select>
             <Button className="h-max mt-7" size="small" loading={isLoading} onClick={search}>
                 Søk

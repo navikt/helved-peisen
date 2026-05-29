@@ -38,7 +38,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                 <FilterCombobox
                     label="Fagsystem"
                     filter="fagsystem"
-                    initialOptions={['AAP', 'DAGPENGER', 'TILLEGGSSTØNADER', 'TILTAKSPENGER', 'HISTORISK']}
+                    initialOptions={['AAP', 'DAGPENGER', 'TILLEGGSSTØNADER', 'TILTAKSPENGER', 'HISTORISK', 'VALP']}
                     isMultiSelect
                     size="small"
                 />
