@@ -268,8 +268,8 @@ const StatusMessageMetadata: React.FC<Props> = ({ message }) => {
                                     <TableDataCell>{it.behandlingId}</TableDataCell>
                                     <TableDataCell>{it.fom}</TableDataCell>
                                     <TableDataCell>{it.tom}</TableDataCell>
-                                    <TableDataCell>{it.vedtakssats}</TableDataCell>
                                     <TableDataCell>{it.beløp}</TableDataCell>
+                                    <TableDataCell>{it.vedtakssats}</TableDataCell>
                                     <TableDataCell>{it.klassekode}</TableDataCell>
                                 </TableRow>
                             ))}
