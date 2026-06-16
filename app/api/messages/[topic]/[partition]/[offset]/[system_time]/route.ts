@@ -6,7 +6,7 @@ type PathParams = {
     topic: string
     partition: string
     offset: string
-    system_time: number
+    system_time: string
 }
 
 export async function GET(_: NextRequest, { params }: { params: Promise<PathParams> }) {
