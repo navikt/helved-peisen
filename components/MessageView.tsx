@@ -21,7 +21,7 @@ export const MessageView: React.FC<Props> = ({ message }) => {
 
     useEffect(() => {
         setLoading(true)
-        fetch(`/api/messages/${message.topic_name}/${message.partition}/${message.offset}`)
+        fetch(`/api/messages/${message.topic_name}/${message.partition}/${message.offset}/${message.system_time_ms}`)
             .then(async (response) => {
                 const res = await response.json()
                 return res as ApiResponse<Message>
