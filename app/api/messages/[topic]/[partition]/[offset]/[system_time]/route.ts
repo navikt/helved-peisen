@@ -16,7 +16,6 @@ export async function GET(_: NextRequest, { params }: { params: Promise<PathPara
     }
 
     const { topic, partition, offset, system_time } = await params
-    console.log(topic, partition, offset, system_time)
     const res = await fetch(`${Routes.messages}/${topic}/${partition}/${offset}/${system_time}`, {
         headers: { Authorization: `Bearer ${apiToken}` },
     })
