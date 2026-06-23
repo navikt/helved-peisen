@@ -1,15 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { expiresIn } from '@navikt/oasis'
 
 import { isFaking } from '@/lib/env'
 import { setDevTokens } from '@/lib/server/dev-token.ts'
 import { setTokens } from '@/lib/server/token.ts'
+import { getSession } from '@/lib/server/session-store.ts'
 
 const isLocal = process.env.NODE_ENV !== 'production'
-
-function isExpired(token: string) {
-    return expiresIn(token) <= 0
-}
 
 // noinspection JSUnusedGlobalSymbols
 export async function proxy(req: NextRequest): Promise<NextResponse> {
@@ -17,14 +13,10 @@ export async function proxy(req: NextRequest): Promise<NextResponse> {
         return NextResponse.next()
     }
 
-    const tokens = [
-        req.cookies.get('api-token'),
-        req.cookies.get('utsjekk-api-token'),
-        req.cookies.get('vedskiva-api-token'),
-        req.cookies.get('speiderhytta-api-token')
-    ]
+    const sessionId = req.cookies.get('session-id')?.value
+    const session = sessionId ? await getSession(sessionId) : null
 
-    if (!tokens.every((it) => !!it && !isExpired(it.value))) {
+    if (!session) {
         return isLocal ? setDevTokens() : setTokens()
     }
 

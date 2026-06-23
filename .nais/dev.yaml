@@ -58,6 +58,9 @@ spec:
       value: "api://dev-gcp.helved.vedskiva/.default"
     - name: VEDSKIVA_BASE_URL
       value: "http://vedskiva"
+  valkey:
+    - instance: peisen-sessions
+      access: readwrite
   liveness:
     path: /internal/is-alive
     initialDelay: 10

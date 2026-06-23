@@ -2,9 +2,15 @@
 
 import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { deleteSession } from '@/lib/server/session-store.ts'
 
 export async function deleteApiToken() {
-    ;(await cookies()).delete('api-token')
+    const cookieStore = await cookies()
+    const sessionId = cookieStore.get('session-id')?.value
+    if (sessionId) {
+        await deleteSession(sessionId)
+    }
+    cookieStore.delete('session-id')
 }
 
 export async function getUser(): Promise<{

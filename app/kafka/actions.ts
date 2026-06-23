@@ -2,12 +2,12 @@
 
 import type { Message, RawMessage } from '@/app/kafka/types.ts'
 import { Routes } from '@/lib/api/routes.ts'
-import { getApiTokenFromCookie } from '@/lib/server/auth.ts'
+import { getApiToken } from '@/lib/server/auth.ts'
 import { unauthorized } from 'next/navigation'
 import { ApiResponse } from '@/lib/api/types'
 
 export async function fetchRawMessage(message: Message): Promise<ApiResponse<RawMessage>> {
-    const apiToken = await getApiTokenFromCookie()
+    const apiToken = await getApiToken()
     if (!apiToken) return unauthorized()
 
     const res = await fetch(`${Routes.messages}/${message.topic_name}/${message.partition}/${message.offset}`, {
@@ -28,7 +28,7 @@ export async function fetchRawMessage(message: Message): Promise<ApiResponse<Raw
 }
 
 export async function resendMessage(message: Message, reason: string): Promise<ApiResponse<null>> {
-    const apiToken = await getApiTokenFromCookie()
+    const apiToken = await getApiToken()
     if (!apiToken) return unauthorized()
 
     const formData = new FormData()

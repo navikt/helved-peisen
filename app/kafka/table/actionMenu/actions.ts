@@ -2,7 +2,7 @@
 
 import { Routes } from '@/lib/api/routes.ts'
 import { logger } from '@navikt/next-logger'
-import { checkToken, getApiTokenFromCookie, getUtsjekkApiTokenFromCookie } from '@/lib/server/auth.ts'
+import { checkToken, getApiToken, getUtsjekkApiToken } from '@/lib/server/auth.ts'
 import type { Message } from '@/app/kafka/types.ts'
 import type { ServerActionResponse } from '@/app/kafka/table/actionMenu/types.ts'
 
@@ -30,7 +30,7 @@ export async function addKvittering(
     const response = await fetch(Routes.manuellKvittering, {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${await getApiTokenFromCookie()}`,
+            Authorization: `Bearer ${await getApiToken()}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(Object.fromEntries(formData)),
@@ -52,7 +52,7 @@ export async function movePendingToUtbetaling(formData: FormData): Promise<Serve
     const response = await fetch(Routes.pendingTilUtbetaling, {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${await getApiTokenFromCookie()}`,
+            Authorization: `Bearer ${await getApiToken()}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(Object.fromEntries(formData)),
@@ -91,7 +91,7 @@ export async function tombstoneUtbetaling(
     const response = await fetch(Routes.tombstoneUtbetaling, {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${await getApiTokenFromCookie()}`,
+            Authorization: `Bearer ${await getApiToken()}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(Object.fromEntries(formData)),
@@ -129,7 +129,7 @@ export async function sendOkStatus(
     const response = await fetch(Routes.okStatus, {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${await getApiTokenFromCookie()}`,
+            Authorization: `Bearer ${await getApiToken()}`,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ key, fagsystem, reason }),
@@ -151,7 +151,7 @@ export async function remigrerUtbetaling(data: any): Promise<ServerActionRespons
     const response = await fetch(Routes.remigrer, {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${await getUtsjekkApiTokenFromCookie()}`,
+            Authorization: `Bearer ${await getUtsjekkApiToken()}`,
             'Content-Type': 'application/json',
             Fagsystem: 'TILLEGGSSTØNADER',
         },
@@ -174,7 +174,7 @@ export async function remigrerUtbetalingDryrun(
     const response = await fetch(Routes.remigrerDryrun, {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${await getUtsjekkApiTokenFromCookie()}`,
+            Authorization: `Bearer ${await getUtsjekkApiToken()}`,
             'Content-Type': 'application/json',
             Fagsystem: fagsystem,
         },
