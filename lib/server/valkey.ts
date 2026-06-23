@@ -42,7 +42,7 @@ function parseAddress(uri: string): { host: string; port: number } {
 export async function getValkeyClient(): Promise<SessionClient> {
     if (client) return client
 
-    const uri = process.env.VALKEY_URI_SESSIONS
+    const uri = process.env.VALKEY_URI_PEISEN_SESSIONS
 
     if (!uri) {
         console.log('[valkey] VALKEY_URI_SESSIONS not set, using in-memory session store')

@@ -59,7 +59,7 @@ spec:
     - name: VEDSKIVA_BASE_URL
       value: "http://vedskiva"
   valkey:
-    - instance: sessions
+    - instance: peisen-sessions
       access: readwrite
   liveness:
     path: /internal/is-alive

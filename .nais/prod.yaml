@@ -68,7 +68,7 @@ spec:
     - name: SPEIDERHYTTA_BASE_URL
       value: "http://speiderhytta"
   valkey:
-    - instance: sessions
+    - instance: peisen-sessions
       access: readwrite
   liveness:
     path: /internal/is-alive
