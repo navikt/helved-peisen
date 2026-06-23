@@ -26,6 +26,7 @@ export const checkToken = async () => {
 }
 
 async function getTokenFromSession(key: keyof TokenSession): Promise<string | undefined> {
+    if (isFaking) return (await cookies()).get(key)?.value
     const sessionId = (await cookies()).get('session-id')?.value
     if (!sessionId) return undefined
     const session = await getSession(sessionId)
