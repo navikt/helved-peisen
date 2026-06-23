@@ -1,12 +1,12 @@
 import type { RawMessage } from '@/app/kafka/types'
 import { Routes } from '@/lib/api/routes'
-import { getApiTokenFromCookie } from '@/lib/server/auth'
+import { getApiToken } from '@/lib/server/auth'
 import { toMessages } from '@/lib/server/message'
 import { NextResponse } from 'next/server'
 import type { PaginatedResponse } from '@/lib/api/types.ts'
 
 export async function GET(request: Request) {
-    const apiToken = await getApiTokenFromCookie()
+    const apiToken = await getApiToken()
     if (!apiToken) {
         return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
     }

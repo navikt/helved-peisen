@@ -67,6 +67,9 @@ spec:
       value: "api://prod-gcp.helved.speiderhytta/.default"
     - name: SPEIDERHYTTA_BASE_URL
       value: "http://speiderhytta"
+  valkey:
+    - instance: sessions
+      access: readwrite
   liveness:
     path: /internal/is-alive
     initialDelay: 10

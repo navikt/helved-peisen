@@ -1,7 +1,7 @@
 'use server'
 
 import { subDays } from 'date-fns/subDays'
-import { getApiTokenFromCookie, getVedskivaApiTokenFromCookie } from '@/lib/server/auth.ts'
+import { getApiToken, getVedskivaApiToken } from '@/lib/server/auth.ts'
 import { Routes } from '@/lib/api/routes.ts'
 import { AvstemmingRequest, RawAvstemmingMessage } from '@/app/avstemming/types.ts'
 import { ApiResponse } from '@/lib/api/types.ts'
@@ -9,7 +9,7 @@ import { unauthorized } from 'next/navigation'
 import { logger } from '@navikt/next-logger'
 
 export async function fetchAvstemminger(dager: number = 14): Promise<ApiResponse<string[]>> {
-    const apiToken = await getApiTokenFromCookie()
+    const apiToken = await getApiToken()
     if (!apiToken) return unauthorized()
 
     const tom = new Date().toISOString()
@@ -37,7 +37,7 @@ export async function fetchAvstemminger(dager: number = 14): Promise<ApiResponse
 }
 
 export async function fetchAvstemmingDryrun(range: AvstemmingRequest): Promise<ApiResponse<string>> {
-    const apiToken = await getVedskivaApiTokenFromCookie()
+    const apiToken = await getVedskivaApiToken()
     if (!apiToken) return unauthorized()
 
     const res = await fetch(Routes.avstemmingDryrun, {
@@ -62,7 +62,7 @@ export async function fetchAvstemmingDryrun(range: AvstemmingRequest): Promise<A
 }
 
 export async function fetchAvstemmingDryrunV2(range: AvstemmingRequest): Promise<ApiResponse<string>> {
-    const apiToken = await getVedskivaApiTokenFromCookie()
+    const apiToken = await getVedskivaApiToken()
     if (!apiToken) return unauthorized()
 
     const res = await fetch(Routes.avstemmingDryrunv2, {

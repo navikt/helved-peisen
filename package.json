@@ -21,6 +21,7 @@
         "@navikt/next-logger": "^4.5.1",
         "@navikt/oasis": "^4.1.4",
         "@tailwindcss/postcss": "^4.2.1",
+        "@valkey/valkey-glide": "^2.4.1",
         "@xmldom/xmldom": "^0.8.13",
         "autoprefixer": "^10.4.27",
         "clsx": "^2.1.1",
