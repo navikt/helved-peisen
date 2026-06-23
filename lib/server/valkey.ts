@@ -42,21 +42,24 @@ function parseAddress(uri: string): { host: string; port: number } {
 export async function getValkeyClient(): Promise<SessionClient> {
     if (client) return client
 
-    const uri = process.env.VALKEY_URI_SESSIONS
+    const uri = process.env.VALKEY_URI_PEISEN_SESSIONS
 
     if (!uri) {
-        console.log('[valkey] VALKEY_URI_SESSIONS not set, using in-memory session store')
+        console.log('[valkey] VALKEY_URI_PEISEN_SESSIONS not set, using in-memory session store')
         client = new InMemorySessionClient()
         return client
     }
 
     const { host, port } = parseAddress(uri)
     const useTls = uri.startsWith('valkeys://') || uri.startsWith('rediss://')
+    const username = process.env.VALKEY_USERNAME_PEISEN_SESSIONS
+    const password = process.env.VALKEY_PASSWORD_PEISEN_SESSIONS
 
     try {
         const glide = await GlideClient.createClient({
             addresses: [{ host, port }],
             useTLS: useTls,
+            ...(username && password ? { credentials: { username, password } } : {}),
         })
 
         console.log(`[valkey] Connected to ${host}:${port}`)
