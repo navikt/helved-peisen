@@ -13,7 +13,8 @@ import { Avstemming } from '@/app/avstemming/types'
 import { parseAvstemmingXml } from '@/app/avstemming/parseAvstemmingXml'
 import { XMLView } from '@/components/XMLView'
 import { format } from 'date-fns'
-import ResultTableRow from '@/app/avstemming/table/ResultTableRow.tsx'
+import { ResultTableRow } from '@/app/avstemming/table/ResultTableRow.tsx'
+import { useAvstemminger } from './AvstemingContext'
 
 interface ParsedXml {
     avstemming: Avstemming
@@ -54,12 +55,13 @@ function getLatestPerFagsystem(items: ParsedXml[]): ParsedXml[] {
     )
 }
 
-interface Props {
-    xmlMessages: string[]
-}
+export const LatestAvstemminger: React.FC = () => {
+    const { avstemminger } = useAvstemminger()
+    if (!avstemminger || !avstemminger.data) {
+        return null
+    }
 
-export function LatestAvstemminger({ xmlMessages }: Props) {
-    const parsed: ParsedXml[] = xmlMessages.flatMap((xml) => {
+    const parsed: ParsedXml[] = avstemminger.data.flatMap((xml) => {
         const avstemming = parseAvstemmingXml(xml)
         return avstemming ? [{ avstemming: avstemming, xml }] : []
     })
@@ -71,7 +73,7 @@ export function LatestAvstemminger({ xmlMessages }: Props) {
     }
 
     return (
-        <VStack gap="space-16" style={{ marginTop: '3rem' }}>
+        <VStack gap="space-16">
             <Label>Siste avstemminger</Label>
             <div className="max-w-[100vw] overflow-y-auto scrollbar-gutter-stable">
                 <Table size="small" className="h-max overflow-scroll">

@@ -1,4 +1,4 @@
-import { Avstemming, Detaljs } from '@/app/avstemming/types.ts'
+import { Avstemming } from '@/app/avstemming/types.ts'
 
 const fraFagsystem = (kode: string) => {
     switch (kode) {
@@ -27,8 +27,7 @@ export const parseAvstemmingXml = (xml: string): Avstemming | null => {
     const parser = new DOMParser()
     const doc = parser.parseFromString(xml, 'text/xml')
 
-    const text = (tag: string): string =>
-        doc.getElementsByTagName(tag)[0]?.textContent ?? ''
+    const text = (tag: string): string => doc.getElementsByTagName(tag)[0]?.textContent ?? ''
     const num = (tag: string): number => parseInt(text(tag), 10) || 0
 
     if (text('aksjonType') !== 'DATA') return null
@@ -40,7 +39,15 @@ export const parseAvstemmingXml = (xml: string): Avstemming | null => {
     if (!fagsystem || !nokkelFom) return null
 
     const detaljElements = doc.getElementsByTagName('detalj')
-    const detaljs: Detaljs[] = Array.from(detaljElements).map((xml) => ({
+    const detaljs: {
+        detaljType: string
+        offnr: string
+        avleverendeTransaksjonNokkel: string
+        meldingKode: string
+        alvorlighetsgrad: string
+        tekstMelding: string
+        tidspunkt: string
+    }[] = Array.from(detaljElements).map((xml) => ({
         detaljType: xml.querySelector('detaljType')?.textContent ?? '',
         offnr: xml.querySelector('offnr')?.textContent ?? '',
         avleverendeTransaksjonNokkel: xml.querySelector('avleverendeTransaksjonNokkel')?.textContent ?? '',
