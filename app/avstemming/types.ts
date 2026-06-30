@@ -4,38 +4,6 @@ export type AvstemmingRequest = {
     tom: string
 }
 
-export type Avstemming = {
-    fagsystem: string
-    dato: Date
-    fom: Date
-    tom: Date
-    totalAntall: number
-    totalBelop: number
-    grunnlag: {
-        godkjentAntall: number
-        godkjentBelop: number
-        godkjentFortegn?: string
-        varselAntall: number
-        varselBelop: number
-        varselFortegn?: string
-        avvistAntall: number
-        avvistBelop: number
-        avvistFortegn?: string
-        manglerAntall: number
-        manglerBelop: number
-        manglerFortegn?: string
-    }
-    detaljs: {
-        detaljType: string
-        offnr: string
-        avleverendeTransaksjonNokkel: string
-        meldingKode: string
-        alvorlighetsgrad: string
-        tekstMelding: string
-        tidspunkt: string
-    }[]
-}
-
 type Aksjon = {
     aksjonType: 'START' | 'DATA' | 'AVSL'
     kildeType: string
@@ -102,7 +70,7 @@ type AvsluttMelding = {
     }
 }
 
-type AvstemmingMelding = StartMelding | DataMelding | AvsluttMelding
+export type AvstemmingMelding = StartMelding | DataMelding | AvsluttMelding
 
 export type FagsystemAvstemming = {
     first: string // Fagsystem
@@ -113,4 +81,12 @@ export type AvstemmingResponse = FagsystemAvstemming[]
 
 export const isDataMelding = (melding: AvstemmingMelding): melding is DataMelding => {
     return melding.aksjon.aksjonType === 'DATA'
+}
+
+export const getFom = (avstemming: DataMelding): Date => {
+    return new Date(avstemming.aksjon.nokkelFom.slice(0, 10))
+}
+
+export const getTom = (avstemming: DataMelding): Date => {
+    return new Date(avstemming.aksjon.nokkelTom.slice(0, 10))
 }

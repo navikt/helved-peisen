@@ -1,6 +1,6 @@
 'use client'
 
-import { Alert, Label, Table, Tag, VStack } from '@navikt/ds-react'
+import { Alert, Label, Skeleton, Table, Tag, VStack } from '@navikt/ds-react'
 import {
     TableBody,
     TableDataCell,
@@ -90,6 +90,54 @@ export const ResultTable: React.FC<ResultTableProps> = ({ avstemming }) => {
                                 </TableExpandableRow>
                             )
                         })}
+                    </TableBody>
+                </Table>
+            </div>
+        </VStack>
+    )
+}
+
+export const ResultTableSkeleton = () => {
+    return (
+        <VStack gap="space-16">
+            <div className="max-w-[100vw] overflow-y-auto scrollbar-gutter-stable">
+                <Table size="small" className="h-max overflow-scroll">
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell />
+                            <TableHeaderCell>Fagområde</TableHeaderCell>
+                            <TableHeaderCell>Status</TableHeaderCell>
+                            <TableHeaderCell>Antall</TableHeaderCell>
+                            <TableHeaderCell>Beløp</TableHeaderCell>
+                            <TableHeaderCell>Fom</TableHeaderCell>
+                            <TableHeaderCell>Tom</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {Array(6)
+                            .fill(null)
+                            .map((_, i) => (
+                                <TableExpandableRow content={null} key={i}>
+                                    <TableDataCell>
+                                        <Skeleton />
+                                    </TableDataCell>
+                                    <TableDataCell>
+                                        <Skeleton />
+                                    </TableDataCell>
+                                    <TableDataCell>
+                                        <Skeleton />
+                                    </TableDataCell>
+                                    <TableDataCell>
+                                        <Skeleton />
+                                    </TableDataCell>
+                                    <TableDataCell>
+                                        <Skeleton />
+                                    </TableDataCell>
+                                    <TableDataCell>
+                                        <Skeleton />
+                                    </TableDataCell>
+                                </TableExpandableRow>
+                            ))}
                     </TableBody>
                 </Table>
             </div>

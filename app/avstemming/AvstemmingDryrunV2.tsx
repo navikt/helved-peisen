@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { format, subDays } from 'date-fns'
-import { Alert, Button, Label, TextField } from '@navikt/ds-react'
+import { Alert, Button, Label } from '@navikt/ds-react'
 import { AvstemmingRequest, AvstemmingResponse } from '@/app/avstemming/types.ts'
 import { ResultTable } from '@/app/avstemming/table/ResultTable.tsx'
 import { fetchAvstemmingDryrunV2 } from './actions'
@@ -44,7 +44,7 @@ export function AvstemmingDryrunV2() {
     }
 
     return (
-        <div>
+        <div className="w-full">
             <div className="flex flex-col gap-4">
                 <Label>Dryrun</Label>
                 <div className="flex flex-wrap gap-4 items-end mb-8">

@@ -11,7 +11,7 @@ type Props = {
 export const AvstemmingFiltere: React.FC<Props> = ({ className }) => {
     const { setFiltere, ...filtere } = useAvstemminger()
     return (
-        <div className={clsx('flex flex-col gap-6 justify-between max-w-max', className)}>
+        <div className={clsx('flex flex-col gap-6 justify-between w-max', className)}>
             <DateRangeSelect
                 from={filtere.fom}
                 to={filtere.tom}

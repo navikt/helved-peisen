@@ -4,6 +4,8 @@ import { subDays } from 'date-fns'
 import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { ApiResponse } from '@/lib/api/types.ts'
+import { AvstemmingMelding } from './types'
+import { xmlToJson } from '@/lib/browser/xml'
 
 type AvstemmingFiltereValue = {
     fom: string
@@ -12,7 +14,7 @@ type AvstemmingFiltereValue = {
 
 type AvstemmingContextValue = AvstemmingFiltereValue & {
     loading: boolean
-    avstemminger: ApiResponse<string[]> | null
+    avstemminger: ApiResponse<{ xml: string; avstemming: AvstemmingMelding }[]> | null
     setFiltere: (filtere: Partial<AvstemmingFiltereValue>) => void
 }
 
@@ -61,7 +63,13 @@ export const AvstemmingProvider: React.FC<PropsWithChildren> = ({ children }) =>
                 .then(async (res) => {
                     if (res.ok) {
                         const body = await res.json()
-                        setAvstemminger(body)
+                        setAvstemminger({
+                            data: body.data.map((it: string) => ({
+                                xml: it,
+                                avstemming: xmlToJson(it),
+                            })),
+                            error: null,
+                        })
                     } else {
                         setAvstemminger({ data: null, error: res.statusText })
                     }
