@@ -2,19 +2,17 @@
 
 import { getVedskivaApiTokenFromCookie } from '@/lib/server/auth.ts'
 import { Routes } from '@/lib/api/routes.ts'
-import { AvstemmingRequest, AvstemmingResponse } from '@/app/avstemming/types.ts'
+import { AvstemmingRequest } from '@/app/avstemming/types.ts'
 import { ApiResponse } from '@/lib/api/types.ts'
 import { unauthorized } from 'next/navigation'
 import { logger } from '@navikt/next-logger'
 
-type AvstemmingDryrunResponse = {
+type Response = {
     first: string
     second: string[]
 }[]
 
-export async function fetchAvstemmingDryrunV2(
-    range: AvstemmingRequest
-): Promise<ApiResponse<AvstemmingDryrunResponse>> {
+export async function fetchAvstemmingDryrunV2(range: AvstemmingRequest): Promise<ApiResponse<Response>> {
     const apiToken = await getVedskivaApiTokenFromCookie()
     if (!apiToken) return unauthorized()
 

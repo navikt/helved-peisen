@@ -2,7 +2,6 @@
 
 import { PropsWithChildren } from 'react'
 import { Button } from '@navikt/ds-react'
-import { AvstemmingProvider } from '@/app/avstemming/AvstemingContext.tsx'
 import clsx from 'clsx'
 import { usePathname } from 'next/navigation'
 
@@ -37,7 +36,7 @@ export default function AvstemmingLayout({ children }: PropsWithChildren) {
                         <span className="font-normal">Dryrun</span>
                     </Button>
                 </nav>
-                <AvstemmingProvider>{children}</AvstemmingProvider>
+                {children}
             </div>
         </div>
     )
