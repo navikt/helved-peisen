@@ -57,7 +57,7 @@ export const AvstemmingTimeline = () => {
     const grouped = Map.groupBy(datameldinger, (avstemming) => avstemming.aksjon.avleverendeKomponentKode)
 
     return (
-        <Timeline>
+        <Timeline className="animate-fade-in">
             {[...grouped.entries()].map(([fagsystem, items]) => (
                 <Timeline.Row key={fagsystem} label={fagsystem}>
                     {items.map((avstemming, i) => {

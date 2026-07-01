@@ -90,7 +90,7 @@ export const LatestAvstemminger: React.FC = () => {
         <div className="flex flex-col gap-4 w-full">
             <Label>Siste avstemminger</Label>
             <div className="max-w-[100vw] overflow-y-auto scrollbar-gutter-stable">
-                <Table size="small" className="h-max overflow-scroll">
+                <Table size="small" className="animate-fade-in h-max overflow-scroll">
                     <TableHeader>
                         <TableRow>
                             <TableHeaderCell />
