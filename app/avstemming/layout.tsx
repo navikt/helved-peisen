@@ -22,20 +22,7 @@ export default function AvstemmingLayout({ children }: PropsWithChildren) {
                         size="small"
                         as="a"
                     >
-                        <span className="font-normal text-start">Tidslinje</span>
-                    </Button>
-                    <Button
-                        href="/avstemming/siste-avstemminger"
-                        className={clsx(
-                            'justify-start whitespace-nowrap',
-                            pathname.endsWith('/avstemming/siste-avstemminger') &&
-                                'not-[&:hover]:bg-(--ax-bg-neutral-moderateA)'
-                        )}
-                        variant="tertiary-neutral"
-                        size="small"
-                        as="a"
-                    >
-                        <span className="font-normal">Siste avstemminger</span>
+                        <span className="font-normal text-start">Avstemminger</span>
                     </Button>
                     <Button
                         href="/avstemming/dryrun"
