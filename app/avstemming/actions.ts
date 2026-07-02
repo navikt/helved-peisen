@@ -16,7 +16,7 @@ export async function fetchAvstemmingDryrunV2(range: AvstemmingRequest): Promise
     const apiToken = await getVedskivaApiTokenFromCookie()
     if (!apiToken) return unauthorized()
 
-    const res = await fetch(Routes.avstemmingDryrunv2, {
+    const res = await fetch(Routes.avstemmingDryrun, {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${apiToken}`,

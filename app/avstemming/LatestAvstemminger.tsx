@@ -104,15 +104,14 @@ export const LatestAvstemminger: React.FC = () => {
                     </TableHeader>
                     <TableBody>
                         {latest.map(({ fagsystem, avstemming, xml }) => {
-                            const datamelding = avstemming as DataMelding
                             return (
                                 <TableExpandableRow
                                     key={fagsystem}
                                     content={
                                         <VStack gap="space-32">
                                             <ResultTableRow
-                                                grunnlag={datamelding.grunnlag}
-                                                detaljs={datamelding.detaljs}
+                                                grunnlag={avstemming.grunnlag}
+                                                detaljs={avstemming.detaljs}
                                             />
 
                                             <VStack gap="space-12">
@@ -124,14 +123,12 @@ export const LatestAvstemminger: React.FC = () => {
                                 >
                                     <TableDataCell>{fagsystem}</TableDataCell>
                                     <TableDataCell>
-                                        <StatusTag avstemming={datamelding} />
+                                        <StatusTag avstemming={avstemming} />
                                     </TableDataCell>
-                                    <TableDataCell>{datamelding.total.totalAntall}</TableDataCell>
-                                    <TableDataCell>
-                                        {datamelding.total.totalBelop.toLocaleString('nb-NO')}
-                                    </TableDataCell>
-                                    <TableDataCell>{format(getFom(datamelding), 'yyyy-MM-dd')}</TableDataCell>
-                                    <TableDataCell>{format(getTom(datamelding), 'yyyy-MM-dd')}</TableDataCell>
+                                    <TableDataCell>{avstemming.total.totalAntall}</TableDataCell>
+                                    <TableDataCell>{avstemming.total.totalBelop.toLocaleString('nb-NO')}</TableDataCell>
+                                    <TableDataCell>{format(getFom(avstemming), 'yyyy-MM-dd')}</TableDataCell>
+                                    <TableDataCell>{format(getTom(avstemming), 'yyyy-MM-dd')}</TableDataCell>
                                 </TableExpandableRow>
                             )
                         })}
