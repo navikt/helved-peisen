@@ -6,6 +6,7 @@ import { logger } from '@navikt/next-logger'
 import { getToken, validateToken } from '@navikt/oasis'
 
 import { isFaking, isLocal } from '@/lib/env.ts'
+import { getSession, type TokenSession } from '@/lib/server/session-store.ts'
 
 export const checkToken = async () => {
     if (isFaking || isLocal) return
@@ -24,10 +25,18 @@ export const checkToken = async () => {
     }
 }
 
-export const getApiTokenFromCookie = async () => (await cookies()).get('api-token')?.value
+async function getTokenFromSession(key: keyof TokenSession): Promise<string | undefined> {
+    if (isFaking) return (await cookies()).get(key)?.value
+    const sessionId = (await cookies()).get('session-id')?.value
+    if (!sessionId) return undefined
+    const session = await getSession(sessionId)
+    return session?.[key] ?? undefined
+}
 
-export const getUtsjekkApiTokenFromCookie = async () => (await cookies()).get('utsjekk-api-token')?.value
+export const getApiToken = async () => getTokenFromSession('api-token')
 
-export const getVedskivaApiTokenFromCookie = async () => (await cookies()).get('vedskiva-api-token')?.value
+export const getUtsjekkApiToken = async () => getTokenFromSession('utsjekk-api-token')
 
-export const getSpeiderhyttaApiTokenFromCookie = async () => (await cookies()).get('speiderhytta-api-token')?.value
+export const getVedskivaApiToken = async () => getTokenFromSession('vedskiva-api-token')
+
+export const getSpeiderhyttaApiToken = async () => getTokenFromSession('speiderhytta-api-token')

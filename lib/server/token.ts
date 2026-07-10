@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
-import { getToken, requestAzureOboToken } from '@navikt/oasis'
+import { expiresIn, getToken, requestAzureOboToken } from '@navikt/oasis'
 import { logger } from '@navikt/next-logger'
 import { requireEnv } from '@/lib/env.ts'
-import type { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 import { headers } from 'next/headers'
+import { createSession, type TokenSession } from '@/lib/server/session-store.ts'
 
 async function fetchToken(scope: string) {
     const token = getToken(await headers())
@@ -18,39 +18,45 @@ async function fetchToken(scope: string) {
     return result.token
 }
 
-async function getTokenCookie(name: string, scope: string): Promise<ResponseCookie | undefined> {
-    const token = await fetchToken(scope)
-    if (!token) return
-    return {
-        name,
-        value: token,
+export async function setTokens() {
+    const response = NextResponse.next()
+
+    const apiToken = await fetchToken(requireEnv('API_SCOPE'))
+    const utsjekkToken = await fetchToken(requireEnv('UTSJEKK_API_SCOPE'))
+    const vedskivaToken = await fetchToken(requireEnv('VEDSKIVA_API_SCOPE'))
+    const speiderhyttaScope = process.env.SPEIDERHYTTA_API_SCOPE
+    const speiderhyttaToken = speiderhyttaScope ? await fetchToken(speiderhyttaScope) : undefined
+
+    if (!apiToken || !utsjekkToken || !vedskivaToken) return response
+
+    const tokens: TokenSession = {
+        'api-token': apiToken,
+        'utsjekk-api-token': utsjekkToken,
+        'vedskiva-api-token': vedskivaToken,
+        ...(speiderhyttaToken ? { 'speiderhytta-api-token': speiderhyttaToken } : {}),
+    }
+
+    const ttl = Math.max(
+        0,
+        Math.min(
+            ...[apiToken, utsjekkToken, vedskivaToken, speiderhyttaToken]
+                .filter((t): t is string => !!t)
+                .map(expiresIn)
+        ) - 60
+    )
+    const expiresAt = new Date(Date.now() + ttl * 1000)
+
+    const sessionId = await createSession(tokens, ttl)
+
+    response.cookies.set({
+        name: 'session-id',
+        value: sessionId,
         httpOnly: true,
         secure: true,
         sameSite: 'lax',
         path: '/',
-    }
-}
+        expires: expiresAt,
+    })
 
-export async function setTokens() {
-    const response = NextResponse.next()
-    const apiToken = await getTokenCookie('api-token', requireEnv('API_SCOPE'))
-    const utsjekkToken = await getTokenCookie('utsjekk-api-token', requireEnv('UTSJEKK_API_SCOPE'))
-    const vedskivaToken = await getTokenCookie('vedskiva-api-token', requireEnv('VEDSKIVA_API_SCOPE'))
-    const speiderhyttaScope = process.env.SPEIDERHYTTA_API_SCOPE
-    const speiderhyttaToken = speiderhyttaScope
-        ? await getTokenCookie('speiderhytta-api-token', speiderhyttaScope)
-        : undefined
-    if (!!apiToken) {
-        response.cookies.set(apiToken)
-    }
-    if (!!utsjekkToken) {
-        response.cookies.set(utsjekkToken)
-    }
-    if (!!vedskivaToken) {
-        response.cookies.set(vedskivaToken)
-    }
-    if (!!speiderhyttaToken) {
-        response.cookies.set(speiderhyttaToken)
-    }
     return response
 }

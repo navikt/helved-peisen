@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
-import type { ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
+import { createSession } from '@/lib/server/session-store.ts'
+
+const DEV_SESSION_TTL_SECONDS = 3600
 
 async function fetchDevToken(aud: string) {
     const url = new URL(`https://azure-token-generator.intern.dev.nav.no/api/public/m2m?aud=${aud}`)
@@ -16,21 +18,34 @@ async function fetchDevToken(aud: string) {
     return await response.text()
 }
 
-async function getDevTokenCookie(name: string, aud: string): Promise<ResponseCookie> {
-    const token = await fetchDevToken(aud)
-    return {
-        name,
-        value: token,
+export async function setDevTokens() {
+    const response = NextResponse.next()
+
+    const [apiToken, utsjekkToken, vedskivaToken] = await Promise.all([
+        fetchDevToken('dev-gcp.helved.peisschtappern'),
+        fetchDevToken('dev-gcp.helved.utsjekk'),
+        fetchDevToken('dev-gcp.helved.vedskiva'),
+    ])
+
+    const expiresAt = new Date(Date.now() + DEV_SESSION_TTL_SECONDS * 1000)
+
+    const sessionId = await createSession(
+        {
+            'api-token': apiToken,
+            'utsjekk-api-token': utsjekkToken,
+            'vedskiva-api-token': vedskivaToken,
+        },
+        DEV_SESSION_TTL_SECONDS
+    )
+
+    response.cookies.set({
+        name: 'session-id',
+        value: sessionId,
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-    }
-}
+        expires: expiresAt,
+    })
 
-export async function setDevTokens() {
-    const response = NextResponse.next()
-    response.cookies.set(await getDevTokenCookie('api-token', 'dev-gcp.helved.peisschtappern'))
-    response.cookies.set(await getDevTokenCookie('utsjekk-api-token', 'dev-gcp.helved.utsjekk'))
-    response.cookies.set(await getDevTokenCookie('vedskiva-api-token', 'dev-gcp.helved.vedskiva'))
     return response
 }

@@ -1,6 +1,6 @@
 'use server'
 
-import { getVedskivaApiTokenFromCookie } from '@/lib/server/auth.ts'
+import { getVedskivaApiToken } from '@/lib/server/auth.ts'
 import { Routes } from '@/lib/api/routes.ts'
 import { AvstemmingRequest } from '@/app/avstemming/types.ts'
 import { ApiResponse } from '@/lib/api/types.ts'
@@ -13,7 +13,7 @@ type Response = {
 }[]
 
 export async function fetchAvstemmingDryrunV2(range: AvstemmingRequest): Promise<ApiResponse<Response>> {
-    const apiToken = await getVedskivaApiTokenFromCookie()
+    const apiToken = await getVedskivaApiToken()
     if (!apiToken) return unauthorized()
 
     const res = await fetch(Routes.avstemmingDryrun, {

@@ -17,7 +17,7 @@ const nextConfig = {
             },
         ]
     },
-    serverExternalPackages: ['@navikt/next-logger', 'pino'],
+    serverExternalPackages: ['@navikt/next-logger', 'pino', '@valkey/valkey-glide'],
 }
 
 export default nextConfig

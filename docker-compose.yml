@@ -2,6 +2,11 @@ services:
 #  utsjekk:
 #    image: europe-north1-docker.pkg.dev/nais-management-233d/helved/utsjekk:2024.09.10-10.48-5a55fda@sha256:8cf6e13e4acfb83a1a164b8e01302c062c4cfb4b981ef46fa3869b79d51ef221
 
+  valkey:
+    image: valkey/valkey:latest
+    ports:
+      - "6379:6379"
+
   db:
     image: postgres:latest
     environment:

@@ -3,7 +3,7 @@
 import { unauthorized } from 'next/navigation'
 import { logger } from '@navikt/next-logger'
 
-import { getSpeiderhyttaApiTokenFromCookie } from '@/lib/server/auth.ts'
+import { getSpeiderhyttaApiToken } from '@/lib/server/auth.ts'
 import { Routes } from '@/lib/api/routes.ts'
 import { ApiResponse } from '@/lib/api/types.ts'
 import { Deployment, DoraResponse, Incident } from './types'
@@ -20,7 +20,7 @@ async function speiderhyttaFetch<T>(url: string, label: string): Promise<ApiResp
         }
     }
 
-    const token = await getSpeiderhyttaApiTokenFromCookie()
+    const token = await getSpeiderhyttaApiToken()
     if (!token) return unauthorized()
 
     const res = await fetch(url, {

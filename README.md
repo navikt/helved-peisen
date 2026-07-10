@@ -23,13 +23,14 @@ pnpm i
 ```
 NEXT_PUBLIC_HOSTNAME=http://localhost:3000
 API_BASE_URL=https://peisschtappern.intern.dev.nav.no
+VEDSKIVA_BASE_URL=https://vedskiva.intern.dev.nav.no
+VALKEY_URI_PEISEN_SESSIONS=redis://localhost:6379
 ```
+2. Start docker 
 
-2. Kjør `pnpm run dev`. 
+3. Kjør `pnpm run dev`. 
 
 Appen kjører nå på [http://localhost:3000](http://localhost:3000)
-
-Hvis du av en eller annen grunn har problemer med å kjøre scriptet som automatisk henter access-tokenet kan du gjøre det manuelt ved å logge inn i [azure-token-generator](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp.helved.peisschtappern) og manuelt sette miljøvariabelen `API_TOKEN` med access-tokenet du mottar i responsen.
 
 ### Med mock-data
 
