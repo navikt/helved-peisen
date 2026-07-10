@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getApiTokenFromCookie } from '@/lib/server/auth.ts'
+import { getApiToken } from '@/lib/server/auth.ts'
 import { Routes } from '@/lib/api/routes.ts'
 
 export async function GET(req: NextRequest) {
-    const apiToken = await getApiTokenFromCookie()
+    const apiToken = await getApiToken()
     if (!apiToken) {
         return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
     }
