@@ -1,25 +1,10 @@
-export interface AvstemmingRequest {
+export type AvstemmingRequest = {
     today: string
     fom: string
     tom: string
 }
 
-export interface RawAvstemmingMessage {
-    value: string
-}
-
-export type Avstemming = {
-    fagsystem: string
-    dato: Date
-    fom: Date;
-    tom: Date;
-    totalAntall: number
-    totalBelop: number
-    grunnlag: Grunnlag
-    detaljs: Detaljs[]
-}
-
-export interface Aksjon {
+type Aksjon = {
     aksjonType: 'START' | 'DATA' | 'AVSL'
     kildeType: string
     avstemmingType: string
@@ -33,53 +18,75 @@ export interface Aksjon {
     brukerId: string
 }
 
-export interface Total {
-    totalAntall: number
-    totalBelop: number
-    fortegn: string
+type StartMelding = {
+    aksjon: Aksjon & {
+        aksjonType: 'START'
+    }
 }
 
-export interface Periode {
-    datoAvstemtFom: string
-    datoAvstemtTom: string
+export type DataMelding = {
+    aksjon: Aksjon & {
+        aksjonType: 'DATA'
+    }
+    total: {
+        totalAntall: number
+        totalBelop: number
+        fortegn: string
+    }
+    periode: {
+        datoAvstemtFom: string
+        datoAvstemtTom: string
+    }
+    grunnlag: {
+        godkjentAntall: number
+        godkjentBelop: number
+        godkjentFortegn?: string
+        varselAntall: number
+        varselBelop: number
+        varselFortegn?: string
+        avvistAntall: number
+        avvistBelop: number
+        avvistFortegn?: string
+        manglerAntall: number
+        manglerBelop: number
+        manglerFortegn?: string
+    }
+    detaljs?:
+        | {
+              detaljType: string
+              offnr: string
+              avleverendeTransaksjonNokkel: string
+              meldingKode: string
+              alvorlighetsgrad: string
+              tekstMelding: string
+              tidspunkt: string
+          }[]
+        | null
 }
 
-export interface Grunnlag {
-    godkjentAntall: number
-    godkjentBelop: number
-    godkjentFortegn?: string
-    varselAntall: number
-    varselBelop: number
-    varselFortegn?: string
-    avvistAntall: number
-    avvistBelop: number
-    avvistFortegn?: string
-    manglerAntall: number
-    manglerBelop: number
-    manglerFortegn?: string
+type AvsluttMelding = {
+    aksjon: Aksjon & {
+        aksjonType: 'AVSL'
+    }
 }
 
-export interface Detaljs {
-    detaljType: string
-    offnr: string
-    avleverendeTransaksjonNokkel: string
-    meldingKode: string
-    alvorlighetsgrad: string
-    tekstMelding: string
-    tidspunkt: string
-}
+export type AvstemmingMelding = StartMelding | DataMelding | AvsluttMelding
 
-export interface AvstemmingMelding {
-    aksjon: Aksjon
-    total: Total | null
-    periode: Periode | null
-    grunnlag: Grunnlag | null
-    detaljs: Detaljs[]
-}
-
-export interface FagsystemAvstemming {
-    first: string
+export type FagsystemAvstemming = {
+    first: string // Fagsystem
     second: AvstemmingMelding[]
 }
 
 export type AvstemmingResponse = FagsystemAvstemming[]
+
+export const isDataMelding = (melding: AvstemmingMelding): melding is DataMelding => {
+    return melding.aksjon.aksjonType === 'DATA'
+}
+
+export const getFom = (avstemming: DataMelding): Date => {
+    return new Date(avstemming.aksjon.nokkelFom.slice(0, 10))
+}
+
+export const getTom = (avstemming: DataMelding): Date => {
+    return new Date(avstemming.aksjon.nokkelTom.slice(0, 10))
+}

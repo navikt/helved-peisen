@@ -2,14 +2,17 @@
 
 import { useState } from 'react'
 import { format, subDays } from 'date-fns'
-import { Alert, Button, Label, TextField } from '@navikt/ds-react'
-import { AvstemmingRequest } from '@/app/avstemming/types.ts'
+import { Alert, Button, Label } from '@navikt/ds-react'
+import { AvstemmingRequest, AvstemmingResponse } from '@/app/avstemming/types.ts'
 import { ResultTable } from '@/app/avstemming/table/ResultTable.tsx'
 import { fetchAvstemmingDryrunV2 } from './actions'
 import { isSuccessResponse } from '@/lib/api/types'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { xmlToJson } from '@/lib/browser/xml'
+import { DateRangeSelect } from '@/components/DateRangeSelect'
 
 export function AvstemmingDryrunV2() {
-    const [result, setResult] = useState<string | null>(null)
+    const [result, setResult] = useState<AvstemmingResponse | null>(null)
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
 
@@ -24,10 +27,16 @@ export function AvstemmingDryrunV2() {
     const handleDryrun = async () => {
         setLoading(true)
         setError(null)
+        setResult(null)
 
         const res = await fetchAvstemmingDryrunV2(range)
+
         if (isSuccessResponse(res)) {
-            setResult(res.data)
+            const mapped = res.data.map(({ first, second }) => ({
+                first,
+                second: second.map(xmlToJson),
+            }))
+            setResult(mapped)
         } else {
             setError(res.error)
         }
@@ -35,25 +44,15 @@ export function AvstemmingDryrunV2() {
     }
 
     return (
-        <div style={{ marginTop: '3rem' }}>
-            <div className="flex flex-col mt-12 gap-4">
-                <Label>Dryrun V2</Label>
-                <div className="flex flex-wrap gap-4 items-end">
-                    <TextField
-                        label="Fra"
-                        type="text"
-                        size="small"
-                        step="1"
-                        value={range.fom.slice(0, 19)}
-                        onChange={(e) => setRange({ ...range, fom: e.target.value })}
-                    />
-                    <TextField
-                        label="Til"
-                        type="text"
-                        size="small"
-                        step="1"
-                        value={range.tom.slice(0, 19)}
-                        onChange={(e) => setRange({ ...range, tom: e.target.value })}
+        <div className="w-full">
+            <div className="flex flex-col gap-4">
+                <Label>Dryrun</Label>
+                <div className="flex flex-wrap gap-4 items-end mb-8">
+                    <DateRangeSelect
+                        from={range.fom}
+                        to={range.tom}
+                        updateFrom={(fom) => setRange({ ...range, fom })}
+                        updateTo={(tom) => setRange({ ...range, tom })}
                     />
                     <Button variant="primary" size="small" onClick={handleDryrun} loading={loading}>
                         Kjør dryrun
@@ -68,9 +67,9 @@ export function AvstemmingDryrunV2() {
             )}
 
             {result && (
-                <div style={{ marginTop: '2rem' }}>
-                    <ResultTable json={result} />
-                </div>
+                <ErrorBoundary>
+                    <ResultTable avstemming={result} />
+                </ErrorBoundary>
             )}
         </div>
     )

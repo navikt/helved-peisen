@@ -1,12 +1,6 @@
 'use client'
 
-import {
-    Alert,
-    Label,
-    Table,
-    Tag,
-    VStack,
-} from '@navikt/ds-react'
+import { Alert, Label, Skeleton, Table, Tag, VStack } from '@navikt/ds-react'
 import {
     TableBody,
     TableDataCell,
@@ -15,20 +9,38 @@ import {
     TableHeaderCell,
     TableRow,
 } from '@navikt/ds-react/Table'
-import { AvstemmingResponse, Grunnlag } from '@/app/avstemming/types.ts'
-import ResultTableRow from '@/app/avstemming/table/ResultTableRow.tsx'
+import { AvstemmingResponse, DataMelding, isDataMelding } from '@/app/avstemming/types.ts'
+import { ResultTableRow } from '@/app/avstemming/table/ResultTableRow.tsx'
 import { JsonView } from '@/components/JsonView.tsx'
 
-function StatusTag({ grunnlag }: { grunnlag: Grunnlag }) {
-    if (grunnlag.avvistAntall > 0) return <Tag variant="error" size="small">{grunnlag.avvistAntall} avvist</Tag>
-    if (grunnlag.varselAntall > 0) return <Tag variant="warning" size="small">{grunnlag.varselAntall} varsler</Tag>
-    return <Tag variant="success" size="small">OK</Tag>
+type StatusTagProps = {
+    grunnlag: DataMelding['grunnlag']
 }
 
-export function ResultTable({ json }: { json: string | object }) {
-    const data: AvstemmingResponse = typeof json === 'string' ? JSON.parse(json) : json
+const StatusTag: React.FC<StatusTagProps> = ({ grunnlag }) => {
+    if (grunnlag.avvistAntall > 0)
+        return (
+            <Tag variant="error" size="small">
+                {grunnlag.avvistAntall} avvist
+            </Tag>
+        )
+    if (grunnlag.varselAntall > 0)
+        return (
+            <Tag variant="warning" size="small">
+                {grunnlag.varselAntall} varsler
+            </Tag>
+        )
+    return (
+        <Tag variant="success" size="small">
+            OK
+        </Tag>
+    )
+}
 
-    if (!data || data.length === 0) {
+type ResultTableProps = { avstemming: AvstemmingResponse }
+
+export const ResultTable: React.FC<ResultTableProps> = ({ avstemming }) => {
+    if (!avstemming || avstemming.length === 0) {
         return <Alert variant="info">Ingen avstemminger i perioden</Alert>
     }
 
@@ -48,46 +60,84 @@ export function ResultTable({ json }: { json: string | object }) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {data.map((komponent) => {
-                            const avstemming = komponent.second.find((m) => m.aksjon.aksjonType === 'DATA')
+                        {avstemming.map((it) => {
+                            const avstemming = it.second.find(isDataMelding)
                             if (!avstemming?.total || !avstemming.grunnlag) return null
 
                             const { total, grunnlag, detaljs } = avstemming
 
                             return (
                                 <TableExpandableRow
-                                    key={komponent.first}
+                                    key={it.first}
                                     content={
                                         <VStack gap="space-32">
-                                            <ResultTableRow grunnlag={grunnlag} detaljs={detaljs} />
+                                            <ResultTableRow grunnlag={grunnlag} detaljs={detaljs ?? []} />
                                             <VStack gap="space-12">
                                                 <Label>JSON</Label>
-                                                <JsonView json={komponent} />
+                                                <JsonView json={it} />
                                             </VStack>
                                         </VStack>
                                     }
                                 >
-                                    <TableDataCell>
-                                        {komponent.first}
-                                    </TableDataCell>
+                                    <TableDataCell>{it.first}</TableDataCell>
                                     <TableDataCell>
                                         <StatusTag grunnlag={grunnlag} />
                                     </TableDataCell>
-                                    <TableDataCell>
-                                        {total.totalAntall}
-                                    </TableDataCell>
-                                    <TableDataCell>
-                                        {total.totalBelop.toLocaleString('nb-NO')}
-                                    </TableDataCell>
-                                    <TableDataCell>
-                                        {avstemming.aksjon?.nokkelFom.slice(0, 19)}
-                                    </TableDataCell>
-                                    <TableDataCell>
-                                        {avstemming.aksjon?.nokkelTom.slice(0, 19)}
-                                    </TableDataCell>
+                                    <TableDataCell>{total.totalAntall}</TableDataCell>
+                                    <TableDataCell>{total.totalBelop.toLocaleString('nb-NO')}</TableDataCell>
+                                    <TableDataCell>{avstemming.aksjon?.nokkelFom.slice(0, 19)}</TableDataCell>
+                                    <TableDataCell>{avstemming.aksjon?.nokkelTom.slice(0, 19)}</TableDataCell>
                                 </TableExpandableRow>
                             )
                         })}
+                    </TableBody>
+                </Table>
+            </div>
+        </VStack>
+    )
+}
+
+export const ResultTableSkeleton = () => {
+    return (
+        <VStack gap="space-16">
+            <div className="max-w-[100vw] overflow-y-auto scrollbar-gutter-stable">
+                <Table size="small" className="h-max overflow-scroll">
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell />
+                            <TableHeaderCell>Fagområde</TableHeaderCell>
+                            <TableHeaderCell>Status</TableHeaderCell>
+                            <TableHeaderCell>Antall</TableHeaderCell>
+                            <TableHeaderCell>Beløp</TableHeaderCell>
+                            <TableHeaderCell>Fom</TableHeaderCell>
+                            <TableHeaderCell>Tom</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {Array(6)
+                            .fill(null)
+                            .map((_, i) => (
+                                <TableExpandableRow content={null} key={i}>
+                                    <TableDataCell>
+                                        <Skeleton />
+                                    </TableDataCell>
+                                    <TableDataCell>
+                                        <Skeleton />
+                                    </TableDataCell>
+                                    <TableDataCell>
+                                        <Skeleton />
+                                    </TableDataCell>
+                                    <TableDataCell>
+                                        <Skeleton />
+                                    </TableDataCell>
+                                    <TableDataCell>
+                                        <Skeleton />
+                                    </TableDataCell>
+                                    <TableDataCell>
+                                        <Skeleton />
+                                    </TableDataCell>
+                                </TableExpandableRow>
+                            ))}
                     </TableBody>
                 </Table>
             </div>

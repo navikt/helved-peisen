@@ -9,18 +9,18 @@ import {
     TableHeaderCell,
     TableRow,
 } from '@navikt/ds-react/Table'
-import { Avstemming } from '@/app/avstemming/types'
-import { parseAvstemmingXml } from '@/app/avstemming/parseAvstemmingXml'
+import { DataMelding, getFom, getTom, isDataMelding } from '@/app/avstemming/types'
 import { XMLView } from '@/components/XMLView'
 import { format } from 'date-fns'
-import ResultTableRow from '@/app/avstemming/table/ResultTableRow.tsx'
+import { ResultTableRow } from '@/app/avstemming/table/ResultTableRow.tsx'
+import { useAvstemminger } from './AvstemingContext'
+import { ResultTableSkeleton } from './table/ResultTable'
 
-interface ParsedXml {
-    avstemming: Avstemming
-    xml: string
+type StatusTagProps = {
+    avstemming: DataMelding
 }
 
-function StatusTag({ avstemming }: { avstemming: Avstemming }) {
+const StatusTag: React.FC<StatusTagProps> = ({ avstemming }) => {
     const { avvistAntall, varselAntall, manglerAntall } = avstemming.grunnlag
     if (avvistAntall > 0)
         return (
@@ -34,7 +34,7 @@ function StatusTag({ avstemming }: { avstemming: Avstemming }) {
                 {varselAntall + manglerAntall} varsler/mangler
             </Tag>
         )
-    if (avstemming.totalAntall === 0)
+    if (avstemming.total.totalAntall === 0)
         return (
             <Tag variant="neutral" size="small">
                 Ingen
@@ -47,34 +47,50 @@ function StatusTag({ avstemming }: { avstemming: Avstemming }) {
     )
 }
 
-function getLatestPerFagsystem(items: ParsedXml[]): ParsedXml[] {
-    const grouped = Map.groupBy(items, (i) => i.avstemming.fagsystem)
-    return [...grouped.values()].map((group) =>
-        group.reduce((latest, current) => (current.avstemming.dato > latest.avstemming.dato ? current : latest))
-    )
-}
+export const LatestAvstemminger: React.FC = () => {
+    const { loading, avstemminger } = useAvstemminger()
 
-interface Props {
-    xmlMessages: string[]
-}
+    if (loading) {
+        return (
+            <VStack gap="space-16">
+                <Label>Siste avstemminger</Label>
+                <ResultTableSkeleton />
+            </VStack>
+        )
+    }
 
-export function LatestAvstemminger({ xmlMessages }: Props) {
-    const parsed: ParsedXml[] = xmlMessages.flatMap((xml) => {
-        const avstemming = parseAvstemmingXml(xml)
-        return avstemming ? [{ avstemming: avstemming, xml }] : []
-    })
+    if (!avstemminger || !avstemminger.data) {
+        return null
+    }
 
-    const latest = getLatestPerFagsystem(parsed)
+    const datameldinger = avstemminger.data.filter((it) => isDataMelding(it.avstemming)) as unknown as {
+        xml: string
+        avstemming: DataMelding
+    }[]
+
+    const latest = Map.groupBy(datameldinger, ({ avstemming }) => avstemming.aksjon.avleverendeKomponentKode)
+        .entries()
+        .toArray()
+        .map(([fagsystem, avstemminger]) => {
+            const latest = avstemminger.reduce((latest, current) =>
+                current.avstemming.periode.datoAvstemtFom > latest.avstemming.periode.datoAvstemtFom ? current : latest
+            )
+            return {
+                fagsystem: fagsystem,
+                avstemming: latest.avstemming,
+                xml: latest.xml,
+            }
+        })
 
     if (latest.length === 0) {
         return <Alert variant="info">Ingen avstemminger funnet</Alert>
     }
 
     return (
-        <VStack gap="space-16" style={{ marginTop: '3rem' }}>
+        <div className="flex flex-col gap-4 w-full">
             <Label>Siste avstemminger</Label>
             <div className="max-w-[100vw] overflow-y-auto scrollbar-gutter-stable">
-                <Table size="small" className="h-max overflow-scroll">
+                <Table size="small" className="animate-fade-in h-max overflow-scroll">
                     <TableHeader>
                         <TableRow>
                             <TableHeaderCell />
@@ -87,33 +103,38 @@ export function LatestAvstemminger({ xmlMessages }: Props) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {latest.map(({ avstemming, xml }) => (
-                            <TableExpandableRow
-                                key={avstemming.fagsystem}
-                                content={
-                                    <VStack gap="space-32">
-                                        <ResultTableRow grunnlag={avstemming.grunnlag} detaljs={avstemming.detaljs} />
+                        {latest.map(({ fagsystem, avstemming, xml }) => {
+                            return (
+                                <TableExpandableRow
+                                    key={fagsystem}
+                                    content={
+                                        <VStack gap="space-32">
+                                            <ResultTableRow
+                                                grunnlag={avstemming.grunnlag}
+                                                detaljs={avstemming.detaljs}
+                                            />
 
-                                        <VStack gap="space-12">
-                                            <Label>XML</Label>
-                                            <XMLView data={xml} />
+                                            <VStack gap="space-12">
+                                                <Label>XML</Label>
+                                                <XMLView data={xml} />
+                                            </VStack>
                                         </VStack>
-                                    </VStack>
-                                }
-                            >
-                                <TableDataCell>{avstemming.fagsystem}</TableDataCell>
-                                <TableDataCell>
-                                    <StatusTag avstemming={avstemming} />
-                                </TableDataCell>
-                                <TableDataCell>{avstemming.totalAntall}</TableDataCell>
-                                <TableDataCell>{avstemming.totalBelop.toLocaleString('nb-NO')}</TableDataCell>
-                                <TableDataCell>{format(avstemming.fom, 'yyyy-MM-dd')}</TableDataCell>
-                                <TableDataCell>{format(avstemming.tom, 'yyyy-MM-dd')}</TableDataCell>
-                            </TableExpandableRow>
-                        ))}
+                                    }
+                                >
+                                    <TableDataCell>{fagsystem}</TableDataCell>
+                                    <TableDataCell>
+                                        <StatusTag avstemming={avstemming} />
+                                    </TableDataCell>
+                                    <TableDataCell>{avstemming.total.totalAntall}</TableDataCell>
+                                    <TableDataCell>{avstemming.total.totalBelop.toLocaleString('nb-NO')}</TableDataCell>
+                                    <TableDataCell>{format(getFom(avstemming), 'yyyy-MM-dd')}</TableDataCell>
+                                    <TableDataCell>{format(getTom(avstemming), 'yyyy-MM-dd')}</TableDataCell>
+                                </TableExpandableRow>
+                            )
+                        })}
                     </TableBody>
                 </Table>
             </div>
-        </VStack>
+        </div>
     )
 }

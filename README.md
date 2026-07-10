@@ -19,18 +19,14 @@ pnpm i
 
 ### Med data fra `gcp-dev`
 
-1. Start Valkey:
-```
-docker compose up valkey -d
-```
-
-2. Lag deg en `.env.local`-fil med følgende innhold:
+1. Lag deg en `.env.local`-fil med følgende innhold:
 ```
 NEXT_PUBLIC_HOSTNAME=http://localhost:3000
 API_BASE_URL=https://peisschtappern.intern.dev.nav.no
 VEDSKIVA_BASE_URL=https://vedskiva.intern.dev.nav.no
-VALKEY_URI_SESSIONS=redis://localhost:6379
+VALKEY_URI_PEISEN_SESSIONS=redis://localhost:6379
 ```
+2. Start docker 
 
 3. Kjør `pnpm run dev`. 
 

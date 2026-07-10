@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 import { BodyShort, Box, HStack, Label, VStack } from '@navikt/ds-react'
-import { Detaljs, Grunnlag } from '@/app/avstemming/types.ts'
+
+import type { DataMelding } from '../types'
 
 type MetadataCardProps = {
     label: string
@@ -33,48 +34,51 @@ const MetadataCardContainer: React.FC<MetadataCardContainerProps> = ({ children 
     )
 }
 
-export default function ResultTableRow({ grunnlag, detaljs }: { grunnlag: Grunnlag; detaljs: Detaljs[] }) {
-    return (
-        <VStack gap="space-32">
+type ResultTableRowProps = {
+    grunnlag: DataMelding['grunnlag']
+    detaljs: DataMelding['detaljs']
+}
+
+export const ResultTableRow: React.FC<ResultTableRowProps> = ({ grunnlag, detaljs }) => (
+    <VStack gap="space-32">
+        <VStack gap="space-12">
+            <Label size="small">Grunnlag</Label>
+            <VStack gap="space-16">
+                {[
+                    { label: 'Godkjent', antall: grunnlag.godkjentAntall, belop: grunnlag.godkjentBelop },
+                    { label: 'Varsel', antall: grunnlag.varselAntall, belop: grunnlag.varselBelop },
+                    { label: 'Avvist', antall: grunnlag.avvistAntall, belop: grunnlag.avvistBelop },
+                    { label: 'Mangler', antall: grunnlag.manglerAntall, belop: grunnlag.manglerBelop },
+                ]
+                    .filter((row) => row.antall > 0)
+                    .map((row) => (
+                        <MetadataCardContainer key={row.label}>
+                            <HStack wrap gap="space-12">
+                                <MetadataCard label="Status" value={row.label} />
+                                <MetadataCard label="Antall" value={row.antall.toLocaleString()} />
+                                <MetadataCard label="Beløp" value={row.belop.toLocaleString('nb-NO')} />
+                            </HStack>
+                        </MetadataCardContainer>
+                    ))}
+            </VStack>
+        </VStack>
+
+        {detaljs && detaljs.length > 0 && (
             <VStack gap="space-12">
-                <Label size="small">Grunnlag</Label>
+                <Label size="small">Avviste transaksjoner</Label>
                 <VStack gap="space-16">
-                    {[
-                        { label: 'Godkjent', antall: grunnlag.godkjentAntall, belop: grunnlag.godkjentBelop },
-                        { label: 'Varsel', antall: grunnlag.varselAntall, belop: grunnlag.varselBelop },
-                        { label: 'Avvist', antall: grunnlag.avvistAntall, belop: grunnlag.avvistBelop },
-                        { label: 'Mangler', antall: grunnlag.manglerAntall, belop: grunnlag.manglerBelop },
-                    ]
-                        .filter((row) => row.antall > 0)
-                        .map((row) => (
-                            <MetadataCardContainer key={row.label}>
-                                <HStack wrap gap="space-12">
-                                    <MetadataCard label="Status" value={row.label} />
-                                    <MetadataCard label="Antall" value={row.antall.toLocaleString()} />
-                                    <MetadataCard label="Beløp" value={row.belop.toLocaleString('nb-NO')} />
-                                </HStack>
-                            </MetadataCardContainer>
-                        ))}
+                    {detaljs.map((d, i) => (
+                        <MetadataCardContainer key={i}>
+                            <HStack wrap gap="space-12">
+                                <MetadataCard label="Type" value={d.detaljType} />
+                                <MetadataCard label="Nøkkel" value={d.avleverendeTransaksjonNokkel} />
+                                <MetadataCard label="Melding" value={d.tekstMelding} />
+                                <MetadataCard label="Tidspunkt" value={d.tidspunkt.slice(0, 19)} />
+                            </HStack>
+                        </MetadataCardContainer>
+                    ))}
                 </VStack>
             </VStack>
-
-            {detaljs.length > 0 && (
-                <VStack gap="space-12">
-                    <Label size="small">Avviste transaksjoner</Label>
-                    <VStack gap="space-16">
-                        {detaljs.map((d, i) => (
-                            <MetadataCardContainer key={i}>
-                                <HStack wrap gap="space-12">
-                                    <MetadataCard label="Type" value={d.detaljType} />
-                                    <MetadataCard label="Nøkkel" value={d.avleverendeTransaksjonNokkel} />
-                                    <MetadataCard label="Melding" value={d.tekstMelding} />
-                                    <MetadataCard label="Tidspunkt" value={d.tidspunkt.slice(0, 19)} />
-                                </HStack>
-                            </MetadataCardContainer>
-                        ))}
-                    </VStack>
-                </VStack>
-            )}
-        </VStack>
-    )
-}
+        )}
+    </VStack>
+)

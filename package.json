@@ -4,6 +4,7 @@
     "type": "module",
     "private": true,
     "scripts": {
+        "predev": "docker compose up -d valkey",
         "dev": "next dev | pino-pretty --messageKey=message",
         "build": "next build",
         "start": "next start",

@@ -24,6 +24,7 @@ type AnnotatedRawMessage = RawMessage & Pick<Message, 'pendingMismatch'>
 
 type UtbetalingInfo = {
     uid: string
+    lastPeriodeId: string | null
     perioder: UtbetalingPeriode[]
 }
 
@@ -36,12 +37,13 @@ const utbetalingInfo = (message: RawMessage): UtbetalingInfo | null => {
         case 'helved.utbetalinger.v1':
         case 'helved.pending-utbetalinger.v1': {
             try {
-                const { uid, perioder = [] } = JSON.parse(message.value) as UtbetalingMessageValue
+                const { uid, lastPeriodeId = null, perioder = [] } = JSON.parse(message.value) as UtbetalingMessageValue
                 if (!uid) {
                     return null
                 }
                 return {
                     uid,
+                    lastPeriodeId,
                     perioder: perioder
                         .map((periode) => ({
                             fom: periode.fom,
@@ -73,7 +75,7 @@ const equalPerioder = (a: UtbetalingPeriode[], b: UtbetalingPeriode[]) =>
     )
 
 export const annotatePendingMismatch = (messages: RawMessage[]): AnnotatedRawMessage[] => {
-    type Utbetaling = { message: RawMessage; uid: string; perioder: UtbetalingPeriode[] }
+    type Utbetaling = { message: RawMessage; uid: string; lastPeriodeId: string | null; perioder: UtbetalingPeriode[] }
 
     const utbetalinger: Utbetaling[] = []
     const pendingByUid = new Map<string, Utbetaling[]>()
@@ -81,7 +83,7 @@ export const annotatePendingMismatch = (messages: RawMessage[]): AnnotatedRawMes
     for (const message of messages) {
         const info = utbetalingInfo(message)
         if (!info) continue
-        const utbetaling: Utbetaling = { message, uid: info.uid, perioder: info.perioder }
+        const utbetaling: Utbetaling = { message, uid: info.uid, lastPeriodeId: info.lastPeriodeId, perioder: info.perioder }
         if (message.topic_name === 'helved.utbetalinger.v1') {
             utbetalinger.push(utbetaling)
         } else if (message.topic_name === 'helved.pending-utbetalinger.v1') {
@@ -97,7 +99,11 @@ export const annotatePendingMismatch = (messages: RawMessage[]): AnnotatedRawMes
             .filter((p) => p.message.system_time_ms < utbetaling.message.system_time_ms)
             .sort((a, b) => b.message.system_time_ms - a.message.system_time_ms)[0]
 
-        if (precedingPending && !equalPerioder(utbetaling.perioder, precedingPending.perioder)) {
+        if (
+            precedingPending &&
+            (!equalPerioder(utbetaling.perioder, precedingPending.perioder) ||
+                utbetaling.lastPeriodeId !== precedingPending.lastPeriodeId)
+        ) {
             mismatchedMessages.add(utbetaling.message)
             mismatchedMessages.add(precedingPending.message)
         }

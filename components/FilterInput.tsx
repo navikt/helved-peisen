@@ -1,27 +1,28 @@
 'use client'
 
-import clsx from 'clsx'
-import { Button, TextField, TextFieldProps } from '@navikt/ds-react'
-import { XMarkIcon } from '@navikt/aksel-icons'
+import { TextFieldProps } from '@navikt/ds-react'
 import React, { useEffect, useRef, useState } from 'react'
 
 import { FiltereValue, useFiltere } from '@/app/kafka/Filtere'
+import { Input } from './Input'
 
-type Props = Omit<TextFieldProps, 'onSearchClick' | 'onSubmit'> & {
-    filter: keyof FiltereValue
+type TextFilter = {
+    [K in keyof FiltereValue]: FiltereValue[K] extends string | null ? K : never
+}[keyof FiltereValue]
+
+type Props = Omit<TextFieldProps, 'onSearchClick' | 'onSubmit' | 'value' | 'onChange' | 'onKeyDown' | 'name'> & {
+    filter: TextFilter
 }
 
 export function FilterInput({ filter, className, ...rest }: Props) {
     const { setFiltere, ...filtere } = useFiltere()
     const containerRef = useRef<HTMLDivElement>(null)
 
-    const [value, setValue] = useState<string>((filtere[filter] as string) ?? '')
+    const [value, setValue] = useState<string>(filtere[filter] ?? '')
 
     useEffect(
         function updateValueWhenFilterChanges() {
-            if (filtere[filter]) {
-                setValue(filtere[filter] as string)
-            }
+            setValue(filtere[filter] ?? '')
         },
         [filtere[filter]]
     )
@@ -44,25 +45,15 @@ export function FilterInput({ filter, className, ...rest }: Props) {
     }
 
     return (
-        <div className="relative" ref={containerRef}>
-            <TextField
-                className={clsx(className, '[&>input]:pr-8')}
-                value={value}
-                onChange={onChange}
-                onKeyDown={onKeyDown}
-                name={filter}
-                {...rest}
-            />
-            {value.length > 0 && (
-                <Button
-                    variant="primary"
-                    className="absolute bottom-0 right-0 h-8 w-8 p-0 rounded-l-none"
-                    type="button"
-                    onClick={clearValue}
-                >
-                    <XMarkIcon />
-                </Button>
-            )}
-        </div>
+        <Input
+            className={className}
+            value={value}
+            onChange={onChange}
+            onKeyDown={onKeyDown}
+            name={filter}
+            onClear={clearValue}
+            containerRef={containerRef}
+            {...rest}
+        />
     )
 }
