@@ -30,7 +30,7 @@ export default defineConfig({
     ],
     webServer: [
         {
-            command: 'pnpm run dev',
+            command: 'pnpm exec next dev',
             url: requireEnv('NEXT_PUBLIC_HOSTNAME'),
             reuseExistingServer: false,
             env: process.env as { [key: string]: string },
