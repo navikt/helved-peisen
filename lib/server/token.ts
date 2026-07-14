@@ -37,7 +37,7 @@ export async function setTokens() {
     }
 
     const ttl = Math.max(
-        0,
+        1,
         Math.min(
             ...[apiToken, utsjekkToken, vedskivaToken, speiderhyttaToken]
                 .filter((t): t is string => !!t)
