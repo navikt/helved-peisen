@@ -312,9 +312,10 @@ type Props = {
     to: string
     updateFrom: (from: string) => void
     updateTo: (to: string) => void
+    disabled?: boolean
 }
 
-export const DateRangeSelect: FC<Props> = ({ from, to, updateFrom, updateTo }) => {
+export const DateRangeSelect: FC<Props> = ({ from, to, updateFrom, updateTo, disabled }) => {
     return (
         <div className="flex flex-col gap-2">
             <div className="text-base/(--ax-font-line-height-medium) font-semibold">Tidsrom</div>
@@ -326,6 +327,7 @@ export const DateRangeSelect: FC<Props> = ({ from, to, updateFrom, updateTo }) =
                     data-testid="date-range-fom"
                     time={new Date(from)}
                     onSelectTime={updateFrom}
+                    disabled={disabled}
                     className="border-none bg-transparent text-inherit h-full py-0 px-3"
                 />
                 <ArrowRightIcon />
@@ -333,6 +335,7 @@ export const DateRangeSelect: FC<Props> = ({ from, to, updateFrom, updateTo }) =
                     data-testid="date-range-tom"
                     time={new Date(parseDateValue(to))}
                     onSelectTime={updateTo}
+                    disabled={disabled}
                     className="border-none bg-transparent text-inherit h-full py-0 px-3"
                 />
                 <Spacer />

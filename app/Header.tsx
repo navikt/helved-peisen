@@ -132,6 +132,7 @@ export function Header() {
             <div className="relative min-w-0 flex-1">
                 <div className="flex h-full overflow-x-auto [scrollbar-width:none]">
                     <div className="flex w-max flex-nowrap gap-2">
+                        <TabLink href="/dashboard">Dashboard</TabLink>
                         <TabLink href="/kafka">Kafka</TabLink>
                         <TabLink href="/sak">Sak</TabLink>
                         <TabLink href="/avstemming">Avstemming</TabLink>
