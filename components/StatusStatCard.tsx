@@ -1,4 +1,4 @@
-import { Heading, LocalAlert } from '@navikt/ds-react'
+import { BodyShort, LocalAlert } from '@navikt/ds-react'
 
 export type StatusStatCardStatus = 'ok' | 'warning' | 'error' | 'neutral'
 
@@ -9,7 +9,7 @@ type Props = {
     statusLabel: string
 }
 
-const alertStatusFor = (status: StatusStatCardStatus): 'success' | 'warning' | 'error' | 'announcement' => {
+const alertStatusFor = (status: StatusStatCardStatus) => {
     switch (status) {
         case 'ok':
             return 'success'
@@ -28,18 +28,17 @@ const alertStatusFor = (status: StatusStatCardStatus): 'success' | 'warning' | '
  * (grønn/gul/rød/nøytral) og velger status-ikon automatisk.
  * @see https://aksel.nav.no/komponenter/core/localalert?demo=alert-localdemo-success
  */
+// TODO: Usikker på om LocalAlert er riktig å bruke her? Virker som den brukes for å varsle om noe som har skjedd, mens InfoCard er for å fremheve viktig informasjon, som kanskje er det vi gjør i dashboardet her?
 export default function StatusStatCard({ label, value, status, statusLabel }: Props) {
     return (
-        <LocalAlert status={alertStatusFor(status)} className="h-full transition-shadow hover:shadow-md">
-            <LocalAlert.Header>
-                <LocalAlert.Title as="h3" className="text-sm uppercase tracking-wide">
+        <LocalAlert status={alertStatusFor(status)} size="small">
+            <LocalAlert.Header className="*:shrink-0">
+                <LocalAlert.Title as="div" className="whitespace-nowrap">
                     {label}
                 </LocalAlert.Title>
             </LocalAlert.Header>
             <LocalAlert.Content>
-                <Heading level="3" size="large" className="text-center">
-                    {value}
-                </Heading>
+                <BodyShort className="text-2xl font-bold text-center">{value}</BodyShort>
                 <span className="sr-only">Status: {statusLabel}</span>
             </LocalAlert.Content>
         </LocalAlert>
