@@ -11,6 +11,7 @@ export const Routes = {
     tombstoneUtbetaling: `${kafkaApiBaseUrl}/tombstone-utbetaling`,
     okStatus: `${kafkaApiBaseUrl}/ok-status`,
     saker: `${kafkaApiBaseUrl}/api/saker`,
+    pendingMismatch: `${kafkaApiBaseUrl}/api/brann/pending-mismatch`,
     sak(sakId: string, fagsystem: string) {
         return `${kafkaApiBaseUrl}/api/saker/${sakId}/${fagsystem}`
     },

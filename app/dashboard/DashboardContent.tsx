@@ -18,9 +18,12 @@ function SectionError({ error }: { error: string }) {
 }
 
 function cardStatus(
-    section: DashboardSection<unknown>,
+    section: DashboardSection<unknown> | null,
     count: number
 ): { status: StatusStatCardStatus; statusLabel: string; value: string } {
+    if (!section) {
+        return { status: 'neutral', statusLabel: 'Laster', value: '-' }
+    }
     if (section.error) {
         return { status: 'neutral', statusLabel: 'Feil', value: '-' }
     }
@@ -28,7 +31,14 @@ function cardStatus(
 }
 
 export const DashboardContent: React.FC = () => {
-    const { summary, loading } = useDashboard()
+    const {
+        summary,
+        loading,
+        manglendeKvittering,
+        manglendeKvitteringLoading,
+        dobbeltutbetalinger,
+        dobbeltutbetalingerLoading,
+    } = useDashboard()
 
     if (!summary) {
         return (
@@ -42,8 +52,8 @@ export const DashboardContent: React.FC = () => {
     const pendingMismatchCount = summary.pendingMismatch.data?.count ?? 0
     const avstemmingTotalAntall = summary.avstemming.data?.length ?? 0
     const avstemmingManglerAntall = summary.avstemming.data?.filter((s) => s.harKjort).length ?? 0
-    const manglendeKvitteringAntall = summary.manglendeKvittering.data?.length ?? 0
-    const dobbeltutbetalingAntall = summary.dobbeltutbetalinger.data?.length ?? 0
+    const manglendeKvitteringAntall = manglendeKvittering?.data?.length ?? 0
+    const dobbeltutbetalingAntall = dobbeltutbetalinger?.data?.length ?? 0
 
     const feiletCard = cardStatus(summary.feilet, feiletCount)
     const pendingMismatchCard = cardStatus(summary.pendingMismatch, pendingMismatchCount)
@@ -51,8 +61,8 @@ export const DashboardContent: React.FC = () => {
         ...cardStatus(summary.avstemming, avstemmingManglerAntall),
         value: summary.avstemming.error ? '-' : `${avstemmingManglerAntall}/${avstemmingTotalAntall}`,
     }
-    const manglendeKvitteringCard = cardStatus(summary.manglendeKvittering, manglendeKvitteringAntall)
-    const dobbeltutbetalingCard = cardStatus(summary.dobbeltutbetalinger, dobbeltutbetalingAntall)
+    const manglendeKvitteringCard = cardStatus(manglendeKvittering, manglendeKvitteringAntall)
+    const dobbeltutbetalingCard = cardStatus(dobbeltutbetalinger, dobbeltutbetalingAntall)
 
     return (
         <VStack gap="space-32" className={loading ? 'opacity-60 transition-opacity' : 'transition-opacity'}>
@@ -122,10 +132,14 @@ export const DashboardContent: React.FC = () => {
                         Oppdrag som mangler kvittering
                     </Heading>
                     <Box padding="space-16">
-                        {summary.manglendeKvittering.error ? (
-                            <SectionError error={summary.manglendeKvittering.error} />
+                        {manglendeKvitteringLoading || !manglendeKvittering ? (
+                            <div className="flex justify-center p-8">
+                                <Loader size="medium" title="Laster oppdrag som mangler kvittering..." />
+                            </div>
+                        ) : manglendeKvittering.error ? (
+                            <SectionError error={manglendeKvittering.error} />
                         ) : (
-                            <ManglendeKvitteringTable manglende={summary.manglendeKvittering.data ?? []} />
+                            <ManglendeKvitteringTable manglende={manglendeKvittering.data ?? []} />
                         )}
                     </Box>
                 </VStack>
@@ -135,10 +149,14 @@ export const DashboardContent: React.FC = () => {
                         Potensielle dobbeltutbetalinger
                     </Heading>
                     <Box padding="space-16">
-                        {summary.dobbeltutbetalinger.error ? (
-                            <SectionError error={summary.dobbeltutbetalinger.error} />
+                        {dobbeltutbetalingerLoading || !dobbeltutbetalinger ? (
+                            <div className="flex justify-center p-8">
+                                <Loader size="medium" title="Laster potensielle dobbeltutbetalinger..." />
+                            </div>
+                        ) : dobbeltutbetalinger.error ? (
+                            <SectionError error={dobbeltutbetalinger.error} />
                         ) : (
-                            <DobbeltutbetalingTable kandidater={summary.dobbeltutbetalinger.data ?? []} />
+                            <DobbeltutbetalingTable kandidater={dobbeltutbetalinger.data ?? []} />
                         )}
                     </Box>
                 </VStack>

@@ -11,7 +11,6 @@ import { xmlToJson } from '@/lib/server/xml.ts'
 import { isDataMelding, type AvstemmingMelding, type DataMelding } from '@/app/avstemming/types.ts'
 import {
     computeAvstemmingStatus,
-    countPendingMismatch,
     findDobbeltutbetalinger,
     findManglendeKvittering,
 } from '@/lib/server/dashboard.ts'
@@ -94,10 +93,33 @@ async function fetchFeiletSummary(fom: string, tom: string, apiToken: string): P
     return { count: total }
 }
 
-async function fetchPendingMismatchSummary(fom: string, tom: string, apiToken: string): Promise<PendingMismatchSummary> {
-    const topics = `${Topics.utbetalinger},${Topics.pendingUtbetalinger}`
-    const messages = await fetchAllRawMessages({ topics, fom, tom }, apiToken)
-    return countPendingMismatch(messages)
+type PendingMismatch = {
+    uid: string
+    sakId: string | null
+    fagsystem: string | null
+}
+
+async function fetchPendingMismatches(since: number, apiToken: string): Promise<PendingMismatch[]> {
+    const query = new URLSearchParams({ since: String(since) }).toString()
+    const res = await fetch(`${Routes.pendingMismatch}?${query}`, {
+        headers: { Authorization: `Bearer ${apiToken}` },
+        cache: 'no-store',
+    })
+
+    if (!res.ok) {
+        throw new Error(`Klarte ikke hente pending mismatch: ${res.status} - ${res.statusText}`)
+    }
+
+    return res.json()
+}
+
+async function fetchPendingMismatchSummary(fom: string, apiToken: string): Promise<PendingMismatchSummary> {
+    const mismatches = await fetchPendingMismatches(new Date(fom).getTime(), apiToken)
+
+    return {
+        count: mismatches.length,
+        sampleKeys: [...new Set(mismatches.map((m) => m.uid))].slice(0, 10),
+    }
 }
 
 async function fetchAvstemmingStatusSummary(apiToken: string): Promise<AvstemmingStatus[]> {
@@ -150,13 +172,31 @@ export async function getDashboardSummary(customFom?: string, customTom?: string
     const apiToken = await getApiToken()
     if (!apiToken) return unauthorized()
 
-    const [feilet, pendingMismatch, avstemming, manglendeKvittering, dobbeltutbetalinger] = await Promise.all([
+    const [feilet, pendingMismatch, avstemming] = await Promise.all([
         section(() => fetchFeiletSummary(fom, tom, apiToken)),
-        section(() => fetchPendingMismatchSummary(fom, tom, apiToken)),
+        section(() => fetchPendingMismatchSummary(fom, apiToken)),
         section(() => fetchAvstemmingStatusSummary(apiToken)),
-        section(() => fetchManglendeKvitteringSummary(fom, tom, apiToken)),
-        section(() => fetchDobbeltutbetalingSummary(fom, tom, apiToken)),
     ])
 
-    return { fom, tom, feilet, pendingMismatch, avstemming, manglendeKvittering, dobbeltutbetalinger }
+    return { fom, tom, feilet, pendingMismatch, avstemming }
+}
+
+export async function getManglendeKvitteringSummary(
+    fom: string,
+    tom: string
+): Promise<DashboardSection<ManglendeKvittering[]>> {
+    const apiToken = await getApiToken()
+    if (!apiToken) return unauthorized()
+
+    return section(() => fetchManglendeKvitteringSummary(fom, tom, apiToken))
+}
+
+export async function getDobbeltutbetalingSummary(
+    fom: string,
+    tom: string
+): Promise<DashboardSection<DobbeltutbetalingCandidate[]>> {
+    const apiToken = await getApiToken()
+    if (!apiToken) return unauthorized()
+
+    return section(() => fetchDobbeltutbetalingSummary(fom, tom, apiToken))
 }

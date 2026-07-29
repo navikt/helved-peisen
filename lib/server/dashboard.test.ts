@@ -1,12 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { RawMessage } from '@/app/kafka/types.ts'
 import type { DataMelding } from '@/app/avstemming/types.ts'
-import {
-    computeAvstemmingStatus,
-    countPendingMismatch,
-    findDobbeltutbetalinger,
-    findManglendeKvittering,
-} from '@/lib/server/dashboard.ts'
+import { computeAvstemmingStatus, findDobbeltutbetalinger, findManglendeKvittering } from '@/lib/server/dashboard.ts'
 
 function rawMessage(overrides: Partial<RawMessage>): RawMessage {
     return {
@@ -26,49 +21,6 @@ function rawMessage(overrides: Partial<RawMessage>): RawMessage {
         ...overrides,
     }
 }
-
-describe('countPendingMismatch', () => {
-    it('counts utbetalinger without a matching preceding pending-utbetaling', () => {
-        const pending = rawMessage({
-            topic_name: 'helved.pending-utbetalinger.v1',
-            key: 'uid-1',
-            system_time_ms: 100,
-            value: JSON.stringify({ uid: 'uid-1', lastPeriodeId: 'p1', perioder: [{ fom: '2024-01-01', tom: '2024-01-31', beløp: 100 }] }),
-        })
-        const mismatchedUtbetaling = rawMessage({
-            topic_name: 'helved.utbetalinger.v1',
-            key: 'uid-1',
-            system_time_ms: 200,
-            value: JSON.stringify({ uid: 'uid-1', lastPeriodeId: 'p1', perioder: [{ fom: '2024-01-01', tom: '2024-01-31', beløp: 200 }] }),
-        })
-
-        const summary = countPendingMismatch([pending, mismatchedUtbetaling])
-
-        expect(summary.count).toBe(1)
-        expect(summary.sampleKeys).toEqual(['uid-1'])
-    })
-
-    it('does not flag utbetalinger that match their preceding pending-utbetaling', () => {
-        const perioder = [{ fom: '2024-01-01', tom: '2024-01-31', beløp: 100 }]
-        const pending = rawMessage({
-            topic_name: 'helved.pending-utbetalinger.v1',
-            key: 'uid-2',
-            system_time_ms: 100,
-            value: JSON.stringify({ uid: 'uid-2', lastPeriodeId: 'p1', perioder }),
-        })
-        const utbetaling = rawMessage({
-            topic_name: 'helved.utbetalinger.v1',
-            key: 'uid-2',
-            system_time_ms: 200,
-            value: JSON.stringify({ uid: 'uid-2', lastPeriodeId: 'p1', perioder }),
-        })
-
-        const summary = countPendingMismatch([pending, utbetaling])
-
-        expect(summary.count).toBe(0)
-        expect(summary.sampleKeys).toEqual([])
-    })
-})
 
 function dataMelding(overrides: Partial<DataMelding['aksjon']> & { fom: string; tom: string }): {
     fagsystem: string

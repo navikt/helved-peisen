@@ -51,6 +51,4 @@ export type DashboardSummary = {
     feilet: DashboardSection<FeiletSummary>
     pendingMismatch: DashboardSection<PendingMismatchSummary>
     avstemming: DashboardSection<AvstemmingStatus[]>
-    manglendeKvittering: DashboardSection<ManglendeKvittering[]>
-    dobbeltutbetalinger: DashboardSection<DobbeltutbetalingCandidate[]>
 }

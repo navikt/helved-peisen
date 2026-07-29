@@ -1,6 +1,4 @@
 import type { RawMessage, StatusMessageValue } from '@/app/kafka/types.ts'
-import { Topics } from '@/app/kafka/types.ts'
-import { annotatePendingMismatch } from '@/lib/server/message.ts'
 import type { DataMelding } from '@/app/avstemming/types.ts'
 import { getFom, getTom } from '@/app/avstemming/types.ts'
 import type {
@@ -8,23 +6,7 @@ import type {
     DobbeltutbetalingCandidate,
     DobbeltutbetalingKilde,
     ManglendeKvittering,
-    PendingMismatchSummary,
 } from '@/app/dashboard/types.ts'
-
-/**
- * Teller hvor mange helved.utbetalinger.v1-meldinger som mangler en samsvarende
- * (identisk) forutgående helved.pending-utbetalinger.v1-melding, ved å gjenbruke
- * annotatePendingMismatch som allerede brukes av /api/messages.
- */
-export function countPendingMismatch(rawMessages: RawMessage[]): PendingMismatchSummary {
-    const annotated = annotatePendingMismatch(rawMessages)
-    const mismatched = annotated.filter((m) => m.pendingMismatch && m.topic_name === Topics.utbetalinger)
-
-    return {
-        count: mismatched.length,
-        sampleKeys: [...new Set(mismatched.map((m) => m.key))].slice(0, 10),
-    }
-}
 
 /**
  * For hvert forventet fagsystem: sjekk om det finnes en DATA-avstemmingsmelding
