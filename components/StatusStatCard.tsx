@@ -29,7 +29,7 @@ const alertStatusFor = (status: StatusStatCardStatus) => {
  * @see https://aksel.nav.no/komponenter/core/localalert?demo=alert-localdemo-success
  */
 // TODO: Usikker på om LocalAlert er riktig å bruke her? Virker som den brukes for å varsle om noe som har skjedd, mens InfoCard er for å fremheve viktig informasjon, som kanskje er det vi gjør i dashboardet her?
-export default function StatusStatCard({ label, value, status, statusLabel }: Props) {
+export function StatusStatCard({ label, value, status, statusLabel }: Props) {
     return (
         <LocalAlert status={alertStatusFor(status)} size="small">
             <LocalAlert.Header className="*:shrink-0">

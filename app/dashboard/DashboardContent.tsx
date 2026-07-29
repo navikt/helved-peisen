@@ -2,7 +2,7 @@
 
 import { Alert, Box, Heading, HGrid, Loader, VStack } from '@navikt/ds-react'
 import { Topics } from '@/app/kafka/types.ts'
-import StatusStatCard, { type StatusStatCardStatus } from '@/components/StatusStatCard.tsx'
+import { StatusStatCard, type StatusStatCardStatus } from '@/components/StatusStatCard.tsx'
 import AvstemmingStatusList from '@/app/dashboard/AvstemmingStatusList.tsx'
 import ManglendeKvitteringTable from '@/app/dashboard/ManglendeKvitteringTable.tsx'
 import DobbeltutbetalingTable from '@/app/dashboard/DobbeltutbetalingTable.tsx'
@@ -57,10 +57,7 @@ export const DashboardContent: React.FC = () => {
     return (
         <VStack gap="space-32" className={loading ? 'opacity-60 transition-opacity' : 'transition-opacity'}>
             <HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-20">
-                <a
-                    href={kafkaLink({ status: 'FEILET', fom: summary.fom, tom: summary.tom })}
-
-                >
+                <a href={kafkaLink({ status: 'FEILET', fom: summary.fom, tom: summary.tom })}>
                     <StatusStatCard
                         label="Feilet"
                         value={feiletCard.value}
@@ -75,7 +72,8 @@ export const DashboardContent: React.FC = () => {
                         fom: summary.fom,
                         tom: summary.tom,
                     })}
-                    className={'block h-full no-underline rounded-lg focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-(--ax-border-focus)'
+                    className={
+                        'block h-full no-underline rounded-lg focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-(--ax-border-focus)'
                     }
                 >
                     <StatusStatCard
