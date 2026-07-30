@@ -8,6 +8,7 @@ import ManglendeKvitteringTable from '@/app/dashboard/ManglendeKvitteringTable.t
 import DobbeltutbetalingTable from '@/app/dashboard/DobbeltutbetalingTable.tsx'
 import { useDashboard } from '@/app/dashboard/DashboardContext.tsx'
 import type { DashboardSection } from '@/app/dashboard/types.ts'
+import { AvstemmingCard } from './AvstemmingCard'
 
 function kafkaLink(params: Record<string, string>): string {
     return `/kafka?${new URLSearchParams(params).toString()}`
@@ -40,7 +41,7 @@ export const DashboardContent: React.FC = () => {
         dobbeltutbetalingerLoading,
     } = useDashboard()
 
-    if (!summary) {
+    if (loading) {
         return (
             <div className="flex justify-center p-16">
                 <Loader size="large" title="Laster dashboard..." />
@@ -48,19 +49,17 @@ export const DashboardContent: React.FC = () => {
         )
     }
 
+    if (!summary) {
+        return <Alert variant="error">Klarte ikke hente dashboard</Alert>
+    }
+
     const feiletCount = summary.feilet.data?.count ?? 0
     const pendingMismatchCount = summary.pendingMismatch.data?.count ?? 0
-    const avstemmingTotalAntall = summary.avstemming.data?.length ?? 0
-    const avstemmingManglerAntall = summary.avstemming.data?.filter((s) => s.harKjort).length ?? 0
     const manglendeKvitteringAntall = manglendeKvittering?.data?.length ?? 0
     const dobbeltutbetalingAntall = dobbeltutbetalinger?.data?.length ?? 0
 
     const feiletCard = cardStatus(summary.feilet, feiletCount)
     const pendingMismatchCard = cardStatus(summary.pendingMismatch, pendingMismatchCount)
-    const avstemmingCard = {
-        ...cardStatus(summary.avstemming, avstemmingManglerAntall),
-        value: summary.avstemming.error ? '-' : `${avstemmingManglerAntall}/${avstemmingTotalAntall}`,
-    }
     const manglendeKvitteringCard = cardStatus(manglendeKvittering, manglendeKvitteringAntall)
     const dobbeltutbetalingCard = cardStatus(dobbeltutbetalinger, dobbeltutbetalingAntall)
 
@@ -82,9 +81,6 @@ export const DashboardContent: React.FC = () => {
                         fom: summary.fom,
                         tom: summary.tom,
                     })}
-                    className={
-                        'block h-full no-underline rounded-lg focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-(--ax-border-focus)'
-                    }
                 >
                     <StatusStatCard
                         label="Pending mismatch"
@@ -93,12 +89,7 @@ export const DashboardContent: React.FC = () => {
                         statusLabel={pendingMismatchCard.statusLabel}
                     />
                 </a>
-                <StatusStatCard
-                    label="Avstemming i går"
-                    value={avstemmingCard.value}
-                    status={avstemmingCard.status}
-                    statusLabel={avstemmingCard.statusLabel}
-                />
+                <AvstemmingCard avstemming={summary.avstemming} />
                 <StatusStatCard
                     label="Mangler kvittering"
                     value={manglendeKvitteringCard.value}
