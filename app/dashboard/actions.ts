@@ -28,8 +28,6 @@ import { unauthorized } from 'next/navigation'
 const DEFAULT_WINDOW_DAYS = 3
 const AVSTEMMING_LOOKBACK_DAYS = 14
 const KVITTERING_THRESHOLD_MS = 60 * 60 * 1000 // 1 time
-const PAGE_SIZE = 500
-const MAX_PAGES = 20
 
 async function fetchRawMessagesPage(
     params: Record<string, string>,
@@ -48,21 +46,23 @@ async function fetchRawMessagesPage(
     return res.json()
 }
 
-async function fetchAllRawMessages(params: Record<string, string>, apiToken: string): Promise<RawMessage[]> {
-    let page = 1
-    let all: RawMessage[] = []
+async function fetchRawMessages(
+    topic: string,
+    fom: string,
+    tom: string,
+    apiToken: string
+): Promise<RawMessage[]> {
+    const query = new URLSearchParams({ fom, tom }).toString()
+    const res = await fetch(`${Routes.messages}/${encodeURIComponent(topic)}?${query}`, {
+        headers: { Authorization: `Bearer ${apiToken}` },
+        cache: 'no-store',
+    })
 
-    while (page <= MAX_PAGES) {
-        const { items, total } = await fetchRawMessagesPage(
-            { ...params, page: String(page), pageSize: String(PAGE_SIZE), orderBy: 'timestamp', direction: 'ASC' },
-            apiToken
-        )
-        all = all.concat(items)
-        if (all.length >= total || items.length < PAGE_SIZE) break
-        page++
+    if (!res.ok) {
+        throw new Error(`Klarte ikke hente meldinger (${topic}): ${res.status} - ${res.statusText}`)
     }
 
-    return all
+    return res.json()
 }
 
 async function fetchAvstemminger(
@@ -139,8 +139,8 @@ async function fetchManglendeKvitteringSummary(
     apiToken: string
 ): Promise<ManglendeKvittering[]> {
     const [oppdragMessages, statusMessages] = await Promise.all([
-        fetchAllRawMessages({ topics: Topics.oppdrag, fom, tom }, apiToken),
-        fetchAllRawMessages({ topics: Topics.status, fom, tom }, apiToken),
+        fetchRawMessages(Topics.oppdrag, fom, tom, apiToken),
+        fetchRawMessages(Topics.status, fom, tom, apiToken),
     ])
 
     return findManglendeKvittering(oppdragMessages, statusMessages, Date.now(), KVITTERING_THRESHOLD_MS)
@@ -151,7 +151,8 @@ async function fetchDobbeltutbetalingSummary(
     tom: string,
     apiToken: string
 ): Promise<DobbeltutbetalingCandidate[]> {
-    const statusMessages = await fetchAllRawMessages({ topics: Topics.status, status: 'OK', fom, tom }, apiToken)
+    const messages = await fetchRawMessages(Topics.status, fom, tom, apiToken)
+    const statusMessages = messages.filter((m) => m.status === 'OK')
     return findDobbeltutbetalinger(statusMessages)
 }
 
