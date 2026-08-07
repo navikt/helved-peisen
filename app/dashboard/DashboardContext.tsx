@@ -3,17 +3,8 @@
 import { subDays } from 'date-fns'
 import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
-import {
-    getDashboardSummary,
-    getDobbeltutbetalingSummary,
-    getManglendeKvitteringSummary,
-} from '@/app/dashboard/actions.ts'
-import type {
-    DashboardSection,
-    DashboardSummary,
-    DobbeltutbetalingCandidate,
-    ManglendeKvittering,
-} from '@/app/dashboard/types.ts'
+import type { DashboardResponse } from '@/app/dashboard/types.ts'
+import { ApiResponse } from '@/lib/api/types.ts'
 
 type DashboardFiltereValue = {
     fom: string
@@ -21,12 +12,8 @@ type DashboardFiltereValue = {
 }
 
 type DashboardContextValue = DashboardFiltereValue & {
+    dashboard: ApiResponse<DashboardResponse> | null
     loading: boolean
-    summary: DashboardSummary | null
-    manglendeKvittering: DashboardSection<ManglendeKvittering[]> | null
-    manglendeKvitteringLoading: boolean
-    dobbeltutbetalinger: DashboardSection<DobbeltutbetalingCandidate[]> | null
-    dobbeltutbetalingerLoading: boolean
     setFiltere: (filtere: Partial<DashboardFiltereValue>) => void
 }
 
@@ -39,12 +26,8 @@ const resolveDate = (value: string): string => (value === 'now' ? new Date().toI
 
 export const DashboardContext = createContext<DashboardContextValue>({
     ...defaultFiltereValue(),
+    dashboard: null,
     loading: false,
-    summary: null,
-    manglendeKvittering: null,
-    manglendeKvitteringLoading: false,
-    dobbeltutbetalinger: null,
-    dobbeltutbetalingerLoading: false,
     setFiltere: () => null,
 })
 
@@ -52,15 +35,7 @@ export const DashboardProvider: React.FC<PropsWithChildren> = ({ children }) => 
     const searchParams = useSearchParams()
     const [filtere, setFiltere] = useState(defaultFiltereValue(searchParams))
     const [loading, setLoading] = useState(false)
-    const [summary, setSummary] = useState<DashboardSummary | null>(null)
-    const [manglendeKvittering, setManglendeKvittering] = useState<DashboardSection<ManglendeKvittering[]> | null>(
-        null
-    )
-    const [manglendeKvitteringLoading, setManglendeKvitteringLoading] = useState(false)
-    const [dobbeltutbetalinger, setDobbeltutbetalinger] = useState<DashboardSection<
-        DobbeltutbetalingCandidate[]
-    > | null>(null)
-    const [dobbeltutbetalingerLoading, setDobbeltutbetalingerLoading] = useState(false)
+    const [dashboard, setDashboard] = useState<ApiResponse<DashboardResponse> | null>(null)
 
     useEffect(
         function setDefaults() {
@@ -78,41 +53,29 @@ export const DashboardProvider: React.FC<PropsWithChildren> = ({ children }) => 
     )
 
     useEffect(
-        function fetchSummary() {
-            let cancelled = false
+        function fetchDashboard() {
             const fom = resolveDate(filtere.fom)
             const tom = resolveDate(filtere.tom)
 
             setLoading(true)
-            getDashboardSummary(fom, tom)
-                .then((data) => {
-                    if (!cancelled) setSummary(data)
+            fetch(`/api/dashboard?fom=${fom}&tom=${tom}`)
+                .then(async (response) => {
+                    if (response.ok) {
+                        setDashboard(await response.json())
+                    } else {
+                        throw response
+                    }
+                })
+                .catch((error) => {
+                    console.error(error)
+                    setDashboard({
+                        data: null,
+                        error: 'Klarte ikke hente dashboard',
+                    })
                 })
                 .finally(() => {
-                    if (!cancelled) setLoading(false)
+                    setLoading(false)
                 })
-
-            setManglendeKvitteringLoading(true)
-            getManglendeKvitteringSummary(fom, tom)
-                .then((data) => {
-                    if (!cancelled) setManglendeKvittering(data)
-                })
-                .finally(() => {
-                    if (!cancelled) setManglendeKvitteringLoading(false)
-                })
-
-            setDobbeltutbetalingerLoading(true)
-            getDobbeltutbetalingSummary(fom, tom)
-                .then((data) => {
-                    if (!cancelled) setDobbeltutbetalinger(data)
-                })
-                .finally(() => {
-                    if (!cancelled) setDobbeltutbetalingerLoading(false)
-                })
-
-            return () => {
-                cancelled = true
-            }
         },
         [filtere]
     )
@@ -137,12 +100,8 @@ export const DashboardProvider: React.FC<PropsWithChildren> = ({ children }) => 
         <DashboardContext.Provider
             value={{
                 ...filtere,
-                summary,
+                dashboard,
                 loading,
-                manglendeKvittering,
-                manglendeKvitteringLoading,
-                dobbeltutbetalinger,
-                dobbeltutbetalingerLoading,
                 setFiltere: setFilter,
             }}
         >

@@ -1,16 +1,15 @@
-import { DashboardSummary } from './types'
+import { DashboardResponse } from './types'
 import { StatusStatCard } from '@/components/StatusStatCard.tsx'
 
 type Props = {
-    avstemming: DashboardSummary['avstemming']
+    avstemming: DashboardResponse['avstemming']
 }
 
 export const AvstemmingCard: React.FC<Props> = ({ avstemming }) => {
-    if (avstemming.error) {
-        return <StatusStatCard label="Avstemming i går" value="-" status="neutral" statusLabel="Feil" />
-    }
-    const antallAvstemminger = avstemming.data?.length ?? 0
-    const antallKjørteAvstemminger = avstemming.data?.filter((s) => s.harKjort).length ?? 0
+    const antallAvstemminger = avstemming?.length ?? 0
+    const antallKjørteAvstemminger = avstemming?.filter((s) => s.datoAvstemtFom).length ?? 0
+
+    // TODO: Det her er strengt tatt ikke sant. Det kan være at det ikke var noe som trengte avstemmes for perioden det gjelder, og denne vil kunne gi oss falske positiver
     const avvik = antallKjørteAvstemminger !== antallAvstemminger
 
     return (

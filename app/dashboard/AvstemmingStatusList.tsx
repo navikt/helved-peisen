@@ -1,22 +1,26 @@
-import { Alert, Tag } from '@navikt/ds-react'
+import { Alert, Skeleton, Tag } from '@navikt/ds-react'
 import { Table, TableBody, TableDataCell, TableHeader, TableHeaderCell, TableRow } from '@navikt/ds-react/Table'
 import { format, isValid, parse } from 'date-fns'
-import type { AvstemmingStatus } from '@/app/dashboard/types.ts'
+import type { DashboardResponse } from '@/app/dashboard/types.ts'
 
 type Props = {
-    statuser: AvstemmingStatus[]
+    avstemminger: DashboardResponse['avstemming']
 }
 
-function formatSisteAvstemtDato(dato: string | null): string {
+function formatSisteAvstemtDato(dato?: string | null): string {
     if (!dato) return '-'
     const parsed = parse(dato, 'yyyyMMddHH', new Date())
     if (!isValid(parsed)) return dato
     return format(parsed, 'dd.MM.yyyy HH:mm')
 }
 
-export default function AvstemmingStatusList({ statuser }: Props) {
-    if (statuser.length === 0) {
-        return <Alert variant="info">Fant ingen kjente fagsystemer å sjekke avstemming for.</Alert>
+export const AvstemmingStatusList: React.FC<Props> = ({ avstemminger }) => {
+    if (avstemminger.length === 0) {
+        return (
+            <Alert className="animate-fade-in" variant="info">
+                Fant ingen kjente fagsystemer å sjekke avstemming for.
+            </Alert>
+        )
     }
 
     return (
@@ -28,12 +32,12 @@ export default function AvstemmingStatusList({ statuser }: Props) {
                     <TableHeaderCell>Sist avstemt</TableHeaderCell>
                 </TableRow>
             </TableHeader>
-            <TableBody>
-                {statuser.map((status) => (
-                    <TableRow key={status.fagsystem}>
-                        <TableDataCell>{status.fagsystem}</TableDataCell>
+            <TableBody className="animate-fade-in">
+                {avstemminger.map((avstemming) => (
+                    <TableRow key={avstemming.fagsystem}>
+                        <TableDataCell>{avstemming.fagsystem}</TableDataCell>
                         <TableDataCell>
-                            {status.harKjort ? (
+                            {avstemming.datoAvstemtFom ? (
                                 <Tag variant="success" size="small">
                                     Ja
                                 </Tag>
@@ -43,7 +47,36 @@ export default function AvstemmingStatusList({ statuser }: Props) {
                                 </Tag>
                             )}
                         </TableDataCell>
-                        <TableDataCell>{formatSisteAvstemtDato(status.sisteAvstemtDato)}</TableDataCell>
+                        <TableDataCell>{formatSisteAvstemtDato(avstemming.sisteAvstemtDato)}</TableDataCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    )
+}
+
+export const AvstemmingStatusListSkeleton = () => {
+    return (
+        <Table size="small">
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell>Fagsystem</TableHeaderCell>
+                    <TableHeaderCell>Avstemt i går?</TableHeaderCell>
+                    <TableHeaderCell>Sist avstemt</TableHeaderCell>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {new Array(6).fill(0).map((_, i) => (
+                    <TableRow key={i}>
+                        <TableDataCell>
+                            <Skeleton />
+                        </TableDataCell>
+                        <TableDataCell>
+                            <Skeleton />
+                        </TableDataCell>
+                        <TableDataCell>
+                            <Skeleton />
+                        </TableDataCell>
                     </TableRow>
                 ))}
             </TableBody>

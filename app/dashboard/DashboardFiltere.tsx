@@ -9,7 +9,6 @@ export const DashboardFiltere: React.FC = () => {
     return (
         <div className="flex flex-col gap-6 justify-between w-max">
             <DateRangeSelect
-                disabled={true}
                 from={filtere.fom}
                 to={filtere.tom}
                 updateFrom={(fom) => setFiltere({ fom })}

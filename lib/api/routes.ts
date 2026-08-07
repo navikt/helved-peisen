@@ -4,6 +4,7 @@ const vedskivaBaseUrl = process.env.VEDSKIVA_BASE_URL
 const speiderhyttaBaseUrl = process.env.SPEIDERHYTTA_BASE_URL
 
 export const Routes = {
+    dashboard: `${kafkaApiBaseUrl}/api/dashboard`,
     messages: `${kafkaApiBaseUrl}/api/messages`,
     resend: `${kafkaApiBaseUrl}/api/resend`,
     manuellKvittering: `${kafkaApiBaseUrl}/manuell-kvittering`,

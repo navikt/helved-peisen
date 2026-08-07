@@ -1,11 +1,11 @@
-import { Alert, Link } from '@navikt/ds-react'
+import { Alert, Link, Skeleton } from '@navikt/ds-react'
 import { Table, TableBody, TableDataCell, TableHeader, TableHeaderCell, TableRow } from '@navikt/ds-react/Table'
 import { format } from 'date-fns'
 import { Topics } from '@/app/kafka/types.ts'
-import type { ManglendeKvittering } from '@/app/dashboard/types.ts'
+import type { DashboardResponse } from '@/app/dashboard/types.ts'
 
 type Props = {
-    manglende: ManglendeKvittering[]
+    manglende: DashboardResponse['oppdragUtenKvittering']
 }
 
 function formatAge(ageMs: number): string {
@@ -15,14 +15,13 @@ function formatAge(ageMs: number): string {
     return hours > 0 ? `${hours}t ${minutes}m` : `${minutes}m`
 }
 
-function kvitteringInvestigationUrl(m: ManglendeKvittering): string {
-    const params = new URLSearchParams({ topics: Topics.oppdrag, key: m.key })
-    return `/kafka?${params.toString()}`
-}
-
-export default function ManglendeKvitteringTable({ manglende }: Props) {
+export const ManglendeKvitteringTable: React.FC<Props> = ({ manglende }) => {
     if (manglende.length === 0) {
-        return <Alert variant="success">Ingen oppdrag mangler kvittering utover terskelen.</Alert>
+        return (
+            <Alert className="animate-fade-in" variant="success">
+                Ingen oppdrag mangler kvittering utover terskelen.
+            </Alert>
+        )
     }
 
     return (
@@ -36,16 +35,53 @@ export default function ManglendeKvitteringTable({ manglende }: Props) {
                     <TableHeaderCell>Alder</TableHeaderCell>
                 </TableRow>
             </TableHeader>
-            <TableBody>
-                {manglende.map((m) => (
-                    <TableRow key={`${m.key}-${m.traceId}`}>
+            <TableBody className="animate-fade-in">
+                {manglende.map((message) => (
+                    <TableRow key={`${message.key}-${message.trace_id}`}>
                         <TableDataCell>
-                            <Link href={kvitteringInvestigationUrl(m)}>{m.key}</Link>
+                            <Link href={`/kafka?topics=${Topics.oppdrag}&key=${message.key}`}>{message.key}</Link>
                         </TableDataCell>
-                        <TableDataCell>{m.fagsystem ?? '-'}</TableDataCell>
-                        <TableDataCell>{m.sakId ?? '-'}</TableDataCell>
-                        <TableDataCell>{format(new Date(m.sentAt), 'yyyy-MM-dd HH:mm')}</TableDataCell>
-                        <TableDataCell>{formatAge(m.ageMs)}</TableDataCell>
+                        <TableDataCell>{message.fagsystem ?? '-'}</TableDataCell>
+                        <TableDataCell>{message.sakId ?? '-'}</TableDataCell>
+                        <TableDataCell>{format(new Date(message.system_time_ms), 'yyyy-MM-dd HH:mm')}</TableDataCell>
+                        <TableDataCell>{formatAge(new Date().getTime() - message.system_time_ms)}</TableDataCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    )
+}
+
+export const ManglendeKvitteringTableSkeleton = () => {
+    return (
+        <Table size="small">
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell>Key</TableHeaderCell>
+                    <TableHeaderCell>Fagsystem</TableHeaderCell>
+                    <TableHeaderCell>SakId</TableHeaderCell>
+                    <TableHeaderCell>Sendt</TableHeaderCell>
+                    <TableHeaderCell>Alder</TableHeaderCell>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {new Array(2).fill(0).map((_, i) => (
+                    <TableRow key={i}>
+                        <TableDataCell>
+                            <Skeleton />
+                        </TableDataCell>
+                        <TableDataCell>
+                            <Skeleton />
+                        </TableDataCell>
+                        <TableDataCell>
+                            <Skeleton />
+                        </TableDataCell>
+                        <TableDataCell>
+                            <Skeleton />
+                        </TableDataCell>
+                        <TableDataCell>
+                            <Skeleton />
+                        </TableDataCell>
                     </TableRow>
                 ))}
             </TableBody>

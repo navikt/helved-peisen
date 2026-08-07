@@ -1,54 +1,38 @@
-export type FeiletSummary = {
-    count: number
+import { Message } from '../kafka/types'
+
+type PendingMismatch = {
+    uid: string
+    sakId?: string
+    fagsystem?: string
 }
 
-export type PendingMismatchSummary = {
-    count: number
-    sampleKeys: string[]
-}
-
-export type AvstemmingStatus = {
+type Avstemming = {
     fagsystem: string
-    harKjort: boolean
-    datoAvstemtFom: string | null
-    datoAvstemtTom: string | null
-    sisteAvstemtDato: string | null
+    sisteAvstemtDato?: string | null
+    datoAvstemtFom?: string | null
+    datoAvstemtTom?: string | null
 }
 
-export type ManglendeKvittering = {
-    key: string
-    traceId: string
-    sakId: string | null
-    fagsystem: string | null
-    sentAt: number
-    ageMs: number
-}
-
-export type DobbeltutbetalingKilde = {
-    key: string
-    partition: number
-    offset: number
-    timestampMs: number
-}
-
-export type DobbeltutbetalingCandidate = {
+type DobbeltUtbetaling = {
     behandlingId: string
     klassekode: string
     fom: string
     tom: string
     beløp: number
-    kilder: DobbeltutbetalingKilde[]
+    kilder: {
+        [key: string]: {
+            key: string
+            partition: number
+            offset: number
+            timestampMs: number
+        }
+    }
 }
 
-export type DashboardSection<T> = {
-    data: T | null
-    error: string | null
-}
-
-export type DashboardSummary = {
-    fom: string
-    tom: string
-    feilet: DashboardSection<FeiletSummary>
-    pendingMismatch: DashboardSection<PendingMismatchSummary>
-    avstemming: DashboardSection<AvstemmingStatus[]>
+export type DashboardResponse = {
+    feiletUtbetalinger: Message[]
+    pendingMismatch: PendingMismatch[]
+    avstemming: Avstemming[]
+    oppdragUtenKvittering: Message[]
+    dobbeltutbetalinger: DobbeltUtbetaling[]
 }

@@ -1,4 +1,4 @@
-import { BodyShort, LocalAlert } from '@navikt/ds-react'
+import { BodyShort, LocalAlert, Skeleton } from '@navikt/ds-react'
 
 export type StatusStatCardStatus = 'ok' | 'warning' | 'error' | 'neutral'
 
@@ -31,7 +31,7 @@ const alertStatusFor = (status: StatusStatCardStatus) => {
 // TODO: Usikker på om LocalAlert er riktig å bruke her? Virker som den brukes for å varsle om noe som har skjedd, mens InfoCard er for å fremheve viktig informasjon, som kanskje er det vi gjør i dashboardet her?
 export function StatusStatCard({ label, value, status, statusLabel }: Props) {
     return (
-        <LocalAlert status={alertStatusFor(status)} size="small">
+        <LocalAlert className="animate-fade-in" status={alertStatusFor(status)} size="small">
             <LocalAlert.Header className="*:shrink-0">
                 <LocalAlert.Title as="div" className="whitespace-nowrap">
                     {label}
@@ -43,4 +43,8 @@ export function StatusStatCard({ label, value, status, statusLabel }: Props) {
             </LocalAlert.Content>
         </LocalAlert>
     )
+}
+
+export const StatusStatCardSkeleton: React.FC = () => {
+    return <Skeleton className="flex transform-none" width="100%" height="88px" />
 }
