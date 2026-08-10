@@ -30,7 +30,7 @@ type DobbeltUtbetaling = {
 }
 
 export type DashboardResponse = {
-    feiletUtbetalinger: Message[]
+    feiletUtbetalinger: number
     pendingMismatch: PendingMismatch[]
     avstemming: Avstemming[]
     oppdragUtenKvittering: Message[]
