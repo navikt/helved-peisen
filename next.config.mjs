@@ -12,7 +12,7 @@ const nextConfig = {
         return [
             {
                 source: '/',
-                destination: '/kafka',
+                destination: '/dashboard',
                 permanent: false,
             },
         ]
