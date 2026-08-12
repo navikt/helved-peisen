@@ -1,4 +1,4 @@
-import pw from 'next/experimental/testmode/playwright'
+import pw from 'next/experimental/testmode/playwright.js'
 
 const { test, expect } = pw
 

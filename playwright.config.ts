@@ -34,7 +34,7 @@ export default defineConfig({
             url: requireEnv('NEXT_PUBLIC_HOSTNAME'),
             reuseExistingServer: false,
             env: process.env as { [key: string]: string },
-            timeout: 10 * 1000,
+            timeout: 60 * 1000,
         },
     ],
 })
