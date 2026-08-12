@@ -7,6 +7,26 @@ allowBuilds:
 configDependencies:
   '@pnpm/plugin-esm-node-path': 0.1.2+sha512-KzcFbJpNJHRZ60GpXmc6CoBX/zjy+fKEf/OOYdRbAlxV/Kf/f6pDNUDIVTQU8a5DHt6ODXq5mndwJPlryqMj1A==
 
+minimumReleaseAgeExclude:
+  - vite@7.3.5
+  - undici@7.28.0
+  - js-yaml@4.1.2
+  - '@babel/core@7.29.1'
+  - brace-expansion@5.0.7
+  - js-yaml@4.3.0
+  - protobufjs@7.6.5
+  - sharp@0.35.0
+  - next@16.2.11
+  - postcss@8.5.18
+  - brace-expansion@5.0.8
+  - postcss@8.5.23
+  - undici@7.29.0
+  - brace-expansion@5.0.9
+  - js-yaml@4.3.1
+  - nanoid@3.3.16
+  - nanoid@3.3.17
+  - esbuild@0.28.1
+
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - esbuild
@@ -23,10 +43,11 @@ overrides:
   tar: "^7.5.11"
   undici: "^7.24.0"
   flatted: "^3.4.2"
-  vite: "^7.3.2"
   picomatch: "^4.0.4"
   brace-expansion: "^5.0.6"
   postcss: "^8.5.10"
+  esbuild@>=0.27.3 <0.28.1: ^0.28.1
+  vite: "^7.3.5"
 
 packages:
   - .
