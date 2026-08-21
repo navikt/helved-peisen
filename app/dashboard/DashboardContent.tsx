@@ -30,7 +30,7 @@ export const DashboardContent: React.FC = () => {
     return (
         <VStack gap="space-32" className={loading ? 'opacity-60 transition-opacity' : 'transition-opacity'}>
             <HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-20">
-                <FeiletCard antallFeilet={dashboard.data.feiletUtbetalinger} fom={fom} tom={tom} />
+                <FeiletCard antallFeilet={dashboard.data.feiletUtbetalinger.length} fom={fom} tom={tom} />
                 <PendingMismatchCard antallMismatch={dashboard.data.pendingMismatch.length} fom={fom} tom={tom} />
                 <AvstemmingCard avstemming={dashboard.data.avstemming} />
                 <ManglendeKvitteringCard antallManglendeKvitteringer={dashboard.data.oppdragUtenKvittering.length} />
