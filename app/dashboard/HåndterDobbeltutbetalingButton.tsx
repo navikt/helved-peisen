@@ -50,7 +50,7 @@ export const HåndterDobbeltutbetalingButton: React.FC<Props> = ({ kandidat, onH
                 </Modal.Body>
                 <Modal.Footer>
                     <Button type="button" loading={loading} disabled={loading} onClick={handleHåndter}>
-                        Håndter
+                        Fjern
                     </Button>
                     <Button type="button" variant="secondary" disabled={loading} onClick={() => setOpen(false)}>
                         Avbryt
