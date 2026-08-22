@@ -13,6 +13,7 @@ export const Routes = {
     okStatus: `${kafkaApiBaseUrl}/ok-status`,
     saker: `${kafkaApiBaseUrl}/api/saker`,
     pendingMismatch: `${kafkaApiBaseUrl}/api/brann/pending-mismatch`,
+    dobbeltutbetalinger:  `${kafkaApiBaseUrl}/api/brann/dobbeltutbetalinger`,
     sak(sakId: string, fagsystem: string) {
         return `${kafkaApiBaseUrl}/api/saker/${sakId}/${fagsystem}`
     },

@@ -2,12 +2,14 @@ import { Alert, Link, Skeleton } from '@navikt/ds-react'
 import { Table, TableBody, TableDataCell, TableHeader, TableHeaderCell, TableRow } from '@navikt/ds-react/Table'
 import { Topics } from '@/app/kafka/types.ts'
 import type { DashboardResponse } from '@/app/dashboard/types.ts'
+import { HåndterDobbeltutbetalingButton } from '@/app/dashboard/HåndterDobbeltutbetalingButton.tsx'
 
 type Props = {
     dobbeltutbetalinger: DashboardResponse['dobbeltutbetalinger']
+    onHåndtert: (nøkkel: string) => void
 }
 
-export const DobbeltutbetalingTable: React.FC<Props> = ({ dobbeltutbetalinger }) => {
+export const DobbeltutbetalingTable: React.FC<Props> = ({ dobbeltutbetalinger, onHåndtert }) => {
     if (dobbeltutbetalinger.length === 0) {
         return (
             <Alert className="animate-fade-in" variant="success">
@@ -26,23 +28,33 @@ export const DobbeltutbetalingTable: React.FC<Props> = ({ dobbeltutbetalinger })
                     <TableHeaderCell>Tom</TableHeaderCell>
                     <TableHeaderCell>Beløp</TableHeaderCell>
                     <TableHeaderCell>Antall kilder</TableHeaderCell>
+                    <TableHeaderCell />
                 </TableRow>
             </TableHeader>
             <TableBody className="animate-fade-in">
-                {dobbeltutbetalinger.map((kandidat) => (
-                    <TableRow key={`${kandidat.behandlingId}-${kandidat.klassekode}-${kandidat.fom}-${kandidat.tom}`}>
-                        <TableDataCell>
-                            <Link href={`/kafka?topics=${Topics.status}&value=${kandidat.behandlingId}`}>
-                                {kandidat.behandlingId}
-                            </Link>
-                        </TableDataCell>
-                        <TableDataCell>{kandidat.klassekode}</TableDataCell>
-                        <TableDataCell>{kandidat.fom}</TableDataCell>
-                        <TableDataCell>{kandidat.tom}</TableDataCell>
-                        <TableDataCell>{kandidat.beløp.toLocaleString('nb-NO')}</TableDataCell>
-                        <TableDataCell>{Object.entries(kandidat.kilder).length}</TableDataCell>
-                    </TableRow>
-                ))}
+                {dobbeltutbetalinger.map((kandidat) => {
+                    const nøkkel = `${kandidat.behandlingId}-${kandidat.klassekode}-${kandidat.fom}-${kandidat.tom}`
+                    return (
+                        <TableRow key={nøkkel}>
+                            <TableDataCell>
+                                <Link href={`/kafka?topics=${Topics.status}&value=${kandidat.behandlingId}`}>
+                                    {kandidat.behandlingId}
+                                </Link>
+                            </TableDataCell>
+                            <TableDataCell>{kandidat.klassekode}</TableDataCell>
+                            <TableDataCell>{kandidat.fom}</TableDataCell>
+                            <TableDataCell>{kandidat.tom}</TableDataCell>
+                            <TableDataCell>{kandidat.beløp.toLocaleString('nb-NO')}</TableDataCell>
+                            <TableDataCell>{Object.entries(kandidat.kilder).length}</TableDataCell>
+                            <TableDataCell>
+                                <HåndterDobbeltutbetalingButton
+                                    kandidat={kandidat}
+                                    onHåndtert={() => onHåndtert(nøkkel)}
+                                />
+                            </TableDataCell>
+                        </TableRow>
+                    )
+                })}
             </TableBody>
         </Table>
     )
@@ -59,6 +71,7 @@ export const DobbeltUtbetalingTableSkeleton = () => {
                     <TableHeaderCell>Tom</TableHeaderCell>
                     <TableHeaderCell>Beløp</TableHeaderCell>
                     <TableHeaderCell>Antall kilder</TableHeaderCell>
+                    <TableHeaderCell />
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -82,6 +95,7 @@ export const DobbeltUtbetalingTableSkeleton = () => {
                         <TableDataCell>
                             <Skeleton />
                         </TableDataCell>
+                        <TableDataCell />
                     </TableRow>
                 ))}
             </TableBody>
