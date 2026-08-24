@@ -15,6 +15,7 @@ import { isSuccessResponse } from '@/lib/api/types'
 import { AvstemmingCard } from '@/app/dashboard/AvstemmingCard.tsx'
 import { AvstemmingStatusList, AvstemmingStatusListSkeleton } from '@/app/dashboard/AvstemmingStatusList.tsx'
 import { DobbeltUtbetalingCard } from './DobbeltUtbetalingCard'
+import { FeiletUtbetalingTable, FeiletUtbetalingTableSkeleton } from './FeiletUtbetalingTable'
 
 export const DashboardContent: React.FC = () => {
     const { fom, tom, dashboard, loading } = useDashboard()
@@ -64,6 +65,18 @@ export const DashboardContent: React.FC = () => {
                         <DobbeltutbetalingTable dobbeltutbetalinger={dashboard.data.dobbeltutbetalinger} />
                     </Box>
                 </VStack>
+
+                <VStack gap="space-12">
+                    <Heading level="2" size="small">
+                        Feilet utbetalinger
+                    </Heading>
+                    <Box padding="space-16">
+                        <FeiletUtbetalingTable
+                            feiletUtbetalinger={dashboard.data.feiletUtbetalinger}
+                            korrigerteFeiletUtbetalinger={dashboard.data.korrigerteFeiletUtbetalinger}
+                        />
+                    </Box>
+                </VStack>
             </VStack>
         </VStack>
     )
@@ -107,6 +120,15 @@ const DashboardContentSkeleton: React.FC = () => {
                         <DobbeltUtbetalingTableSkeleton />
                     </Box>
                 </VStack>
+            </VStack>
+
+            <VStack gap="space-12">
+                <Heading level="2" size="small">
+                    Feilet utbetalinger
+                </Heading>
+                <Box padding="space-16">
+                    <FeiletUtbetalingTableSkeleton />
+                </Box>
             </VStack>
         </VStack>
     )

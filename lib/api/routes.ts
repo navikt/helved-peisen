@@ -8,6 +8,7 @@ export const Routes = {
     messages: `${kafkaApiBaseUrl}/api/messages`,
     resend: `${kafkaApiBaseUrl}/api/resend`,
     manuellKvittering: `${kafkaApiBaseUrl}/manuell-kvittering`,
+    korrigerFeiletUtbetaling: `${kafkaApiBaseUrl}/api/korriger_utbetaling`,
     pendingTilUtbetaling: `${kafkaApiBaseUrl}/pending-til-utbetaling`,
     tombstoneUtbetaling: `${kafkaApiBaseUrl}/tombstone-utbetaling`,
     okStatus: `${kafkaApiBaseUrl}/ok-status`,
