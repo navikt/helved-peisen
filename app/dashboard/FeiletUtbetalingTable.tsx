@@ -12,7 +12,7 @@ import {
     TableHeaderCell,
     TableRow,
 } from '@navikt/ds-react/Table'
-import type { DashboardResponse } from '@/app/dashboard/types.ts'
+import type { DashboardResponse, KorrigertFeiletUtbetaling } from '@/app/dashboard/types.ts'
 import { Message } from '@/app/kafka/types.ts'
 import { TopicNameTag } from '@/components/TopicNameTag'
 import { MessageView } from '@/components/MessageView'
@@ -26,10 +26,10 @@ const getFagsystem = (message: Message) => {
 
 type FeiletUtbetalingRowProps = {
     message: Message
-    korrigert: boolean
+    korrigering?: KorrigertFeiletUtbetaling
 }
 
-const FeiletUtbetalingRow: React.FC<FeiletUtbetalingRowProps> = ({ message, korrigert }) => {
+const FeiletUtbetalingRow: React.FC<FeiletUtbetalingRowProps> = ({ message, korrigering }) => {
     const { refreshDashboard } = useDashboard()
     const [open, setOpen] = useState(false)
     const [didOpen, setDidOpen] = useState(false)
@@ -75,11 +75,12 @@ const FeiletUtbetalingRow: React.FC<FeiletUtbetalingRowProps> = ({ message, korr
             <TableDataCell>{getFagsystem(message)}</TableDataCell>
             <TableDataCell>{message.key}</TableDataCell>
             <TableDataCell>{formatDate(message.system_time_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}</TableDataCell>
+            <TableDataCell>{korrigering?.reason}</TableDataCell>
             <TableDataCell>
                 <Checkbox
-                    checked={korrigert}
+                    checked={!!korrigering}
                     onChange={() => modal.current?.showModal()}
-                    readOnly={korrigert}
+                    readOnly={!!korrigering}
                     hideLabel
                 >
                     Kvittert
@@ -134,21 +135,18 @@ export const FeiletUtbetalingTable: React.FC<Props> = ({ feiletUtbetalinger, kor
                     <TableHeaderCell>Fagsystem</TableHeaderCell>
                     <TableHeaderCell>Key</TableHeaderCell>
                     <TableHeaderCell>Timestamp</TableHeaderCell>
+                    <TableHeaderCell>Grunn</TableHeaderCell>
                     <TableHeaderCell>Kvittert</TableHeaderCell>
                 </TableRow>
             </TableHeader>
             <TableBody className="animate-fade-in">
-                {feiletUtbetalinger.map((message, i) => (
-                    <FeiletUtbetalingRow
-                        key={i}
-                        message={message}
-                        korrigert={
-                            !!korrigerteFeiletUtbetalinger.find(
+                {feiletUtbetalinger.map((message, i) => {
+                    const korrigering = korrigerteFeiletUtbetalinger.find(
                                 ({ topic, key }) => topic === message.topic_name && key === message.key
                             )
-                        }
-                    />
-                ))}
+
+                    return <FeiletUtbetalingRow key={i} message={message} korrigering={korrigering} />
+                })}
             </TableBody>
         </Table>
     )
@@ -164,12 +162,16 @@ export const FeiletUtbetalingTableSkeleton = () => {
                     <TableHeaderCell>Fagsystem</TableHeaderCell>
                     <TableHeaderCell>Key</TableHeaderCell>
                     <TableHeaderCell>Timestamp</TableHeaderCell>
+                    <TableHeaderCell>Grunn</TableHeaderCell>
                     <TableHeaderCell>Kvittert</TableHeaderCell>
                 </TableRow>
             </TableHeader>
             <TableBody>
                 {new Array(2).fill(0).map((_, i) => (
                     <TableRow key={i}>
+                        <TableDataCell>
+                            <Skeleton />
+                        </TableDataCell>
                         <TableDataCell>
                             <Skeleton />
                         </TableDataCell>
