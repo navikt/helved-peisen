@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Alert, Box, Heading, HGrid, VStack } from '@navikt/ds-react'
 import { StatusStatCardSkeleton } from '@/components/StatusStatCard.tsx'
 import {
@@ -19,6 +20,11 @@ import { FeiletUtbetalingTable, FeiletUtbetalingTableSkeleton } from './FeiletUt
 
 export const DashboardContent: React.FC = () => {
     const { fom, tom, dashboard, loading } = useDashboard()
+    const [håndterteNøkler, setHåndterteNøkler] = useState<Set<string>>(new Set())
+
+    const håndter = (nøkkel: string) => {
+        setHåndterteNøkler((prev) => new Set([...prev,nøkkel]))
+    }
 
     if (loading) {
         return <DashboardContentSkeleton />
@@ -28,6 +34,10 @@ export const DashboardContent: React.FC = () => {
         return <Alert variant="error">Klarte ikke hente dashboard</Alert>
     }
 
+    const synlige = dashboard.data.dobbeltutbetalinger.filter(
+        (utbetaling) => !håndterteNøkler.has(`${utbetaling.behandlingId}-${utbetaling.klassekode}-${utbetaling.fom}-${utbetaling.tom}`)
+    )
+
     return (
         <VStack gap="space-32" className={loading ? 'opacity-60 transition-opacity' : 'transition-opacity'}>
             <HGrid columns={{ xs: 1, sm: 2, lg: 5 }} gap="space-20">
@@ -35,7 +45,7 @@ export const DashboardContent: React.FC = () => {
                 <PendingMismatchCard antallMismatch={dashboard.data.pendingMismatch.length} fom={fom} tom={tom} />
                 <AvstemmingCard avstemming={dashboard.data.avstemming} />
                 <ManglendeKvitteringCard antallManglendeKvitteringer={dashboard.data.oppdragUtenKvittering.length} />
-                <DobbeltUtbetalingCard antallDobleUtbetalinger={dashboard.data.dobbeltutbetalinger.length} />
+                <DobbeltUtbetalingCard antallDobleUtbetalinger={synlige.length} />
             </HGrid>
 
             <VStack gap="space-20">
@@ -62,7 +72,7 @@ export const DashboardContent: React.FC = () => {
                         Potensielle dobbeltutbetalinger
                     </Heading>
                     <Box padding="space-16">
-                        <DobbeltutbetalingTable dobbeltutbetalinger={dashboard.data.dobbeltutbetalinger} />
+                        <DobbeltutbetalingTable dobbeltutbetalinger={synlige} onHåndtert={håndter} />
                     </Box>
                 </VStack>
 

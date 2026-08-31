@@ -13,7 +13,7 @@ type Avstemming = {
     datoAvstemtTom?: string | null
 }
 
-type DobbeltUtbetaling = {
+export type DobbeltUtbetaling = {
     behandlingId: string
     klassekode: string
     fom: string
