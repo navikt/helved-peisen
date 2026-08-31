@@ -2,7 +2,7 @@
 
 import { formatDate } from 'date-fns'
 import { useActionState, useEffect, useRef, useState } from 'react'
-import { Alert, Button, Checkbox, Modal, Skeleton, Textarea } from '@navikt/ds-react'
+import { Alert, Button, Checkbox, Link, Modal, Skeleton, Textarea } from '@navikt/ds-react'
 import {
     Table,
     TableBody,
@@ -73,7 +73,9 @@ const FeiletUtbetalingRow: React.FC<FeiletUtbetalingRowProps> = ({ message, korr
                 <TopicNameTag message={message} />
             </TableDataCell>
             <TableDataCell>{getFagsystem(message)}</TableDataCell>
-            <TableDataCell>{message.key}</TableDataCell>
+            <TableDataCell>
+                <Link href={`/kafka?key=${message.key}`}>{message.key}</Link>
+            </TableDataCell>
             <TableDataCell>{formatDate(message.system_time_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}</TableDataCell>
             <TableDataCell>{korrigering?.reason}</TableDataCell>
             <TableDataCell>
@@ -142,8 +144,8 @@ export const FeiletUtbetalingTable: React.FC<Props> = ({ feiletUtbetalinger, kor
             <TableBody className="animate-fade-in">
                 {feiletUtbetalinger.map((message, i) => {
                     const korrigering = korrigerteFeiletUtbetalinger.find(
-                                ({ topic, key }) => topic === message.topic_name && key === message.key
-                            )
+                        ({ topic, key }) => topic === message.topic_name && key === message.key
+                    )
 
                     return <FeiletUtbetalingRow key={i} message={message} korrigering={korrigering} />
                 })}
