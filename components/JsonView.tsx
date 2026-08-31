@@ -102,7 +102,13 @@ type JsonViewProps = React.HTMLAttributes<HTMLPreElement> & {
 
 export const JsonView: React.FC<JsonViewProps> = ({ json, className, ...rest }) => {
     return (
-        <pre className={clsx('relative bg-(--ax-bg-sunken) p-4 text-sm text-(--ax-warning-1000)', className)} {...rest}>
+        <pre
+            className={clsx(
+                'relative whitespace-pre-wrap break-words bg-(--ax-bg-sunken) p-4 text-sm text-(--ax-warning-1000)',
+                className
+            )}
+            {...rest}
+        >
             <JsonTypeView json={json} indent={0} />
             <div className="absolute top-4 right-4">
                 <CopyButton size="xsmall" copyText={JSON.stringify(json)} />

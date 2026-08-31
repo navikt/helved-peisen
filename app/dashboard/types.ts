@@ -29,8 +29,15 @@ export type DobbeltUtbetaling = {
     }
 }
 
+export type KorrigertFeiletUtbetaling = {
+    topic: string
+    key: string
+    reason: string
+}
+
 export type DashboardResponse = {
     feiletUtbetalinger: Message[]
+    korrigerteFeiletUtbetalinger: KorrigertFeiletUtbetaling[]
     pendingMismatch: PendingMismatch[]
     avstemming: Avstemming[]
     oppdragUtenKvittering: Message[]

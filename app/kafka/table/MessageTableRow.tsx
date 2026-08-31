@@ -6,7 +6,7 @@ import { TableDataCell, TableExpandableRow } from '@navikt/ds-react/Table'
 import { ActionMenu, Alert, Button } from '@navikt/ds-react'
 import { formatDate } from 'date-fns'
 
-import { TopicNameTag } from '@/app/kafka/table/TopicNameTag.tsx'
+import { TopicNameTag } from '@/components/TopicNameTag.tsx'
 import { MessageStatus } from '@/components/MessageStatus.tsx'
 import { ActionMenuContent, ActionMenuItem, ActionMenuTrigger } from '@navikt/ds-react/ActionMenu'
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons'

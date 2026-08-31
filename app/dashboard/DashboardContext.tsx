@@ -2,7 +2,7 @@
 
 import { subDays } from 'date-fns'
 import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
+import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from 'react'
 import type { DashboardResponse } from '@/app/dashboard/types.ts'
 import { ApiResponse } from '@/lib/api/types.ts'
 
@@ -14,6 +14,7 @@ type DashboardFiltereValue = {
 type DashboardContextValue = DashboardFiltereValue & {
     dashboard: ApiResponse<DashboardResponse> | null
     loading: boolean
+    refreshDashboard: () => Promise<void>
     setFiltere: (filtere: Partial<DashboardFiltereValue>) => void
 }
 
@@ -28,6 +29,7 @@ export const DashboardContext = createContext<DashboardContextValue>({
     ...defaultFiltereValue(),
     dashboard: null,
     loading: false,
+    refreshDashboard: async () => undefined,
     setFiltere: () => null,
 })
 
@@ -52,33 +54,29 @@ export const DashboardProvider: React.FC<PropsWithChildren> = ({ children }) => 
         [filtere]
     )
 
-    useEffect(
-        function fetchDashboard() {
-            const fom = resolveDate(filtere.fom)
-            const tom = resolveDate(filtere.tom)
+    const refreshDashboard = useCallback(async () => {
+        const fom = resolveDate(filtere.fom)
+        const tom = resolveDate(filtere.tom)
 
-            setLoading(true)
-            fetch(`/api/dashboard?fom=${fom}&tom=${tom}`)
-                .then(async (response) => {
-                    if (response.ok) {
-                        setDashboard(await response.json())
-                    } else {
-                        throw response
-                    }
-                })
-                .catch((error) => {
-                    console.error(error)
-                    setDashboard({
-                        data: null,
-                        error: 'Klarte ikke hente dashboard',
-                    })
-                })
-                .finally(() => {
-                    setLoading(false)
-                })
-        },
-        [filtere]
-    )
+        try {
+            const response = await fetch(`/api/dashboard?fom=${fom}&tom=${tom}`)
+            if (!response.ok) {
+                throw response
+            }
+            setDashboard(await response.json())
+        } catch (error) {
+            console.error(error)
+            setDashboard({
+                data: null,
+                error: 'Klarte ikke hente dashboard',
+            })
+        }
+    }, [filtere.fom, filtere.tom])
+
+    useEffect(() => {
+        setLoading(true)
+        void refreshDashboard().finally(() => setLoading(false))
+    }, [refreshDashboard])
 
     const setFilter = (delta: Partial<DashboardFiltereValue>) => {
         const newFilters = { ...filtere, ...delta }
@@ -102,6 +100,7 @@ export const DashboardProvider: React.FC<PropsWithChildren> = ({ children }) => 
                 ...filtere,
                 dashboard,
                 loading,
+                refreshDashboard,
                 setFiltere: setFilter,
             }}
         >
