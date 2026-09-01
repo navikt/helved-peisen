@@ -123,7 +123,7 @@ export const FeiletUtbetalingTable: React.FC<Props> = ({ feiletUtbetalinger, kor
     if (feiletUtbetalinger.length === 0) {
         return (
             <Alert className="animate-fade-in" variant="success">
-                Fant ingen potensielle feiletUtbetalinger.
+                Fant ingen feilet utbetalinger
             </Alert>
         )
     }
