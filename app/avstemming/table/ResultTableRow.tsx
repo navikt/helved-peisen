@@ -36,7 +36,7 @@ const MetadataCardContainer: React.FC<MetadataCardContainerProps> = ({ children 
 
 type ResultTableRowProps = {
     grunnlag: DataMelding['grunnlag']
-    detaljs: DataMelding['detaljs']
+    detaljs: DataMelding['detalj']
 }
 
 export const ResultTableRow: React.FC<ResultTableRowProps> = ({ grunnlag, detaljs }) => (
@@ -45,18 +45,18 @@ export const ResultTableRow: React.FC<ResultTableRowProps> = ({ grunnlag, detalj
             <Label size="small">Grunnlag</Label>
             <VStack gap="space-16">
                 {[
-                    { label: 'Godkjent', antall: grunnlag.godkjentAntall, belop: grunnlag.godkjentBelop },
-                    { label: 'Varsel', antall: grunnlag.varselAntall, belop: grunnlag.varselBelop },
-                    { label: 'Avvist', antall: grunnlag.avvistAntall, belop: grunnlag.avvistBelop },
-                    { label: 'Mangler', antall: grunnlag.manglerAntall, belop: grunnlag.manglerBelop },
+                    { label: 'Godkjent', antall: grunnlag?.godkjentAntall, belop: grunnlag?.godkjentBelop },
+                    { label: 'Varsel', antall: grunnlag?.varselAntall, belop: grunnlag?.varselBelop },
+                    { label: 'Avvist', antall: grunnlag?.avvistAntall, belop: grunnlag?.avvistBelop },
+                    { label: 'Mangler', antall: grunnlag?.manglerAntall, belop: grunnlag?.manglerBelop },
                 ]
-                    .filter((row) => row.antall > 0)
+                    .filter((row) => !!row.antall)
                     .map((row) => (
                         <MetadataCardContainer key={row.label}>
                             <HStack wrap gap="space-12">
                                 <MetadataCard label="Status" value={row.label} />
-                                <MetadataCard label="Antall" value={row.antall.toLocaleString()} />
-                                <MetadataCard label="Beløp" value={row.belop.toLocaleString('nb-NO')} />
+                                <MetadataCard label="Antall" value={row.antall?.toLocaleString()} />
+                                <MetadataCard label="Beløp" value={row.belop?.toLocaleString('nb-NO')} />
                             </HStack>
                         </MetadataCardContainer>
                     ))}

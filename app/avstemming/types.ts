@@ -28,16 +28,16 @@ export type DataMelding = {
     aksjon: Aksjon & {
         aksjonType: 'DATA'
     }
-    total: {
+    total?: {
         totalAntall: number
         totalBelop: number
         fortegn: string
     }
-    periode: {
+    periode?: {
         datoAvstemtFom: string
         datoAvstemtTom: string
     }
-    grunnlag: {
+    grunnlag?: {
         godkjentAntall: number
         godkjentBelop: number
         godkjentFortegn?: string
@@ -51,7 +51,7 @@ export type DataMelding = {
         manglerBelop: number
         manglerFortegn?: string
     }
-    detaljs?:
+    detalj?:
         | {
               detaljType: string
               offnr: string

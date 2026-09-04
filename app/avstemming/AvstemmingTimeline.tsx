@@ -8,6 +8,9 @@ import { isSuccessResponse } from '@/lib/api/types'
 import React from 'react'
 
 function deriveStatus(avstemming: DataMelding): 'success' | 'warning' | 'danger' | 'neutral' {
+    if (!avstemming.grunnlag || !avstemming.total) {
+        return 'neutral'
+    }
     const { avvistAntall, varselAntall, manglerAntall, godkjentAntall } = avstemming.grunnlag
 
     if (avstemming.total.totalAntall === 0) return 'neutral'
@@ -18,7 +21,7 @@ function deriveStatus(avstemming: DataMelding): 'success' | 'warning' | 'danger'
 }
 
 function deriveStatusLabel(avstemming: DataMelding): string {
-    if (avstemming.total.totalAntall === 0) return 'Ingen utbetalinger'
+    if (!avstemming.total || avstemming.total.totalAntall === 0 || !avstemming.grunnlag) return 'Ingen utbetalinger'
 
     const status = deriveStatus(avstemming)
     switch (status) {
@@ -72,7 +75,7 @@ export const AvstemmingTimeline = () => {
                                 statusLabel={deriveStatusLabel(avstemming)}
                             >
                                 <div>
-                                    {avstemming.total.totalAntall === 0 ? (
+                                    {!avstemming.total || avstemming.total.totalAntall === 0 ? (
                                         <div>Ingen utbetalinger å avstemme</div>
                                     ) : (
                                         <>
@@ -80,26 +83,26 @@ export const AvstemmingTimeline = () => {
                                                 Periode: {format(fom, 'yyyy-MM-dd')} - {format(tom, 'yyyy-MM-dd')}
                                             </div>
                                             <div>
-                                                Totalt: {avstemming.total.totalAntall} ({avstemming.total.totalBelop}{' '}
-                                                kr)
+                                                Totalt: {avstemming.total!!.totalAntall} (
+                                                {avstemming.total!!.totalBelop} kr)
                                             </div>
                                             <div>
-                                                Godkjent: {avstemming.grunnlag.godkjentAntall} (
-                                                {avstemming.grunnlag.godkjentBelop} kr)
+                                                Godkjent: {avstemming.grunnlag?.godkjentAntall} (
+                                                {avstemming.grunnlag?.godkjentBelop} kr)
                                             </div>
-                                            {avstemming.grunnlag.varselAntall > 0 && (
+                                            {avstemming.grunnlag && avstemming.grunnlag.varselAntall > 0 && (
                                                 <div>
                                                     Varsel: {avstemming.grunnlag.varselAntall} (
                                                     {avstemming.grunnlag.varselBelop} kr)
                                                 </div>
                                             )}
-                                            {avstemming.grunnlag.avvistAntall > 0 && (
+                                            {avstemming.grunnlag && avstemming.grunnlag.avvistAntall > 0 && (
                                                 <div>
                                                     Avvist: {avstemming.grunnlag.avvistAntall} (
                                                     {avstemming.grunnlag.avvistBelop} kr)
                                                 </div>
                                             )}
-                                            {avstemming.grunnlag.manglerAntall > 0 && (
+                                            {avstemming.grunnlag && avstemming.grunnlag.manglerAntall > 0 && (
                                                 <div>
                                                     Mangler: {avstemming.grunnlag.manglerAntall} (
                                                     {avstemming.grunnlag.manglerBelop} kr)

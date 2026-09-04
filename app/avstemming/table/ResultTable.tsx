@@ -18,6 +18,13 @@ type StatusTagProps = {
 }
 
 const StatusTag: React.FC<StatusTagProps> = ({ grunnlag }) => {
+    if (!grunnlag) {
+        return (
+            <Tag variant="neutral" size="small">
+                Ukjent
+            </Tag>
+        )
+    }
     if (grunnlag.avvistAntall > 0)
         return (
             <Tag variant="error" size="small">
@@ -64,14 +71,14 @@ export const ResultTable: React.FC<ResultTableProps> = ({ avstemming }) => {
                             const avstemming = it.second.find(isDataMelding)
                             if (!avstemming?.total || !avstemming.grunnlag) return null
 
-                            const { total, grunnlag, detaljs } = avstemming
+                            const { total, grunnlag, detalj } = avstemming
 
                             return (
                                 <TableExpandableRow
                                     key={it.first}
                                     content={
                                         <VStack gap="space-32">
-                                            <ResultTableRow grunnlag={grunnlag} detaljs={detaljs ?? []} />
+                                            <ResultTableRow grunnlag={grunnlag} detaljs={detalj ?? []} />
                                             <VStack gap="space-12">
                                                 <Label>JSON</Label>
                                                 <JsonView json={it} />

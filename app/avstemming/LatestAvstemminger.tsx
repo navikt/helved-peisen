@@ -21,6 +21,13 @@ type StatusTagProps = {
 }
 
 const StatusTag: React.FC<StatusTagProps> = ({ avstemming }) => {
+    if (!avstemming.grunnlag || !avstemming.total) {
+        return (
+            <Tag variant="neutral" size="small">
+                Ingen
+            </Tag>
+        )
+    }
     const { avvistAntall, varselAntall, manglerAntall } = avstemming.grunnlag
     if (avvistAntall > 0)
         return (
@@ -72,9 +79,13 @@ export const LatestAvstemminger: React.FC = () => {
         .entries()
         .toArray()
         .map(([fagsystem, avstemminger]) => {
-            const latest = avstemminger.reduce((latest, current) =>
-                current.avstemming.periode.datoAvstemtFom > latest.avstemming.periode.datoAvstemtFom ? current : latest
-            )
+            const latest = avstemminger
+                .filter((it) => it.avstemming.periode)
+                .reduce((latest, current) =>
+                    current.avstemming.periode!!.datoAvstemtFom > latest.avstemming.periode!!.datoAvstemtFom
+                        ? current
+                        : latest
+                )
             return {
                 fagsystem: fagsystem,
                 avstemming: latest.avstemming,
@@ -111,7 +122,7 @@ export const LatestAvstemminger: React.FC = () => {
                                         <VStack gap="space-32">
                                             <ResultTableRow
                                                 grunnlag={avstemming.grunnlag}
-                                                detaljs={avstemming.detaljs}
+                                                detaljs={avstemming.detalj}
                                             />
 
                                             <VStack gap="space-12">
@@ -125,8 +136,10 @@ export const LatestAvstemminger: React.FC = () => {
                                     <TableDataCell>
                                         <StatusTag avstemming={avstemming} />
                                     </TableDataCell>
-                                    <TableDataCell>{avstemming.total.totalAntall}</TableDataCell>
-                                    <TableDataCell>{avstemming.total.totalBelop.toLocaleString('nb-NO')}</TableDataCell>
+                                    <TableDataCell>{avstemming.total?.totalAntall}</TableDataCell>
+                                    <TableDataCell>
+                                        {avstemming.total?.totalBelop.toLocaleString('nb-NO')}
+                                    </TableDataCell>
                                     <TableDataCell>{format(getFom(avstemming), 'yyyy-MM-dd')}</TableDataCell>
                                     <TableDataCell>{format(getTom(avstemming), 'yyyy-MM-dd')}</TableDataCell>
                                 </TableExpandableRow>
