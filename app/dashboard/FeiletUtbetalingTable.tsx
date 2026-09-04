@@ -24,8 +24,12 @@ const getFagsystem = (message: Message) => {
     return message.fagsystem ?? message.headers?.find((header) => header.key === 'fagsystem')?.value
 }
 
+const getMessage = (message: Message & { value: string }): string => {
+    return JSON.parse(message.value).error.msg
+}
+
 type FeiletUtbetalingRowProps = {
-    message: Message
+    message: Message & { value: string }
     korrigering?: KorrigertFeiletUtbetaling
 }
 
@@ -77,7 +81,9 @@ const FeiletUtbetalingRow: React.FC<FeiletUtbetalingRowProps> = ({ message, korr
                 <Link href={`/kafka?key=${message.key}`}>{message.key}</Link>
             </TableDataCell>
             <TableDataCell>{formatDate(message.system_time_ms, 'yyyy-MM-dd - HH:mm:ss.SSS')}</TableDataCell>
-            <TableDataCell>{korrigering?.reason}</TableDataCell>
+            <TableDataCell>
+                <div className="max-w-84 truncate">{getMessage(message)}</div>
+            </TableDataCell>
             <TableDataCell>
                 <Checkbox
                     checked={!!korrigering}
@@ -110,6 +116,7 @@ const FeiletUtbetalingRow: React.FC<FeiletUtbetalingRowProps> = ({ message, korr
                     </form>
                 </Modal>
             </TableDataCell>
+            <TableDataCell>{korrigering?.reason}</TableDataCell>
         </TableExpandableRow>
     )
 }
@@ -137,8 +144,9 @@ export const FeiletUtbetalingTable: React.FC<Props> = ({ feiletUtbetalinger, kor
                     <TableHeaderCell>Fagsystem</TableHeaderCell>
                     <TableHeaderCell>Key</TableHeaderCell>
                     <TableHeaderCell>Timestamp</TableHeaderCell>
-                    <TableHeaderCell>Grunn</TableHeaderCell>
+                    <TableHeaderCell>Feilmelding</TableHeaderCell>
                     <TableHeaderCell>Kvittert</TableHeaderCell>
+                    <TableHeaderCell>Årsak</TableHeaderCell>
                 </TableRow>
             </TableHeader>
             <TableBody className="animate-fade-in">
@@ -164,13 +172,17 @@ export const FeiletUtbetalingTableSkeleton = () => {
                     <TableHeaderCell>Fagsystem</TableHeaderCell>
                     <TableHeaderCell>Key</TableHeaderCell>
                     <TableHeaderCell>Timestamp</TableHeaderCell>
-                    <TableHeaderCell>Grunn</TableHeaderCell>
+                    <TableHeaderCell>Feilmelding</TableHeaderCell>
                     <TableHeaderCell>Kvittert</TableHeaderCell>
+                    <TableHeaderCell>Årsak</TableHeaderCell>
                 </TableRow>
             </TableHeader>
             <TableBody>
                 {new Array(2).fill(0).map((_, i) => (
                     <TableRow key={i}>
+                        <TableDataCell>
+                            <Skeleton />
+                        </TableDataCell>
                         <TableDataCell>
                             <Skeleton />
                         </TableDataCell>

@@ -36,7 +36,7 @@ export type KorrigertFeiletUtbetaling = {
 }
 
 export type DashboardResponse = {
-    feiletUtbetalinger: Message[]
+    feiletUtbetalinger: (Message & { value: string })[]
     korrigerteFeiletUtbetalinger: KorrigertFeiletUtbetaling[]
     pendingMismatch: PendingMismatch[]
     avstemming: Avstemming[]
