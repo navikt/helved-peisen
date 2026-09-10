@@ -3,6 +3,7 @@
 import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { deleteSession } from '@/lib/server/session-store.ts'
+import { isAdmin } from '@/lib/server/auth.ts'
 
 export async function deleteApiToken() {
     const cookieStore = await cookies()
@@ -17,12 +18,14 @@ export async function getUser(): Promise<{
     name: string
     email: string
     ident: string
+    isAdmin: boolean
 }> {
     if (process.env.NODE_ENV === 'development') {
         return {
             name: `Navn Navnesen`,
             email: 'dev@localhost',
             ident: 'A12345',
+            isAdmin: true,
         }
     }
 
@@ -45,5 +48,6 @@ export async function getUser(): Promise<{
         name,
         email,
         ident,
+        isAdmin: await isAdmin(),
     }
 }

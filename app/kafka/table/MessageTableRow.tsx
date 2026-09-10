@@ -20,6 +20,7 @@ import { SendOKStatusButton } from './actionMenu/SendOKStatusButton.tsx'
 import { FilterLink } from '@/components/FilterLink'
 import { RemigrateButton } from './actionMenu/RemigrateButton.tsx'
 import { MessageView } from '@/components/MessageView.tsx'
+import { useUser } from '@/app/UserProvider'
 
 const formatFagsystem = (fagsystem?: string | null) => {
     if (!fagsystem) {
@@ -63,6 +64,8 @@ type Props = {
 }
 
 const RowContents: React.FC<Props> = ({ message }) => {
+    const user = useUser()
+    const isAdmin = user?.isAdmin ?? false
     const fagsystemHeader = message.headers?.find((header) => header.key === 'fagsystem')?.value
 
     return (
@@ -101,31 +104,31 @@ const RowContents: React.FC<Props> = ({ message }) => {
                     </ActionMenuTrigger>
                     <ActionMenuContent>
                         <SakLink message={message} />
-                        {message.topic_name === 'helved.oppdrag.v1' && (
+                        {isAdmin && message.topic_name === 'helved.oppdrag.v1' && (
                             <>
                                 <AddKvitteringButton message={message} />
                                 <ResendMessageButton message={message} label="Bygg og send oppdrag på nytt" />
                             </>
                         )}
-                        {message.topic_name === 'helved.pending-utbetalinger.v1' && (
+                        {isAdmin && message.topic_name === 'helved.pending-utbetalinger.v1' && (
                             <FlyttTilUtbetalingerButton message={message} />
                         )}
-                        {message.topic_name === 'helved.utbetalinger.v1' && (
+                        {isAdmin && message.topic_name === 'helved.utbetalinger.v1' && (
                             <>
                                 <TombstoneUtbetalingButton messageKey={message.key} />
                                 <RemigrateButton message={message} />
                             </>
                         )}
-                        {message.topic_name === 'teamdagpenger.utbetaling.v1' && (
+                        {isAdmin && message.topic_name === 'teamdagpenger.utbetaling.v1' && (
                             <ResendMessageButton message={message} label="Send inn dagpengeutbetaling på nytt" />
                         )}
-                        {message.topic_name === 'tilleggsstonader.utbetaling.v1' && (
+                        {isAdmin && message.topic_name === 'tilleggsstonader.utbetaling.v1' && (
                             <ResendMessageButton
                                 message={message}
                                 label="Send inn tilleggsstønaderutbetaling på nytt"
                             />
                         )}
-                        {message.topic_name === 'helved.status.v1' && message.status === 'FEILET' && (
+                        {isAdmin && message.topic_name === 'helved.status.v1' && message.status === 'FEILET' && (
                             <SendOKStatusButton message={message} />
                         )}
                         <ActionMenuItem>

@@ -5,6 +5,7 @@ import { Button, Modal } from '@navikt/ds-react'
 import { håndterDobbeltutbetaling } from '@/app/dashboard/actions.ts'
 import { showToast } from '@/lib/browser/toast.tsx'
 import type { DobbeltUtbetaling } from '@/app/dashboard/types.ts'
+import { useUser } from '@/app/UserProvider'
 
 type Props = {
     kandidat: DobbeltUtbetaling
@@ -12,6 +13,7 @@ type Props = {
 }
 
 export const HåndterDobbeltutbetalingButton: React.FC<Props> = ({ kandidat, onHåndtert }) => {
+    const user = useUser()
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
 
@@ -32,6 +34,10 @@ export const HåndterDobbeltutbetalingButton: React.FC<Props> = ({ kandidat, onH
         } else if (result.status === 'error') {
             showToast(result.message ?? 'Klarte ikke håndtere dobbeltutbetaling', { variant: 'error' })
         }
+    }
+
+    if (!user?.isAdmin) {
+        return null
     }
 
     return (

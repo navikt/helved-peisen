@@ -2,7 +2,7 @@
 
 import { Routes } from '@/lib/api/routes.ts'
 import { logger } from '@navikt/next-logger'
-import { checkToken, getApiToken } from '@/lib/server/auth.ts'
+import { checkToken, getApiToken, requireAdmin } from '@/lib/server/auth.ts'
 import type { ServerActionResponse } from '@/app/kafka/table/actionMenu/types.ts'
 import type { KorrigertFeiletUtbetaling } from './types'
 
@@ -13,6 +13,7 @@ export async function håndterDobbeltutbetaling(
     tom: string
 ): Promise<ServerActionResponse<void>> {
     await checkToken()
+    await requireAdmin()
     const params = new URLSearchParams({ behandlingId, klassekode, fom, tom })
     const response = await fetch(`${Routes.dobbeltutbetalinger}?${params}`, {
         method: 'POST',
@@ -38,6 +39,7 @@ export const korrigerFeiletUtbetalingAction = async (
     formData: FormData
 ): Promise<ServerActionResponse<void>> => {
     await checkToken()
+    await requireAdmin()
 
     const reason = `${formData.get('reason')}`
 

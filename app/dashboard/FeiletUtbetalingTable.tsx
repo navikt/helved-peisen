@@ -19,6 +19,7 @@ import { MessageView } from '@/components/MessageView'
 import { korrigerFeiletUtbetalingAction } from '@/app/dashboard/actions.ts'
 import { showToast } from '@/lib/browser/toast'
 import { useDashboard } from '@/app/dashboard/DashboardContext.tsx'
+import { useUser } from '@/app/UserProvider'
 
 const getFagsystem = (message: Message) => {
     return message.fagsystem ?? message.headers?.find((header) => header.key === 'fagsystem')?.value
@@ -35,6 +36,7 @@ type FeiletUtbetalingRowProps = {
 
 const FeiletUtbetalingRow: React.FC<FeiletUtbetalingRowProps> = ({ message, korrigering }) => {
     const { refreshDashboard } = useDashboard()
+    const user = useUser()
     const [open, setOpen] = useState(false)
     const [didOpen, setDidOpen] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
@@ -87,34 +89,40 @@ const FeiletUtbetalingRow: React.FC<FeiletUtbetalingRowProps> = ({ message, korr
             <TableDataCell>
                 <Checkbox
                     checked={!!korrigering}
-                    onChange={() => modal.current?.showModal()}
-                    readOnly={!!korrigering}
+                    onChange={() => user?.isAdmin && modal.current?.showModal()}
+                    readOnly={!user?.isAdmin || !!korrigering}
                     hideLabel
                 >
                     Kvittert
                 </Checkbox>
-                <Modal ref={modal} header={{ heading: 'Korriger feilet utbetaling' }} width={600}>
-                    <form action={formAction}>
-                        <Modal.Body>
-                            <Textarea name="reason" label="Oppgi grunn" error={state?.validation?.reason} />
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button type="submit" loading={pending || refreshing} disabled={pending || refreshing}>
-                                Lagre
-                            </Button>
-                            <Button
-                                type="button"
-                                variant="secondary"
-                                onClick={() => {
-                                    modal.current?.close()
-                                }}
-                                disabled={pending || refreshing}
-                            >
-                                Avbryt
-                            </Button>
-                        </Modal.Footer>
-                    </form>
-                </Modal>
+                {user?.isAdmin && (
+                    <Modal ref={modal} header={{ heading: 'Korriger feilet utbetaling' }} width={600}>
+                        <form action={formAction}>
+                            <Modal.Body>
+                                <Textarea name="reason" label="Oppgi grunn" error={state?.validation?.reason} />
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button
+                                    type="submit"
+                                    loading={pending || refreshing}
+                                    disabled={pending || refreshing}
+                                >
+                                    Lagre
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    onClick={() => {
+                                        modal.current?.close()
+                                    }}
+                                    disabled={pending || refreshing}
+                                >
+                                    Avbryt
+                                </Button>
+                            </Modal.Footer>
+                        </form>
+                    </Modal>
+                )}
             </TableDataCell>
             <TableDataCell>{korrigering?.reason}</TableDataCell>
         </TableExpandableRow>

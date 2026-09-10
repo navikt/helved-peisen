@@ -6,6 +6,7 @@ type UserContextValue = null | {
     name: string
     email: string
     ident: string
+    isAdmin: boolean
 }
 
 const UserContext = React.createContext<UserContextValue>(null)

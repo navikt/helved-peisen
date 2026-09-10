@@ -2,7 +2,7 @@
 
 import type { Message, RawMessage } from '@/app/kafka/types.ts'
 import { Routes } from '@/lib/api/routes.ts'
-import { getApiToken } from '@/lib/server/auth.ts'
+import { getApiToken, requireAdmin } from '@/lib/server/auth.ts'
 import { unauthorized } from 'next/navigation'
 import { ApiResponse } from '@/lib/api/types'
 
@@ -28,6 +28,7 @@ export async function fetchRawMessage(message: Message): Promise<ApiResponse<Raw
 }
 
 export async function resendMessage(message: Message, reason: string): Promise<ApiResponse<null>> {
+    await requireAdmin()
     const apiToken = await getApiToken()
     if (!apiToken) return unauthorized()
 

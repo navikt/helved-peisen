@@ -2,7 +2,7 @@
 
 import { Routes } from '@/lib/api/routes.ts'
 import { logger } from '@navikt/next-logger'
-import { checkToken, getApiToken, getUtsjekkApiToken } from '@/lib/server/auth.ts'
+import { checkToken, getApiToken, getUtsjekkApiToken, requireAdmin } from '@/lib/server/auth.ts'
 import type { Message } from '@/app/kafka/types.ts'
 import type { ServerActionResponse } from '@/app/kafka/table/actionMenu/types.ts'
 
@@ -12,6 +12,7 @@ export async function addKvittering(
     formData: FormData
 ): Promise<ServerActionResponse<void>> {
     await checkToken()
+    await requireAdmin()
 
     formData.set('partition', `${message.partition}`)
     formData.set('offset', `${message.offset}`)
@@ -49,6 +50,7 @@ export async function addKvittering(
 
 export async function movePendingToUtbetaling(formData: FormData): Promise<ServerActionResponse<void>> {
     await checkToken()
+    await requireAdmin()
     const response = await fetch(Routes.pendingTilUtbetaling, {
         method: 'POST',
         headers: {
@@ -75,6 +77,7 @@ export async function tombstoneUtbetaling(
     formData: FormData
 ): Promise<ServerActionResponse<void>> {
     await checkToken()
+    await requireAdmin()
 
     formData.set('key', key)
 
@@ -115,6 +118,7 @@ export async function sendOkStatus(
     formData: FormData
 ): Promise<ServerActionResponse<void>> {
     await checkToken()
+    await requireAdmin()
 
     const reason = formData.get('reason') as string | null
     if (!reason || reason.length === 0) {
@@ -148,6 +152,7 @@ export async function sendOkStatus(
 
 export async function remigrerUtbetaling(data: any): Promise<ServerActionResponse<void>> {
     await checkToken()
+    await requireAdmin()
     const response = await fetch(Routes.remigrer, {
         method: 'POST',
         headers: {
