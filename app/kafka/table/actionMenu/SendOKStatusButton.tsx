@@ -7,10 +7,11 @@ import type { Message } from '@/app/kafka/types.ts'
 
 type Props = {
     message: Message
+    disabled?: boolean
 }
 
 
-export const SendOKStatusButton = ({ message }: Props) => {
+export const SendOKStatusButton = ({ message, disabled }: Props) => {
     const ref = useRef<HTMLDialogElement>(null)
     const fagsystem = message.headers?.find((header) => header.key === 'fagsystem')?.value
 
@@ -19,6 +20,7 @@ export const SendOKStatusButton = ({ message }: Props) => {
 
     const openModal = (e: Event) => {
         e.preventDefault()
+        if (disabled) return
         ref.current?.showModal()
     }
 
@@ -38,7 +40,9 @@ export const SendOKStatusButton = ({ message }: Props) => {
 
     return (
         <>
-            <ActionMenuItem onSelect={openModal}>Send OK status</ActionMenuItem>
+            <ActionMenuItem onSelect={openModal} disabled={disabled}>
+                Send OK status
+            </ActionMenuItem>
             <Modal
                 ref={ref}
                 header={{

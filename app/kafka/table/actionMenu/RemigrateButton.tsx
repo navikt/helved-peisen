@@ -21,9 +21,10 @@ type Request = {
 
 type Props = {
     message: Message
+    disabled?: boolean
 }
 
-export const RemigrateButton = ({ message }: Props) => {
+export const RemigrateButton = ({ message, disabled }: Props) => {
     const [open, setOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [preview, setPreview] = useState<ReturnType<typeof JSON.parse> | null>(null)
@@ -31,6 +32,7 @@ export const RemigrateButton = ({ message }: Props) => {
 
     const handleMenuItemClick = (e: Event) => {
         e.preventDefault()
+        if (disabled) return
         setOpen(true)
     }
 
@@ -95,7 +97,9 @@ export const RemigrateButton = ({ message }: Props) => {
 
     return (
         <>
-            <ActionMenuItem onSelect={handleMenuItemClick}>Re-migrer utbetaling</ActionMenuItem>
+            <ActionMenuItem onSelect={handleMenuItemClick} disabled={disabled}>
+                Re-migrer utbetaling
+            </ActionMenuItem>
             <Modal
                 open={open}
                 onClose={() => setOpen(false)}

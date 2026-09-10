@@ -90,7 +90,8 @@ const FeiletUtbetalingRow: React.FC<FeiletUtbetalingRowProps> = ({ message, korr
                 <Checkbox
                     checked={!!korrigering}
                     onChange={() => user?.isAdmin && modal.current?.showModal()}
-                    readOnly={!user?.isAdmin || !!korrigering}
+                    disabled={!user?.isAdmin}
+                    readOnly={!!korrigering}
                     hideLabel
                 >
                     Kvittert

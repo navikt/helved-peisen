@@ -10,9 +10,10 @@ import { showToast } from '@/lib/browser/toast.tsx'
 
 type Props = {
     message: Message
+    disabled?: boolean
 }
 
-export const AddKvitteringButton = ({ message }: Props) => {
+export const AddKvitteringButton = ({ message, disabled }: Props) => {
     const ref = useRef<HTMLDialogElement>(null)
     const addKvitteringWithMessageData = addKvittering.bind(null, {
         partition: message.partition,
@@ -24,6 +25,7 @@ export const AddKvitteringButton = ({ message }: Props) => {
 
     const openModal = (e: Event) => {
         e.preventDefault()
+        if (disabled) return
         ref.current?.showModal()
     }
 
@@ -43,7 +45,9 @@ export const AddKvitteringButton = ({ message }: Props) => {
     }, [state, message.key])
     return (
         <>
-            <ActionMenuItem onSelect={openModal}>Legg til kvittering</ActionMenuItem>
+            <ActionMenuItem onSelect={openModal} disabled={disabled}>
+                Legg til kvittering
+            </ActionMenuItem>
             <Modal ref={ref} header={{ heading: 'Legg til kvittering' }} width={600}>
                 <form action={formAction}>
                     <Modal.Body>

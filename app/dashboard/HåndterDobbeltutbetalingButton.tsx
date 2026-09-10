@@ -36,13 +36,14 @@ export const HåndterDobbeltutbetalingButton: React.FC<Props> = ({ kandidat, onH
         }
     }
 
-    if (!user?.isAdmin) {
-        return null
-    }
-
     return (
         <>
-            <Button variant="secondary-neutral" size="small" onClick={() => setOpen(true)}>
+            <Button
+                variant="secondary-neutral"
+                size="small"
+                disabled={!user?.isAdmin}
+                onClick={() => setOpen(true)}
+            >
                 Håndter
             </Button>
             <Modal

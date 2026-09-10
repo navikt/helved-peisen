@@ -6,15 +6,17 @@ import { showToast } from '@/lib/browser/toast.tsx'
 
 type Props = {
     messageKey: string
+    disabled?: boolean
 }
 
-export const TombstoneUtbetalingButton = ({ messageKey }: Props) => {
+export const TombstoneUtbetalingButton = ({ messageKey, disabled }: Props) => {
     const ref = useRef<HTMLDialogElement>(null)
     const tombstoneUtbetalingWithKey = tombstoneUtbetaling.bind(null, messageKey)
     const [state, formAction, pending] = useActionState(tombstoneUtbetalingWithKey, { status: 'initial' })
 
     const openModal = (e: Event) => {
         e.preventDefault()
+        if (disabled) return
         ref.current?.showModal()
     }
 
@@ -33,7 +35,9 @@ export const TombstoneUtbetalingButton = ({ messageKey }: Props) => {
 
     return (
         <>
-            <ActionMenuItem onSelect={openModal}>Tombstone utbetaling</ActionMenuItem>
+            <ActionMenuItem onSelect={openModal} disabled={disabled}>
+                Tombstone utbetaling
+            </ActionMenuItem>
             <Modal
                 ref={ref}
                 header={{

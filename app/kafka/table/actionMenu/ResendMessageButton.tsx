@@ -11,9 +11,10 @@ import { isSuccessResponse } from '@/lib/api/types'
 type Props = {
     message: Message
     label: string
+    disabled?: boolean
 }
 
-export const ResendMessageButton = ({ message, label }: Props) => {
+export const ResendMessageButton = ({ message, label, disabled }: Props) => {
     const [open, setOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [reason, setReason] = useState('')
@@ -45,6 +46,7 @@ export const ResendMessageButton = ({ message, label }: Props) => {
 
     const openModal = (e: Event) => {
         e.preventDefault()
+        if (disabled) return
         setOpen(true)
     }
 
@@ -57,7 +59,9 @@ export const ResendMessageButton = ({ message, label }: Props) => {
 
     return (
         <>
-            <ActionMenuItem onSelect={openModal}>{label}</ActionMenuItem>
+            <ActionMenuItem onSelect={openModal} disabled={disabled}>
+                {label}
+            </ActionMenuItem>
             <Modal
                 open={open}
                 onClose={closeModal}

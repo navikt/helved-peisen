@@ -104,32 +104,41 @@ const RowContents: React.FC<Props> = ({ message }) => {
                     </ActionMenuTrigger>
                     <ActionMenuContent>
                         <SakLink message={message} />
-                        {isAdmin && message.topic_name === 'helved.oppdrag.v1' && (
+                        {message.topic_name === 'helved.oppdrag.v1' && (
                             <>
-                                <AddKvitteringButton message={message} />
-                                <ResendMessageButton message={message} label="Bygg og send oppdrag på nytt" />
+                                <AddKvitteringButton message={message} disabled={!isAdmin} />
+                                <ResendMessageButton
+                                    message={message}
+                                    label="Bygg og send oppdrag på nytt"
+                                    disabled={!isAdmin}
+                                />
                             </>
                         )}
-                        {isAdmin && message.topic_name === 'helved.pending-utbetalinger.v1' && (
-                            <FlyttTilUtbetalingerButton message={message} />
+                        {message.topic_name === 'helved.pending-utbetalinger.v1' && (
+                            <FlyttTilUtbetalingerButton message={message} disabled={!isAdmin} />
                         )}
-                        {isAdmin && message.topic_name === 'helved.utbetalinger.v1' && (
+                        {message.topic_name === 'helved.utbetalinger.v1' && (
                             <>
-                                <TombstoneUtbetalingButton messageKey={message.key} />
-                                <RemigrateButton message={message} />
+                                <TombstoneUtbetalingButton messageKey={message.key} disabled={!isAdmin} />
+                                <RemigrateButton message={message} disabled={!isAdmin} />
                             </>
                         )}
-                        {isAdmin && message.topic_name === 'teamdagpenger.utbetaling.v1' && (
-                            <ResendMessageButton message={message} label="Send inn dagpengeutbetaling på nytt" />
+                        {message.topic_name === 'teamdagpenger.utbetaling.v1' && (
+                            <ResendMessageButton
+                                message={message}
+                                label="Send inn dagpengeutbetaling på nytt"
+                                disabled={!isAdmin}
+                            />
                         )}
-                        {isAdmin && message.topic_name === 'tilleggsstonader.utbetaling.v1' && (
+                        {message.topic_name === 'tilleggsstonader.utbetaling.v1' && (
                             <ResendMessageButton
                                 message={message}
                                 label="Send inn tilleggsstønaderutbetaling på nytt"
+                                disabled={!isAdmin}
                             />
                         )}
-                        {isAdmin && message.topic_name === 'helved.status.v1' && message.status === 'FEILET' && (
-                            <SendOKStatusButton message={message} />
+                        {message.topic_name === 'helved.status.v1' && message.status === 'FEILET' && (
+                            <SendOKStatusButton message={message} disabled={!isAdmin} />
                         )}
                         <ActionMenuItem>
                             <GrafanaTraceLink traceId={message.trace_id} />
