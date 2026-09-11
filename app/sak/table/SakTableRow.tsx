@@ -11,6 +11,7 @@ import { ResendMessageButton } from '@/app/kafka/table/actionMenu/ResendMessageB
 import { SendOKStatusButton } from '@/app/kafka/table/actionMenu/SendOKStatusButton.tsx'
 import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTilUtbetalingerButton.tsx'
 import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
+import { EndreUtbetalingButton } from '@/app/kafka/table/actionMenu/EndreUtbetalingButton.tsx'
 import { GrafanaTraceLink } from '@/components/GrafanaTraceLink.tsx'
 import type { Message } from '@/app/kafka/types.ts'
 import { RemigrateButton } from '@/app/kafka/table/actionMenu/RemigrateButton.tsx'
@@ -87,6 +88,7 @@ export const SakTableRow: React.FC<Props> = ({ message, active }) => {
                         {message.topic_name === 'helved.utbetalinger.v1' && (
                             <>
                                 <TombstoneUtbetalingButton messageKey={message.key} disabled={!isAdmin} />
+                                <EndreUtbetalingButton message={message} disabled={!isAdmin} />
                                 <RemigrateButton message={message} disabled={!isAdmin} />
                             </>
                         )}

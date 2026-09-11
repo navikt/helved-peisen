@@ -15,6 +15,7 @@ import { SakLink } from '@/app/kafka/table/SakLink.tsx'
 import { AddKvitteringButton } from './actionMenu/AddKvitteringButton'
 import { FlyttTilUtbetalingerButton } from '@/app/kafka/table/actionMenu/FlyttTilUtbetalingerButton.tsx'
 import { TombstoneUtbetalingButton } from '@/app/kafka/table/actionMenu/TombstoneUtbetalingButton.tsx'
+import { EndreUtbetalingButton } from '@/app/kafka/table/actionMenu/EndreUtbetalingButton.tsx'
 import { ResendMessageButton } from './actionMenu/ResendMessageButton'
 import { SendOKStatusButton } from './actionMenu/SendOKStatusButton.tsx'
 import { FilterLink } from '@/components/FilterLink'
@@ -120,6 +121,7 @@ const RowContents: React.FC<Props> = ({ message }) => {
                         {message.topic_name === 'helved.utbetalinger.v1' && (
                             <>
                                 <TombstoneUtbetalingButton messageKey={message.key} disabled={!isAdmin} />
+                                <EndreUtbetalingButton message={message} disabled={!isAdmin} />
                                 <RemigrateButton message={message} disabled={!isAdmin} />
                             </>
                         )}

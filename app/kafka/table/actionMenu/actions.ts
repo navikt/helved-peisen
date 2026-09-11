@@ -111,6 +111,56 @@ export async function tombstoneUtbetaling(
     return { status: 'success' }
 }
 
+export async function endreUtbetaling(
+    key: string,
+    _initialState: any,
+    formData: FormData
+): Promise<ServerActionResponse<void>> {
+    await checkToken()
+    await requireAdmin()
+
+    formData.set('key', key)
+
+    const value = formData.get('value') as string | null
+    if (!value || value.length === 0) {
+        return {
+            status: 'invalid',
+            validation: {
+                value: 'Value er påkrevd',
+            },
+        }
+    }
+
+    const reason = formData.get('reason') as string | null
+    if (!reason || reason.length === 0) {
+        return {
+            status: 'invalid',
+            validation: {
+                reason: 'Grunn må oppgis',
+            },
+        }
+    }
+
+    const response = await fetch(Routes.endreUtbetaling, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${await getApiToken()}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(Object.fromEntries(formData)),
+    })
+
+    if (!response.ok) {
+        logger.error(`Server responded with status: ${response.status} - ${response.statusText}`)
+        return {
+            status: 'error',
+            message: `Klarte ikke endre utbetaling. Server svarte med ${response.status}`,
+        }
+    }
+
+    return { status: 'success' }
+}
+
 export async function sendOkStatus(
     key: string,
     fagsystem: string | null | undefined,

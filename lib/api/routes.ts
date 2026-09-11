@@ -11,6 +11,7 @@ export const Routes = {
     korrigerFeiletUtbetaling: `${kafkaApiBaseUrl}/api/korriger_utbetaling`,
     pendingTilUtbetaling: `${kafkaApiBaseUrl}/pending-til-utbetaling`,
     tombstoneUtbetaling: `${kafkaApiBaseUrl}/tombstone-utbetaling`,
+    endreUtbetaling: `${kafkaApiBaseUrl}/endre-utbetaling`,
     okStatus: `${kafkaApiBaseUrl}/ok-status`,
     saker: `${kafkaApiBaseUrl}/api/saker`,
     pendingMismatch: `${kafkaApiBaseUrl}/api/brann/pending-mismatch`,
