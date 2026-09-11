@@ -8,14 +8,14 @@ export const Routes = {
     messages: `${kafkaApiBaseUrl}/api/messages`,
     resend: `${kafkaApiBaseUrl}/api/resend`,
     manuellKvittering: `${kafkaApiBaseUrl}/manuell-kvittering`,
-    korrigerFeiletUtbetaling: `${kafkaApiBaseUrl}/api/korriger_utbetaling`,
+    korrigerFeiletUtbetaling: `${kafkaApiBaseUrl}/api/korriger_utbetalinger`,
     pendingTilUtbetaling: `${kafkaApiBaseUrl}/pending-til-utbetaling`,
     tombstoneUtbetaling: `${kafkaApiBaseUrl}/tombstone-utbetaling`,
     endreUtbetaling: `${kafkaApiBaseUrl}/endre-utbetaling`,
     okStatus: `${kafkaApiBaseUrl}/ok-status`,
     saker: `${kafkaApiBaseUrl}/api/saker`,
     pendingMismatch: `${kafkaApiBaseUrl}/api/brann/pending-mismatch`,
-    dobbeltutbetalinger:  `${kafkaApiBaseUrl}/api/brann/dobbeltutbetalinger`,
+    dobbeltutbetalinger: `${kafkaApiBaseUrl}/api/brann/dobbeltutbetalinger`,
     sak(sakId: string, fagsystem: string) {
         return `${kafkaApiBaseUrl}/api/saker/${sakId}/${fagsystem}`
     },
