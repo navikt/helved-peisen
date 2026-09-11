@@ -224,7 +224,6 @@ export const FeiletUtbetalingTable: React.FC<Props> = ({ feiletUtbetalinger, kor
                                             name="reason"
                                             label="Oppgi grunn"
                                             error={state.validation?.reason}
-                                            required
                                             disabled={pending}
                                         />
                                     </Modal.Body>
