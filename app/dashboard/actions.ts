@@ -53,20 +53,24 @@ export const korrigerFeiletUtbetalingAction = async (
         }
     }
 
-    formData.set('reason', reason)
-    formData.set('korrigeringer', JSON.stringify(korrigeringer))
-
     const response = await fetch(Routes.korrigerFeiletUtbetaling, {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${await getApiToken()}`,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(Object.fromEntries(formData)),
+        body: JSON.stringify({
+            utbetalinger: korrigeringer.map((it) => ({
+                ...it,
+                reason: reason,
+            })),
+        }),
     })
 
     if (!response.ok) {
-        logger.error(`Server responded with status: ${response.status} - ${response.statusText}`)
+        logger.error(
+            `Server responded with status: ${response.status} - ${response.statusText} ${JSON.stringify(await response.json())}`
+        )
         return {
             status: 'error',
             message: `Klarte ikke markere feilet utbetaling som korrigert. Mottok status ${response.status} fra server.`,
