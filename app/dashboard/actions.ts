@@ -34,14 +34,15 @@ export async function håndterDobbeltutbetaling(
 }
 
 export const korrigerFeiletUtbetalingAction = async (
-    korrigering: Omit<KorrigertFeiletUtbetaling, 'reason'>,
-    _initialState: any,
+    korrigeringer: Omit<KorrigertFeiletUtbetaling, 'reason'>[],
+    _initialState: ServerActionResponse<void>,
     formData: FormData
 ): Promise<ServerActionResponse<void>> => {
     await checkToken()
     await requireAdmin()
 
-    const reason = `${formData.get('reason')}`
+    const reasonValue = formData.get('reason')
+    const reason = typeof reasonValue === 'string' ? reasonValue.trim() : ''
 
     if (!reason || reason.length === 0) {
         return {
@@ -52,8 +53,8 @@ export const korrigerFeiletUtbetalingAction = async (
         }
     }
 
-    formData.set('topic', korrigering.topic)
-    formData.set('key', korrigering.key)
+    formData.set('reason', reason)
+    formData.set('korrigeringer', JSON.stringify(korrigeringer))
 
     const response = await fetch(Routes.korrigerFeiletUtbetaling, {
         method: 'POST',

@@ -34,7 +34,7 @@ export const DashboardContent: React.FC = () => {
         return <Alert variant="error">Klarte ikke hente dashboard</Alert>
     }
 
-    const synlige = dashboard.data.dobbeltutbetalinger.filter(
+    const dobbeltutbetalinger = dashboard.data.dobbeltutbetalinger.filter(
         (utbetaling) =>
             !håndterteNøkler.has(
                 `${utbetaling.behandlingId}-${utbetaling.klassekode}-${utbetaling.fom}-${utbetaling.tom}`
@@ -55,7 +55,7 @@ export const DashboardContent: React.FC = () => {
                 <PendingMismatchCard antallMismatch={dashboard.data.pendingMismatch.length} fom={fom} tom={tom} />
                 <AvstemmingCard avstemming={dashboard.data.avstemming} />
                 <ManglendeKvitteringCard antallManglendeKvitteringer={dashboard.data.oppdragUtenKvittering.length} />
-                <DobbeltUtbetalingCard antallDobleUtbetalinger={synlige.length} />
+                <DobbeltUtbetalingCard antallDobleUtbetalinger={dobbeltutbetalinger.length} />
             </HGrid>
 
             <VStack gap="space-20">
@@ -82,7 +82,7 @@ export const DashboardContent: React.FC = () => {
                         Potensielle dobbeltutbetalinger
                     </Heading>
                     <Box padding="space-16">
-                        <DobbeltutbetalingTable dobbeltutbetalinger={synlige} onHåndtert={håndter} />
+                        <DobbeltutbetalingTable dobbeltutbetalinger={dobbeltutbetalinger} onHåndtert={håndter} />
                     </Box>
                 </VStack>
 
