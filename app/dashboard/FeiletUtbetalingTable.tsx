@@ -1,7 +1,7 @@
 'use client'
 
 import { formatDate } from 'date-fns'
-import { useActionState, useRef, useState } from 'react'
+import { useActionState, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Alert, Button, Checkbox, Link, Modal, Skeleton, Textarea } from '@navikt/ds-react'
 import {
     Table,
@@ -21,6 +21,54 @@ import { useDashboard } from '@/app/dashboard/DashboardContext.tsx'
 import type { ServerActionResponse } from '@/app/kafka/table/actionMenu/types.ts'
 import { showToast } from '@/lib/browser/toast.tsx'
 import { useUser } from '@/app/UserProvider'
+
+const ScrollableTable = ({ children, className = '' }: { children: ReactNode; className?: string }) => {
+    const scrollRef = useRef<HTMLDivElement>(null)
+    const [edges, setEdges] = useState({ left: false, right: false })
+
+    useEffect(() => {
+        const container = scrollRef.current
+        if (!container) return
+
+        const updateEdges = () => {
+            const left = container.scrollLeft > 1
+            const right = container.scrollWidth - container.clientWidth - container.scrollLeft > 1
+            setEdges((previous) => (previous.left === left && previous.right === right ? previous : { left, right }))
+        }
+
+        const observer = new ResizeObserver(updateEdges)
+        observer.observe(container)
+        if (container.firstElementChild) observer.observe(container.firstElementChild)
+        container.addEventListener('scroll', updateEdges, { passive: true })
+        updateEdges()
+
+        return () => {
+            observer.disconnect()
+            container.removeEventListener('scroll', updateEdges)
+        }
+    }, [])
+
+    return (
+        <div className={`relative min-w-0 max-w-full ${className}`}>
+            <div ref={scrollRef} className="overflow-x-auto overflow-y-hidden">
+                {children}
+            </div>
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0"
+                style={{
+                    boxShadow:
+                        [
+                            edges.left && 'inset 18px 0 14px -10px var(--ax-border-accent-subtle)',
+                            edges.right && 'inset -18px 0 14px -10px var(--ax-border-accent-subtle)',
+                        ]
+                            .filter(Boolean)
+                            .join(', ') || 'none',
+                }}
+            />
+        </div>
+    )
+}
 
 const getMessageKey = (message: Message) => {
     return `${message.key}-${message.topic_name}-${message.partition}-${message.offset}`
@@ -124,7 +172,7 @@ export const FeiletUtbetalingTable: React.FC<Props> = ({ feiletUtbetalinger, kor
     }
 
     return (
-        <div className="min-w-0 max-w-full overflow-x-auto overflow-y-hidden">
+        <ScrollableTable>
             <Table size="small" className="whitespace-nowrap">
                 <TableHeader>
                     <TableRow>
@@ -152,7 +200,7 @@ export const FeiletUtbetalingTable: React.FC<Props> = ({ feiletUtbetalinger, kor
                             >
                                 <form action={formAction}>
                                     <Modal.Body>
-                                        <div className="mb-4 overflow-x-auto overflow-y-hidden">
+                                        <ScrollableTable className="mb-4">
                                             <Table size="small" className="w-auto whitespace-nowrap">
                                                 <TableHeader>
                                                     <TableRow>
@@ -171,7 +219,7 @@ export const FeiletUtbetalingTable: React.FC<Props> = ({ feiletUtbetalinger, kor
                                                     ))}
                                                 </TableBody>
                                             </Table>
-                                        </div>
+                                        </ScrollableTable>
                                         <Textarea
                                             name="reason"
                                             label="Oppgi grunn"
@@ -228,7 +276,7 @@ export const FeiletUtbetalingTable: React.FC<Props> = ({ feiletUtbetalinger, kor
                     })}
                 </TableBody>
             </Table>
-        </div>
+        </ScrollableTable>
     )
 }
 
