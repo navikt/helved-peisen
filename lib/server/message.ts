@@ -114,7 +114,7 @@ export const annotatePendingMismatch = (messages: RawMessage[]): AnnotatedRawMes
     )
 }
 
-const badgeForMessage = (message: RawMessage) => {
+export const badgeForMessage = (message: RawMessage) => {
     if (!message.value) {
         return null
     }
