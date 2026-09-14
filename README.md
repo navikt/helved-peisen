@@ -47,6 +47,10 @@ API_BASE_URL=http://localhost:8080
 
 Appen kjører nå på [http://localhost:3000](http://localhost:3000)
 
+## Feature toggles
+
+`isEndreUtbetalingButtonEnabled` i `lib/env.ts` styrer om "Endre utbetaling"-knappen i kafka-tabellen er slått på. For å slå funksjonen av/på må du endre konstanten i koden og deploye på nytt.
+
 ## Testing
 
 Enhetstester kan kjøres med `pnpm run test`. Appen bruker [vitest](https://vitest.dev/) som testrammeverk og [msw](https://mswjs.io/) for mocking av API.

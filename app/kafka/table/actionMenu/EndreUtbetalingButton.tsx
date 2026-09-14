@@ -9,6 +9,7 @@ import { fetchRawMessage } from '@/app/kafka/actions.ts'
 import { isSuccessResponse } from '@/lib/api/types.ts'
 import { showToast } from '@/lib/browser/toast.tsx'
 import { DiffView } from '@/components/DiffView.tsx'
+import { isEndreUtbetalingButtonEnabled } from '@/lib/env.ts'
 import type { Message } from '@/app/kafka/types.ts'
 
 type Props = {
@@ -19,6 +20,8 @@ type Props = {
 type Step = 'edit' | 'confirm'
 
 export const EndreUtbetalingButton = ({ message, disabled }: Props) => {
+    const isDisabled = disabled || !isEndreUtbetalingButtonEnabled
+
     const ref = useRef<HTMLDialogElement>(null)
     const endreUtbetalingWithKey = endreUtbetaling.bind(null, message.key)
     const [state, formAction, pending] = useActionState(endreUtbetalingWithKey, { status: 'initial' })
@@ -30,7 +33,7 @@ export const EndreUtbetalingButton = ({ message, disabled }: Props) => {
 
     const openModal = async (e: Event) => {
         e.preventDefault()
-        if (disabled) return
+        if (isDisabled) return
 
         setStep('edit')
         setClientError(undefined)
@@ -83,7 +86,7 @@ export const EndreUtbetalingButton = ({ message, disabled }: Props) => {
 
     return (
         <>
-            <ActionMenuItem onSelect={openModal} disabled={disabled}>
+            <ActionMenuItem onSelect={openModal} disabled={isDisabled}>
                 Endre utbetaling
             </ActionMenuItem>
             <Modal
