@@ -2,7 +2,7 @@ import pw from 'next/experimental/testmode/playwright.js'
 
 const { test, expect } = pw
 
-import messages from './data/messages.json' assert { type: 'json' }
+import messages from './data/messages.json' with { type: 'json' }
 
 test.beforeEach(async ({ context, next }) => {
     await context.addCookies([

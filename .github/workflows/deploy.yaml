@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  PLAYWRIGHT_VERSION: 1.58.2
+  PLAYWRIGHT_VERSION: 1.63.0
 
 jobs:
   test:

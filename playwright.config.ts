@@ -33,7 +33,7 @@ export default defineConfig({
             command: 'pnpm exec next dev',
             url: requireEnv('NEXT_PUBLIC_HOSTNAME'),
             reuseExistingServer: false,
-            env: process.env as { [key: string]: string },
+            env: { ...process.env, NEXT_TEST_PROXY: 'enabled' } as { [key: string]: string },
             timeout: 60 * 1000,
         },
     ],

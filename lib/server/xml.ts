@@ -1,18 +1,17 @@
 import { DOMParser } from '@xmldom/xmldom'
 import { logger } from '@navikt/next-logger'
 
-export const parsedXML = (data: string): Document => {
+export const parsedXML = (data: string) => {
     const errors: string[] = []
 
     const parser = new DOMParser({
-        errorHandler: {
-            warning: (msg) => {
-                logger.warn('[XML warning]', msg)
-            },
-            error: (msg) => {
-                logger.error('[XML error]', msg)
+        onError: (level, msg) => {
+            if (level === 'warning') {
+                logger.warn(`[XML warning] ${msg}`)
+            } else {
+                logger.error(`[XML error] ${msg}`)
                 errors.push(msg)
-            },
+            }
         },
     })
 
@@ -31,7 +30,7 @@ export const parsedXML = (data: string): Document => {
 
 export function xmlToJson(xml: string): ReturnType<JSON['parse']> {
     const doc = parsedXML(xml)
-    return elementToJson(doc.documentElement)
+    return elementToJson(doc.documentElement as unknown as Element)
 }
 
 function elementToJson(element: Element): ReturnType<JSON['parse']> {
@@ -46,9 +45,7 @@ function elementToJson(element: Element): ReturnType<JSON['parse']> {
         }
     }
 
-    const childElements = Array.from(element.childNodes).filter(
-        (node): node is Element => node.nodeType === 1
-    )
+    const childElements = Array.from(element.childNodes).filter((node): node is Element => node.nodeType === 1)
 
     if (childElements.length === 0) {
         const text = element.textContent?.trim()
