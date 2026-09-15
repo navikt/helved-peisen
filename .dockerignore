@@ -1,0 +1,10 @@
+# Only send the runtime output and public assets to Docker.
+**
+!Dockerfile
+!.next/
+!.next/standalone/
+!.next/standalone/**
+!.next/static/
+!.next/static/**
+!public/
+!public/**

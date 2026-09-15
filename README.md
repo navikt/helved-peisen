@@ -15,6 +15,23 @@ Vi bruker pnpm som pakkehåndterer:
 pnpm i
 ```
 
+### Docker-image
+
+Deploy-workflowen installerer avhengigheter og kjører `pnpm build` på Ubuntu.
+Next.js lager `.next/standalone` med serveren og runtime-avhengighetene.
+Docker-imaget kopierer denne mappen, `.next/static` og `public`, slik at
+utviklingsverktøy som TypeScript ikke blir med.
+
+Ved manuell bygging må `pnpm install --frozen-lockfile` og `pnpm build` kjøres
+på Linux med samme CPU-arkitektur som runtime-imaget. Ikke bruk `node_modules`
+eller `.next` bygget på macOS, siden appen har native avhengigheter.
+Deretter kan imaget bygges og skannes:
+
+```sh
+docker build --pull -t helved-peisen:check .
+trivy image helved-peisen:check
+```
+
 ## Kjøring lokalt
 
 ### Med data fra `gcp-dev`
@@ -57,4 +74,3 @@ Enhetstester kan kjøres med `pnpm run test`. Appen bruker [vitest](https://vite
 
 ## Henvendelser
 Spørsmål knyttet til koden eller prosjektet kan stilles ved å opprette et issue her på Github.
-
