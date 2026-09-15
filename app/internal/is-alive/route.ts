@@ -1,5 +1,5 @@
-import { faker } from '@faker-js/faker'
+import { hackerPhrase } from '@/lib/hacker-phrase'
 
 export function GET() {
-    return new Response(faker.hacker.phrase(), { status: 200 })
+    return new Response(hackerPhrase(), { status: 200 })
 }
