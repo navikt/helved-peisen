@@ -69,6 +69,7 @@ export const AuditTable: React.FC<Props> = ({ messages, totalMessages }) => {
                             <TableHeaderCell textSize="small" />
                             <TableHeaderCell textSize="small">Topic</TableHeaderCell>
                             <TableHeaderCell textSize="small">Key</TableHeaderCell>
+                            <TableHeaderCell textSize="small">Endring</TableHeaderCell>
                             <TableHeaderCell textSize="small">Endret av</TableHeaderCell>
                             <TableHeaderCell textSize="small">Årsak</TableHeaderCell>
                             <TableHeaderCell textSize="small">Manuell</TableHeaderCell>

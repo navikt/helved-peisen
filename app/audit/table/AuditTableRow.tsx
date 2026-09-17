@@ -9,7 +9,6 @@ import type { Message } from '@/app/kafka/types.ts'
 import { TopicNameTag } from '@/components/TopicNameTag.tsx'
 import { MessageView } from '@/components/MessageView.tsx'
 import { sakUrl } from '@/lib/sak-url.ts'
-
 import { headerValue } from '@/lib/message-header.ts'
 
 type Props = {
@@ -17,6 +16,7 @@ type Props = {
 }
 
 const RowContents: React.FC<Props> = ({ message }) => {
+    const endretType = headerValue(message, 'endret-type')
     const endretAv = headerValue(message, 'endret-av')
     const aarsak = headerValue(message, 'endret-aarsak')
     const manueltEndret = headerValue(message, 'manuelt-endret')
@@ -37,6 +37,7 @@ const RowContents: React.FC<Props> = ({ message }) => {
                     message.key
                 )}
             </TableDataCell>
+            <TableDataCell>{endretType ?? '-'}</TableDataCell>
             <TableDataCell>{endretAv ?? '-'}</TableDataCell>
             <TableDataCell>{aarsak ?? '-'}</TableDataCell>
             <TableDataCell style={{ width: 0 }}>
@@ -46,7 +47,7 @@ const RowContents: React.FC<Props> = ({ message }) => {
             </TableDataCell>
             <TableDataCell>
                 <span className="whitespace-nowrap">
-                    {tidspunkt && isValid(parseISO(tidspunkt)) ? format(parseISO(tidspunkt), 'yyyy-MM-dd - HH:mm:ss') : (tidspunkt ?? '-')}
+                    {tidspunkt && isValid(parseISO(tidspunkt)) ? format(parseISO(tidspunkt), 'yyyy-MM-dd, HH:mm:ss') : (tidspunkt ?? '-')}
                 </span>
             </TableDataCell>
         </>
