@@ -78,9 +78,15 @@ const PendingMatcherIkkeUtbetalingBadge: React.FC<Props> = ({ message }) => {
 
 const MigratedBadge: React.FC = () => <Badge>MIGRERT</Badge>
 
+const ManueltEndretBadge: React.FC<Props> = ({ message }) => <Badge variant="warning">{message.badge}</Badge>
+
 const StatusBadge: React.FC<Props> = ({ message }) => {
     const isMigrated = message.headers?.some((header) => header.key === 'migrated' && header.value != null)
     if (isMigrated) return <MigratedBadge />
+
+    if (message.badge === 'ENDRET') {
+        return <ManueltEndretBadge message={message} />
+    }
 
     switch (message.topic_name) {
         case 'helved.avstemming.v1':

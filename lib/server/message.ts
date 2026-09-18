@@ -115,6 +115,11 @@ export const annotatePendingMismatch = (messages: RawMessage[]): AnnotatedRawMes
 }
 
 export const badgeForMessage = (message: RawMessage) => {
+    const manueltEndret = message.headers?.find((header) => header.key === 'manuelt-endret')?.value === 'true'
+    if (manueltEndret) {
+        return 'ENDRET'
+    }
+
     if (!message.value) {
         return null
     }
