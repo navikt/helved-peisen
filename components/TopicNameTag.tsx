@@ -78,7 +78,7 @@ const PendingMatcherIkkeUtbetalingBadge: React.FC<Props> = ({ message }) => {
 
 const MigratedBadge: React.FC = () => <Badge>MIGRERT</Badge>
 
-const ManueltEndretBadge: React.FC<Props> = ({ message }) => <Badge variant="warning">{message.badge}</Badge>
+const ManueltEndretBadge: React.FC<Props> = ({ message }) => <Badge>{message.badge}</Badge>
 
 const StatusBadge: React.FC<Props> = ({ message }) => {
     const isMigrated = message.headers?.some((header) => header.key === 'migrated' && header.value != null)
