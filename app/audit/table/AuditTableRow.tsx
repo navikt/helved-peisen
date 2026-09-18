@@ -40,11 +40,6 @@ const RowContents: React.FC<Props> = ({ message }) => {
             <TableDataCell>{endretType ?? '-'}</TableDataCell>
             <TableDataCell>{endretAv ?? '-'}</TableDataCell>
             <TableDataCell>{aarsak ?? '-'}</TableDataCell>
-            <TableDataCell style={{ width: 0 }}>
-                <Tag variant={manueltEndret === 'true' ? 'success' : 'neutral'} size="small">
-                    {manueltEndret === 'true' ? 'Ja' : 'Nei'}
-                </Tag>
-            </TableDataCell>
             <TableDataCell>
                 <span className="whitespace-nowrap">
                     {tidspunkt && isValid(parseISO(tidspunkt)) ? format(parseISO(tidspunkt), 'yyyy-MM-dd, HH:mm:ss') : (tidspunkt ?? '-')}
