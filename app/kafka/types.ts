@@ -1,3 +1,4 @@
+{/* TODO: Slett Topics her nå som vi henter de fra backend*/}
 export const Topics = {
     aap: 'aap.utbetaling.v1',
     avstemming: 'helved.avstemming.v1',

@@ -8,15 +8,16 @@ import { subDays } from 'date-fns'
 import { FilterCombobox } from '@/components/FilterCombobox'
 import { FilterInput } from '@/components/FilterInput'
 import { DateRangeSelect } from '@/components/DateRangeSelect'
-import { Topics } from '@/app/kafka/types.ts'
 import { HStack, Switch } from '@navikt/ds-react'
 import { LiveButton } from '@/app/kafka/LiveButton.tsx'
 import { RefreshButton } from '@/app/kafka/RefreshButton.tsx'
+import { useTopics } from '@/hooks/useTopics.ts'
 
 type Props = React.HTMLAttributes<HTMLDivElement>
 
 export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
     const { setFiltere, ...filtere } = React.useContext(FiltereContext)
+    const topics = useTopics()
 
     return (
         <div className={clsx('flex flex-col gap-6 justify-between', className)} {...rest}>
@@ -25,7 +26,7 @@ export const Filtere: React.FC<Props> = ({ className, ...rest }) => {
                     className="ax-xl:min-w-60"
                     label="Topics"
                     filter="topics"
-                    initialOptions={Object.values(Topics)}
+                    initialOptions={topics}
                     isMultiSelect
                 />
                 <FilterCombobox

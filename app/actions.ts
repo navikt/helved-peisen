@@ -3,7 +3,9 @@
 import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { deleteSession } from '@/lib/server/session-store.ts'
-import { isAdmin } from '@/lib/server/auth.ts'
+import { getApiToken, isAdmin } from '@/lib/server/auth.ts'
+import { Routes } from '@/lib/api/routes.ts'
+import type { ApiResponse } from '@/lib/api/types.ts'
 
 export async function deleteApiToken() {
     const cookieStore = await cookies()
@@ -12,6 +14,32 @@ export async function deleteApiToken() {
         await deleteSession(sessionId)
     }
     cookieStore.delete('session-id')
+}
+
+export async function fetchTopics(): Promise<ApiResponse<string[]>> {
+    const apiToken = await getApiToken()
+    if (!apiToken) {
+        return {
+            data: null,
+            error: 'Klarte ikke hente topics: mangler API-token',
+        }
+    }
+
+    const res = await fetch(Routes.topics, {
+        headers: { Authorization: `Bearer ${apiToken}` },
+    })
+
+    if (!res.ok) {
+        return {
+            data: null,
+            error: `Klarte ikke hente topics: ${res.status} - ${res.statusText}`,
+        }
+    }
+
+    return {
+        data: (await res.json()) as string[],
+        error: null,
+    }
 }
 
 export async function getUser(): Promise<{

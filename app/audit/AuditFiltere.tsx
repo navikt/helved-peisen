@@ -5,9 +5,9 @@ import { UNSAFE_Combobox } from '@navikt/ds-react'
 
 import { AuditFilterCombobox } from '@/app/audit/AuditFilterCombobox.tsx'
 import { DateRangeSelect } from '@/components/DateRangeSelect.tsx'
-import { Topics } from '@/app/kafka/types.ts'
 import { useAuditFiltere } from '@/app/audit/AuditFiltereContext.tsx'
 import clsx from 'clsx'
+import { useTopics } from '@/hooks/useTopics.ts'
 
 // Fritekstsøk på sakId/endretAv/årsak er kun klientside
 type AuditSearchContextValue = {
@@ -56,6 +56,7 @@ const SearchCombobox: React.FC = () => {
 
 export const AuditFiltere: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...rest }) => {
     const filtere = useAuditFiltere()
+    const topics = useTopics()
 
     return (
         <div className={clsx('flex flex-col gap-6 justify-between', className)} {...rest}>
@@ -65,7 +66,7 @@ export const AuditFiltere: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ c
                     className="ax-xl:min-w-60"
                     label="Topics"
                     filter="topics"
-                    initialOptions={Object.values(Topics)}
+                    initialOptions={topics}
                     isMultiSelect
                 />
                 <AuditFilterCombobox

@@ -91,6 +91,7 @@ export const DashboardContent: React.FC = () => {
                         Feilet utbetalinger
                     </Heading>
                     <Box padding="space-16">
+                        {/* TODO: Fjern rar styling på tabell her, den bli blå på sidene når man minimerer skjermen */}
                         <FeiletUtbetalingTable
                             feiletUtbetalinger={dashboard.data.feiletUtbetalinger}
                             korrigerteFeiletUtbetalinger={dashboard.data.korrigerteFeiletUtbetalinger}

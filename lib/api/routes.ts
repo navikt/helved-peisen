@@ -14,6 +14,7 @@ export const Routes = {
     endreUtbetaling: `${kafkaApiBaseUrl}/endre-utbetaling`,
     okStatus: `${kafkaApiBaseUrl}/ok-status`,
     saker: `${kafkaApiBaseUrl}/api/saker`,
+    topics: `${kafkaApiBaseUrl}/api/topics`,
     pendingMismatch: `${kafkaApiBaseUrl}/api/brann/pending-mismatch`,
     dobbeltutbetalinger: `${kafkaApiBaseUrl}/api/brann/dobbeltutbetalinger`,
     sak(sakId: string, fagsystem: string) {
