@@ -3,6 +3,7 @@ import pw from 'next/experimental/testmode/playwright.js'
 const { test, expect } = pw
 
 import messages from './data/messages.json' with { type: 'json' }
+import topics from './data/topics.json' with { type: 'json' }
 
 test.beforeEach(async ({ context, next }) => {
     await context.addCookies([
@@ -18,6 +19,13 @@ test.beforeEach(async ({ context, next }) => {
 
         if (request.method === 'GET' && url.pathname === '/api/messages') {
             return new Response(JSON.stringify(messages.data), {
+                status: 200,
+                headers: { 'content-type': 'application/json' },
+            })
+        }
+
+        if (request.method === 'GET' && url.pathname === '/api/topics') {
+            return new Response(JSON.stringify(topics), {
                 status: 200,
                 headers: { 'content-type': 'application/json' },
             })
