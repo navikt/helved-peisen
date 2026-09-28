@@ -1,8 +1,9 @@
 import { Alert, Link, Skeleton } from '@navikt/ds-react'
 import { Table, TableBody, TableDataCell, TableHeader, TableHeaderCell, TableRow } from '@navikt/ds-react/Table'
-import { Topics } from '@/app/kafka/types.ts'
 import type { DashboardResponse } from '@/app/dashboard/types.ts'
 import { HåndterDobbeltutbetalingButton } from '@/app/dashboard/HåndterDobbeltutbetalingButton.tsx'
+
+const statusTopic = 'helved.status.v1'
 
 type Props = {
     dobbeltutbetalinger: DashboardResponse['dobbeltutbetalinger']
@@ -37,7 +38,7 @@ export const DobbeltutbetalingTable: React.FC<Props> = ({ dobbeltutbetalinger, o
                     return (
                         <TableRow key={nøkkel}>
                             <TableDataCell>
-                                <Link href={`/kafka?topics=${Topics.status}&value=${kandidat.behandlingId}`}>
+                                <Link href={`/kafka?topics=${statusTopic}&value=${kandidat.behandlingId}`}>
                                     {kandidat.behandlingId}
                                 </Link>
                             </TableDataCell>

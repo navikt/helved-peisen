@@ -1,5 +1,7 @@
-import { Topics } from '@/app/kafka/types.ts'
 import { StatusStatCard } from '@/components/StatusStatCard.tsx'
+
+const utbetalingerTopic = 'helved.utbetalinger.v1'
+const pendingUtbetalingerTopic = 'helved.pending-utbetalinger.v1'
 
 type Props = {
     antallMismatch: number
@@ -10,7 +12,7 @@ type Props = {
 export const PendingMismatchCard: React.FC<Props> = ({ antallMismatch, fom, tom }) => {
     return (
         <a
-            href={`/kafka?topics=${Topics.utbetalinger},${Topics.pendingUtbetalinger}&pendingMismatch=true&fom=${fom}&tom=${tom}`}
+            href={`/kafka?topics=${utbetalingerTopic},${pendingUtbetalingerTopic}&pendingMismatch=true&fom=${fom}&tom=${tom}`}
         >
             <StatusStatCard
                 label="Pending mismatch"

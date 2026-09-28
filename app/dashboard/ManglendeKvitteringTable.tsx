@@ -1,8 +1,9 @@
 import { Alert, Link, Skeleton } from '@navikt/ds-react'
 import { Table, TableBody, TableDataCell, TableHeader, TableHeaderCell, TableRow } from '@navikt/ds-react/Table'
 import { format } from 'date-fns'
-import { Topics } from '@/app/kafka/types.ts'
 import type { DashboardResponse } from '@/app/dashboard/types.ts'
+
+const oppdragTopic = 'helved.oppdrag.v1'
 
 type Props = {
     manglende: DashboardResponse['oppdragUtenKvittering']
@@ -39,7 +40,7 @@ export const ManglendeKvitteringTable: React.FC<Props> = ({ manglende }) => {
                 {manglende.map((message) => (
                     <TableRow key={`${message.key}-${message.trace_id}`}>
                         <TableDataCell>
-                            <Link href={`/kafka?topics=${Topics.oppdrag}&key=${message.key}`}>{message.key}</Link>
+                            <Link href={`/kafka?topics=${oppdragTopic}&key=${message.key}`}>{message.key}</Link>
                         </TableDataCell>
                         <TableDataCell>{message.fagsystem ?? '-'}</TableDataCell>
                         <TableDataCell>{message.sakId ?? '-'}</TableDataCell>

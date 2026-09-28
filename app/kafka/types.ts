@@ -1,36 +1,7 @@
-{/* TODO: Slett Topics her nå som vi henter de fra backend*/}
-export const Topics = {
-    aap: 'aap.utbetaling.v1',
-    avstemming: 'helved.avstemming.v1',
-    oppdrag: 'helved.oppdrag.v1',
-    dryrunAap: 'helved.dryrun-aap.v1',
-    dryrunTp: 'helved.dryrun-tp.v1',
-    dryrunTs: 'helved.dryrun-ts.v1',
-    dryrunDp: 'helved.dryrun-dp.v1',
-    fk: 'helved.fk.v1',
-    historisk: 'historisk.utbetaling.v1',
-    historiskIntern: 'helved.utbetalinger-historisk.v1',
-    simulering: 'helved.simuleringer.v1',
-    utbetalinger: 'helved.utbetalinger.v1',
-    pendingUtbetalinger: 'helved.pending-utbetalinger.v1',
-    saker: 'helved.saker.v1',
-    aapIntern: 'helved.utbetalinger-aap.v1',
-    dpIntern: 'helved.utbetalinger-dp.v1',
-    dp: 'teamdagpenger.utbetaling.v1',
-    ts: 'tilleggsstonader.utbetaling.v1',
-    status: 'helved.status.v1',
-    tsIntern: 'helved.utbetalinger-ts.v1',
-    tpIntern: 'helved.utbetalinger-tp.v1',
-    valp: 'team-mulighetsrommet.tilskudd.utbetaling-v1',
-    valpIntern: 'helved.utbetalinger-valp.v1',
-} as const
-
-export type TopicName = (typeof Topics)[keyof typeof Topics]
-
 // Meldingene slik de ser ut rett fra peisschtappern
 export type RawMessage = {
     version: string
-    topic_name: TopicName
+    topic_name: string
     key: string
     value?: string | null
     partition: number
@@ -48,7 +19,7 @@ export type RawMessage = {
 // Meldingene slik de eksponeres for peisen
 export type Message = {
     version: string
-    topic_name: TopicName
+    topic_name: string
     key: string
     partition: number
     offset: number
