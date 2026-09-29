@@ -1,36 +1,49 @@
 import { describe, expect, it } from 'vitest'
-import { parseAuditLogPayload } from '@/app/audit/logs/types.ts'
+import { parseAuditLogMessage, parseAuditLogPayload } from '@/app/audit/logs/types.ts'
+
+const MESSAGE =
+    'name:"Tester, Test" email:"Tester.Test@nav.no" ident:"S1234567" reason:Har blitt kvittert OK av OS. Tok lang tid å sette status, trolig på grunn av Ktor 3.5.0. Oppgave #552 -> send OK status manuelt -> key:e19db159-ff06-4d1f-985a-8235835fcaf3 fagsystem:TILLEGGSSTØNADER topic:helved.status.v1 partition:0 offset:267650'
+
+describe('parseAuditLogMessage', () => {
+    it('parser alle felter', () => {
+        expect(parseAuditLogMessage(MESSAGE)).toEqual({
+            name: 'Tester, Test',
+            email: 'Tester.Test@nav.no',
+            ident: 'S1234567',
+            reason: 'Har blitt kvittert OK av OS. Tok lang tid å sette status, trolig på grunn av Ktor 3.5.0. Oppgave #552',
+            action: 'send OK status manuelt',
+            details: {
+                key: 'e19db159-ff06-4d1f-985a-8235835fcaf3',
+                fagsystem: 'TILLEGGSSTØNADER',
+                topic: 'helved.status.v1',
+                partition: '0',
+                offset: '267650',
+            },
+        })
+    })
+
+    it('tåler "->" og kolon i årsaken', () => {
+        const msg = 'name:"A" email:"a@nav.no" ident:"X1" reason:feil: A -> B -> tombstone -> key:abc topic:t'
+        expect(parseAuditLogMessage(msg)).toMatchObject({
+            reason: 'feil: A -> B',
+            action: 'tombstone',
+            details: { key: 'abc', topic: 't' },
+        })
+    })
+
+    it('returnerer null for ukjent format', () => {
+        expect(parseAuditLogMessage('noe helt annet')).toBeNull()
+    })
+})
 
 describe('parseAuditLogPayload', () => {
-    it('henter felter fra GCP AuditLog', () => {
-        const payload = JSON.stringify({
-            '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
-            authenticationInfo: { principalEmail: 'ola@nav.no' },
-            methodName: 'cloudsql.instances.query',
-            resourceName: 'instances/peisschtappern',
-            request: { statement: 'SELECT 1', user: 'db-user' },
-        })
-
-        expect(parseAuditLogPayload(payload)).toMatchObject({
-            principal: 'ola@nav.no',
-            method: 'cloudsql.instances.query',
-            resource: 'instances/peisschtappern',
-            statement: 'SELECT 1',
-        })
+    it('leser message fra jsonPayload', () => {
+        const parsed = parseAuditLogPayload(JSON.stringify({ message: MESSAGE, level: 'INFO' }))
+        expect(parsed.message?.ident).toBe('S1234567')
+        expect(parsed.json).toMatchObject({ level: 'INFO' })
     })
 
-    it('faller tilbake på pgaudit-felter i request', () => {
-        const payload = JSON.stringify({ request: { user: 'db-user', command: 'UPDATE', database: 'peis' } })
-        expect(parseAuditLogPayload(payload)).toMatchObject({ principal: 'db-user', method: 'UPDATE', resource: 'peis' })
-    })
-
-    it('håndterer tekst-payload', () => {
-        expect(parseAuditLogPayload('ikke json')).toEqual({
-            principal: null,
-            method: null,
-            resource: null,
-            statement: null,
-            json: null,
-        })
+    it('leser message fra tekst-payload', () => {
+        expect(parseAuditLogPayload(MESSAGE).message?.action).toBe('send OK status manuelt')
     })
 })

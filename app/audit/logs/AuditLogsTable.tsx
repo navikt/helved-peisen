@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useCallback, useEffect, useState } from 'react'
-import { format, isValid, parseISO } from 'date-fns'
-import { Alert, BodyShort, Button, HStack, Skeleton, Table, Tag, TextField } from '@navikt/ds-react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { format, isValid, parseISO, subDays } from 'date-fns'
+import { Alert, BodyShort, Button, HStack, Skeleton, Table, Tag } from '@navikt/ds-react'
 import {
     TableBody,
     TableDataCell,
@@ -15,9 +15,15 @@ import {
 import type { ApiResponse } from '@/lib/api/types.ts'
 import { NoMessages } from '@/components/NoMessages.tsx'
 import { JsonView } from '@/components/JsonView.tsx'
+import { DateRangeSelect } from '@/components/DateRangeSelect.tsx'
 import { type AuditLogEntry, type AuditLogPage, parseAuditLogPayload } from '@/app/audit/logs/types.ts'
 
 const PAGE_SIZE = 100
+
+function timeFilter(fom: string, tom: string) {
+    const to = tom === 'now' ? new Date().toISOString() : tom
+    return `timestamp>="${fom}" AND timestamp<="${to}"`
+}
 
 function formatTimestamp(timestamp: string) {
     const date = parseISO(timestamp)
@@ -43,6 +49,8 @@ function severityVariant(severity: string): React.ComponentProps<typeof Tag>['va
 
 const AuditLogRow: React.FC<{ entry: AuditLogEntry }> = ({ entry }) => {
     const parsed = parseAuditLogPayload(entry.payload)
+    const msg = parsed.message
+    const details = msg?.details ?? {}
     const content =
         parsed.json !== null ? (
             <JsonView json={parsed.json} className="max-h-[60vh] overflow-auto" />
@@ -60,14 +68,23 @@ const AuditLogRow: React.FC<{ entry: AuditLogEntry }> = ({ entry }) => {
                     {entry.severity}
                 </Tag>
             </TableDataCell>
-            <TableDataCell>{parsed.principal ?? '-'}</TableDataCell>
-            <TableDataCell>{parsed.method ?? '-'}</TableDataCell>
-            <TableDataCell className="break-all">{parsed.resource ?? '-'}</TableDataCell>
             <TableDataCell>
-                <span className="line-clamp-2 break-all" title={parsed.statement ?? undefined}>
-                    {parsed.statement ?? '-'}
+                <span className="whitespace-nowrap" title={msg?.email ?? undefined}>
+                    {msg?.name ?? msg?.email ?? '-'}
                 </span>
             </TableDataCell>
+            <TableDataCell>{msg?.ident ?? '-'}</TableDataCell>
+            <TableDataCell>{msg?.action ?? '-'}</TableDataCell>
+            <TableDataCell>
+                <span className="line-clamp-2" title={msg?.reason ?? undefined}>
+                    {msg?.reason ?? '-'}
+                </span>
+            </TableDataCell>
+            <TableDataCell>
+                <span className="whitespace-nowrap">{details.key ?? '-'}</span>
+            </TableDataCell>
+            <TableDataCell>{details.topic ?? '-'}</TableDataCell>
+            <TableDataCell>{details.fagsystem ?? '-'}</TableDataCell>
         </TableExpandableRow>
     )
 }
@@ -96,19 +113,20 @@ async function fetchAuditLogs(
 }
 
 export const AuditLogsTable: React.FC = () => {
-    const [filterInput, setFilterInput] = useState('')
-    const [filter, setFilter] = useState('')
+    const [fom, setFom] = useState(() => subDays(new Date(), 7).toISOString())
+    const [tom, setTom] = useState('now')
     const [entries, setEntries] = useState<AuditLogEntry[]>([])
     const [nextPageToken, setNextPageToken] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(true)
     const [loadingMore, setLoadingMore] = useState(false)
     const [unavailable, setUnavailable] = useState(false)
+    const activeFilter = useRef('')
 
     const load = useCallback(
         async (pageToken: string | null, signal?: AbortSignal) => {
             try {
-                const { status, body: res } = await fetchAuditLogs(filter, pageToken, signal)
+                const { status, body: res } = await fetchAuditLogs(activeFilter.current, pageToken, signal)
                 if (signal?.aborted) return
 
                 // Backend svarer 404 når audit-logger ikke er konfigurert (f.eks. i dev)
@@ -130,7 +148,7 @@ export const AuditLogsTable: React.FC = () => {
                 setError('Uventet feil ved henting av audit-logger')
             }
         },
-        [filter]
+        []
     )
 
     useEffect(() => {
@@ -138,22 +156,19 @@ export const AuditLogsTable: React.FC = () => {
         setLoading(true)
         setEntries([])
         setNextPageToken(null)
+        // Page token fra Cloud Logging er kun gyldig med samme filter, så "nå" fryses her
+        activeFilter.current = timeFilter(fom, tom)
         void load(null, controller.signal).finally(() => {
             if (!controller.signal.aborted) setLoading(false)
         })
         return () => controller.abort()
-    }, [load])
+    }, [fom, tom, load])
 
     const loadMore = async () => {
         if (!nextPageToken) return
         setLoadingMore(true)
         await load(nextPageToken)
         setLoadingMore(false)
-    }
-
-    const onSubmit = (event: React.FormEvent) => {
-        event.preventDefault()
-        setFilter(filterInput.trim())
     }
 
     if (unavailable) {
@@ -166,26 +181,9 @@ export const AuditLogsTable: React.FC = () => {
 
     return (
         <div className="flex flex-col gap-6">
-            <form onSubmit={onSubmit}>
-                <HStack gap="space-8" align="end">
-                    <TextField
-                        className="grow max-w-3xl"
-                        label="Filter"
-                        description={
-                            <>
-                                Cloud Logging-filter, f.eks. <code>timestamp&gt;=&quot;2026-01-01T00:00:00Z&quot;</code>{' '}
-                                eller <code>protoPayload.request.user=&quot;ola@nav.no&quot;</code>
-                            </>
-                        }
-                        size="small"
-                        value={filterInput}
-                        onChange={(e) => setFilterInput(e.target.value)}
-                    />
-                    <Button type="submit" size="small" variant="secondary">
-                        Søk
-                    </Button>
-                </HStack>
-            </form>
+            <div className="flex">
+                <DateRangeSelect from={fom} to={tom} updateFrom={setFom} updateTo={setTom} />
+            </div>
 
             {loading ? (
                 <AuditLogsSkeleton />
@@ -204,10 +202,13 @@ export const AuditLogsTable: React.FC = () => {
                                     <TableHeaderCell textSize="small" />
                                     <TableHeaderCell textSize="small">Tidspunkt</TableHeaderCell>
                                     <TableHeaderCell textSize="small">Alvorlighet</TableHeaderCell>
-                                    <TableHeaderCell textSize="small">Bruker</TableHeaderCell>
+                                    <TableHeaderCell textSize="small">Navn</TableHeaderCell>
+                                    <TableHeaderCell textSize="small">Ident</TableHeaderCell>
                                     <TableHeaderCell textSize="small">Handling</TableHeaderCell>
-                                    <TableHeaderCell textSize="small">Ressurs</TableHeaderCell>
-                                    <TableHeaderCell textSize="small">Spørring</TableHeaderCell>
+                                    <TableHeaderCell textSize="small">Årsak</TableHeaderCell>
+                                    <TableHeaderCell textSize="small">Key</TableHeaderCell>
+                                    <TableHeaderCell textSize="small">Topic</TableHeaderCell>
+                                    <TableHeaderCell textSize="small">Fagsystem</TableHeaderCell>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>

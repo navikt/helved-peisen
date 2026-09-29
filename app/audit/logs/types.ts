@@ -10,37 +10,62 @@ export type AuditLogPage = {
     nextPageToken: string | null
 }
 
+export type AuditLogMessage = {
+    name: string | null
+    email: string | null
+    ident: string | null
+    reason: string | null
+    action: string | null
+    details: Record<string, string>
+}
+
 export type ParsedAuditLog = {
-    principal: string | null
-    method: string | null
-    resource: string | null
-    statement: string | null
+    message: AuditLogMessage | null
     json: unknown | null
 }
 
-type AnyRecord = Record<string, unknown>
+const SEPARATOR = ' -> '
 
-const str = (value: unknown): string | null => (typeof value === 'string' && value.length > 0 ? value : null)
-const obj = (value: unknown): AnyRecord | null =>
-    value && typeof value === 'object' && !Array.isArray(value) ? (value as AnyRecord) : null
+const quoted = (text: string, field: string): string | null => text.match(new RegExp(`${field}:"([^"]*)"`))?.[1] ?? null
+
+// Format: name:"..." email:"..." ident:"..." reason:<fritekst> -> <handling> -> key:... fagsystem:... topic:...
+export function parseAuditLogMessage(message: string): AuditLogMessage | null {
+    const reasonIndex = message.indexOf('reason:')
+    if (reasonIndex === -1) return null
+
+    const header = message.slice(0, reasonIndex)
+    const segments = message.slice(reasonIndex + 'reason:'.length).split(SEPARATOR)
+
+    // Årsaken er fritekst og kan selv inneholde "->", så handling og detaljer leses bakfra
+    let details: Record<string, string> = {}
+    const last = segments.at(-1) ?? ''
+    if (segments.length > 1 && /^\s*\w+:\S/.test(last)) {
+        details = Object.fromEntries([...last.matchAll(/(\w+):(\S+)/g)].map(([, key, value]) => [key, value]))
+        segments.pop()
+    }
+    const action = segments.length > 1 ? segments.pop()!.trim() : null
+    const reason = segments.join(SEPARATOR).trim()
+
+    return {
+        name: quoted(header, 'name'),
+        email: quoted(header, 'email'),
+        ident: quoted(header, 'ident'),
+        reason: reason || null,
+        action: action || null,
+        details,
+    }
+}
 
 export function parseAuditLogPayload(payload: string): ParsedAuditLog {
     let json: unknown = null
     try {
         json = JSON.parse(payload)
     } catch {
-        return { principal: null, method: null, resource: null, statement: null, json: null }
+        return { message: parseAuditLogMessage(payload), json: null }
     }
 
-    const root = obj(json) ?? {}
-    const auth = obj(root.authenticationInfo)
-    const request = obj(root.request)
+    const message =
+        json && typeof json === 'object' && 'message' in json && typeof json.message === 'string' ? json.message : null
 
-    return {
-        principal: str(auth?.principalEmail) ?? str(request?.user) ?? str(root.user),
-        method: str(root.methodName) ?? str(request?.command) ?? str(root.command),
-        resource: str(root.resourceName) ?? str(request?.database) ?? str(root.database),
-        statement: str(request?.statement) ?? str(root.statement),
-        json,
-    }
+    return { message: message ? parseAuditLogMessage(message) : null, json }
 }
