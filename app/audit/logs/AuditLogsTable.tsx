@@ -103,16 +103,17 @@ async function fetchAuditLogs(
     filter: string,
     pageToken: string | null,
     signal?: AbortSignal
-): Promise<{ status: number; body: ApiResponse<AuditLogPage> }> {
+): Promise<ApiResponse<AuditLogPage>> {
     const params = new URLSearchParams({ pageSize: String(PAGE_SIZE) })
     if (filter) params.set('filter', filter)
     if (pageToken) params.set('pageToken', pageToken)
 
     const response = await fetch(`/api/audit-logs?${params.toString()}`, { signal })
-    return { status: response.status, body: (await response.json()) as ApiResponse<AuditLogPage> }
+    return (await response.json()) as ApiResponse<AuditLogPage>
 }
 
 export const AuditLogsTable: React.FC = () => {
+    const isDev = process.env.NODE_ENV !== 'production'
     const [fom, setFom] = useState(() => subDays(new Date(), 7).toISOString())
     const [tom, setTom] = useState('now')
     const [entries, setEntries] = useState<AuditLogEntry[]>([])
@@ -120,38 +121,30 @@ export const AuditLogsTable: React.FC = () => {
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(true)
     const [loadingMore, setLoadingMore] = useState(false)
-    const [unavailable, setUnavailable] = useState(false)
     const activeFilter = useRef('')
 
-    const load = useCallback(
-        async (pageToken: string | null, signal?: AbortSignal) => {
-            try {
-                const { status, body: res } = await fetchAuditLogs(activeFilter.current, pageToken, signal)
-                if (signal?.aborted) return
+    const load = useCallback(async (pageToken: string | null, signal?: AbortSignal) => {
+        try {
+            const res = await fetchAuditLogs(activeFilter.current, pageToken, signal)
+            if (signal?.aborted) return
 
-                // Backend svarer 404 når audit-logger ikke er konfigurert (f.eks. i dev)
-                if (status === 404) {
-                    setUnavailable(true)
-                    return
-                }
-
-                if (res.error !== null) {
-                    setError(res.error)
-                    return
-                }
-
-                setError(null)
-                setEntries((prev) => (pageToken ? [...prev, ...res.data.entries] : res.data.entries))
-                setNextPageToken(res.data.nextPageToken)
-            } catch (err) {
-                if (err instanceof DOMException && err.name === 'AbortError') return
-                setError('Uventet feil ved henting av audit-logger')
+            if (res.error !== null) {
+                setError(res.error)
+                return
             }
-        },
-        []
-    )
+
+            setError(null)
+            setEntries((prev) => (pageToken ? [...prev, ...res.data.entries] : res.data.entries))
+            setNextPageToken(res.data.nextPageToken)
+        } catch (err) {
+            if (err instanceof DOMException && err.name === 'AbortError') return
+            setError('Uventet feil ved henting av audit-logger')
+        }
+    }, [])
 
     useEffect(() => {
+        if (isDev) return
+
         const controller = new AbortController()
         setLoading(true)
         setEntries([])
@@ -162,7 +155,7 @@ export const AuditLogsTable: React.FC = () => {
             if (!controller.signal.aborted) setLoading(false)
         })
         return () => controller.abort()
-    }, [fom, tom, load])
+    }, [fom, tom, load, isDev])
 
     const loadMore = async () => {
         if (!nextPageToken) return
@@ -171,12 +164,8 @@ export const AuditLogsTable: React.FC = () => {
         setLoadingMore(false)
     }
 
-    if (unavailable) {
-        return (
-            <Alert variant="info">
-                Audit-logger er ikke tilgjengelig i dette miljøet. De kan kun vises i prod.
-            </Alert>
-        )
+    if (isDev) {
+        return <Alert variant="info">Audit-logger er ikke tilgjengelig i dette miljøet. De kan kun vises i prod.</Alert>
     }
 
     return (
