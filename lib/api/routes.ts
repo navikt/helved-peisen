@@ -25,6 +25,7 @@ export const Routes = {
     avstemmingDryrun: `${vedskivaBaseUrl}/api/avstem/dryrun`,
     avstemmingNextRange: `${vedskivaBaseUrl}/api/next_range`,
     avstemminger: `${kafkaApiBaseUrl}/api/avstemminger`,
+    auditLogs: `${kafkaApiBaseUrl}/api/audit-logs`,
     dora: `${speiderhyttaBaseUrl}/dora`,
     doraApp(app: string, window?: string) {
         const qs = window ? `?window=${encodeURIComponent(window)}` : ''
