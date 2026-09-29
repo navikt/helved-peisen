@@ -14,23 +14,23 @@ export default async function AuditOverview() {
 
     return (
         <section className="flex flex-col p-4">
-            <BodyShort className="mb-8">
-                Denne siden viser manuelle endringer gjort i peisen. For
-                (database)endringer fra audit-logger se{' '}
-                <Link
-                    href="https://audit-approval.iap.nav.cloud.nais.io/?team=helved"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Gjennomgang av audit-logg (Gaal)
-                </Link>
-            </BodyShort>
             <Tabs defaultValue="endringer">
                 <TabsList>
                     <TabsTab value="endringer" label="Manuelle endringer" />
                     <TabsTab value="audit-logger" label="Audit-logger" />
                 </TabsList>
                 <TabsPanel value="endringer" className="pt-6">
+                    <BodyShort className="mb-8">
+                        Denne siden viser manuelle endringer gjort i peisen. For
+                        (database)endringer fra audit-logger se{' '}
+                        <Link
+                            href="https://audit-approval.iap.nav.cloud.nais.io/?team=helved"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Gjennomgang av audit-logg (Gaal)
+                        </Link>
+                    </BodyShort>
                     <AuditFiltereProvider>
                         <AuditSearchProvider>
                             <AuditMessagesProvider>
