@@ -8,6 +8,7 @@ export default function AuditLayout({ children }: PropsWithChildren) {
                 <Sidebar>
                     <SidebarLink href="/audit/kafka">Manuelle endringer</SidebarLink>
                     <SidebarLink href="/audit/logs">Audit-logger</SidebarLink>
+                    <SidebarLink href="/audit/workflows">Workflow-kjøringer</SidebarLink>
                 </Sidebar>
                 <div className="flex-1 min-w-0">{children}</div>
             </div>
