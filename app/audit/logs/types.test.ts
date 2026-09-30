@@ -49,6 +49,24 @@ describe('parseAuditLogMessage', () => {
         })
     })
 
+    it('parser header-verdier uten anførselstegn', () => {
+        const msg =
+            'name:Tester, Test email:Tester.Test@nav.no ident:S1234567 reason:Mangler sistePeriode. Oppgave #624 -> endret utbetaling manuelt -> key:710c4794-31c1-4f5c-ba5d-14293f50a966 topic:helved.utbetalinger.v1 partition:1 offset:25794'
+        expect(parseAuditLogMessage(msg)).toEqual({
+            name: 'Tester, Test',
+            email: 'Tester.Test@nav.no',
+            ident: 'S1234567',
+            reason: 'Mangler sistePeriode. Oppgave #624',
+            action: 'endret utbetaling manuelt',
+            details: {
+                key: '710c4794-31c1-4f5c-ba5d-14293f50a966',
+                topic: 'helved.utbetalinger.v1',
+                partition: '1',
+                offset: '25794',
+            },
+        })
+    })
+
     it('returnerer null for ukjent format', () => {
         expect(parseAuditLogMessage('noe helt annet')).toBeNull()
     })

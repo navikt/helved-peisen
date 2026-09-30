@@ -18,10 +18,8 @@ type Props = {
 
 export const AuditLogsTableView = ({ entries, page, pageCount, pageSize, onPageChange, onPageSizeChange }: Props) => {
     const paginationProps = { entries, page, pageCount, pageSize, onPageChange, onPageSizeChange }
-
     return (
         <>
-            <AuditLogsPagination {...paginationProps} />
             <div className="animate-fade-in max-w-[100vw] overflow-y-auto scrollbar-gutter-stable">
                 <Table className="h-max" size="small">
                     <TableHeader>

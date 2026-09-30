@@ -26,9 +26,12 @@ export type ParsedAuditLog = {
 
 const SEPARATOR = ' -> '
 
-const quoted = (text: string, field: string): string | null => text.match(new RegExp(`${field}:"([^"]*)"`))?.[1] ?? null
+const headerField = (text: string, field: string): string | null => {
+    const match = text.match(new RegExp(`${field}:(?:"([^"]*)"|(.*?)(?=\\s+\\w+:|\\s*$))`))
+    const value = (match?.[1] ?? match?.[2])?.trim()
+    return value || null
+}
 
-// Format: name:"..." email:"..." ident:"..." [reason:<fritekst>] -> <handling> -> key:... fagsystem:... topic:...
 export function parseAuditLogMessage(message: string): AuditLogMessage | null {
     const reasonIndex = message.indexOf('reason:')
     let header: string
@@ -43,7 +46,7 @@ export function parseAuditLogMessage(message: string): AuditLogMessage | null {
         // Tom årsak som første segment, slik at handling og detaljer leses likt som med reason
         segments = ['', ...message.slice(separatorIndex + SEPARATOR.length).split(SEPARATOR)]
     }
-    if (!/(name|email|ident):"/.test(header)) return null
+    if (!/(name|email|ident):/.test(header)) return null
 
     // Årsaken er fritekst og kan selv inneholde "->", så handling og detaljer leses bakfra
     let details: Record<string, string> = {}
@@ -56,9 +59,9 @@ export function parseAuditLogMessage(message: string): AuditLogMessage | null {
     const reason = segments.join(SEPARATOR).trim()
 
     return {
-        name: quoted(header, 'name'),
-        email: quoted(header, 'email'),
-        ident: quoted(header, 'ident'),
+        name: headerField(header, 'name'),
+        email: headerField(header, 'email'),
+        ident: headerField(header, 'ident'),
         reason: reason || null,
         action: action || null,
         details,
