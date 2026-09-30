@@ -31,6 +31,24 @@ describe('parseAuditLogMessage', () => {
         })
     })
 
+    it('parser melding uten reason', () => {
+        const msg =
+            'name:"Tester, Test" email:"Tester.Test@nav.no" ident:"S1234567" -> flytt pending til utbetalinger manuelt -> key:abc-123 topic:helved.utbetalinger.v1 partition:0 offset:42'
+        expect(parseAuditLogMessage(msg)).toEqual({
+            name: 'Tester, Test',
+            email: 'Tester.Test@nav.no',
+            ident: 'S1234567',
+            reason: null,
+            action: 'flytt pending til utbetalinger manuelt',
+            details: {
+                key: 'abc-123',
+                topic: 'helved.utbetalinger.v1',
+                partition: '0',
+                offset: '42',
+            },
+        })
+    })
+
     it('returnerer null for ukjent format', () => {
         expect(parseAuditLogMessage('noe helt annet')).toBeNull()
     })

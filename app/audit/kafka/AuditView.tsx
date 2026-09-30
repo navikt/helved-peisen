@@ -3,13 +3,13 @@
 import { useContext } from 'react'
 import { Alert } from '@navikt/ds-react'
 
-import { AuditTable, AuditTableSkeleton } from '@/app/audit/table/AuditTable.tsx'
+import { AuditTable, AuditTableSkeleton } from '@/app/audit/kafka/table/AuditTable.tsx'
 import { NoMessages } from '@/components/NoMessages.tsx'
-import { AuditMessagesContext } from '@/app/audit/AuditMessagesContext.tsx'
+import { AuditMessagesContext } from '@/app/audit/kafka/AuditMessagesContext.tsx'
 import { isFailureResponse } from '@/lib/api/types.ts'
 import { headerValue } from '@/lib/message-header.ts'
 import type { Message } from '@/app/kafka/types.ts'
-import { useAuditSearch } from '@/app/audit/AuditFiltere.tsx'
+import { useAuditSearch } from '@/app/audit/kafka/AuditFiltere.tsx'
 
 // Fritekstsøket er kun klientside
 function matchesSearch(message: Message, terms: string[]): boolean {

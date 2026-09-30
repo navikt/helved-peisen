@@ -1,8 +1,8 @@
-import { AuditFiltereProvider } from '@/app/audit/AuditFiltereContext.tsx'
-import { AuditFiltere, AuditSearchProvider } from '@/app/audit/AuditFiltere.tsx'
-import { AuditView } from '@/app/audit/AuditView.tsx'
-import { SortStateProvider } from '@/app/kafka/table/SortState'
-import { AuditMessagesProvider } from '@/app/audit/AuditMessagesContext.tsx'
+import { AuditFiltereProvider } from '@/app/audit/kafka/AuditFiltereContext.tsx'
+import { AuditFiltere, AuditSearchProvider } from '@/app/audit/kafka/AuditFiltere.tsx'
+import { AuditView } from '@/app/audit/kafka/AuditView.tsx'
+import { SortStateProvider } from '@/app/kafka/table/SortState.tsx'
+import { AuditMessagesProvider } from '@/app/audit/kafka/AuditMessagesContext.tsx'
 import { BodyShort, Link } from '@navikt/ds-react'
 
 import { checkToken } from '@/lib/server/auth.ts'

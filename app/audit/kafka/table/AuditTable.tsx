@@ -5,8 +5,8 @@ import { TableBody, TableDataCell, TableHeader, TableHeaderCell, TableRow } from
 
 import { NoMessages } from '@/components/NoMessages.tsx'
 import type { Message } from '@/app/kafka/types.ts'
-import { AuditTableRow } from '@/app/audit/table/AuditTableRow.tsx'
-import { useAuditFiltere } from '@/app/audit/AuditFiltereContext.tsx'
+import { AuditTableRow } from '@/app/audit/kafka/table/AuditTableRow.tsx'
+import { useAuditFiltere } from '@/app/audit/kafka/AuditFiltereContext.tsx'
 
 type Props = {
     messages: Message[]

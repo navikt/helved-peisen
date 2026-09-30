@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { format, isValid, parseISO } from 'date-fns'
-import { Link, Tag } from '@navikt/ds-react'
+import { Link } from '@navikt/ds-react'
 import { TableDataCell, TableExpandableRow } from '@navikt/ds-react/Table'
 
 import type { Message } from '@/app/kafka/types.ts'
@@ -19,7 +19,6 @@ const RowContents: React.FC<Props> = ({ message }) => {
     const endretType = headerValue(message, 'endret-type')
     const endretAv = headerValue(message, 'endret-av')
     const aarsak = headerValue(message, 'endret-aarsak')
-    const manueltEndret = headerValue(message, 'manuelt-endret')
     const tidspunkt = headerValue(message, 'endret-tidspunkt')
     const url = sakUrl(message)
 

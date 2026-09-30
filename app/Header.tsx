@@ -130,7 +130,7 @@ export function Header() {
                 </span>
             </InternalHeaderTitle>
             <div className="relative min-w-0 flex-1">
-                <div className="flex h-full overflow-x-auto [scrollbar-width:none]">
+                <div className="flex h-full overflow-x-auto scrollbar-none">
                     <div className="flex w-max flex-nowrap gap-2">
                         <TabLink href="/dashboard">Dashboard</TabLink>
                         <TabLink href="/kafka">Kafka</TabLink>
@@ -138,7 +138,7 @@ export function Header() {
                         <TabLink href="/avstemming">Avstemming</TabLink>
                         <TabLink href="/stats">Stats</TabLink>
                         <TabLink href="/slo">SLO</TabLink>
-                        <TabLink href="/audit">Audit</TabLink>
+                        <TabLink href="/audit/logs">Audit</TabLink>
                     </div>
                 </div>
             </div>

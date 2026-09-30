@@ -28,13 +28,22 @@ const SEPARATOR = ' -> '
 
 const quoted = (text: string, field: string): string | null => text.match(new RegExp(`${field}:"([^"]*)"`))?.[1] ?? null
 
-// Format: name:"..." email:"..." ident:"..." reason:<fritekst> -> <handling> -> key:... fagsystem:... topic:...
+// Format: name:"..." email:"..." ident:"..." [reason:<fritekst>] -> <handling> -> key:... fagsystem:... topic:...
 export function parseAuditLogMessage(message: string): AuditLogMessage | null {
     const reasonIndex = message.indexOf('reason:')
-    if (reasonIndex === -1) return null
-
-    const header = message.slice(0, reasonIndex)
-    const segments = message.slice(reasonIndex + 'reason:'.length).split(SEPARATOR)
+    let header: string
+    let segments: string[]
+    if (reasonIndex !== -1) {
+        header = message.slice(0, reasonIndex)
+        segments = message.slice(reasonIndex + 'reason:'.length).split(SEPARATOR)
+    } else {
+        const separatorIndex = message.indexOf(SEPARATOR)
+        if (separatorIndex === -1) return null
+        header = message.slice(0, separatorIndex)
+        // Tom årsak som første segment, slik at handling og detaljer leses likt som med reason
+        segments = ['', ...message.slice(separatorIndex + SEPARATOR.length).split(SEPARATOR)]
+    }
+    if (!/(name|email|ident):"/.test(header)) return null
 
     // Årsaken er fritekst og kan selv inneholde "->", så handling og detaljer leses bakfra
     let details: Record<string, string> = {}

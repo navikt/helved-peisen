@@ -3,9 +3,9 @@
 import React, { useState } from 'react'
 import { UNSAFE_Combobox } from '@navikt/ds-react'
 
-import { AuditFilterCombobox } from '@/app/audit/AuditFilterCombobox.tsx'
+import { AuditFilterCombobox } from '@/app/audit/kafka/AuditFilterCombobox.tsx'
 import { DateRangeSelect } from '@/components/DateRangeSelect.tsx'
-import { useAuditFiltere } from '@/app/audit/AuditFiltereContext.tsx'
+import { useAuditFiltere } from '@/app/audit/kafka/AuditFiltereContext.tsx'
 import clsx from 'clsx'
 import { useTopics } from '@/hooks/useTopics.ts'
 

@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { ComboboxProps, UNSAFE_Combobox } from '@navikt/ds-react'
 
-import { type AuditFiltereValue, useAuditFiltere } from '@/app/audit/AuditFiltereContext.tsx'
+import { type AuditFiltereValue, useAuditFiltere } from '@/app/audit/kafka/AuditFiltereContext.tsx'
 
 type Props<T extends string> = Omit<ComboboxProps, 'options' | 'onSelect'> & {
     filter: keyof AuditFiltereValue

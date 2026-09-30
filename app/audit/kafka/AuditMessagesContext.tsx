@@ -1,9 +1,9 @@
 'use client'
 
 import { createContext, type PropsWithChildren, useCallback, useEffect, useState } from 'react'
-import { type ApiResponse, PaginatedResponse } from '@/lib/api/types'
-import type { Message } from '@/app/kafka/types'
-import { useAuditFiltere } from '@/app/audit/AuditFiltereContext.tsx'
+import { type ApiResponse, PaginatedResponse } from '@/lib/api/types.ts'
+import type { Message } from '@/app/kafka/types.ts'
+import { useAuditFiltere } from '@/app/audit/kafka/AuditFiltereContext.tsx'
 
 function sanitizeFilters(obj: Record<string, string | number | boolean | null>): Record<string, string> {
     return Object.fromEntries(
