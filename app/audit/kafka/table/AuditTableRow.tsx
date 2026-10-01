@@ -24,9 +24,17 @@ const RowContents: React.FC<Props> = ({ message }) => {
 
     return (
         <>
+            <TableDataCell>
+                <span className="whitespace-nowrap">
+                    {tidspunkt && isValid(parseISO(tidspunkt)) ? format(parseISO(tidspunkt), 'yyyy-MM-dd, HH:mm:ss') : (tidspunkt ?? '-')}
+                </span>
+            </TableDataCell>
             <TableDataCell style={{ width: 0 }}>
                 <TopicNameTag message={message} />
             </TableDataCell>
+            <TableDataCell>{endretType ?? '-'}</TableDataCell>
+            <TableDataCell>{endretAv ?? '-'}</TableDataCell>
+            <TableDataCell>{aarsak ?? '-'}</TableDataCell>
             <TableDataCell style={{ width: 0 }}>
                 {url ? (
                     <Link href={url} target="_blank" rel="noopener noreferrer">
@@ -35,14 +43,6 @@ const RowContents: React.FC<Props> = ({ message }) => {
                 ) : (
                     message.key
                 )}
-            </TableDataCell>
-            <TableDataCell>{endretType ?? '-'}</TableDataCell>
-            <TableDataCell>{endretAv ?? '-'}</TableDataCell>
-            <TableDataCell>{aarsak ?? '-'}</TableDataCell>
-            <TableDataCell>
-                <span className="whitespace-nowrap">
-                    {tidspunkt && isValid(parseISO(tidspunkt)) ? format(parseISO(tidspunkt), 'yyyy-MM-dd, HH:mm:ss') : (tidspunkt ?? '-')}
-                </span>
             </TableDataCell>
         </>
     )

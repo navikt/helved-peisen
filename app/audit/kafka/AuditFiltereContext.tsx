@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
-import { subYears } from 'date-fns'
+import { subDays } from 'date-fns'
 
 export type AuditFiltereValue = {
     fom: string
@@ -21,7 +21,7 @@ type AuditFiltereContextValue = AuditFiltereValue & {
 
 function defaultAuditFiltereValue(searchParams?: ReadonlyURLSearchParams): AuditFiltereValue {
     return {
-        fom: searchParams?.get('fom') ?? subYears(new Date(), 1).toISOString(),
+        fom: searchParams?.get('fom') ?? subDays(new Date(), 30).toISOString(),
         tom: searchParams?.get('tom') ?? 'now',
         topics: searchParams?.get('topics') ?? null,
         fagsystem: searchParams?.get('fagsystem') ?? null,

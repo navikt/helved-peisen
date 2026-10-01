@@ -67,12 +67,12 @@ export const AuditTable: React.FC<Props> = ({ messages, totalMessages }) => {
                     <TableHeader>
                         <TableRow>
                             <TableHeaderCell textSize="small" />
+                            <TableHeaderCell textSize="small">Tidspunkt</TableHeaderCell>
                             <TableHeaderCell textSize="small">Topic</TableHeaderCell>
-                            <TableHeaderCell textSize="small">Key</TableHeaderCell>
                             <TableHeaderCell textSize="small">Endring</TableHeaderCell>
                             <TableHeaderCell textSize="small">Endret av</TableHeaderCell>
                             <TableHeaderCell textSize="small">Årsak</TableHeaderCell>
-                            <TableHeaderCell textSize="small">Tidspunkt</TableHeaderCell>
+                            <TableHeaderCell textSize="small">Key</TableHeaderCell>
                         </TableRow>
                     </TableHeader>
                 </Table>
