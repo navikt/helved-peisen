@@ -10,7 +10,19 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ data: null, error: 'Unauthorized' }, { status: 401 })
     }
 
-    const url = `${Routes.databaseAuditLogs}?${req.nextUrl.searchParams.toString()}`
+    const searchParams = req.nextUrl.searchParams
+    const fom = searchParams.get('fom')
+    const tom = searchParams.get('tom')
+    const pageToken = searchParams.get('pageToken')
+    const pageSize = searchParams.get('pageSize')
+
+    const params = new URLSearchParams()
+    if (fom) params.set('fom', fom)
+    if (tom) params.set('tom', tom)
+    if (pageToken) params.set('pageToken', pageToken)
+    if (pageSize) params.set('pageSize', pageSize)
+
+    const url = `${Routes.databaseAuditLogs}?${params.toString()}`
 
     try {
         const res = await fetch(url, {

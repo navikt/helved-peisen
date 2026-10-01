@@ -11,21 +11,21 @@ type UseAuditLogsParams = {
     pageSize: number
 }
 
-function timeFilter(fom: string, tom: string) {
-    const to = tom === 'now' ? new Date().toISOString() : tom
-    return `timestamp>="${fom}" AND timestamp<="${to}"`
+type TimeRange = { fom: string; tom: string }
+
+function resolveTimeRange(fom: string, tom: string): TimeRange {
+    return { fom, tom: tom === 'now' ? new Date().toISOString() : tom }
 }
 
 class ApiError extends Error {}
 
 async function fetchAuditLogs(
-    filter: string,
+    range: TimeRange,
     pageSize: number,
     pageToken: string | null,
     signal?: AbortSignal
 ): Promise<AuditLogPage> {
-    const params = new URLSearchParams({ pageSize: String(pageSize) })
-    if (filter) params.set('filter', filter)
+    const params = new URLSearchParams({ fom: range.fom, tom: range.tom, pageSize: String(pageSize) })
     if (pageToken) params.set('pageToken', pageToken)
 
     const response = await fetch(`/api/audit-logs?${params}`, { signal })
@@ -40,13 +40,13 @@ export function useAuditLogs({ fom, tom, pageSize }: UseAuditLogsParams) {
     const [pageCount, setPageCount] = useState(1)
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(true)
-    const activeFilter = useRef('')
+    const activeRange = useRef<TimeRange>(resolveTimeRange(fom, tom))
     const pageTokens = useRef(new Map<number, string | null>([[1, null]]))
 
     const load = useCallback(
         async (pageNumber: number, pageToken: string | null, pageSize: number, signal?: AbortSignal) => {
             try {
-                const data = await fetchAuditLogs(activeFilter.current, pageSize, pageToken, signal)
+                const data = await fetchAuditLogs(activeRange.current, pageSize, pageToken, signal)
 
                 setError(null)
                 setEntries(data.entries)
@@ -72,7 +72,7 @@ export function useAuditLogs({ fom, tom, pageSize }: UseAuditLogsParams) {
         setPage(1)
         setPageCount(1)
         pageTokens.current = new Map([[1, null]])
-        activeFilter.current = timeFilter(fom, tom)
+        activeRange.current = resolveTimeRange(fom, tom)
 
         void load(1, null, pageSize, controller.signal).finally(() => {
             if (!controller.signal.aborted) setLoading(false)

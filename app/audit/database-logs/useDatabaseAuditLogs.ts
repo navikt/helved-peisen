@@ -22,7 +22,7 @@ async function fetchDatabaseAuditLogs(
 ): Promise<DatabaseAuditLogPage> {
     const params = new URLSearchParams({
         fom,
-        tom: tom === 'now' ? new Date().toISOString() : tom,
+        tom,
         pageSize: String(pageSize),
     })
     if (pageToken) params.set('pageToken', pageToken)
@@ -72,7 +72,7 @@ export function useDatabaseAuditLogs({ fom, tom, pageSize }: UseDatabaseAuditLog
         setPage(1)
         setPageCount(1)
         pageTokens.current = new Map([[1, null]])
-        activeRange.current = { fom, tom }
+        activeRange.current = { fom, tom: tom === 'now' ? new Date().toISOString() : tom }
 
         void load(1, null, pageSize, controller.signal).finally(() => {
             if (!controller.signal.aborted) setLoading(false)
