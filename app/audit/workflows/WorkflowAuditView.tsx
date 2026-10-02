@@ -54,7 +54,7 @@ const WorkflowRow: React.FC<{ row: WorkflowRunSummary }> = ({ row }) => {
     const [evidence, setEvidence] = useState<EvidenceState>({ status: 'idle' })
 
     const onOpenChange = (next: boolean) => {
-        if (!next || evidence.status !== 'idle') return
+        if (!next || evidence.status === 'loading' || evidence.status === 'loaded') return
 
         setEvidence({ status: 'loading' })
         void fetchWorkflowEvidence(row.runId).then((response) => {

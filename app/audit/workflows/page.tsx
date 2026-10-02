@@ -9,7 +9,7 @@ export default async function WorkflowAuditPage() {
     return (
         <section className="flex flex-col">
             <BodyShort className="mb-8">
-                Auditinformasjon for GitHub-workflow-runs, hentet server-side fra Speiderhytta.
+                GitHub-workflow-runs, hentet fra Speiderhytta.
             </BodyShort>
             <WorkflowAuditView />
         </section>
