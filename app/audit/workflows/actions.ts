@@ -6,7 +6,7 @@ import { unauthorized } from 'next/navigation'
 import type { ApiResponse } from '@/lib/api/types.ts'
 import { Routes } from '@/lib/api/routes.ts'
 import { getSpeiderhyttaApiToken } from '@/lib/server/auth.ts'
-import type { AuditEvidence, WorkflowRunSummary } from '@/app/audit/workflows/types.ts'
+import type { AuditReport, WorkflowRunSummary } from '@/app/audit/workflows/types.ts'
 
 type WorkflowRunsQuery = {
     from: string
@@ -48,7 +48,7 @@ async function speiderhyttaFetch<T>(url: string): Promise<ApiResponse<T>> {
     }
 }
 
-export async function fetchWorkflowEvidence(runId: number): Promise<ApiResponse<AuditEvidence>> {
+export async function fetchWorkflowReport(runId: number): Promise<ApiResponse<AuditReport>> {
     if (!Number.isSafeInteger(runId) || runId <= 0) {
         return { data: null, error: 'Ugyldig run-id.' }
     }

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { format, isValid, parseISO, subYears } from 'date-fns'
-import { Alert, BodyShort, CopyButton, HStack, Link, Select, Skeleton, Tag, VStack } from '@navikt/ds-react'
+import { Alert, BodyShort, HStack, Link, Select, Skeleton, Tag, VStack } from '@navikt/ds-react'
 import {
     Table,
     TableBody,
@@ -17,12 +17,13 @@ import type { ApiResponse } from '@/lib/api/types.ts'
 import { isSuccessResponse } from '@/lib/api/types.ts'
 import { DateRangeSelect } from '@/components/DateRangeSelect.tsx'
 import { parseDateValue } from '@/lib/date.ts'
-import { fetchWorkflowEvidence, listWorkflowRuns } from '@/app/audit/workflows/actions.ts'
-import type { AuditEvidence, WorkflowRunSummary } from '@/app/audit/workflows/types.ts'
+import { fetchWorkflowReport, listWorkflowRuns } from '@/app/audit/workflows/actions.ts'
+import type { AuditReport, WorkflowRunSummary } from '@/app/audit/workflows/types.ts'
+import { JsonView } from '@/components/JsonView.tsx'
 
-type EvidenceState =
+type ReportState =
     | { status: 'idle' | 'loading' }
-    | { status: 'loaded'; evidence: AuditEvidence }
+    | { status: 'loaded'; report: AuditReport }
     | { status: 'error'; error: string }
 
 function formatTimestamp(value: string): string {
@@ -36,31 +37,21 @@ function statusVariant(status: string | null): 'success' | 'error' | 'neutral' {
     return 'neutral'
 }
 
-const EvidenceJson: React.FC<{ evidence: AuditEvidence }> = ({ evidence }) => {
-    const json = JSON.stringify(evidence, null, 2)
-    return (
-        <div className="relative">
-            <pre className="max-h-[70vh] overflow-auto bg-(--ax-bg-sunken) p-4 text-sm">
-                <code className="whitespace-pre">{json}</code>
-            </pre>
-            <div className="absolute top-2 right-2">
-                <CopyButton size="xsmall" copyText={json} />
-            </div>
-        </div>
-    )
-}
+const AuditJson: React.FC<{ report: AuditReport }> = ({ report }) => (
+    <JsonView json={report} className="max-h-[70vh] overflow-auto" />
+)
 
 const WorkflowRow: React.FC<{ row: WorkflowRunSummary }> = ({ row }) => {
-    const [evidence, setEvidence] = useState<EvidenceState>({ status: 'idle' })
+    const [report, setReport] = useState<ReportState>({ status: 'idle' })
 
     const onOpenChange = (next: boolean) => {
-        if (!next || evidence.status === 'loading' || evidence.status === 'loaded') return
+        if (!next || report.status === 'loading' || report.status === 'loaded') return
 
-        setEvidence({ status: 'loading' })
-        void fetchWorkflowEvidence(row.runId).then((response) => {
-            setEvidence(
+        setReport({ status: 'loading' })
+        void fetchWorkflowReport(row.runId).then((response) => {
+            setReport(
                 isSuccessResponse(response)
-                    ? { status: 'loaded', evidence: response.data }
+                    ? { status: 'loaded', report: response.data }
                     : { status: 'error', error: response.error }
             )
         })
@@ -68,14 +59,14 @@ const WorkflowRow: React.FC<{ row: WorkflowRunSummary }> = ({ row }) => {
 
     const [owner, repo] = row.repository.split('/')
     const content =
-        evidence.status === 'loading' ? (
+        report.status === 'loading' ? (
             <BodyShort size="small">Laster …</BodyShort>
-        ) : evidence.status === 'error' ? (
+        ) : report.status === 'error' ? (
             <Alert variant="error" size="small">
-                {evidence.error}
+                {report.error}
             </Alert>
-        ) : evidence.status === 'loaded' ? (
-            <EvidenceJson evidence={evidence.evidence} />
+        ) : report.status === 'loaded' ? (
+            <AuditJson report={report.report} />
         ) : null
 
     return (

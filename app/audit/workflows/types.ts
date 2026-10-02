@@ -20,7 +20,7 @@ export type AuditWorkflowExecution = {
     capturedAt: string
 }
 
-export type AuditEvidence = {
+export type AuditReport = {
     attempts: Array<{
         workflow: AuditWorkflowExecution
         source: unknown
