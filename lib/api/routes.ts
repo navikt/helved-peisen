@@ -38,9 +38,9 @@ export const Routes = {
     doraIncidents(app: string, limit: number = 50) {
         return `${speiderhyttaBaseUrl}/dora/${encodeURIComponent(app)}/incidents?limit=${limit}`
     },
-    auditWorkflowEvidence(owner: string, repo: string, runId: number | string) {
+    auditWorkflowReport(owner: string, repo: string, runId: number | string) {
         const seg = [owner, repo].map((v) => encodeURIComponent(String(v))).join('/')
-        return `${speiderhyttaBaseUrl}/audit/evidence/${seg}/workflows/${encodeURIComponent(String(runId))}`
+        return `${speiderhyttaBaseUrl}/audit/report/${seg}/workflows/${encodeURIComponent(String(runId))}`
     },
     auditWorkflowRuns(owner: string, repo: string) {
         return `${speiderhyttaBaseUrl}/audit/workflows/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`

@@ -52,7 +52,7 @@ export async function fetchWorkflowReport(runId: number): Promise<ApiResponse<Au
     if (!Number.isSafeInteger(runId) || runId <= 0) {
         return { data: null, error: 'Ugyldig run-id.' }
     }
-    return speiderhyttaFetch(Routes.auditWorkflowEvidence(OWNER, REPO, runId))
+    return speiderhyttaFetch(Routes.auditWorkflowReport(OWNER, REPO, runId))
 }
 
 export async function listWorkflowRuns(query: WorkflowRunsQuery): Promise<ApiResponse<WorkflowRunSummary[]>> {
