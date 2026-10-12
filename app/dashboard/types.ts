@@ -8,6 +8,7 @@ type PendingMismatch = {
 
 type Avstemming = {
     fagsystem: string
+    status: 'NOT_REQUIRED' | 'COMPLETED' | 'MISSING'
     sisteAvstemtDato?: string | null
     datoAvstemtFom?: string | null
     datoAvstemtTom?: string | null

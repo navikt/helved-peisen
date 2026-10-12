@@ -33,23 +33,25 @@ export const AvstemmingStatusList: React.FC<Props> = ({ avstemminger }) => {
                 </TableRow>
             </TableHeader>
             <TableBody className="animate-fade-in">
-                {avstemminger.map((avstemming) => (
-                    <TableRow key={avstemming.fagsystem}>
-                        <TableDataCell>{avstemming.fagsystem}</TableDataCell>
-                        <TableDataCell>
-                            {avstemming.datoAvstemtFom ? (
-                                <Tag variant="success" size="small">
-                                    Ja
-                                </Tag>
-                            ) : (
-                                <Tag variant="error" size="small">
-                                    Nei
-                                </Tag>
-                            )}
-                        </TableDataCell>
-                        <TableDataCell>{formatSisteAvstemtDato(avstemming.sisteAvstemtDato)}</TableDataCell>
-                    </TableRow>
-                ))}
+                {avstemminger
+                    .filter((it) => it.status !== 'NOT_REQUIRED')
+                    .map((avstemming) => (
+                        <TableRow key={avstemming.fagsystem}>
+                            <TableDataCell>{avstemming.fagsystem}</TableDataCell>
+                            <TableDataCell>
+                                {avstemming.status === 'COMPLETED' ? (
+                                    <Tag variant="success" size="small">
+                                        Ja
+                                    </Tag>
+                                ) : (
+                                    <Tag variant="error" size="small">
+                                        Nei
+                                    </Tag>
+                                )}
+                            </TableDataCell>
+                            <TableDataCell>{formatSisteAvstemtDato(avstemming.sisteAvstemtDato)}</TableDataCell>
+                        </TableRow>
+                    ))}
             </TableBody>
         </Table>
     )
